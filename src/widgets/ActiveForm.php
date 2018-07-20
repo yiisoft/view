@@ -8,7 +8,7 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\InvalidCallException;
+use yii\exceptions\InvalidCallException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;

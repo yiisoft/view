@@ -8,7 +8,7 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\InvalidConfigException;
+use yii\exceptions\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\Html;

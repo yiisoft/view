@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use yii\base\InvalidConfigException;
+use yii\exceptions\InvalidConfigException;
 use yii\base\Widget;
 
 /**
