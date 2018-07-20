@@ -23,7 +23,7 @@ use yiiunit\TestCase;
 class RadiobuttonColumnTest extends TestCase
 {
     /**
-     * @expectedException \yii\base\InvalidConfigException
+     * @expectedException \yii\exceptions\InvalidConfigException
      * @expectedExceptionMessage The "name" property must be set.
      */
     public function testException()
