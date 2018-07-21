@@ -7,7 +7,6 @@
 
 namespace yii\widgets;
 
-use yii\helpers\Yii;
 use yii\exceptions\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
@@ -136,8 +135,8 @@ class Breadcrumbs extends Widget
         $links = [];
         if ($this->homeLink === null) {
             $links[] = $this->renderItem([
-                'label' => Yii::t('yii', 'Home'),
-                'url' => Yii::$app->homeUrl,
+                'label' => $this->app->t('yii', 'Home'),
+                'url' => $this->app->homeUrl,
             ], $this->itemTemplate);
         } elseif ($this->homeLink !== false) {
             $links[] = $this->renderItem($this->homeLink, $this->itemTemplate);
