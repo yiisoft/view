@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\base\Behavior;
 use yii\base\Widget;
 use yii\helpers\Html;

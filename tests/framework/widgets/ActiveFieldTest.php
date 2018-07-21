@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
 use yii\web\View;

@@ -8,7 +8,7 @@
 namespace yii\widgets;
 
 use Closure;
-use Yii;
+use yii\helpers\Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;

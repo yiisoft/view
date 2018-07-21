@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\grid;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;

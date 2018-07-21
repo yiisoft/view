@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\exceptions\InvalidConfigException;
 use yii\base\Widget;
 use yii\data\Pagination;

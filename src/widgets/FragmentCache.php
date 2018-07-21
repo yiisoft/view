@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\base\DynamicContentAwareInterface;
 use yii\base\DynamicContentAwareTrait;
 use yii\base\Widget;
