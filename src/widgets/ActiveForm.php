@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\di\Initable;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -24,7 +25,7 @@ use yii\helpers\Url;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveForm extends Widget
+class ActiveForm extends Widget implements Initable
 {
     /**
      * Add validation state class to container tag
@@ -36,16 +37,6 @@ class ActiveForm extends Widget
      * @since 2.0.14
      */
     const VALIDATION_STATE_ON_INPUT = 'input';
-    /**
-     * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
-     * @since 3.0.0
-     */
-    const EVENT_BEFORE_FIELD_RENDER = 'beforeFieldRender';
-    /**
-     * @event ActionEvent an event raised right after rendering an ActiveField.
-     * @since 3.0.0
-     */
-    const EVENT_AFTER_FIELD_RENDER = 'afterFieldRender';
 
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
@@ -197,7 +188,6 @@ class ActiveForm extends Widget
      */
     public function init()
     {
-        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -406,10 +396,9 @@ class ActiveForm extends Widget
      * @param ActiveField $field active field to be rendered.
      * @since 3.0.0
      */
-    public function beforeFieldRender($field)
+    public function beforeFieldRender(ActiveField $field)
     {
-        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_BEFORE_FIELD_RENDER]);
-        $this->trigger($event);
+        $this->trigger(ActiveFieldEvent::beforeRender($field));
     }
 
     /**
@@ -418,9 +407,8 @@ class ActiveForm extends Widget
      * @param ActiveField $field active field to be rendered.
      * @since 3.0.0
      */
-    public function afterFieldRender($field)
+    public function afterFieldRender(ActiveField $field)
     {
-        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_AFTER_FIELD_RENDER]);
-        $this->trigger($event);
+        $this->trigger(ActiveFieldEvent::afterRender($field));
     }
 }
