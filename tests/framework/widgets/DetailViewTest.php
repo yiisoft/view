@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\base\Arrayable;
 use yii\base\ArrayableTrait;
@@ -15,7 +15,7 @@ use yii\widgets\DetailView;
 /**
  * @group widgets
  */
-class DetailViewTest extends \yiiunit\TestCase
+class DetailViewTest extends \yii\tests\TestCase
 {
     /** @var DetailView */
     public $detailView;

@@ -5,14 +5,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\widgets\Spaceless;
 
 /**
  * @group widgets
  */
-class SpacelessTest extends \yiiunit\TestCase
+class SpacelessTest extends \yii\tests\TestCase
 {
     public function testWidget()
     {

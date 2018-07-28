@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\grid;
+namespace yii\tests\framework\grid;
 
 use yii\helpers\Yii;
 use yii\data\ArrayDataProvider;
@@ -13,8 +13,8 @@ use yii\grid\CheckboxColumn;
 use yii\grid\GridView;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
-use yiiunit\framework\i18n\IntlTestHelper;
-use yiiunit\TestCase;
+use yii\tests\framework\i18n\IntlTestHelper;
+use yii\tests\TestCase;
 
 /**
  * @group grid
@@ -26,7 +26,7 @@ class CheckboxColumnTest extends TestCase
         parent::setUp();
         IntlTestHelper::resetIntlStatus();
         $this->mockApplication();
-        Yii::setAlias('@webroot', '@yiiunit/runtime');
+        Yii::setAlias('@webroot', '@yii/tests/runtime');
         Yii::setAlias('@web', 'http://localhost/');
         FileHelper::createDirectory(Yii::getAlias('@webroot/assets'));
         Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;

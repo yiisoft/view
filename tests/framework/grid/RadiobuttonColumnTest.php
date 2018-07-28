@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\grid;
+namespace yii\tests\framework\grid;
 
 use yii\helpers\Yii;
 use yii\data\ArrayDataProvider;
@@ -13,7 +13,7 @@ use yii\grid\GridView;
 use yii\grid\RadioButtonColumn;
 use yii\helpers\Html;
 use yii\web\Request;
-use yiiunit\TestCase;
+use yii\tests\TestCase;
 
 /**
  * Class RadiobuttonColumnTest.
@@ -80,7 +80,7 @@ class RadiobuttonColumnTest extends TestCase
     public function testMultipleInGrid()
     {
         $this->mockApplication();
-        Yii::setAlias('@webroot', '@yiiunit/runtime');
+        Yii::setAlias('@webroot', '@yii/tests/runtime');
         Yii::setAlias('@web', 'http://localhost/');
         Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
         Yii::$app->set('request', new Request(['url' => '/abc']));

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\helpers\Yii;
 use yii\base\View;
@@ -16,7 +16,7 @@ use yii\caching\Cache;
  * @group widgets
  * @group caching
  */
-class FragmentCacheTest extends \yiiunit\TestCase
+class FragmentCacheTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

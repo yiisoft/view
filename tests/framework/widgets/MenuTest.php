@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\helpers\Yii;
 use yii\widgets\Menu;
@@ -13,7 +13,7 @@ use yii\widgets\Menu;
 /**
  * @group widgets
  */
-class MenuTest extends \yiiunit\TestCase
+class MenuTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\data\Pagination;
 use yii\helpers\StringHelper;
@@ -14,7 +14,7 @@ use yii\widgets\LinkPager;
 /**
  * @group widgets
  */
-class LinkPagerTest extends \yiiunit\TestCase
+class LinkPagerTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

@@ -5,14 +5,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\widgets\Block;
 
 /**
  * @group widgets
  */
-class BlockTest extends \yiiunit\TestCase
+class BlockTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

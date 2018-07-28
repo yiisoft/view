@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\grid;
+namespace yii\tests\framework\grid;
 
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
@@ -16,7 +16,7 @@ use yii\web\View;
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends \yiiunit\TestCase
+class GridViewTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

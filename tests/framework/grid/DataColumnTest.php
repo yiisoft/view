@@ -5,22 +5,22 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\grid;
+namespace yii\tests\framework\grid;
 
 use yii\helpers\Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yii\i18n\Formatter;
-use yiiunit\data\ar\ActiveRecord;
-use yiiunit\data\ar\Order;
+use yii\tests\data\ar\ActiveRecord;
+use yii\tests\data\ar\Order;
 
 /**
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  *
  * @group grid
  */
-class DataColumnTest extends \yiiunit\TestCase
+class DataColumnTest extends \yii\tests\TestCase
 {
     /**
      * @see DataColumn::getHeaderCellLabel()

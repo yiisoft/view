@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\base\DynamicModel;
 use yii\base\Widget;
@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 /**
  * @group widgets
  */
-class ActiveFormTest extends \yiiunit\TestCase
+class ActiveFormTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

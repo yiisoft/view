@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\helpers\Yii;
 use yii\widgets\Breadcrumbs;
@@ -15,7 +15,7 @@ use yii\widgets\Breadcrumbs;
  *
  * @group widgets
  */
-class BreadcrumbsTest extends \yiiunit\TestCase
+class BreadcrumbsTest extends \yii\tests\TestCase
 {
     private $breadcrumbs;
 

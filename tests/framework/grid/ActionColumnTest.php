@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\grid;
+namespace yii\tests\framework\grid;
 
 use yii\grid\ActionColumn;
 
@@ -14,7 +14,7 @@ use yii\grid\ActionColumn;
  *
  * @group grid
  */
-class ActionColumnTest extends \yiiunit\TestCase
+class ActionColumnTest extends \yii\tests\TestCase
 {
     public function testInit()
     {

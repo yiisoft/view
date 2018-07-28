@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\helpers\Yii;
 use yii\base\DynamicModel;
@@ -20,7 +20,7 @@ use yii\widgets\InputWidget;
  *
  * @group widgets
  */
-class ActiveFieldTest extends \yiiunit\TestCase
+class ActiveFieldTest extends \yii\tests\TestCase
 {
     /**
      * @var ActiveFieldExtend
@@ -53,7 +53,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $this->mockWebApplication();
 
         Yii::setAlias('@testWeb', '/');
-        Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
+        Yii::setAlias('@testWebRoot', '@yii/tests/data/web');
 
         $this->helperModel = new ActiveFieldTestModel(['attributeName']);
         ob_start();

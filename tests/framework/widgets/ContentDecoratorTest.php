@@ -5,14 +5,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\widgets\ContentDecorator;
 
 /**
  * @group widgets
  */
-class ContentDecoratorTest extends \yiiunit\TestCase
+class ContentDecoratorTest extends \yii\tests\TestCase
 {
     protected function setUp()
     {

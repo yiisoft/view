@@ -5,12 +5,12 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\widgets;
+namespace yii\tests\framework\widgets;
 
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
 use yii\widgets\ListView;
-use yiiunit\TestCase;
+use yii\tests\TestCase;
 
 /**
  * @group widgets
@@ -132,7 +132,7 @@ HTML
 </div>',
             ],
             [
-                '@yiiunit/data/views/widgets/ListView/item',
+                '@yii/tests/data/views/widgets/ListView/item',
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: yii\widgets\ListView</div>
