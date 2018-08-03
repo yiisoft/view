@@ -257,7 +257,7 @@ class ActiveForm extends Widget implements Initable
             $config['__class'] = $this->fieldClass;
         }
 
-        return Yii::createObject(ArrayHelper::merge($config, $options, [
+        return $this->app->createObject(ArrayHelper::merge($config, $options, [
             'model' => $model,
             'attribute' => $attribute,
             'form' => $this,

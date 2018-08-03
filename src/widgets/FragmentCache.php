@@ -111,7 +111,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
                 return '';
             }
             if (is_array($this->dependency)) {
-                $this->dependency = Yii::createObject($this->dependency);
+                $this->dependency = $this->app->createObject($this->dependency);
             }
             $data = [$content, $this->getDynamicPlaceholders()];
             $this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);

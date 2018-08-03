@@ -224,7 +224,7 @@ abstract class ActiveFormClientScript extends Behavior
         foreach ($this->clientValidatorMap as $serverSideValidatorClass => $clientSideValidator) {
             if ($clientSideValidator !== false && $validator instanceof $serverSideValidatorClass) {
                 /* @var $clientValidator \yii\validators\client\ClientValidator */
-                $clientValidator = Yii::createObject($clientSideValidator);
+                $clientValidator = $this->app->createObject($clientSideValidator);
                 return $clientValidator->build($validator, $model, $attribute, $view);
             }
         }
