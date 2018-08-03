@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
-use yii\di\Initable;
+use yii\di\Initiable;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -25,7 +25,7 @@ use yii\di\Initable;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveForm extends Widget implements Initable
+class ActiveForm extends Widget implements Initiable
 {
     /**
      * Add validation state class to container tag
