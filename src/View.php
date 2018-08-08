@@ -11,6 +11,8 @@ use yii\base\Application;
 use yii\base\Component;
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;
+use yii\view\events\PageEvent;
+use yii\view\events\RenderEvent;
 use yii\view\exceptions\InvalidCallException;
 use yii\view\exceptions\ViewNotFoundException;
 use yii\widgets\Block;
@@ -276,7 +278,7 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * This method is invoked right before [[renderFile()]] renders a view file.
-     * The default implementation will trigger the [[ViewEvent::BEFORE_RENDER]] event.
+     * The default implementation will trigger the [[RenderEvent::BEFORE]] event.
      * If you override this method, make sure you call the parent implementation first.
      * @param string $viewFile the view file to be rendered.
      * @param array $params the parameter array passed to the [[render()]] method.
@@ -284,12 +286,12 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function beforeRender(string $viewFile, array $params): bool
     {
-        return $this->trigger(ViewEvent::beforeRender($viewFile, $params));
+        return $this->trigger(RenderEvent::before($viewFile, $params));
     }
 
     /**
      * This method is invoked right after [[renderFile()]] renders a view file.
-     * The default implementation will trigger the [[ViewEvent::AFTER_RENDER]] event.
+     * The default implementation will trigger the [[RenderEvent::AFTER]] event.
      * If you override this method, make sure you call the parent implementation first.
      * @param string $viewFile the view file being rendered.
      * @param array $params the parameter array passed to the [[render()]] method.
@@ -298,8 +300,8 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function afterRender(string $viewFile, array $params, &$output): void
     {
-        if ($this->hasEventHandlers(ViewEvent::AFTER_RENDER)) {
-            $output = $this->trigger(ViewEvent::afterRender($viewFile, $params, $output));
+        if ($this->hasEventHandlers(RenderEvent::AFTER)) {
+            $output = $this->trigger(RenderEvent::after($viewFile, $params, $output));
         }
     }
 
@@ -555,7 +557,7 @@ class View extends Component implements DynamicContentAwareInterface
         ob_start();
         ob_implicit_flush(false);
 
-        $this->trigger(ViewEvent::BEGIN_PAGE);
+        $this->trigger(PageEvent::BEGIN);
     }
 
     /**
@@ -563,7 +565,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function endPage()
     {
-        $this->trigger(ViewEvent::END_PAGE);
+        $this->trigger(PageEvent::END);
         ob_end_flush();
     }
 }

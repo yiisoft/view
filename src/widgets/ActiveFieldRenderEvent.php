@@ -7,8 +7,6 @@
 
 namespace yii\view\widgets;
 
-use yii\base\Event;
-
 /**
  * ActiveFieldEvent represents the event parameter used for an active field event.
  *
@@ -17,18 +15,16 @@ use yii\base\Event;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 3.0.0
  */
-class ActiveFieldEvent extends Event
+class ActiveFieldRenderEvent extends WidgetEvent
 {
     /**
      * @event raised right before rendering an ActiveField.
-     * @since 3.0.0
      */
-    const BEFORE_RENDER = 'beforeFieldRender';
+    const BEFORE = 'widget.form.field.render.before';
     /**
      * @event raised right after rendering an ActiveField.
-     * @since 3.0.0
      */
-    const AFTER_RENDER = 'afterFieldRender';
+    const AFTER = 'widget.form.field.render.before';
 
     /**
      * @param string $name event name.
@@ -40,23 +36,23 @@ class ActiveFieldEvent extends Event
     }
 
     /**
-     * Creates BEFORE_RENDER event.
+     * Creates BEFORE event.
      * @param ActiveField $field the field being rendered.
      * @return self created event
      */
-    public static function beforeRender(ActiveField $field): self
+    public static function before(ActiveField $field): self
     {
-        return new static(static::BEFORE_RENDER, $field);
+        return new static(static::BEFORE, $field);
     }
 
     /**
-     * Creates BEFORE_RENDER event.
+     * Creates BEFORE event.
      * @param ActiveField $field the field being rendered.
      * @return self created event
      */
-    public static function afterRender(ActiveField $field): self
+    public static function after(ActiveField $field): self
     {
-        return new static(static::AFTER_RENDER, $field);
+        return new static(static::AFTER, $field);
     }
 
     /**

@@ -5,11 +5,13 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view;
+namespace yii\view\widgets;
 
 use ReflectionClass;
 use yii\base\Application;
+use yii\base\Component;
 use yii\helpers\Yii;
+use yii\view\ViewContextInterface;
 
 /**
  * Widget is the base class for widgets.
@@ -52,7 +54,7 @@ class Widget extends Component implements ViewContextInterface
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->trigger(WidgetEvent::BEFORE_INIT);
+        $this->trigger(WidgetEvent::INIT);
     }
 
     /**
@@ -269,7 +271,7 @@ class Widget extends Component implements ViewContextInterface
      */
     public function beforeRun()
     {
-        return $this->trigger(WidgetEvent::beforeRun());
+        return $this->trigger(RunEvent::before());
     }
 
     /**
@@ -295,6 +297,6 @@ class Widget extends Component implements ViewContextInterface
      */
     public function afterRun($result)
     {
-        return $this->trigger(WidgetEvent::afterRun($result));
+        return $this->trigger(RunEvent::after($result));
     }
 }
