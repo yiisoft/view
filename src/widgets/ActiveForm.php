@@ -5,12 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\view\widgets;
 
 use yii\helpers\Yii;
 use yii\exceptions\InvalidCallException;
 use yii\base\Model;
-use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -392,23 +391,23 @@ class ActiveForm extends Widget implements Initiable
 
     /**
      * This method is invoked right before an ActiveField is rendered.
-     * The method will trigger the [[EVENT_BEFORE_FIELD_RENDER]] event.
+     * The method will trigger the [[ActiveFieldRenderEvent::BEFORE]] event.
      * @param ActiveField $field active field to be rendered.
      * @since 3.0.0
      */
     public function beforeFieldRender(ActiveField $field)
     {
-        $this->trigger(ActiveFieldEvent::beforeRender($field));
+        $this->trigger(ActiveFieldRenderEvent::before($field));
     }
 
     /**
      * This method is invoked right after an ActiveField is rendered.
-     * The method will trigger the [[EVENT_AFTER_FIELD_RENDER]] event.
+     * The method will trigger the [[ActiveFieldRenderEvent::AFTER]] event.
      * @param ActiveField $field active field to be rendered.
      * @since 3.0.0
      */
     public function afterFieldRender(ActiveField $field)
     {
-        $this->trigger(ActiveFieldEvent::afterRender($field));
+        $this->trigger(ActiveFieldRenderEvent::after($field));
     }
 }

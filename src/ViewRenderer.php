@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\view;
 
 /**
  * ViewRenderer is the base class for view renderer classes.

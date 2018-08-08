@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\view;
 
 /**
  * WidgetEvent represents the event parameter used for a widget event.

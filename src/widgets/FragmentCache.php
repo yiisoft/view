@@ -5,12 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\view\widgets;
 
 use yii\helpers\Yii;
 use yii\base\DynamicContentAwareInterface;
 use yii\base\DynamicContentAwareTrait;
-use yii\base\Widget;
 use yii\caching\CacheInterface;
 use yii\caching\Dependency;
 use yii\di\Instance;

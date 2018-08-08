@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\view;
 
 use yii\helpers\Yii;
 use yii\helpers\FileHelper;

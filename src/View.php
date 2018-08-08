@@ -5,13 +5,14 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\view;
 
-use yii\exceptions\ViewNotFoundException;
-use yii\exceptions\InvalidCallException;
-use yii\exceptions\ErrorException;
+use yii\base\Application;
+use yii\base\Component;
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;
+use yii\view\exceptions\InvalidCallException;
+use yii\view\exceptions\ViewNotFoundException;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
@@ -352,7 +353,6 @@ class View extends Component implements DynamicContentAwareInterface
      * @param array $params the parameters (name-value pairs) that will be extracted and made
      * available in the $statement context. The parameters will be stored in the cache and be reused
      * each time $statement is executed. You should make sure, that these are safely serializable.
-     * @throws ErrorException if the statement throws an exception in eval()
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
      */

@@ -5,7 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\view;
+
+use yii\events\Event;
 
 /**
  * ViewEvent represents events triggered by the [[View]] component.
@@ -16,11 +18,11 @@ namespace yii\base;
 class ViewEvent extends Event
 {
     /**
-     * @event triggered by [[yii\base\View::beginPage()]].
+     * @event triggered by [[yii\view\View::beginPage()]].
      */
     const BEGIN_PAGE = 'beginPage';
     /**
-     * @event triggered by [[yii\base\View::endPage()]].
+     * @event triggered by [[yii\view\View::endPage()]].
      */
     const END_PAGE = 'endPage';
     /**

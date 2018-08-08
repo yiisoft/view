@@ -5,11 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\view\widgets;
 
 use yii\helpers\Yii;
 use yii\exceptions\InvalidConfigException;
-use yii\base\Widget;
 use yii\data\Sort;
 use yii\helpers\Html;
 

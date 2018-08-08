@@ -5,9 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
-
-use yii\base\Widget;
+namespace yii\view\widgets;
 
 /**
  * Block records all output between [[begin()]] and [[end()]] calls and stores it in [[\yii\base\View::$blocks]].

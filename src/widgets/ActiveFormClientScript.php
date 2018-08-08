@@ -5,11 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\view\widgets;
 
 use yii\helpers\Yii;
 use yii\base\Behavior;
-use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
@@ -78,13 +77,13 @@ abstract class ActiveFormClientScript extends Behavior
     public function events()
     {
         return [
-            Widget::EVENT_AFTER_RUN => 'afterRun',
-            ActiveForm::EVENT_BEFORE_FIELD_RENDER => 'beforeFieldRender',
+            RunEvent::AFTER => 'afterRun',
+            ActiveFieldRenderEvent::BEFORE => 'beforeFieldRender',
         ];
     }
 
     /**
-     * Handles [[Widget::EVENT_AFTER_RUN]] event, registering related client script.
+     * Handles [[RunEvent::AFTER]] event, registering related client script.
      * @param \yii\base\Event $event event instance.
      */
     public function afterRun($event)
@@ -93,7 +92,7 @@ abstract class ActiveFormClientScript extends Behavior
     }
 
     /**
-     * Handles [[ActiveForm::EVENT_BEFORE_FIELD_RENDER]] event.
+     * Handles [[ActiveFieldRenderEvent::BEFORE]] event.
      * @param ActiveFieldEvent $event event instance.
      */
     public function beforeFieldRender($event)

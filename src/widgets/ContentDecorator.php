@@ -5,10 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\widgets;
+namespace yii\view\widgets;
 
 use yii\exceptions\InvalidConfigException;
-use yii\base\Widget;
 
 /**
  * ContentDecorator records all output between [[begin()]] and [[end()]] calls, passes it to the given view file

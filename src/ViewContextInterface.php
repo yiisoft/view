@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\view;
 
 /**
  * ViewContextInterface is the interface that should implemented by classes who want to support relative view names.
