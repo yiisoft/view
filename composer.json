@@ -81,7 +81,8 @@
     },
     "autoload": {
         "psr-4": {
-            "yii\\view\\": "src"
+            "yii\\view\\": "src/view",
+            "yii\\widgets\\": "src/widgets"
         }
     },
     "autoload-dev": {

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\exceptions;
+namespace yii\view;
 
 /**
  * InvalidCallException represents an exception caused by calling a method in a wrong way.

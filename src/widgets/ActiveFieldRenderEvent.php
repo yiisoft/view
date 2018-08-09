@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\widgets;
+namespace yii\widgets;
 
 /**
  * ActiveFieldEvent represents the event parameter used for an active field event.

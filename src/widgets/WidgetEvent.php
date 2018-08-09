@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\widgets;
+namespace yii\widgets;
 
 use yii\events\Event;
 

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\widgets;
+namespace yii\widgets;
 
 /**
  * Spaceless widget removes whitespace characters between HTML tags. Whitespaces within HTML tags

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\exceptions;
+namespace yii\view;
 
 /**
  * ViewNotFoundException represents an exception caused by view file not found.

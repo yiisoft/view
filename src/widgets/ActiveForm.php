@@ -5,9 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\widgets;
+namespace yii\widgets;
 
-use yii\helpers\Yii;
 use yii\exceptions\InvalidCallException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
@@ -185,7 +184,7 @@ class ActiveForm extends Widget implements Initiable
      * Initializes the widget.
      * This renders the form open tag.
      */
-    public function init()
+    public function init(): void
     {
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();

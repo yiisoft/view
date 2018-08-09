@@ -5,9 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\widgets;
+namespace yii\widgets;
 
-use yii\helpers\Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
 use yii\base\Model;
