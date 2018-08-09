@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\events;
+namespace yii\view;
 
 /**
  * PageEvent represents events triggered when rendering HTML page.
@@ -13,7 +13,7 @@ namespace yii\view\events;
  * @author Andrii Vasyliev <sol@hiqdev.com>
  * @since 1.0
  */
-class PageEvent extends Event
+class PageEvent extends ViewEvent
 {
     /**
      * @event triggered by [[yii\view\View::beginPage()]].

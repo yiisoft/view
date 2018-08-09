@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\events;
+namespace yii\view;
 
 /**
  * RenderEvent represents events triggered by the [[View]] component.
@@ -13,7 +13,7 @@ namespace yii\view\events;
  * @author Andrii Vasyliev <sol@hiqdev.com>
  * @since 1.0
  */
-class RenderEvent extends Event
+class RenderEvent extends ViewEvent
 {
     /**
      * @event triggered by [[View::renderFile()]] right before it renders a view file.

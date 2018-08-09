@@ -7,13 +7,15 @@
 
 namespace yii\view;
 
+use yii\base\Event;
+
 /**
  * ViewEvent represents events triggered by the [[View]] component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 1.0
  */
-abstract class ViewEvent extends \yii\events\Event
+abstract class ViewEvent extends Event
 {
     /**
      * @var string the view file being rendered.

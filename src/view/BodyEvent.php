@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\view\events;
+namespace yii\view;
 
 /**
  * BodyEvent represents events triggered when rendering HTML page body.
@@ -13,7 +13,7 @@ namespace yii\view\events;
  * @author Andrii Vasyliev <sol@hiqdev.com>
  * @since 1.0
  */
-class BodyEvent extends Event
+class BodyEvent extends ViewEvent
 {
     /**
      * @event triggered by [[yii\web\View::beginBody()]].

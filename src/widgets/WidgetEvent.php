@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use yii\events\Event;
+use yii\base\Event;
 
 /**
  * WidgetEvent represents the event parameter used for a widget event.
