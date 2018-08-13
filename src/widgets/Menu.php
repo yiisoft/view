@@ -8,7 +8,6 @@
 namespace yii\widgets;
 
 use Closure;
-use yii\helpers\Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -38,7 +37,7 @@ use yii\helpers\Url;
  *             ['label' => 'New Arrivals', 'url' => ['product/index', 'tag' => 'new']],
  *             ['label' => 'Most Popular', 'url' => ['product/index', 'tag' => 'popular']],
  *         ]],
- *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+ *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => $this->app->user->isGuest],
  *     ],
  * ]);
  * ```
@@ -171,11 +170,11 @@ class Menu extends Widget
      */
     public function run()
     {
-        if ($this->route === null && Yii::$app->controller !== null) {
-            $this->route = Yii::$app->controller->getRoute();
+        if ($this->route === null && $this->app->controller !== null) {
+            $this->route = $this->app->controller->getRoute();
         }
         if ($this->params === null) {
-            $this->params = Yii::$app->request->getQueryParams();
+            $this->params = $this->app->request->getQueryParams();
         }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
         if (empty($items)) {
@@ -307,9 +306,9 @@ class Menu extends Widget
     protected function isItemActive($item)
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = Yii::getAlias($item['url'][0]);
-            if ($route[0] !== '/' && Yii::$app->controller) {
-                $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
+            $route = $this->app->getAlias($item['url'][0]);
+            if ($route[0] !== '/' && $this->app->controller) {
+                $route = $this->app->controller->module->getUniqueId() . '/' . $route;
             }
             if (ltrim($route, '/') !== $this->route) {
                 return false;
