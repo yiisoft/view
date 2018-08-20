@@ -10,6 +10,7 @@ namespace yii\widgets;
 use ReflectionClass;
 use yii\base\Application;
 use yii\base\Component;
+use yii\exceptions\InvalidCallException;
 use yii\helpers\Yii;
 use yii\view\ViewContextInterface;
 
@@ -46,10 +47,15 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+    /**
+     * @var Application
+     */
     protected $app;
 
     /**
      * The default implementation will trigger an [[WidgetEvent::BEFORE_INIT]] event.
+     *
+     * @param Application $app
      */
     public function __construct(Application $app)
     {
