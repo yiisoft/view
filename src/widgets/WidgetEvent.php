@@ -22,5 +22,5 @@ class WidgetEvent extends Event
     /**
      * @event triggered when the widget is initialized via [[init()]].
      */
-    const INIT = 'widget.init';
+    public const INIT = 'widget.init';
 }
