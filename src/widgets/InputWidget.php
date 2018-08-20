@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use yii\helpers\Yii;
+use yii\di\Initiable;
 use yii\exceptions\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
@@ -33,7 +33,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class InputWidget extends Widget
+class InputWidget extends Widget implements Initiable
 {
     /**
      * @var \yii\widgets\ActiveField active input field, which triggers this widget rendering.
@@ -63,12 +63,11 @@ class InputWidget extends Widget
      */
     public $options = [];
 
-
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.
      */
-    public function init()
+    public function init(): void
     {
         if ($this->name === null && !$this->hasModel()) {
             throw new InvalidConfigException("Either 'name', or 'model' and 'attribute' properties must be specified.");
@@ -76,7 +75,6 @@ class InputWidget extends Widget
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
         }
-        parent::init();
     }
 
     /**
