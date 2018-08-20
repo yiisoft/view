@@ -63,7 +63,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      *
      * ```php
      * [
-     *     Yii::$app->language,
+     *     Yii::getApp()->language,
      * ]
      * ```
      */

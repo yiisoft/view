@@ -306,9 +306,9 @@ class ActiveForm extends Widget implements Initiable
      *
      * ```php
      * $model = new Post;
-     * $model->load(Yii::$app->request->post());
-     * if (Yii::$app->request->isAjax) {
-     *     Yii::$app->response->format = Response::FORMAT_JSON;
+     * $model->load(Yii::getApp()->request->post());
+     * if (Yii::getApp()->request->isAjax) {
+     *     Yii::getApp()->response->format = Response::FORMAT_JSON;
      *     return ActiveForm::validate($model);
      * }
      * // ... respond to non-AJAX request ...
@@ -361,8 +361,8 @@ class ActiveForm extends Widget implements Initiable
      *
      * ```php
      * // ... load $models ...
-     * if (Yii::$app->request->isAjax) {
-     *     Yii::$app->response->format = Response::FORMAT_JSON;
+     * if (Yii::getApp()->request->isAjax) {
+     *     Yii::getApp()->response->format = Response::FORMAT_JSON;
      *     return ActiveForm::validateMultiple($models);
      * }
      * // ... respond to non-AJAX request ...

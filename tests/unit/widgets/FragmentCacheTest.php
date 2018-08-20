@@ -22,7 +22,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
     {
         parent::setUp();
         $this->mockWebApplication();
-        Yii::$app->set('cache', [
+        Yii::getApp()->set('cache', [
             '__class' => Cache::class,
             'handler' => ArrayCache::class,
         ]);
@@ -94,7 +94,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testSingleDynamicFragment()
     {
-        Yii::$app->params['counter'] = 0;
+        Yii::getApp()->params['counter'] = 0;
 
         $view = new View();
 
@@ -112,7 +112,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
             if ($cacheUnavailable) {
                 echo 'single dynamic cached fragment: ';
-                echo $view->renderDynamic('return \Yii::$app->params["counter"]++;');
+                echo $view->renderDynamic('return \Yii::getApp()->params["counter"]++;');
                 $view->endCache();
             }
 
@@ -125,7 +125,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testMultipleDynamicFragments()
     {
-        Yii::$app->params['counter'] = 0;
+        Yii::getApp()->params['counter'] = 0;
 
         $view = new View();
 
@@ -143,8 +143,8 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
             if ($cacheUnavailable) {
                 echo 'multiple dynamic cached fragments: ';
-                echo $view->renderDynamic('return md5(\Yii::$app->params["counter"]);');
-                echo $view->renderDynamic('return \Yii::$app->params["counter"]++;');
+                echo $view->renderDynamic('return md5(\Yii::getApp()->params["counter"]);');
+                echo $view->renderDynamic('return \Yii::getApp()->params["counter"]++;');
                 $view->endCache();
             }
 
@@ -158,7 +158,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testNestedDynamicFragments()
     {
-        Yii::$app->params['counter'] = 0;
+        Yii::getApp()->params['counter'] = 0;
 
         $view = new View();
 
@@ -176,14 +176,14 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
             if ($cacheUnavailable) {
                 echo 'nested dynamic cached fragments: ';
-                echo $view->renderDynamic('return md5(\Yii::$app->params["counter"]);');
+                echo $view->renderDynamic('return md5(\Yii::getApp()->params["counter"]);');
 
                 if ($view->beginCache('test-nested')) {
-                    echo $view->renderDynamic('return sha1(\Yii::$app->params["counter"]);');
+                    echo $view->renderDynamic('return sha1(\Yii::getApp()->params["counter"]);');
                     $view->endCache();
                 }
 
-                echo $view->renderDynamic('return \Yii::$app->params["counter"]++;');
+                echo $view->renderDynamic('return \Yii::getApp()->params["counter"]++;');
                 $view->endCache();
             }
 

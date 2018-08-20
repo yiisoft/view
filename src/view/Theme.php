@@ -137,7 +137,7 @@ class Theme extends Component
             if (($basePath = $this->getBasePath()) === null) {
                 throw new InvalidConfigException('The "basePath" property must be set.');
             }
-            $pathMap = [Yii::$app->getBasePath() => [$basePath]];
+            $pathMap = [Yii::getApp()->getBasePath() => [$basePath]];
         }
         $path = FileHelper::normalizePath($path);
         foreach ($pathMap as $from => $tos) {
