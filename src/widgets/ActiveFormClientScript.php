@@ -7,7 +7,7 @@
 
 namespace yii\widgets;
 
-use yii\helpers\Yii;
+use yii\base\Application;
 use yii\base\Behavior;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -49,26 +49,48 @@ abstract class ActiveFormClientScript extends Behavior
      * You should use this field only in case particular client script does not provide any default mapping or
      * in case you wish to override this mapping.
      */
-    public $clientValidatorMap = [];
+    protected $clientValidatorMap = [];
 
     /**
      * @var array the client validation options for individual attributes. Each element of the array
      * represents the validation options for a particular attribute.
      */
     protected $attributes = [];
-
+    /**
+     * @var Application
+     */
+    private $app;
 
     /**
-     * {@inheritdoc}
+     * ActiveFormClientScript constructor.
+     *
+     * @param Application $application
      */
-    public function init()
+    public function __construct(Application $application)
     {
-        parent::init();
+        $this->app = $application;
+    }
 
-        $this->clientValidatorMap = array_merge(
+    /**
+     * @return array
+     */
+    public function getClientValidatorMap(): array
+    {
+        return array_merge(
             $this->defaultClientValidatorMap(),
             $this->clientValidatorMap
         );
+    }
+
+    /**
+     * @param array $clientValidatorMap
+     * @return ActiveFormClientScript
+     */
+    public function setClientValidatorMap(array $clientValidatorMap): self
+    {
+        $this->clientValidatorMap = $clientValidatorMap;
+
+        return $this;
     }
 
     /**
@@ -93,11 +115,11 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * Handles [[ActiveFieldRenderEvent::BEFORE]] event.
-     * @param ActiveFieldEvent $event event instance.
+     * @param ActiveFieldRenderEvent $event event instance.
      */
     public function beforeFieldRender($event)
     {
-        $clientOptions = $this->getFieldClientOptions($event->field);
+        $clientOptions = $this->getFieldClientOptions($event->getTarget());
         if (!empty($clientOptions)) {
             $this->attributes[] = $clientOptions;
         }
@@ -132,11 +154,11 @@ abstract class ActiveFormClientScript extends Behavior
                 }
 
                 $js = $validator->clientValidateAttribute($field->model, $attribute, $field->form->getView());
-                if ($js == '') {
+                if ($js === null || $js === '') {
                     $js = $this->buildClientValidator($validator, $field->model, $attribute, $field->form->getView());
                 }
 
-                if ($js != '') {
+                if ($js !== '') {
                     if ($validator->whenClient !== null) {
                         $js = "if (({$validator->whenClient})(attribute, value)) { $js }";
                     }
@@ -155,14 +177,14 @@ abstract class ActiveFormClientScript extends Behavior
         $options['id'] = Html::getInputId($field->model, $field->attribute);
         $options['name'] = $field->attribute;
 
-        $options['container'] = isset($field->selectors['container']) ? $field->selectors['container'] : ".field-$inputID";
-        $options['input'] = isset($field->selectors['input']) ? $field->selectors['input'] : "#$inputID";
+        $options['container'] = $field->selectors['container'] ?? ".field-$inputID";
+        $options['input'] = $field->selectors['input'] ?? "#$inputID";
         if (isset($field->selectors['error'])) {
             $options['error'] = $field->selectors['error'];
         } elseif (isset($field->errorOptions['class'])) {
             $options['error'] = '.' . implode('.', preg_split('/\s+/', $field->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
         } else {
-            $options['error'] = isset($field->errorOptions['tag']) ? $field->errorOptions['tag'] : 'span';
+            $options['error'] = $field->errorOptions['tag'] ?? 'span';
         }
 
         $options['encodeError'] = !isset($field->errorOptions['encode']) || $field->errorOptions['encode'];
@@ -170,7 +192,7 @@ abstract class ActiveFormClientScript extends Behavior
             $options['enableAjaxValidation'] = true;
         }
         foreach (['validateOnChange', 'validateOnBlur', 'validateOnType', 'validationDelay'] as $name) {
-            $options[$name] = $field->$name === null ? $field->form->$name : $field->$name;
+            $options[$name] = $field->$name ?? $field->form->$name;
         }
 
         if (!empty($validators)) {
@@ -220,7 +242,7 @@ abstract class ActiveFormClientScript extends Behavior
      */
     protected function buildClientValidator($validator, $model, $attribute, $view)
     {
-        foreach ($this->clientValidatorMap as $serverSideValidatorClass => $clientSideValidator) {
+        foreach ($this->getClientValidatorMap() as $serverSideValidatorClass => $clientSideValidator) {
             if ($clientSideValidator !== false && $validator instanceof $serverSideValidatorClass) {
                 /* @var $clientValidator \yii\validators\client\ClientValidator */
                 $clientValidator = $this->app->createObject($clientSideValidator);
