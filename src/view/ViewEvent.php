@@ -12,8 +12,8 @@ use yii\base\Event;
 /**
  * ViewEvent represents events triggered by the [[View]] component.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 1.0
+ * @author Andrii Vasyliev <sol@hiqdev.com>
+ * @since 3.0
  */
 abstract class ViewEvent extends Event
 {

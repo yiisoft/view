@@ -11,7 +11,7 @@ namespace yii\view;
  * RenderEvent represents events triggered by the [[View]] component.
  *
  * @author Andrii Vasyliev <sol@hiqdev.com>
- * @since 1.0
+ * @since 3.0
  */
 class RenderEvent extends ViewEvent
 {

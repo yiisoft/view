@@ -11,7 +11,7 @@ namespace yii\view;
  * BodyEvent represents events triggered when rendering HTML page body.
  *
  * @author Andrii Vasyliev <sol@hiqdev.com>
- * @since 1.0
+ * @since 3.0
  */
 class BodyEvent extends ViewEvent
 {

@@ -11,7 +11,7 @@ namespace yii\view;
  * PageEvent represents events triggered when rendering HTML page.
  *
  * @author Andrii Vasyliev <sol@hiqdev.com>
- * @since 1.0
+ * @since 3.0
  */
 class PageEvent extends ViewEvent
 {
