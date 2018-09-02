@@ -11,7 +11,6 @@ namespace yii\view;
  * ViewRenderer is the base class for view renderer classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 abstract class ViewRenderer extends Component
 {

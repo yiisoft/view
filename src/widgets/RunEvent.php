@@ -13,7 +13,6 @@ namespace yii\widgets;
  * By setting the [[isValid]] property, one may control whether to continue running the widget.
  *
  * @author Andrii Vasyliev <sol@hiqdev.com>
- * @since 3.0.0
  */
 class RunEvent extends WidgetEvent
 {

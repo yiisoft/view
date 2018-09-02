@@ -43,7 +43,6 @@ namespace yii\widgets;
  *
  * @see http://tidy.sourceforge.net/
  * @author resurtm <resurtm@gmail.com>
- * @since 2.0
  */
 class Spaceless extends Widget
 {

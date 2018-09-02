@@ -26,7 +26,6 @@ use yii\helpers\Html;
  * For more details and usage information on LinkPager, see the [guide article on pagination](guide:output-pagination).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class LinkPager extends Widget
 {
@@ -42,7 +41,6 @@ class LinkPager extends Widget
     public $options = ['class' => 'pagination'];
     /**
      * @var array HTML attributes which will be applied to all link containers
-     * @since 2.0.13
      */
     public $linkContainerOptions = [];
     /**
@@ -52,7 +50,6 @@ class LinkPager extends Widget
     public $linkOptions = [];
     /**
      * @var string the CSS class for the each page button.
-     * @since 2.0.7
      */
     public $pageCssClass;
     /**
@@ -86,7 +83,6 @@ class LinkPager extends Widget
      * ```php
      * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
-     * @since 2.0.11
      */
     public $disabledListItemSubTagOptions = [];
     /**
@@ -128,7 +124,6 @@ class LinkPager extends Widget
     public $hideOnSinglePage = true;
     /**
      * @var bool whether to render current page button as disabled.
-     * @since 2.0.12
      */
     public $disableCurrentPageButton = false;
 

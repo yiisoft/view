@@ -19,7 +19,6 @@ use yii\helpers\Html;
  * For more details and usage information on ActiveField, see the [guide article on forms](guide:input-forms).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class ActiveField extends Component
 {
@@ -147,7 +146,6 @@ class ActiveField extends Component
     public $parts = [];
     /**
      * @var bool adds aria HTML attributes `aria-required` and `aria-invalid` for inputs
-     * @since 2.0.11
      */
     public $addAriaAttributes = true;
 
@@ -798,7 +796,6 @@ class ActiveField extends Component
     /**
      * Checks if client validation enabled for the field.
      * @return bool whether client validation enabled for the field.
-     * @since 2.0.11
      */
     public function isClientValidationEnabled()
     {
@@ -808,7 +805,6 @@ class ActiveField extends Component
     /**
      * Checks if AJAX validation enabled for the field.
      * @return bool whether AJAX validation enabled for the field.
-     * @since 2.0.11
      */
     public function isAjaxValidationEnabled()
     {
@@ -818,7 +814,6 @@ class ActiveField extends Component
     /**
      * Returns the HTML `id` of the input element of this form field.
      * @return string the input id.
-     * @since 2.0.7
      */
     public function getInputId()
     {
@@ -828,7 +823,6 @@ class ActiveField extends Component
     /**
      * Adds aria attributes to the input options.
      * @param $options array input options
-     * @since 2.0.11
      */
     protected function addAriaAttributes(&$options)
     {
@@ -847,7 +841,6 @@ class ActiveField extends Component
     /**
      * Adds validation class to the input options if needed.
      * @param $options array input options
-     * @since 2.0.14
      */
     protected function addErrorClassIfNeeded(&$options)
     {

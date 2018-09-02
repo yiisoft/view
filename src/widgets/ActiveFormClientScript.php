@@ -20,7 +20,6 @@ use yii\web\JsExpression;
  * @property ActiveForm $owner the owner of this behavior.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 3.0.0
  */
 abstract class ActiveFormClientScript extends Behavior
 {

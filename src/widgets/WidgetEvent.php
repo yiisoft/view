@@ -15,7 +15,6 @@ use yii\base\Event;
  * By setting the [[isValid]] property, one may control whether to continue running the widget.
  *
  * @author Andrii Vasyliev <sol@hiqdev.com>
- * @since 3.0
  */
 class WidgetEvent extends Event
 {

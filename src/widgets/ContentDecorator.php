@@ -37,7 +37,6 @@ use yii\exceptions\InvalidConfigException;
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class ContentDecorator extends Widget
 {

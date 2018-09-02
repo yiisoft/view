@@ -26,7 +26,6 @@ use yii\widgets\FragmentCache;
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class View extends Component implements DynamicContentAwareInterface
 {
@@ -265,7 +264,6 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
-     * @since 2.0.16
      */
     protected function getRequestedViewFile()
     {
@@ -413,7 +411,6 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Returns a list of currently active dynamic content class instances.
      * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
-     * @since 2.0.14
      */
     public function getDynamicContents()
     {
@@ -424,7 +421,6 @@ class View extends Component implements DynamicContentAwareInterface
      * Adds a class instance supporting dynamic contents to the end of a list of currently active
      * dynamic content class instances.
      * @param DynamicContentAwareInterface $instance class instance supporting dynamic contents.
-     * @since 2.0.14
      */
     public function pushDynamicContent(DynamicContentAwareInterface $instance)
     {
@@ -434,7 +430,6 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Removes a last class instance supporting dynamic contents from a list of currently active
      * dynamic content class instances.
-     * @since 2.0.14
      */
     public function popDynamicContent()
     {

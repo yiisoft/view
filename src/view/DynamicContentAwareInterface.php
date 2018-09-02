@@ -12,7 +12,6 @@ namespace yii\view;
  * which support a [[View]] dynamic content feature.
  *
  * @author Sergey Makinen <sergey@makinen.ru>
- * @since 2.0.14
  */
 interface DynamicContentAwareInterface
 {

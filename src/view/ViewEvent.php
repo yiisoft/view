@@ -13,7 +13,6 @@ use yii\base\Event;
  * ViewEvent represents events triggered by the [[View]] component.
  *
  * @author Andrii Vasyliev <sol@hiqdev.com>
- * @since 3.0
  */
 abstract class ViewEvent extends Event
 {

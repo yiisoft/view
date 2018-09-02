@@ -21,18 +21,15 @@ use yii\di\Initiable;
  * For more details and usage information on ActiveForm, see the [guide article on forms](guide:input-forms).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class ActiveForm extends Widget implements Initiable
 {
     /**
      * Add validation state class to container tag
-     * @since 2.0.14
      */
     const VALIDATION_STATE_ON_CONTAINER = 'container';
     /**
      * Add validation state class to input tag
-     * @since 2.0.14
      */
     const VALIDATION_STATE_ON_INPUT = 'input';
 
@@ -110,7 +107,6 @@ class ActiveForm extends Widget implements Initiable
      * @var string where to render validation state class
      * Could be either "container" or "input".
      * Default is "container".
-     * @since 2.0.14
      */
     public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
     /**
@@ -165,12 +161,10 @@ class ActiveForm extends Widget implements Initiable
     public $ajaxDataType = 'json';
     /**
      * @var bool whether to scroll to the first error after validation.
-     * @since 2.0.6
      */
     public $scrollToError = true;
     /**
      * @var int offset in pixels that should be added when scrolling to the first error.
-     * @since 2.0.11
      */
     public $scrollToErrorOffset = 0;
 
@@ -392,7 +386,6 @@ class ActiveForm extends Widget implements Initiable
      * This method is invoked right before an ActiveField is rendered.
      * The method will trigger the [[ActiveFieldRenderEvent::BEFORE]] event.
      * @param ActiveField $field active field to be rendered.
-     * @since 3.0.0
      */
     public function beforeFieldRender(ActiveField $field)
     {
@@ -403,7 +396,6 @@ class ActiveForm extends Widget implements Initiable
      * This method is invoked right after an ActiveField is rendered.
      * The method will trigger the [[ActiveFieldRenderEvent::AFTER]] event.
      * @param ActiveField $field active field to be rendered.
-     * @since 3.0.0
      */
     public function afterFieldRender(ActiveField $field)
     {

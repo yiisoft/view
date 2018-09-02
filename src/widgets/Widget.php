@@ -26,7 +26,6 @@ use yii\view\ViewContextInterface;
  * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class Widget extends Component implements ViewContextInterface
 {
@@ -273,7 +272,6 @@ class Widget extends Component implements ViewContextInterface
      * ```
      *
      * @return bool whether the widget should continue to be executed.
-     * @since 2.0.11
      */
     public function beforeRun()
     {
@@ -299,7 +297,6 @@ class Widget extends Component implements ViewContextInterface
      *
      * @param mixed $result the widget return result.
      * @return mixed the processed widget result.
-     * @since 2.0.11
      */
     public function afterRun($result)
     {

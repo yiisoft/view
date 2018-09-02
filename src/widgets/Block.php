@@ -32,7 +32,6 @@ namespace yii\widgets;
  * desired when redefining it in subviews.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class Block extends Widget
 {

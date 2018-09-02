@@ -13,7 +13,6 @@ namespace yii\widgets;
  * @property ActiveForm $target the sender of this event.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 3.0.0
  */
 class ActiveFieldRenderEvent extends WidgetEvent
 {

@@ -21,7 +21,6 @@ use yii\di\Instance;
  * in the cache. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class FragmentCache extends Widget implements DynamicContentAwareInterface
 {

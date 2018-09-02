@@ -69,7 +69,6 @@ use yii\helpers\FileHelper;
  * are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class Theme extends Component
 {
