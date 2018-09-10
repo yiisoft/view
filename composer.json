@@ -64,7 +64,7 @@
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
-        "yiisoft/core": "^3.0@dev",
+        "yiisoft/yii-core": "^3.0@dev",
         "yiisoft/di": "^3.0@dev",
         "yiisoft/log": "^3.0@dev",
         "yiisoft/cache": "^3.0@dev",
@@ -72,7 +72,7 @@
         "friendsofphp/php-cs-fixer": "^2.2"
     },
     "suggest": {
-        "yiisoft/core": "^3.0"
+        "yiisoft/yii-core": "^3.0"
     },
     "extra": {
         "branch-alias": {
