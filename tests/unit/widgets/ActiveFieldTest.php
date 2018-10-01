@@ -483,11 +483,11 @@ HTML;
      */
     protected function getView()
     {
-        $view = new View();
-        $view->setAssetManager(new AssetManager([
-            'basePath' => '@testWebRoot/assets',
-            'baseUrl' => '@testWeb/assets',
-        ]));
+        $view = new View($this->app);
+        $am = new AssetManager($this->app);
+        $am->basePath = '@testWebRoot/assets';
+        $am->baseUrl = '@testWeb/assets';
+        $view->setAssetManager($am);
 
         return $view;
     }
@@ -537,7 +537,7 @@ class TestInputWidget extends InputWidget
      */
     public static $lastInstance;
 
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$lastInstance = $this;
