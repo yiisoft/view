@@ -28,14 +28,16 @@ class ContentDecoratorTest extends \yii\tests\TestCase
     {
         $initTriggered = false;
 
-        $contentDecorator = new ContentDecorator(
-            [
+        $contentDecorator = new ContentDecorator($this->app);
+
+        //fixme: register event ?!
+            /*[
                 'viewFile' => '@app/views/layouts/base.php',
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
                 }
-            ]
-        );
+            ]*/
+        //);
 
         ob_get_clean();
 

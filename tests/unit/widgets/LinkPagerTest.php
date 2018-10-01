@@ -19,13 +19,8 @@ class LinkPagerTest extends \yii\tests\TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication([
-            'components' => [
-                'urlManager' => [
-                    'scriptUrl' => '/',
-                ],
-            ],
-        ]);
+        $this->mockWebApplication();
+        $this->app->urlManager->setScriptUrl('/');
     }
 
     /**

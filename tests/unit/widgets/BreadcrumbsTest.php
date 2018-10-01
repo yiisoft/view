@@ -27,7 +27,7 @@ class BreadcrumbsTest extends \yii\tests\TestCase
         $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $this->mockWebApplication();
-        $this->breadcrumbs = new Breadcrumbs();
+        $this->breadcrumbs = new Breadcrumbs($this->app);
     }
 
     public function testHomeLinkNull()

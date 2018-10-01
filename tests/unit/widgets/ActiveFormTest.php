@@ -85,6 +85,7 @@ EOF
         $obLevel = ob_get_level();
         ob_start();
 
+        $this->app->request->enableCsrfValidation = false;
         $model = new DynamicModel(['name']);
 
         $form = ActiveForm::begin(['id' => 'someform', 'action' => '/someform']);

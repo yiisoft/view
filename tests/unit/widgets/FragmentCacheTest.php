@@ -7,10 +7,9 @@
 
 namespace yii\tests\framework\widgets;
 
-use yii\helpers\Yii;
-use yii\base\View;
-use yii\caching\ArrayCache;
-use yii\caching\Cache;
+use yii\view\View;
+use yii\cache\ArrayCache;
+use yii\cache\Cache;
 
 /**
  * @group widgets
@@ -22,10 +21,10 @@ class FragmentCacheTest extends \yii\tests\TestCase
     {
         parent::setUp();
         $this->mockWebApplication();
-        Yii::getApp()->set('cache', [
+        $this->container->set('cache', new Cache([
             '__class' => Cache::class,
-            'handler' => ArrayCache::class,
-        ]);
+            'handler' => ArrayCache::class
+        ]));
     }
 
     public function testCacheEnabled()
@@ -34,7 +33,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $view = new View();
+        $view = new View($this->app);
         $this->assertTrue($view->beginCache('test'));
         echo 'cached fragment';
         $view->endCache();
@@ -54,7 +53,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $view = new View();
+        $view = new View($this->app);
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
         echo 'cached fragment';
         $view->endCache();
@@ -76,7 +75,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $view = new View();
+        $view = new View($this->app);
         $this->assertTrue($view->beginCache('test'));
         echo 'cached fragment';
         $view->endCache();
@@ -94,9 +93,9 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testSingleDynamicFragment()
     {
-        Yii::getApp()->params['counter'] = 0;
+        $this->app->params['counter'] = 0;
 
-        $view = new View();
+        $view = new View($this->app);
 
         for ($counter = 0; $counter < 42; $counter++) {
             ob_start();
@@ -112,7 +111,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
             if ($cacheUnavailable) {
                 echo 'single dynamic cached fragment: ';
-                echo $view->renderDynamic('return \Yii::getApp()->params["counter"]++;');
+                echo $view->renderDynamic('return $this->app->params["counter"]++;');
                 $view->endCache();
             }
 
@@ -125,9 +124,9 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testMultipleDynamicFragments()
     {
-        Yii::getApp()->params['counter'] = 0;
+        $this->app->params['counter'] = 0;
 
-        $view = new View();
+        $view = new View($this->app);
 
         for ($counter = 0; $counter < 42; $counter++) {
             ob_start();
@@ -143,8 +142,8 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
             if ($cacheUnavailable) {
                 echo 'multiple dynamic cached fragments: ';
-                echo $view->renderDynamic('return md5(\Yii::getApp()->params["counter"]);');
-                echo $view->renderDynamic('return \Yii::getApp()->params["counter"]++;');
+                echo $view->renderDynamic('return md5($this->app->params["counter"]);');
+                echo $view->renderDynamic('return $this->app->params["counter"]++;');
                 $view->endCache();
             }
 
@@ -158,9 +157,9 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testNestedDynamicFragments()
     {
-        Yii::getApp()->params['counter'] = 0;
+        $this->app->params['counter'] = 0;
 
-        $view = new View();
+        $view = new View($this->app);
 
         for ($counter = 0; $counter < 42; $counter++) {
             ob_start();
@@ -176,14 +175,14 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
             if ($cacheUnavailable) {
                 echo 'nested dynamic cached fragments: ';
-                echo $view->renderDynamic('return md5(\Yii::getApp()->params["counter"]);');
+                echo $view->renderDynamic('return md5($this->app->params["counter"]);');
 
                 if ($view->beginCache('test-nested')) {
-                    echo $view->renderDynamic('return sha1(\Yii::getApp()->params["counter"]);');
+                    echo $view->renderDynamic('return sha1($this->app->params["counter"]);');
                     $view->endCache();
                 }
 
-                echo $view->renderDynamic('return \Yii::getApp()->params["counter"]++;');
+                echo $view->renderDynamic('return $this->app->params["counter"]++;');
                 $view->endCache();
             }
 
@@ -204,7 +203,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
         ob_start();
         ob_implicit_flush(false);
-        $view = new View();
+        $view = new View($this->app);
         $this->assertTrue($view->beginCache('test', ['variations' => ['ru']]), 'Cached fragment should not be exist');
         echo 'cached fragment';
         $view->endCache();
@@ -227,7 +226,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         //without variations
         ob_start();
         ob_implicit_flush(false);
-        $view = new View();
+        $view = new View($this->app);
         $this->assertTrue($view->beginCache('test'), 'Cached fragment should not be exist');
         echo 'cached fragment';
         $view->endCache();
