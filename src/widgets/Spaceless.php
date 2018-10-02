@@ -49,7 +49,7 @@ class Spaceless extends Widget
     /**
      * Starts capturing an output to be cleaned from whitespace characters between HTML tags.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         ob_start();

@@ -9,7 +9,6 @@ namespace yii\widgets;
 
 use yii\cache\CacheInterface;
 use yii\cache\dependencies\Dependency;
-use yii\di\Instance;
 use yii\view\DynamicContentAwareInterface;
 use yii\view\DynamicContentAwareTrait;
 
@@ -76,11 +75,11 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     /**
      * Initializes the FragmentCache object.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, CacheInterface::class) : null;
+        $this->cache = $this->enabled ? $this->app->ensureObject($this->cache, CacheInterface::class) : null;
 
         if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->pushDynamicContent($this);

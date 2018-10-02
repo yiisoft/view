@@ -54,7 +54,7 @@ class ContentDecorator extends Widget
     /**
      * Starts recording a clip.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 

@@ -45,7 +45,7 @@ class Block extends Widget
     /**
      * Starts recording a block.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 

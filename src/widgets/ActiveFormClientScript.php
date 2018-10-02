@@ -63,11 +63,11 @@ abstract class ActiveFormClientScript extends Behavior
     /**
      * ActiveFormClientScript constructor.
      *
-     * @param Application $application
+     * @param Application $app
      */
-    public function __construct(Application $application)
+    public function __construct(Application $app)
     {
-        $this->app = $application;
+        $this->app = $app;
     }
 
     /**

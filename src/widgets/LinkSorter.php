@@ -48,7 +48,7 @@ class LinkSorter extends Widget
     /**
      * Initializes the sorter.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 

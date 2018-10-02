@@ -131,7 +131,7 @@ class LinkPager extends Widget
     /**
      * Initializes the pager.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
