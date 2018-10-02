@@ -14,6 +14,7 @@ use yii\helpers\Yii;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
+use yii\di\Initiable;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -27,7 +28,7 @@ use yii\widgets\FragmentCache;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  */
-class View extends Component implements DynamicContentAwareInterface
+class View extends Component implements DynamicContentAwareInterface, Initiable
 {
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
@@ -101,7 +102,7 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Initializes the view component.
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         if (is_array($this->theme)) {
