@@ -148,7 +148,7 @@ class LinkPagerTest extends \yii\tests\TestCase
         $initTriggered = false;
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(1),
-            'on init' => function () use (&$initTriggered) {
+            'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
             }
         ]);

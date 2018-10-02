@@ -50,13 +50,13 @@ class SpacelessTest extends \yii\tests\TestCase
     public function testShouldTriggerInitEvent()
     {
         $initTriggered = false;
-        $spaceless = Spaceless::begin(
-            [
-                'on init' => function () use (&$initTriggered) {
-                    $initTriggered = true;
-                }
-            ]
-        );
+
+        $spaceless = Spaceless::begin([
+            'on widget.init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            },
+        ]);
+
         Spaceless::end();
         $this->assertTrue($initTriggered);
     }

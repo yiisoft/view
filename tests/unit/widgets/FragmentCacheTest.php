@@ -23,7 +23,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         $this->mockWebApplication();
         $this->container->set('cache', new Cache([
             '__class' => Cache::class,
-            'handler' => ArrayCache::class
+            'handler' => new ArrayCache(),
         ]));
     }
 

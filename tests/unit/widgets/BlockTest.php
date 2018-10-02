@@ -28,13 +28,12 @@ class BlockTest extends \yii\tests\TestCase
     {
         $initTriggered = false;
 
-        $block = new Block($this->app);
-
-        //fixme: is this event ok ??
-        $block->on('init', function ($event) use (&$initTriggered) {
-            $initTriggered = true;
-            //$event->initTriggered = true;
-        }, [$initTriggered]);
+        $block = $this->factory->create([
+            '__class' => Block::class,
+            'on widget.init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            },
+        ]);
 
         ob_get_clean();
 

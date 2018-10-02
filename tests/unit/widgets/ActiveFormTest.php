@@ -116,14 +116,12 @@ HTML
     {
         $initTriggered = false;
         ob_start();
-        $form = ActiveForm::begin(
-            [
-                'action' => '/something',
-                'on init' => function () use (&$initTriggered) {
-                    $initTriggered = true;
-                }
-            ]
-        );
+        $form = ActiveForm::begin([
+            'action' => '/something',
+            'on widget.init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            },
+        ]);
         ActiveForm::end();
         ob_end_clean();
         $this->assertTrue($initTriggered);
