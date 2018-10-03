@@ -109,7 +109,6 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
      */
     public function init(): void
     {
-        parent::init();
         if (is_array($this->theme)) {
             if (!isset($this->theme['__class'])) {
                 $this->theme['__class'] = Theme::class;
