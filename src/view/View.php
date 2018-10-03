@@ -10,7 +10,8 @@ namespace yii\view;
 use yii\base\Application;
 use yii\base\Component;
 use yii\helpers\FileHelper;
-use yii\helpers\Yii;
+use yii\i18n\Locale;
+use yii\i18n\LocaleInterface;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
@@ -74,6 +75,10 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
      * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      */
     private $_cacheStack = [];
+    /**
+     * @var LocaleInterface source locale used to find localized view file.
+     */
+    private $_sourceLocale;
     /**
      * @var array a list of placeholders for embedding dynamic contents.
      */
@@ -234,7 +239,7 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
         ];
 
         if ($this->beforeRender($viewFile, $params)) {
-            Yii::debug("Rendering view file: $viewFile", __METHOD__);
+            $this->app->debug("Rendering view file: $viewFile", __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
@@ -368,6 +373,22 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
         }
 
         return $this->evaluateDynamicContent($statements);
+    }
+
+    public function getSourceLocale(): LocaleInterface
+    {
+        if ($this->_sourceLocale === null) {
+            $this->_sourceLocale = Locale::create('en-US');
+        }
+
+        return $this->_sourceLocale;
+    }
+
+    public function setSourceLocale($locale): self
+    {
+        $this->_sourceLocale = Locale::create($locale);
+
+        return $this;
     }
 
     /**
