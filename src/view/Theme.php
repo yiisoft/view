@@ -7,6 +7,7 @@
 
 namespace yii\view;
 
+use yii\exceptions\InvalidConfigException;
 use yii\helpers\Yii;
 use yii\helpers\FileHelper;
 
@@ -70,7 +71,7 @@ use yii\helpers\FileHelper;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  */
-class Theme extends Component
+class Theme extends \yii\base\Component
 {
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
