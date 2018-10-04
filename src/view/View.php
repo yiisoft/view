@@ -11,7 +11,6 @@ use yii\base\Application;
 use yii\base\Component;
 use yii\helpers\FileHelper;
 use yii\i18n\Locale;
-use yii\i18n\LocaleInterface;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
@@ -76,7 +75,7 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
      */
     private $_cacheStack = [];
     /**
-     * @var LocaleInterface source locale used to find localized view file.
+     * @var Locale source locale used to find localized view file.
      */
     private $_sourceLocale;
     /**
@@ -420,7 +419,7 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
         return $this->evaluateDynamicContent($statements);
     }
 
-    public function getSourceLocale(): LocaleInterface
+    public function getSourceLocale(): Locale
     {
         if ($this->_sourceLocale === null) {
             $this->_sourceLocale = Locale::create('en-US');
