@@ -84,6 +84,11 @@ class Theme extends \yii\base\Component
     private $_baseUrl;
 
 
+    public function __construct(array $pathMap)
+    {
+        $this->pathMap = $pathMap;
+    }
+
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
