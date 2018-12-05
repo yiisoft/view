@@ -80,6 +80,7 @@
             "dev-master": "3.0.x-dev"
         },
         "config-plugin": {
+            "common": "config/common.php",
             "tests": ["$web", "config/tests.php"]
         }
     },
