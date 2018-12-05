@@ -7,7 +7,6 @@
 
 namespace yii\view;
 
-use yii\exceptions\InvalidConfigException;
 use yii\helpers\Yii;
 use yii\helpers\FileHelper;
 
@@ -84,11 +83,6 @@ class Theme extends \yii\base\Component
     private $_baseUrl;
 
 
-    public function __construct(array $pathMap)
-    {
-        $this->pathMap = $pathMap;
-    }
-
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
@@ -133,14 +127,13 @@ class Theme extends \yii\base\Component
      * If there is no corresponding themed file, the original file will be returned.
      * @param string $path the file to be themed
      * @return string the themed file, or the original file if the themed version is not available.
-     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function applyTo($path)
     {
         $pathMap = $this->pathMap;
         if (empty($pathMap)) {
             if (($basePath = $this->getBasePath()) === null) {
-                throw new InvalidConfigException('The "basePath" property must be set.');
+                return $path;
             }
             $pathMap = [Yii::getApp()->getBasePath() => [$basePath]];
         }
@@ -166,7 +159,6 @@ class Theme extends \yii\base\Component
      * Converts a relative URL into an absolute URL using [[baseUrl]].
      * @param string $url the relative URL to be converted.
      * @return string the absolute URL
-     * @throws InvalidConfigException if [[baseUrl]] is not set
      */
     public function getUrl($url)
     {
@@ -174,14 +166,13 @@ class Theme extends \yii\base\Component
             return $baseUrl . '/' . ltrim($url, '/');
         }
 
-        throw new InvalidConfigException('The "baseUrl" property must be set.');
+        return $url;
     }
 
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
      * @param string $path the relative file path to be converted.
      * @return string the absolute file path
-     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function getPath($path)
     {
@@ -189,6 +180,6 @@ class Theme extends \yii\base\Component
             return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
         }
 
-        throw new InvalidConfigException('The "basePath" property must be set.');
+        return $path;
     }
 }
