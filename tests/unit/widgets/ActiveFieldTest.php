@@ -11,6 +11,7 @@ use yii\helpers\Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
 use yii\web\View;
+use yii\view\Theme;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
@@ -483,7 +484,7 @@ HTML;
      */
     protected function getView()
     {
-        $view = new View($this->app);
+        $view = new View($this->app, new Theme());
         $am = new AssetManager($this->app);
         $am->basePath = '@testWebRoot/assets';
         $am->baseUrl = '@testWeb/assets';

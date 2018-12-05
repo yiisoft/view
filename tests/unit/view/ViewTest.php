@@ -43,7 +43,7 @@ class ViewTest extends TestCase
      */
     public function testExceptionOnRenderFile()
     {
-        $view = new View($this->app);
+        $view = $this->createView();
 
         $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
         file_put_contents($exceptionViewFile, <<<'PHP'
@@ -71,7 +71,6 @@ PHP
 
     public function testRelativePathInView()
     {
-        $view = new View($this->app);
         FileHelper::createDirectory($this->testViewPath . '/theme1');
         $this->app->setAlias('@testviews', $this->testViewPath);
         $this->app->setAlias('@theme', $this->testViewPath . '/theme1');
@@ -88,9 +87,9 @@ PHP
         $subViewContent = "subviewcontent";
         file_put_contents($subView, $subViewContent);
 
-        $view->theme = new Theme([
+        $view = $this->createView(new Theme([
             '@testviews' => '@theme'
-        ]);
+        ]));
 
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
@@ -99,7 +98,7 @@ PHP
     /// copied from FileHelperTest without required fixes
     public function testLocalizedDirectory()
     {
-        $view = new View($this->app);
+        $view = $this->createView();
         $this->createFileStructure([
             'views' => [
                 'faq.php' => 'English FAQ',
@@ -121,5 +120,10 @@ PHP
             $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
             $view->localize($viewFile, $currentLanguage, $sourceLanguage)
         );
+    }
+
+    protected function createView(Theme $theme = null)
+    {
+        return new View($this->app, $theme ?: new Theme());
     }
 }

@@ -8,6 +8,7 @@
 namespace yii\tests\framework\widgets;
 
 use yii\view\View;
+use yii\view\Theme;
 use yii\cache\ArrayCache;
 use yii\cache\Cache;
 
@@ -33,7 +34,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $view = new View($this->app);
+        $view = $this->createView();
         $this->assertTrue($view->beginCache('test'));
         echo 'cached fragment';
         $view->endCache();
@@ -53,7 +54,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $view = new View($this->app);
+        $view = $this->createView();
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
         echo 'cached fragment';
         $view->endCache();
@@ -75,7 +76,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $view = new View($this->app);
+        $view = $this->createView();
         $this->assertTrue($view->beginCache('test'));
         echo 'cached fragment';
         $view->endCache();
@@ -95,7 +96,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
     {
         $this->app->params['counter'] = 0;
 
-        $view = new View($this->app);
+        $view = $this->createView();
 
         for ($counter = 0; $counter < 42; $counter++) {
             ob_start();
@@ -126,7 +127,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
     {
         $this->app->params['counter'] = 0;
 
-        $view = new View($this->app);
+        $view = $this->createView();
 
         for ($counter = 0; $counter < 42; $counter++) {
             ob_start();
@@ -159,7 +160,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
     {
         $this->app->params['counter'] = 0;
 
-        $view = new View($this->app);
+        $view = $this->createView();
 
         for ($counter = 0; $counter < 42; $counter++) {
             ob_start();
@@ -203,7 +204,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
         ob_start();
         ob_implicit_flush(false);
-        $view = new View($this->app);
+        $view = $this->createView();
         $this->assertTrue($view->beginCache('test', ['variations' => ['ru']]), 'Cached fragment should not be exist');
         echo 'cached fragment';
         $view->endCache();
@@ -226,7 +227,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
         //without variations
         ob_start();
         ob_implicit_flush(false);
-        $view = new View($this->app);
+        $view = $this->createView();
         $this->assertTrue($view->beginCache('test'), 'Cached fragment should not be exist');
         echo 'cached fragment';
         $view->endCache();
@@ -242,6 +243,11 @@ class FragmentCacheTest extends \yii\tests\TestCase
         $cached = ob_get_clean();
         $this->assertEquals('cached fragment', $cached);
         $this->assertFalse($view->beginCache('test', ['variations' => 'uz']), 'Cached fragment should be exist');
+    }
+
+    protected function createView(Theme $theme = null)
+    {
+        return new View($this->app, $theme ?: new Theme());
     }
 
     // TODO test dynamic replacements
