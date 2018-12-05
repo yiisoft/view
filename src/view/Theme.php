@@ -78,10 +78,15 @@ class Theme extends \yii\base\Component
      * [Path aliases](guide:concept-aliases) can be used when specifying directories.
      * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
-    public $pathMap;
+    public $pathMap = [];
 
     private $_baseUrl;
 
+
+    public function __construct(array $pathMap = [])
+    {
+        $this->pathMap = $pathMap;
+    }
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
