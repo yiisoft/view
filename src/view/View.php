@@ -14,7 +14,6 @@ use yii\i18n\Locale;
 use yii\widgets\Block;
 use yii\widgets\ContentDecorator;
 use yii\widgets\FragmentCache;
-use yii\di\Initiable;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -28,7 +27,7 @@ use yii\di\Initiable;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  */
-class View extends Component implements DynamicContentAwareInterface, Initiable
+class View extends Component implements DynamicContentAwareInterface
 {
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
@@ -59,10 +58,9 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
      */
     public $defaultExtension = 'php';
     /**
-     * @var Theme|array|string the theme object or the configuration for creating the theme object.
-     * If not set, it means theming is not enabled.
+     * @var Theme the theme object.
      */
-    public $theme;
+    protected $theme;
     /**
      * @var array a list of named output blocks. The keys are the block names and the values
      * are the corresponding block content. You can call [[beginBlock()]] and [[endBlock()]]
@@ -93,29 +91,15 @@ class View extends Component implements DynamicContentAwareInterface, Initiable
      */
     protected $app;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, Theme $theme)
     {
         $this->app = $app;
+        $this->theme = $theme;
     }
 
     public function getApp()
     {
         return $this->app;
-    }
-
-    /**
-     * Initializes the view component.
-     */
-    public function init(): void
-    {
-        if (is_array($this->theme)) {
-            if (!isset($this->theme['__class'])) {
-                $this->theme['__class'] = Theme::class;
-            }
-            $this->theme = $this->app->createObject($this->theme);
-        } elseif (is_string($this->theme)) {
-            $this->theme = $this->app->createObject($this->theme);
-        }
     }
 
     /**
