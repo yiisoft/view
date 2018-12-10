@@ -12,7 +12,7 @@ namespace yii\view;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  */
-abstract class ViewRenderer extends Component
+abstract class ViewRenderer extends \yii\base\Component
 {
     /**
      * Renders a view file.
