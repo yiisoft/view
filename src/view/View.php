@@ -102,6 +102,11 @@ class View extends Component implements DynamicContentAwareInterface
         return $this->app;
     }
 
+    public function getTheme(): Theme
+    {
+        return $this->theme;
+    }
+
     /**
      * Renders a view.
      *
