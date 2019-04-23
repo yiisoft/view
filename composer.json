@@ -62,6 +62,8 @@
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "yiisoft/arrays": "^3.0@dev",
         "yiisoft/yii-core": "^3.0@dev",
