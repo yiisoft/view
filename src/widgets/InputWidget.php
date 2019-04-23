@@ -1,15 +1,16 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
 
+use yii\base\Model;
 use yii\di\Initiable;
 use yii\exceptions\InvalidConfigException;
-use yii\base\Model;
 use yii\helpers\Html;
 
 /**
@@ -36,7 +37,7 @@ class InputWidget extends Widget implements Initiable
 {
     /**
      * @var \yii\widgets\ActiveField active input field, which triggers this widget rendering.
-     * This field will be automatically filled up in case widget instance is created via [[\yii\widgets\ActiveField::widget()]].
+     *                               This field will be automatically filled up in case widget instance is created via [[\yii\widgets\ActiveField::widget()]].
      */
     public $field;
     /**
@@ -57,6 +58,7 @@ class InputWidget extends Widget implements Initiable
     public $value;
     /**
      * @var array the HTML attributes for the input tag.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
@@ -90,7 +92,9 @@ class InputWidget extends Widget implements Initiable
      * or [[Html::input()]] if not.
      *
      * @param string $type the type of the input to create.
+     *
      * @return string the HTML of the input field.
+     *
      * @see Html::activeInput()
      * @see Html::input()
      */
@@ -99,6 +103,7 @@ class InputWidget extends Widget implements Initiable
         if ($this->hasModel()) {
             return Html::activeInput($type, $this->model, $this->attribute, $this->options);
         }
+
         return Html::input($type, $this->name, $this->value, $this->options);
     }
 }

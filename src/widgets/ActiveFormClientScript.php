@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -25,8 +26,8 @@ abstract class ActiveFormClientScript extends Behavior
 {
     /**
      * @var array client validator class map in format: `[server-side-validator-class => client-side-validator]`.
-     * Client side validator should be specified as an instance of [[\yii\validators\client\ClientValidator]] or
-     * its DI compatible configuration.
+     *            Client side validator should be specified as an instance of [[\yii\validators\client\ClientValidator]] or
+     *            its DI compatible configuration.
      *
      * Class map respects validators inheritance, e.g. if you specify map for `ParentValidator` it will be used for
      * `ChildValidator` in case it extends `ParentValidator`. In case maps for both `ParentValidator` and `ChildValidator`
@@ -52,7 +53,7 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * @var array the client validation options for individual attributes. Each element of the array
-     * represents the validation options for a particular attribute.
+     *            represents the validation options for a particular attribute.
      */
     protected $attributes = [];
     /**
@@ -83,6 +84,7 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * @param array $clientValidatorMap
+     *
      * @return ActiveFormClientScript
      */
     public function setClientValidatorMap(array $clientValidatorMap): self
@@ -98,13 +100,14 @@ abstract class ActiveFormClientScript extends Behavior
     public function events()
     {
         return [
-            RunEvent::AFTER => 'afterRun',
+            RunEvent::AFTER                => 'afterRun',
             ActiveFieldRenderEvent::BEFORE => 'beforeFieldRender',
         ];
     }
 
     /**
      * Handles [[RunEvent::AFTER]] event, registering related client script.
+     *
      * @param \yii\base\Event $event event instance.
      */
     public function afterRun($event)
@@ -114,6 +117,7 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * Handles [[ActiveFieldRenderEvent::BEFORE]] event.
+     *
      * @param ActiveFieldRenderEvent $event event instance.
      */
     public function beforeFieldRender($event)
@@ -131,7 +135,9 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * Returns the JS options for the field.
+     *
      * @param ActiveField $field active field instance.
+     *
      * @return array the JS options.
      */
     protected function getFieldClientOptions($field)
@@ -181,7 +187,7 @@ abstract class ActiveFormClientScript extends Behavior
         if (isset($field->selectors['error'])) {
             $options['error'] = $field->selectors['error'];
         } elseif (isset($field->errorOptions['class'])) {
-            $options['error'] = '.' . implode('.', preg_split('/\s+/', $field->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
+            $options['error'] = '.'.implode('.', preg_split('/\s+/', $field->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
         } else {
             $options['error'] = $field->errorOptions['tag'] ?? 'span';
         }
@@ -195,7 +201,7 @@ abstract class ActiveFormClientScript extends Behavior
         }
 
         if (!empty($validators)) {
-            $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
+            $options['validate'] = new JsExpression('function (attribute, value, messages, deferred, $form) {'.implode('', $validators).'}');
         }
 
         if ($field->addAriaAttributes === false) {
@@ -207,20 +213,21 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * Returns the options for the form JS widget.
+     *
      * @return array the options.
      */
     protected function getClientOptions()
     {
         $options = [
-            'encodeErrorSummary' => $this->owner->encodeErrorSummary,
-            'errorSummary' => '.' . implode('.', preg_split('/\s+/', $this->owner->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
-            'validateOnSubmit' => $this->owner->validateOnSubmit,
-            'errorCssClass' => $this->owner->errorCssClass,
-            'successCssClass' => $this->owner->successCssClass,
-            'validatingCssClass' => $this->owner->validatingCssClass,
-            'ajaxParam' => $this->owner->ajaxParam,
-            'ajaxDataType' => $this->owner->ajaxDataType,
-            'scrollToError' => $this->owner->scrollToError,
+            'encodeErrorSummary'  => $this->owner->encodeErrorSummary,
+            'errorSummary'        => '.'.implode('.', preg_split('/\s+/', $this->owner->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
+            'validateOnSubmit'    => $this->owner->validateOnSubmit,
+            'errorCssClass'       => $this->owner->errorCssClass,
+            'successCssClass'     => $this->owner->successCssClass,
+            'validatingCssClass'  => $this->owner->validatingCssClass,
+            'ajaxParam'           => $this->owner->ajaxParam,
+            'ajaxDataType'        => $this->owner->ajaxDataType,
+            'scrollToError'       => $this->owner->scrollToError,
             'scrollToErrorOffset' => $this->owner->scrollToErrorOffset,
         ];
         if ($this->owner->validationUrl !== null) {
@@ -232,11 +239,13 @@ abstract class ActiveFormClientScript extends Behavior
 
     /**
      * Builds the JavaScript needed for performing client-side validation for given validator.
+     *
      * @param \yii\validators\Validator $validator validator to be built.
-     * @param \yii\base\Model $model the data model being validated.
-     * @param string $attribute the name of the attribute to be validated.
-     * @param \yii\view\View $view the view object that is going to be used to render views or view files
-     * containing a model form with validator applied.
+     * @param \yii\base\Model           $model     the data model being validated.
+     * @param string                    $attribute the name of the attribute to be validated.
+     * @param \yii\view\View            $view      the view object that is going to be used to render views or view files
+     *                                             containing a model form with validator applied.
+     *
      * @return string|null client-side validation JavaScript code, `null` - if given validator is not supported.
      */
     protected function buildClientValidator($validator, $model, $attribute, $view)
@@ -245,15 +254,16 @@ abstract class ActiveFormClientScript extends Behavior
             if ($clientSideValidator !== false && $validator instanceof $serverSideValidatorClass) {
                 /* @var $clientValidator \yii\validators\client\ClientValidator */
                 $clientValidator = $this->app->createObject($clientSideValidator);
+
                 return $clientValidator->build($validator, $model, $attribute, $view);
             }
         }
-        return null;
     }
 
     /**
      * Returns default client validator map, which will be merged with [[clientValidatorMap]] at [[init()]].
      * Child class may override this method providing validator map specific for particular client script.
+     *
      * @return array client validator class map in format: `[server-side-validator-class => client-side-validator]`.
      */
     protected function defaultClientValidatorMap()

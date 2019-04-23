@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -8,8 +9,8 @@
 namespace yii\widgets;
 
 use yii\exceptions\InvalidConfigException;
-use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Html;
+use Yiisoft\Arrays\ArrayHelper;
 
 /**
  * Breadcrumbs displays a list of links indicating the position of the current page in the whole site hierarchy.
@@ -57,6 +58,7 @@ class Breadcrumbs extends Widget
     public $tag = 'ul';
     /**
      * @var array the HTML attributes for the breadcrumb container tag.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'breadcrumb'];
@@ -66,15 +68,15 @@ class Breadcrumbs extends Widget
     public $encodeLabels = true;
     /**
      * @var array the first hyperlink in the breadcrumbs (called home link).
-     * Please refer to [[links]] on the format of the link.
-     * If this property is not set, it will default to a link pointing to [[\yii\web\Application::homeUrl]]
-     * with the label 'Home'. If this property is false, the home link will not be rendered.
+     *            Please refer to [[links]] on the format of the link.
+     *            If this property is not set, it will default to a link pointing to [[\yii\web\Application::homeUrl]]
+     *            with the label 'Home'. If this property is false, the home link will not be rendered.
      */
     public $homeLink;
     /**
      * @var array list of links to appear in the breadcrumbs. If this property is empty,
-     * the widget will not render anything. Each array element represents a single link in the breadcrumbs
-     * with the following structure:
+     *            the widget will not render anything. Each array element represents a single link in the breadcrumbs
+     *            with the following structure:
      *
      * ```php
      * [
@@ -111,18 +113,18 @@ class Breadcrumbs extends Widget
     public $links = [];
     /**
      * @var string the template used to render each inactive item in the breadcrumbs. The token `{link}`
-     * will be replaced with the actual HTML link for each inactive item.
+     *             will be replaced with the actual HTML link for each inactive item.
      */
     public $itemTemplate = "<li>{link}</li>\n";
     /**
      * @var string the template used to render each active item in the breadcrumbs. The token `{link}`
-     * will be replaced with the actual HTML link for each active item.
+     *             will be replaced with the actual HTML link for each active item.
      */
     public $activeItemTemplate = "<li class=\"active\">{link}</li>\n";
 
-
     /**
      * Renders the widget.
+     *
      * @return string the result of widget execution to be outputted.
      */
     public function run()
@@ -134,7 +136,7 @@ class Breadcrumbs extends Widget
         if ($this->homeLink === null) {
             $links[] = $this->renderItem([
                 'label' => $this->app->t('yii', 'Home'),
-                'url' => $this->app->homeUrl,
+                'url'   => $this->app->homeUrl,
             ], $this->itemTemplate);
         } elseif ($this->homeLink !== false) {
             $links[] = $this->renderItem($this->homeLink, $this->itemTemplate);
@@ -145,15 +147,19 @@ class Breadcrumbs extends Widget
             }
             $links[] = $this->renderItem($link, isset($link['url']) ? $this->itemTemplate : $this->activeItemTemplate);
         }
+
         return Html::tag($this->tag, implode('', $links), $this->options);
     }
 
     /**
      * Renders a single breadcrumb item.
-     * @param array $link the link to be rendered. It must contain the "label" element. The "url" element is optional.
+     *
+     * @param array  $link     the link to be rendered. It must contain the "label" element. The "url" element is optional.
      * @param string $template the template to be used to rendered the link. The token "{link}" will be replaced by the link.
-     * @return string the rendering result
+     *
      * @throws InvalidConfigException if `$link` does not have "label" element.
+     *
+     * @return string the rendering result
      */
     protected function renderItem($link, $template)
     {

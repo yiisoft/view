@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -25,8 +26,10 @@ class RenderEvent extends ViewEvent
 
     /**
      * Creates BEFORE event.
+     *
      * @param string $viewFile the view file being rendered.
-     * @param array $params array passed to the [[View::render()]] method.
+     * @param array  $params   array passed to the [[View::render()]] method.
+     *
      * @return self created event
      */
     public static function before(string $viewFile, array $params): self
@@ -35,10 +38,12 @@ class RenderEvent extends ViewEvent
     }
 
     /**
-     * Creates AFTER event with result. 
+     * Creates AFTER event with result.
+     *
      * @param string $viewFile the view file being rendered.
-     * @param array $params array passed to the [[View::render()]] method.
-     * @param mixed $result view rendering result.
+     * @param array  $params   array passed to the [[View::render()]] method.
+     * @param mixed  $result   view rendering result.
+     *
      * @return self created event
      */
     public static function after(string $viewFile, array $params, $result): self

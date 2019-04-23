@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -8,8 +9,8 @@
 namespace yii\tests\framework\widgets;
 
 use yii\data\Pagination;
-use Yiisoft\Strings\StringHelper;
 use yii\widgets\LinkPager;
+use Yiisoft\Strings\StringHelper;
 
 /**
  * @group widgets
@@ -25,7 +26,9 @@ class LinkPagerTest extends \yii\tests\TestCase
 
     /**
      * Get pagination.
+     *
      * @param int $page
+     *
      * @return Pagination
      */
     private function getPagination($page)
@@ -42,27 +45,27 @@ class LinkPagerTest extends \yii\tests\TestCase
     {
         $pagination = $this->getPagination(5);
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination'     => $pagination,
             'firstPageLabel' => true,
-            'lastPageLabel' => true,
+            'lastPageLabel'  => true,
         ]);
 
         static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>', $output);
         static::assertContains('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">25</a></li>', $output);
 
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination'     => $pagination,
             'firstPageLabel' => 'First',
-            'lastPageLabel' => 'Last',
+            'lastPageLabel'  => 'Last',
         ]);
 
         static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">First</a></li>', $output);
         static::assertContains('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">Last</a></li>', $output);
 
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination'     => $pagination,
             'firstPageLabel' => false,
-            'lastPageLabel' => false,
+            'lastPageLabel'  => false,
         ]);
 
         static::assertNotContains('<li class="first">', $output);
@@ -72,7 +75,7 @@ class LinkPagerTest extends \yii\tests\TestCase
     public function testDisabledPageElementOptions()
     {
         $output = LinkPager::widget([
-            'pagination' => $this->getPagination(0),
+            'pagination'                    => $this->getPagination(0),
             'disabledListItemSubTagOptions' => ['class' => 'foo-bar'],
         ]);
 
@@ -82,7 +85,7 @@ class LinkPagerTest extends \yii\tests\TestCase
     public function testDisabledPageElementOptionsWithTagOption()
     {
         $output = LinkPager::widget([
-            'pagination' => $this->getPagination(0),
+            'pagination'                    => $this->getPagination(0),
             'disabledListItemSubTagOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
         ]);
 
@@ -93,14 +96,14 @@ class LinkPagerTest extends \yii\tests\TestCase
     {
         $pagination = $this->getPagination(5);
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination'               => $pagination,
             'disableCurrentPageButton' => false,
         ]);
 
         static::assertContains('<li class="active"><a href="/?r=test&amp;page=6" data-page="5">6</a></li>', $output);
 
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination'               => $pagination,
             'disableCurrentPageButton' => true,
         ]);
 
@@ -111,7 +114,7 @@ class LinkPagerTest extends \yii\tests\TestCase
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(5),
-            'options' => [
+            'options'    => [
                 'tag' => 'div',
             ],
         ]);
@@ -123,9 +126,9 @@ class LinkPagerTest extends \yii\tests\TestCase
     public function testLinkWrapOptions()
     {
         $output = LinkPager::widget([
-            'pagination' => $this->getPagination(1),
+            'pagination'           => $this->getPagination(1),
             'linkContainerOptions' => [
-                'tag' => 'div',
+                'tag'   => 'div',
                 'class' => 'my-class',
             ],
         ]);
@@ -147,10 +150,10 @@ class LinkPagerTest extends \yii\tests\TestCase
     {
         $initTriggered = false;
         $output = LinkPager::widget([
-            'pagination' => $this->getPagination(1),
+            'pagination'     => $this->getPagination(1),
             'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
-            }
+            },
         ]);
 
         $this->assertTrue($initTriggered);

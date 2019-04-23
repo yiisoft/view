@@ -1,14 +1,15 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\view;
 
-use yii\helpers\Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\Yii;
 
 /**
  * Theme represents an application theme.
@@ -74,14 +75,13 @@ class Theme extends \yii\base\Component
 {
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
-     * This property is used by [[applyTo()]] when a view is trying to apply the theme.
-     * [Path aliases](guide:concept-aliases) can be used when specifying directories.
-     * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
+     *            This property is used by [[applyTo()]] when a view is trying to apply the theme.
+     *            [Path aliases](guide:concept-aliases) can be used when specifying directories.
+     *            If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
     public $pathMap = [];
 
     private $_baseUrl;
-
 
     public function __construct(array $pathMap = [])
     {
@@ -90,7 +90,7 @@ class Theme extends \yii\base\Component
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
-     * to be under this base URL.
+     *                to be under this base URL.
      */
     public function getBaseUrl()
     {
@@ -99,7 +99,7 @@ class Theme extends \yii\base\Component
 
     /**
      * @param string $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this theme are considered
-     * to be under this base URL.
+     *                    to be under this base URL.
      */
     public function setBaseUrl($url)
     {
@@ -110,6 +110,7 @@ class Theme extends \yii\base\Component
 
     /**
      * @return string the root path of this theme. All resources of this theme are located under this directory.
+     *
      * @see pathMap
      */
     public function getBasePath()
@@ -119,7 +120,8 @@ class Theme extends \yii\base\Component
 
     /**
      * @param string $path the root path or [path alias](guide:concept-aliases) of this theme. All resources of this theme are located
-     * under this directory.
+     *                     under this directory.
+     *
      * @see pathMap
      */
     public function setBasePath($path)
@@ -130,7 +132,9 @@ class Theme extends \yii\base\Component
     /**
      * Converts a file to a themed file if possible.
      * If there is no corresponding themed file, the original file will be returned.
+     *
      * @param string $path the file to be themed
+     *
      * @return string the themed file, or the original file if the themed version is not available.
      */
     public function applyTo($path)
@@ -144,12 +148,12 @@ class Theme extends \yii\base\Component
         }
         $path = FileHelper::normalizePath($path);
         foreach ($pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
+            $from = FileHelper::normalizePath(Yii::getAlias($from)).DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
                 foreach ((array) $tos as $to) {
-                    $to = FileHelper::normalizePath(Yii::getAlias($to)) . DIRECTORY_SEPARATOR;
-                    $file = $to . substr($path, $n);
+                    $to = FileHelper::normalizePath(Yii::getAlias($to)).DIRECTORY_SEPARATOR;
+                    $file = $to.substr($path, $n);
                     if (is_file($file)) {
                         return $file;
                     }
@@ -162,13 +166,15 @@ class Theme extends \yii\base\Component
 
     /**
      * Converts a relative URL into an absolute URL using [[baseUrl]].
+     *
      * @param string $url the relative URL to be converted.
+     *
      * @return string the absolute URL
      */
     public function getUrl($url)
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
-            return $baseUrl . '/' . ltrim($url, '/');
+            return $baseUrl.'/'.ltrim($url, '/');
         }
 
         return $url;
@@ -176,13 +182,15 @@ class Theme extends \yii\base\Component
 
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
+     *
      * @param string $path the relative file path to be converted.
+     *
      * @return string the absolute file path
      */
     public function getPath($path)
     {
         if (($basePath = $this->getBasePath()) !== null) {
-            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+            return $basePath.DIRECTORY_SEPARATOR.ltrim($path, '/\\');
         }
 
         return $path;
