@@ -1,16 +1,17 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
 
-use yii\helpers\Yii;
-use yii\exceptions\InvalidConfigException;
 use yii\data\Sort;
+use yii\exceptions\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Yii;
 
 /**
  * LinkSorter renders a list of sort links for the given sort definition.
@@ -29,21 +30,22 @@ class LinkSorter extends Widget
     public $sort;
     /**
      * @var array list of the attributes that support sorting. If not set, it will be determined
-     * using [[Sort::attributes]].
+     *            using [[Sort::attributes]].
      */
     public $attributes;
     /**
      * @var array HTML attributes for the sorter container tag.
+     *
      * @see \yii\helpers\Html::ul() for special attributes.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'sorter'];
     /**
      * @var array HTML attributes for the link in a sorter container tag which are passed to [[Sort::link()]].
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $linkOptions = [];
-
 
     /**
      * Initializes the sorter.
@@ -60,6 +62,7 @@ class LinkSorter extends Widget
     /**
      * Executes the widget.
      * This method renders the sort links.
+     *
      * @return string the result of widget execution to be outputted.
      */
     public function run()
@@ -69,6 +72,7 @@ class LinkSorter extends Widget
 
     /**
      * Renders the sort links.
+     *
      * @return string the rendering result
      */
     protected function renderSortLinks()

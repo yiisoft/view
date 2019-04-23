@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -22,6 +23,7 @@ trait DynamicContentAwareTrait
 
     /**
      * Returns the view object that can be used to render views or view files using dynamic contents.
+     *
      * @return View the view object that can be used to render views or view files.
      */
     abstract protected function getView();
@@ -52,9 +54,11 @@ trait DynamicContentAwareTrait
 
     /**
      * Replaces placeholders in $content with results of evaluated dynamic statements.
-     * @param string $content content to be parsed.
-     * @param string[] $placeholders placeholders and their values.
-     * @param bool $isRestoredFromCache whether content is going to be restored from cache.
+     *
+     * @param string   $content             content to be parsed.
+     * @param string[] $placeholders        placeholders and their values.
+     * @param bool     $isRestoredFromCache whether content is going to be restored from cache.
+     *
      * @return string final content.
      */
     protected function updateDynamicContent($content, $placeholders, $isRestoredFromCache = false)

@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -42,6 +43,7 @@ namespace yii\widgets;
  * [HTML Tidy Project](http://tidy.sourceforge.net/) instead.
  *
  * @see http://tidy.sourceforge.net/
+ *
  * @author resurtm <resurtm@gmail.com>
  */
 class Spaceless extends Widget
@@ -59,6 +61,7 @@ class Spaceless extends Widget
     /**
      * Marks the end of content to be cleaned from whitespace characters between HTML tags.
      * Stops capturing an output and returns cleaned result.
+     *
      * @return string the result of widget execution to be outputted.
      */
     public function run()

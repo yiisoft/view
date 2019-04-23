@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -26,7 +27,7 @@ class ActiveFieldRenderEvent extends WidgetEvent
     const AFTER = 'widget.form.field.render.before';
 
     /**
-     * @param string $name event name.
+     * @param string      $name  event name.
      * @param ActiveField $field the active field associated with this event.
      */
     public function __construct(string $name, ActiveField $field)
@@ -36,7 +37,9 @@ class ActiveFieldRenderEvent extends WidgetEvent
 
     /**
      * Creates BEFORE event.
+     *
      * @param ActiveField $field the field being rendered.
+     *
      * @return self created event
      */
     public static function before(ActiveField $field): self
@@ -46,7 +49,9 @@ class ActiveFieldRenderEvent extends WidgetEvent
 
     /**
      * Creates BEFORE event.
+     *
      * @param ActiveField $field the field being rendered.
+     *
      * @return self created event
      */
     public static function after(ActiveField $field): self
@@ -56,6 +61,7 @@ class ActiveFieldRenderEvent extends WidgetEvent
 
     /**
      * Get field the event is fired on.
+     *
      * @return ActiveField
      */
     public function getField(): ActiveField

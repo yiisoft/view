@@ -1,16 +1,17 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
 
-use yii\exceptions\InvalidConfigException;
 use yii\data\Pagination;
-use Yiisoft\Arrays\ArrayHelper;
+use yii\exceptions\InvalidConfigException;
 use yii\helpers\Html;
+use Yiisoft\Arrays\ArrayHelper;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -30,11 +31,12 @@ class LinkPager extends Widget
 {
     /**
      * @var Pagination the pagination object that this pager is associated with.
-     * You must set this property in order to make LinkPager work.
+     *                 You must set this property in order to make LinkPager work.
      */
     public $pagination;
     /**
      * @var array HTML attributes for the pager container tag.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'pagination'];
@@ -44,6 +46,7 @@ class LinkPager extends Widget
     public $linkContainerOptions = [];
     /**
      * @var array HTML attributes for the link in a pager container tag.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $linkOptions = [];
@@ -77,7 +80,7 @@ class LinkPager extends Widget
     public $disabledPageCssClass = 'disabled';
     /**
      * @var array the options for the disabled tag to be generated inside the disabled list element.
-     * In order to customize the html tag, please use the tag key.
+     *            In order to customize the html tag, please use the tag key.
      *
      * ```php
      * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
@@ -90,29 +93,30 @@ class LinkPager extends Widget
     public $maxButtonCount = 10;
     /**
      * @var string|bool the label for the "next" page button. Note that this will NOT be HTML-encoded.
-     * If this property is false, the "next" page button will not be displayed.
+     *                  If this property is false, the "next" page button will not be displayed.
      */
     public $nextPageLabel = '&raquo;';
     /**
      * @var string|bool the text label for the previous page button. Note that this will NOT be HTML-encoded.
-     * If this property is false, the "previous" page button will not be displayed.
+     *                  If this property is false, the "previous" page button will not be displayed.
      */
     public $prevPageLabel = '&laquo;';
     /**
      * @var string|bool the text label for the "first" page button. Note that this will NOT be HTML-encoded.
-     * If it's specified as true, page number will be used as label.
-     * Default is false that means the "first" page button will not be displayed.
+     *                  If it's specified as true, page number will be used as label.
+     *                  Default is false that means the "first" page button will not be displayed.
      */
     public $firstPageLabel = false;
     /**
      * @var string|bool the text label for the "last" page button. Note that this will NOT be HTML-encoded.
-     * If it's specified as true, page number will be used as label.
-     * Default is false that means the "last" page button will not be displayed.
+     *                  If it's specified as true, page number will be used as label.
+     *                  Default is false that means the "last" page button will not be displayed.
      */
     public $lastPageLabel = false;
     /**
      * @var bool whether to register link tags in the HTML header for prev, next, first and last page.
-     * Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
+     *           Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
+     *
      * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
      * @see registerLinkTags()
      */
@@ -125,7 +129,6 @@ class LinkPager extends Widget
      * @var bool whether to render current page button as disabled.
      */
     public $disableCurrentPageButton = false;
-
 
     /**
      * Initializes the pager.
@@ -142,6 +145,7 @@ class LinkPager extends Widget
     /**
      * Executes the widget.
      * This overrides the parent implementation by displaying the generated page buttons.
+     *
      * @return string the result of widget execution to be outputted.
      */
     public function run()
@@ -149,12 +153,14 @@ class LinkPager extends Widget
         if ($this->registerLinkTags) {
             $this->registerLinkTags();
         }
+
         return $this->renderPageButtons();
     }
 
     /**
      * Registers relational link tags in the html header for prev, next, first and last page.
      * These links are generated using [[\yii\data\Pagination::getLinks()]].
+     *
      * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
      */
     protected function registerLinkTags()
@@ -167,6 +173,7 @@ class LinkPager extends Widget
 
     /**
      * Renders the page buttons.
+     *
      * @return string the rendering result
      */
     protected function renderPageButtons()
@@ -195,7 +202,7 @@ class LinkPager extends Widget
 
         // internal pages
         [$beginPage, $endPage] = $this->getPageRange();
-        for ($i = $beginPage; $i <= $endPage; ++$i) {
+        for ($i = $beginPage; $i <= $endPage; $i++) {
             $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }
 
@@ -215,17 +222,20 @@ class LinkPager extends Widget
 
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'ul');
+
         return Html::tag($tag, implode("\n", $buttons), $options);
     }
 
     /**
      * Renders a page button.
      * You may override this method to customize the generation of page buttons.
-     * @param string $label the text label for the button
-     * @param int $page the page number
-     * @param string $class the CSS class for the page button.
-     * @param bool $disabled whether this page button is disabled
-     * @param bool $active whether this page button is active
+     *
+     * @param string $label    the text label for the button
+     * @param int    $page     the page number
+     * @param string $class    the CSS class for the page button.
+     * @param bool   $disabled whether this page button is disabled
+     * @param bool   $active   whether this page button is active
+     *
      * @return string the rendering result
      */
     protected function renderPageButton($label, $page, $class, $disabled, $active)

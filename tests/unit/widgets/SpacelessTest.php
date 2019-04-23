@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -39,7 +40,7 @@ class SpacelessTest extends \yii\tests\TestCase
         echo "\t<p>Bye!</p>\n";
         echo "</body>\n";
 
-        $expected = "<body>\n<div class='wrapper'><div class='left-column'><p>This is a left bar!</p>" .
+        $expected = "<body>\n<div class='wrapper'><div class='left-column'><p>This is a left bar!</p>".
             "</div><div class='right-column'><p>This is a right bar!</p></div></div>\t<p>Bye!</p>\n</body>\n";
         $this->assertEquals($expected, ob_get_clean());
     }

@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -32,17 +33,20 @@ class Widget extends Component implements ViewContextInterface, Initiable
 {
     /**
      * @var int a counter used to generate [[id]] for widgets.
+     *
      * @internal
      */
     public static $counter = 0;
     /**
      * @var string the prefix to the automatically generated widget IDs.
+     *
      * @see getId()
      */
     public static $autoIdPrefix = 'w';
     /**
      * @var Widget[] the widgets that are currently being rendered (not ended). This property
-     * is maintained by [[begin()]] and [[end()]] methods.
+     *               is maintained by [[begin()]] and [[end()]] methods.
+     *
      * @internal
      */
     public static $stack = [];
@@ -73,8 +77,11 @@ class Widget extends Component implements ViewContextInterface, Initiable
      * to the created instance. A matching [[end()]] call should be called later.
      * As some widgets may use output buffering, the [[end()]] call should be made in the same view
      * to avoid breaking the nesting of output buffers.
+     *
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
      * @return static the newly created widget instance
+     *
      * @see end()
      */
     public static function begin($config = [])
@@ -90,8 +97,11 @@ class Widget extends Component implements ViewContextInterface, Initiable
     /**
      * Ends a widget.
      * Note that the rendering result of the widget is directly echoed out.
-     * @return static the widget instance that is ended.
+     *
      * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
+     *
+     * @return static the widget instance that is ended.
+     *
      * @see begin()
      */
     public static function end()
@@ -109,23 +119,27 @@ class Widget extends Component implements ViewContextInterface, Initiable
                 return $widget;
             }
 
-            throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
+            throw new InvalidCallException('Expecting end() of '.get_class($widget).', found '.get_called_class());
         }
 
-        throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
+        throw new InvalidCallException('Unexpected '.get_called_class().'::end() call. A matching begin() is not found.');
     }
 
     /**
      * Creates a widget instance and runs it.
      * The widget rendering result is returned by this method.
+     *
      * @param array $config name-value pairs that will be used to initialize the object properties
-     * @return string the rendering result of the widget.
+     *
      * @throws \Exception
+     *
+     * @return string the rendering result of the widget.
      */
     public static function widget($config = [])
     {
         ob_start();
         ob_implicit_flush(false);
+
         try {
             /* @var $widget Widget */
             $config['__class'] = get_called_class();
@@ -140,23 +154,26 @@ class Widget extends Component implements ViewContextInterface, Initiable
             if (ob_get_level() > 0) {
                 ob_end_clean();
             }
+
             throw $e;
         }
 
-        return ob_get_clean() . $out;
+        return ob_get_clean().$out;
     }
 
     private $_id;
 
     /**
      * Returns the ID of the widget.
+     *
      * @param bool $autoGenerate whether to generate an ID if it is not set previously
+     *
      * @return string ID of the widget.
      */
     public function getId($autoGenerate = true)
     {
         if ($autoGenerate && $this->_id === null) {
-            $this->_id = static::$autoIdPrefix . static::$counter++;
+            $this->_id = static::$autoIdPrefix.static::$counter++;
         }
 
         return $this->_id;
@@ -164,6 +181,7 @@ class Widget extends Component implements ViewContextInterface, Initiable
 
     /**
      * Sets the ID of the widget.
+     *
      * @param string $value id of the widget.
      */
     public function setId($value)
@@ -178,6 +196,7 @@ class Widget extends Component implements ViewContextInterface, Initiable
      * The [[render()]] and [[renderFile()]] methods will use
      * this view object to implement the actual view rendering.
      * If not set, it will default to the "view" application component.
+     *
      * @return \yii\wiew\View the view object that can be used to render views or view files.
      */
     public function getView()
@@ -191,6 +210,7 @@ class Widget extends Component implements ViewContextInterface, Initiable
 
     /**
      * Sets the view object to be used by this widget.
+     *
      * @param View $view the view object that can be used to render views or view files.
      */
     public function setView($view)
@@ -200,6 +220,7 @@ class Widget extends Component implements ViewContextInterface, Initiable
 
     /**
      * Executes the widget.
+     *
      * @return string the result of widget execution to be outputted.
      */
     public function run()
@@ -221,10 +242,12 @@ class Widget extends Component implements ViewContextInterface, Initiable
      *
      * If the view name does not contain a file extension, it will use the default one `.php`.
      *
-     * @param string $view the view name.
-     * @param array $params the parameters (name-value pairs) that should be made available in the view.
-     * @return string the rendering result.
+     * @param string $view   the view name.
+     * @param array  $params the parameters (name-value pairs) that should be made available in the view.
+     *
      * @throws InvalidArgumentException if the view file does not exist.
+     *
+     * @return string the rendering result.
      */
     public function render($view, $params = [])
     {
@@ -233,10 +256,13 @@ class Widget extends Component implements ViewContextInterface, Initiable
 
     /**
      * Renders a view file.
-     * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
-     * @param array $params the parameters (name-value pairs) that should be made available in the view.
-     * @return string the rendering result.
+     *
+     * @param string $file   the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
+     * @param array  $params the parameters (name-value pairs) that should be made available in the view.
+     *
      * @throws InvalidArgumentException if the view file does not exist.
+     *
+     * @return string the rendering result.
      */
     public function renderFile($file, $params = [])
     {
@@ -246,13 +272,14 @@ class Widget extends Component implements ViewContextInterface, Initiable
     /**
      * Returns the directory containing the view files for this widget.
      * The default implementation returns the 'views' subdirectory under the directory containing the widget class file.
+     *
      * @return string the directory containing the view files for this widget.
      */
     public function getViewPath()
     {
         $class = new ReflectionClass($this);
 
-        return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
+        return dirname($class->getFileName()).DIRECTORY_SEPARATOR.'views';
     }
 
     /**
@@ -301,6 +328,7 @@ class Widget extends Component implements ViewContextInterface, Initiable
      * ```
      *
      * @param mixed $result the widget return result.
+     *
      * @return mixed the processed widget result.
      */
     public function afterRun($result)

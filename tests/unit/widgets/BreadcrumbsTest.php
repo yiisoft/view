@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -36,9 +37,9 @@ class BreadcrumbsTest extends \yii\tests\TestCase
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
 
         $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"/index.php\">Home</a></li>\n"
-            . "<li class=\"active\">My Home Page</li>\n"
-            . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
-            . '</ul>';
+            ."<li class=\"active\">My Home Page</li>\n"
+            ."<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
+            .'</ul>';
 
         $actualHtml = $this->breadcrumbs->run();
 
@@ -56,14 +57,13 @@ class BreadcrumbsTest extends \yii\tests\TestCase
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
 
         $expectedHtml = "<ul class=\"breadcrumb\"><li class=\"active\">My Home Page</li>\n"
-            . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
-            . '</ul>';
+            ."<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
+            .'</ul>';
 
         $actualHtml = $this->breadcrumbs->run();
 
         $this->assertEquals($expectedHtml, $actualHtml);
     }
-
 
     public function testHomeLink()
     {
@@ -71,9 +71,9 @@ class BreadcrumbsTest extends \yii\tests\TestCase
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
 
         $expectedHtml = "<ul class=\"breadcrumb\"><li>home-link</li>\n"
-            . "<li class=\"active\">My Home Page</li>\n"
-            . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
-            . '</ul>';
+            ."<li class=\"active\">My Home Page</li>\n"
+            ."<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
+            .'</ul>';
 
         $actualHtml = $this->breadcrumbs->run();
 
@@ -150,12 +150,12 @@ class BreadcrumbsTest extends \yii\tests\TestCase
     {
         $link = [
             'label' => 'demo',
-            'url' => 'http://example.com',
+            'url'   => 'http://example.com',
             'class' => 'external',
         ];
         $method = $this->reflectMethod();
         $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
-        $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
+        $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>'."\n", $result);
     }
 
     public function testTag()
@@ -167,8 +167,8 @@ class BreadcrumbsTest extends \yii\tests\TestCase
         $this->breadcrumbs->tag = false;
 
         $expectedHtml = "home-link\n"
-            . "My Home Page\n"
-            . "http://my.example.com/yii2/link/page\n";
+            ."My Home Page\n"
+            ."http://my.example.com/yii2/link/page\n";
 
         $actualHtml = $this->breadcrumbs->run();
 
@@ -177,6 +177,7 @@ class BreadcrumbsTest extends \yii\tests\TestCase
 
     /**
      * Helper methods.
+     *
      * @param string $class
      * @param string $method
      */
