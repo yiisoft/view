@@ -9,7 +9,7 @@ namespace yii\widgets;
 
 use yii\exceptions\InvalidCallException;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
+use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;

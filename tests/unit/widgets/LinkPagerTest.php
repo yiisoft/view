@@ -8,7 +8,7 @@
 namespace yii\tests\framework\widgets;
 
 use yii\data\Pagination;
-use yii\helpers\StringHelper;
+use Yiisoft\Strings\StringHelper;
 use yii\widgets\LinkPager;
 
 /**

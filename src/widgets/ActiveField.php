@@ -10,7 +10,7 @@ namespace yii\widgets;
 use yii\base\Component;
 use yii\base\ErrorHandler;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
+use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -654,7 +654,7 @@ class ActiveField extends Component
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
      * If you have a list of data models, you may convert them into the format described above using
-     * [[\yii\helpers\ArrayHelper::map()]].
+     * [[\Yiisoft\Arrays\ArrayHelper::map()]].
      *
      * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
      * the labels will also be HTML-encoded.

@@ -8,7 +8,7 @@
 namespace yii\widgets;
 
 use yii\exceptions\InvalidConfigException;
-use yii\helpers\ArrayHelper;
+use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Html;
 
 /**

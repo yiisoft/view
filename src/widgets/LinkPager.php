@@ -7,10 +7,9 @@
 
 namespace yii\widgets;
 
-use yii\helpers\Yii;
 use yii\exceptions\InvalidConfigException;
 use yii\data\Pagination;
-use yii\helpers\ArrayHelper;
+use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Html;
 
 /**
