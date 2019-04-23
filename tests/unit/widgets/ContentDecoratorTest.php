@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -29,8 +30,8 @@ class ContentDecoratorTest extends \yii\tests\TestCase
         $initTriggered = false;
 
         $contentDecorator = $this->factory->create([
-            '__class' => ContentDecorator::class,
-            'viewFile' => '@app/views/layouts/base.php',
+            '__class'        => ContentDecorator::class,
+            'viewFile'       => '@app/views/layouts/base.php',
             'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
             },

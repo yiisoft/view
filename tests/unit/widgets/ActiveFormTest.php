@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -9,7 +10,6 @@ namespace yii\tests\framework\widgets;
 
 use yii\base\DynamicModel;
 use yii\base\Widget;
-use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /**
@@ -46,7 +46,6 @@ EOF
 </div>
 EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => false]));
-
 
         $this->assertEqualsWithoutLE(<<<'EOF'
 <div class="form-group field-dynamicmodel-name">
@@ -89,7 +88,7 @@ EOF
         $model = new DynamicModel(['name']);
 
         $form = ActiveForm::begin(['id' => 'someform', 'action' => '/someform']);
-        echo "\n" . $form->field($model, 'name') . "\n";
+        echo "\n".$form->field($model, 'name')."\n";
         ActiveForm::end();
 
         $content = ob_get_clean();
@@ -117,7 +116,7 @@ HTML
         $initTriggered = false;
         ob_start();
         $form = ActiveForm::begin([
-            'action' => '/something',
+            'action'         => '/something',
             'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
             },
@@ -136,7 +135,7 @@ HTML
         $model->addError('name', 'I have an error!');
         ob_start();
         $form = ActiveForm::begin([
-            'action' => '/something',
+            'action'            => '/something',
             'validationStateOn' => ActiveForm::VALIDATION_STATE_ON_INPUT,
         ]);
         ActiveForm::end();
@@ -151,6 +150,5 @@ HTML
 </div>
 EOF
         , (string) $form->field($model, 'name'));
-
     }
 }

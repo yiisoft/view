@@ -1,17 +1,17 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\view\tests\unit\view\ViewTest;
 
-use yii\view\Theme;
-use yii\view\View;
-use yii\view\ViewEvent;
 use yii\helpers\FileHelper;
 use yii\tests\TestCase;
+use yii\view\Theme;
+use yii\view\View;
 
 /**
  * @group view
@@ -28,7 +28,7 @@ class ViewTest extends TestCase
         parent::setUp();
 
         $this->mockApplication();
-        $this->testViewPath = $this->app->getAlias('@yii/tests/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
+        $this->testViewPath = $this->app->getAlias('@yii/tests/runtime').DIRECTORY_SEPARATOR.str_replace('\\', '_', get_class($this)).uniqid();
         FileHelper::createDirectory($this->testViewPath);
     }
 
@@ -45,13 +45,13 @@ class ViewTest extends TestCase
     {
         $view = $this->createView();
 
-        $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
+        $exceptionViewFile = $this->testViewPath.DIRECTORY_SEPARATOR.'exception.php';
         file_put_contents($exceptionViewFile, <<<'PHP'
 <h1>Exception</h1>
 <?php throw new Exception('Test Exception'); ?>
 PHP
 );
-        $normalViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'no-exception.php';
+        $normalViewFile = $this->testViewPath.DIRECTORY_SEPARATOR.'no-exception.php';
         file_put_contents($normalViewFile, <<<'PHP'
 <h1>No Exception</h1>
 PHP
@@ -71,9 +71,9 @@ PHP
 
     public function testRelativePathInView()
     {
-        FileHelper::createDirectory($this->testViewPath . '/theme1');
+        FileHelper::createDirectory($this->testViewPath.'/theme1');
         $this->app->setAlias('@testviews', $this->testViewPath);
-        $this->app->setAlias('@theme', $this->testViewPath . '/theme1');
+        $this->app->setAlias('@theme', $this->testViewPath.'/theme1');
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
         file_put_contents($baseView, <<<'PHP'
@@ -84,11 +84,11 @@ PHP
         );
 
         $subView = "{$this->testViewPath}/sub.php";
-        $subViewContent = "subviewcontent";
+        $subViewContent = 'subviewcontent';
         file_put_contents($subView, $subViewContent);
 
         $view = $this->createView(new Theme([
-            '@testviews' => '@theme'
+            '@testviews' => '@theme',
         ]));
 
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
@@ -102,12 +102,12 @@ PHP
         $this->createFileStructure([
             'views' => [
                 'faq.php' => 'English FAQ',
-                'de-DE' => [
+                'de-DE'   => [
                     'faq.php' => 'German FAQ',
                 ],
             ],
         ], $this->testViewPath);
-        $viewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'faq.php';
+        $viewFile = $this->testViewPath.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'faq.php';
         $sourceLanguage = 'en-US';
 
         // Source language and target language are same. The view path should be unchanged.
@@ -117,7 +117,7 @@ PHP
         // Source language and target language are different. The view path should be changed.
         $currentLanguage = 'de-DE';
         $this->assertSame(
-            $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
+            $this->testViewPath.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.$currentLanguage.DIRECTORY_SEPARATOR.'faq.php',
             $view->localize($viewFile, $currentLanguage, $sourceLanguage)
         );
     }

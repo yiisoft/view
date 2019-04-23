@@ -1,16 +1,17 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\tests\framework\widgets;
 
-use yii\view\View;
-use yii\view\Theme;
 use yii\cache\ArrayCache;
 use yii\cache\Cache;
+use yii\view\Theme;
+use yii\view\View;
 
 /**
  * @group widgets
@@ -198,8 +199,7 @@ class FragmentCacheTest extends \yii\tests\TestCase
 
     public function testVariations()
     {
-        $this->setOutputCallback(function($output) {
-            return null;
+        $this->setOutputCallback(function ($output) {
         });
 
         ob_start();

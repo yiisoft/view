@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -37,10 +38,9 @@ class Block extends Widget
 {
     /**
      * @var bool whether to render the block content in place. Defaults to false,
-     * meaning the captured block content will not be displayed.
+     *           meaning the captured block content will not be displayed.
      */
     public $renderInPlace = false;
-
 
     /**
      * Starts recording a block.
@@ -56,6 +56,7 @@ class Block extends Widget
     /**
      * Ends recording a block.
      * This method stops output buffering and saves the rendering result as a named block in the view.
+     *
      * @return string the result of widget execution to be outputted.
      */
     public function run()
@@ -65,6 +66,7 @@ class Block extends Widget
             return $block;
         }
         $this->view->blocks[$this->getId()] = $block;
+
         return '';
     }
 }

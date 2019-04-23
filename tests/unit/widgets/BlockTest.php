@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -29,7 +30,7 @@ class BlockTest extends \yii\tests\TestCase
         $initTriggered = false;
 
         $block = $this->factory->create([
-            '__class' => Block::class,
+            '__class'        => Block::class,
             'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
             },

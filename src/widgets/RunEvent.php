@@ -1,6 +1,7 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -28,6 +29,7 @@ class RunEvent extends WidgetEvent
 
     /**
      * Creates BEFORE event.
+     *
      * @return self created event
      */
     public static function before(): self
@@ -37,7 +39,9 @@ class RunEvent extends WidgetEvent
 
     /**
      * Creates AFTER event with result.
+     *
      * @param mixed $result widget return result.
+     *
      * @return self created event
      */
     public static function after($result): self

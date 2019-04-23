@@ -1,17 +1,18 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\tests\framework\widgets;
 
-use yii\helpers\Yii;
 use yii\base\DynamicModel;
+use yii\helpers\Yii;
+use yii\view\Theme;
 use yii\web\AssetManager;
 use yii\web\View;
-use yii\view\Theme;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
@@ -39,7 +40,6 @@ class ActiveFieldTest extends \yii\tests\TestCase
      * @var string
      */
     private $attributeName = 'attributeName';
-
 
     /**
      * {@inheritdoc}
@@ -277,7 +277,8 @@ EOT;
 
     /**
      * @dataProvider hintDataProvider
-     * @param mixed $hint
+     *
+     * @param mixed  $hint
      * @param string $expectedHtml
      */
     public function testHint($hint, $expectedHtml)
@@ -435,7 +436,7 @@ EOD;
     public function testWidget()
     {
         $this->activeField->widget(TestInputWidget::class);
-        $this->assertEquals('Render: ' . TestInputWidget::class, $this->activeField->parts['{input}']);
+        $this->assertEquals('Render: '.TestInputWidget::class, $this->activeField->parts['{input}']);
         $widget = TestInputWidget::$lastInstance;
 
         $this->assertSame($this->activeField->model, $widget->model);
@@ -546,6 +547,6 @@ class TestInputWidget extends InputWidget
 
     public function run()
     {
-        return 'Render: ' . get_class($this);
+        return 'Render: '.get_class($this);
     }
 }
