@@ -41,12 +41,11 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * @var array a list of available renderers indexed by their corresponding supported file extensions.
      *            Each renderer may be a view renderer object or the configuration for creating the renderer object.
-     *            For example, the following configuration enables both Smarty and Twig view renderers:
+     *            For example, the following configuration enables the Twig view renderer:
      *
      * ```php
      * [
-     *     'tpl' => ['__class' => \yii\smarty\ViewRenderer::class],
-     *     'twig' => ['__class' => \yii\twig\ViewRenderer::class],
+     *     'twig' => ['__class' => \Yiisoft\Yii\Twig\ViewRenderer::class],
      * ]
      * ```
      *
