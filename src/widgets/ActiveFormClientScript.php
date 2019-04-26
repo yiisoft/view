@@ -40,8 +40,8 @@ abstract class ActiveFormClientScript extends Behavior
      *
      * ```php
      * [
-     *     \yii\validators\BooleanValidator::class => \yii\jquery\validators\client\BooleanValidator::class,
-     *     \yii\validators\ImageValidator::class => \yii\jquery\validators\client\ImageValidator::class,
+     *     \yii\validators\BooleanValidator::class => \Yiisoft\Yii\JQuery\Validators\Client\BooleanValidator::class,
+     *     \yii\validators\ImageValidator::class => \Yiisoft\Yii\JQuery\Validators\Client\ImageValidator::class,
      *     \yii\validators\FileValidator::class => false, // disable client validation for `FileValidator`
      * ]
      * ```
