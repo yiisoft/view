@@ -8,10 +8,10 @@
 
 namespace yii\widgets;
 
-use Yiisoft\Cache\CacheInterface;
-use Yiisoft\Cache\Dependencies\Dependency;
 use yii\view\DynamicContentAwareInterface;
 use yii\view\DynamicContentAwareTrait;
+use Yiisoft\Cache\CacheInterface;
+use Yiisoft\Cache\Dependencies\Dependency;
 
 /**
  * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
