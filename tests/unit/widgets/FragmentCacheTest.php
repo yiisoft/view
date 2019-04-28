@@ -8,8 +8,8 @@
 
 namespace yii\tests\framework\widgets;
 
-use yii\cache\ArrayCache;
-use yii\cache\Cache;
+use Yiisoft\Cache\ArrayCache;
+use Yiisoft\Cache\Cache;
 use yii\view\Theme;
 use yii\view\View;
 
