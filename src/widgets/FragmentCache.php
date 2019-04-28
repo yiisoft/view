@@ -8,8 +8,8 @@
 
 namespace yii\widgets;
 
-use yii\cache\CacheInterface;
-use yii\cache\dependencies\Dependency;
+use Yiisoft\Cache\CacheInterface;
+use Yiisoft\Cache\Dependencies\Dependency;
 use yii\view\DynamicContentAwareInterface;
 use yii\view\DynamicContentAwareTrait;
 
