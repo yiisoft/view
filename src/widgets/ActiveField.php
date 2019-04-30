@@ -774,7 +774,7 @@ class ActiveField extends Component
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
      * ```php
-     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
+     * $form->field($model, 'date')->widget(\Yiisoft\Yii\MaskedInput\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);
      * ```
