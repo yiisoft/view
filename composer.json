@@ -65,9 +65,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "yiisoft/arrays": "^3.0@dev",
         "yiisoft/yii-core": "^3.0@dev",
-        "yiisoft/yii-web": "^3.0@dev"
+        "yiisoft/arrays": "^3.0@dev"
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
