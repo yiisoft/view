@@ -1,12 +1,6 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- *
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace yii\view;
+namespace Yiisoft\View\View;
 
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;
@@ -68,10 +62,8 @@ use yii\helpers\Yii;
  * directory.
  * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
  * are considered to be under this base URL.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
  */
-class Theme extends \yii\base\Component
+class Theme
 {
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
@@ -148,12 +140,12 @@ class Theme extends \yii\base\Component
         }
         $path = FileHelper::normalizePath($path);
         foreach ($pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath(Yii::getAlias($from)).DIRECTORY_SEPARATOR;
+            $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
-                foreach ((array) $tos as $to) {
-                    $to = FileHelper::normalizePath(Yii::getAlias($to)).DIRECTORY_SEPARATOR;
-                    $file = $to.substr($path, $n);
+                foreach ((array)$tos as $to) {
+                    $to = FileHelper::normalizePath(Yii::getAlias($to)) . DIRECTORY_SEPARATOR;
+                    $file = $to . substr($path, $n);
                     if (is_file($file)) {
                         return $file;
                     }
@@ -174,7 +166,7 @@ class Theme extends \yii\base\Component
     public function getUrl($url)
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
-            return $baseUrl.'/'.ltrim($url, '/');
+            return $baseUrl . '/' . ltrim($url, '/');
         }
 
         return $url;
@@ -190,7 +182,7 @@ class Theme extends \yii\base\Component
     public function getPath($path)
     {
         if (($basePath = $this->getBasePath()) !== null) {
-            return $basePath.DIRECTORY_SEPARATOR.ltrim($path, '/\\');
+            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
         }
 
         return $path;

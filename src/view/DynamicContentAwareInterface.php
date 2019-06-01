@@ -1,18 +1,9 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- *
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
-namespace yii\view;
+namespace Yiisoft\View\View;
 
 /**
  * DynamicContentAwareInterface is the interface that should be implemented by classes
  * which support a [[View]] dynamic content feature.
- *
- * @author Sergey Makinen <sergey@makinen.ru>
  */
 interface DynamicContentAwareInterface
 {
@@ -22,7 +13,7 @@ interface DynamicContentAwareInterface
      *
      * @return array a list of placeholders.
      */
-    public function getDynamicPlaceholders();
+    public function getDynamicPlaceholders(): array;
 
     /**
      * Sets a list of placeholders for dynamic content. This method
@@ -30,7 +21,7 @@ interface DynamicContentAwareInterface
      *
      * @param array $placeholders a list of placeholders.
      */
-    public function setDynamicPlaceholders($placeholders);
+    public function setDynamicPlaceholders(array $placeholders): void;
 
     /**
      * Adds a placeholder for dynamic content.
@@ -39,5 +30,5 @@ interface DynamicContentAwareInterface
      * @param string $name       the placeholder name.
      * @param string $statements the PHP statements for generating the dynamic content.
      */
-    public function addDynamicPlaceholder($name, $statements);
+    public function addDynamicPlaceholder(string $name, string $statements): void;
 }
