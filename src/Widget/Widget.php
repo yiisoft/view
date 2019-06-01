@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Widget;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -83,9 +84,9 @@ class Widget implements ViewContextInterface
      * Ends a widget.
      * Note that the rendering result of the widget is directly echoed out.
      *
-     * @return static the widget instance that is ended.
-     *
      * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
+     *
+     * @return static the widget instance that is ended.
      *
      * @see begin()
      */
@@ -104,10 +105,10 @@ class Widget implements ViewContextInterface
                 return $widget;
             }
 
-            throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
+            throw new InvalidCallException('Expecting end() of '.get_class($widget).', found '.get_called_class());
         }
 
-        throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
+        throw new InvalidCallException('Unexpected '.get_called_class().'::end() call. A matching begin() is not found.');
     }
 
     /**
@@ -116,9 +117,9 @@ class Widget implements ViewContextInterface
      *
      * @param array $config name-value pairs that will be used to initialize the object properties
      *
-     * @return string the rendering result of the widget.
      * @throws \Exception
      *
+     * @return string the rendering result of the widget.
      */
     public static function widget($config = []): string
     {
@@ -143,7 +144,7 @@ class Widget implements ViewContextInterface
             throw $e;
         }
 
-        return ob_get_clean() . $out;
+        return ob_get_clean().$out;
     }
 
     private $_id;
@@ -158,7 +159,7 @@ class Widget implements ViewContextInterface
     public function getId($autoGenerate = true)
     {
         if ($autoGenerate && $this->_id === null) {
-            $this->_id = static::$autoIdPrefix . static::$counter++;
+            $this->_id = static::$autoIdPrefix.static::$counter++;
         }
 
         return $this->_id;
@@ -227,12 +228,12 @@ class Widget implements ViewContextInterface
      *
      * If the view name does not contain a file extension, it will use the default one `.php`.
      *
-     * @param string $view the view name.
-     * @param array $params the parameters (name-value pairs) that should be made available in the view.
+     * @param string $view   the view name.
+     * @param array  $params the parameters (name-value pairs) that should be made available in the view.
      *
-     * @return string the rendering result.
      * @throws InvalidArgumentException if the view file does not exist.
      *
+     * @return string the rendering result.
      */
     public function render($view, $params = [])
     {
@@ -242,12 +243,12 @@ class Widget implements ViewContextInterface
     /**
      * Renders a view file.
      *
-     * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
-     * @param array $params the parameters (name-value pairs) that should be made available in the view.
+     * @param string $file   the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
+     * @param array  $params the parameters (name-value pairs) that should be made available in the view.
      *
-     * @return string the rendering result.
      * @throws InvalidArgumentException if the view file does not exist.
      *
+     * @return string the rendering result.
      */
     public function renderFile($file, $params = [])
     {
@@ -264,7 +265,7 @@ class Widget implements ViewContextInterface
     {
         $class = new ReflectionClass($this);
 
-        return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
+        return dirname($class->getFileName()).DIRECTORY_SEPARATOR.'views';
     }
 
     /**
@@ -294,6 +295,7 @@ class Widget implements ViewContextInterface
     {
         $event = new BeforeRun();
         $this->eventDispatcher->dispatch($event);
+
         return $event->isPropagationStopped();
     }
 
@@ -322,6 +324,7 @@ class Widget implements ViewContextInterface
     {
         $event = new AfterRun($result);
         $this->eventDispatcher->dispatch($event);
+
         return $event->getResult();
     }
 }

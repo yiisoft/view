@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Widget\Event;
 
 use Yiisoft\Widget\ActiveField;

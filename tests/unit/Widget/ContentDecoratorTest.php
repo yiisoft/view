@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View\Tests\Widget;
 
 use yii\widgets\ContentDecorator;

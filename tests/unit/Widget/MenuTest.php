@@ -1,7 +1,7 @@
 <?php
+
 namespace Yiisoft\View\Tests\Widget;
 
-use yii\helpers\Yii;
 use yii\widgets\Menu;
 
 /**

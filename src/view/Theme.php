@@ -140,12 +140,12 @@ class Theme
         }
         $path = FileHelper::normalizePath($path);
         foreach ($pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
+            $from = FileHelper::normalizePath(Yii::getAlias($from)).DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
-                foreach ((array)$tos as $to) {
-                    $to = FileHelper::normalizePath(Yii::getAlias($to)) . DIRECTORY_SEPARATOR;
-                    $file = $to . substr($path, $n);
+                foreach ((array) $tos as $to) {
+                    $to = FileHelper::normalizePath(Yii::getAlias($to)).DIRECTORY_SEPARATOR;
+                    $file = $to.substr($path, $n);
                     if (is_file($file)) {
                         return $file;
                     }
@@ -166,7 +166,7 @@ class Theme
     public function getUrl($url)
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
-            return $baseUrl . '/' . ltrim($url, '/');
+            return $baseUrl.'/'.ltrim($url, '/');
         }
 
         return $url;
@@ -182,7 +182,7 @@ class Theme
     public function getPath($path)
     {
         if (($basePath = $this->getBasePath()) !== null) {
-            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+            return $basePath.DIRECTORY_SEPARATOR.ltrim($path, '/\\');
         }
 
         return $path;

@@ -1,11 +1,11 @@
 <?php
+
 namespace Yiisoft\Widget\Event;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
  * BeforeRun event is raised right before executing a widget.
- * @package yii\widgets
  */
 class BeforeRun implements StoppableEventInterface
 {

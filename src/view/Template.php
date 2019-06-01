@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View\View;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -330,6 +331,7 @@ class Template implements DynamicContentAwareInterface
     {
         $event = new BeforeRender($viewFile, $params);
         $this->eventDispatcher->dispatch($event);
+
         return $event->isPropagationStopped();
     }
 
@@ -347,6 +349,7 @@ class Template implements DynamicContentAwareInterface
     {
         $event = new AfterRender($viewFile, $params, $output);
         $this->eventDispatcher->dispatch($event);
+
         return $event->getResult();
     }
 
