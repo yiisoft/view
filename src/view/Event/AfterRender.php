@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View\View\Event;
 
 /**
@@ -10,6 +11,7 @@ class AfterRender extends ViewEvent
 
     /**
      * AfterRender constructor.
+     *
      * @param $result
      */
     public function __construct(string $file, array $parameters, $result)

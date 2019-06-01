@@ -1,9 +1,10 @@
 <?php
+
 namespace Yiisoft\View\Asset;
 
-use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Yii;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\View\Template;
 
 /**
@@ -22,7 +23,7 @@ class AssetBundle
 {
     /**
      * @var string the directory that contains the source asset files for this asset bundle.
-     * A source asset file is a file that is part of your source code repository of your Web application.
+     *             A source asset file is a file that is part of your source code repository of your Web application.
      *
      * You must set this property if the directory containing the source asset files is not Web accessible.
      * By setting this property, [[AssetManager]] will publish the source asset files
@@ -31,6 +32,7 @@ class AssetBundle
      * If you do not set this property, it means the source asset files are located under [[basePath]].
      *
      * You can use either a directory or an alias of the directory.
+     *
      * @see $publishOptions
      */
     public $sourcePath;
@@ -67,7 +69,7 @@ class AssetBundle
     public $depends = [];
     /**
      * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
-     * specified in one of the following formats:
+     *            specified in one of the following formats:
      *
      * - an absolute URL representing an external asset. For example,
      *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
@@ -84,31 +86,32 @@ class AssetBundle
     public $js = [];
     /**
      * @var array list of CSS files that this bundle contains. Each CSS file can be specified
-     * in one of the three formats as explained in [[js]].
+     *            in one of the three formats as explained in [[js]].
      *
      * Note that only a forward slash "/" should be used as directory separator.
      */
     public $css = [];
     /**
      * @var array the options that will be passed to [[View::registerJsFile()]]
-     * when registering the JS files in this bundle.
+     *            when registering the JS files in this bundle.
      */
     public $jsOptions = [];
     /**
      * @var array the options that will be passed to [[View::registerCssFile()]]
-     * when registering the CSS files in this bundle.
+     *            when registering the CSS files in this bundle.
      */
     public $cssOptions = [];
     /**
      * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
-     * is being published. This property is used only when [[sourcePath]] is set.
+     *            is being published. This property is used only when [[sourcePath]] is set.
      */
     public $publishOptions = [];
 
-
     /**
      * Registers this asset bundle with a view.
+     *
      * @param Template $template the view to be registered with
+     *
      * @return static the registered asset bundle instance
      */
     public static function register($template)
@@ -155,7 +158,7 @@ class AssetBundle
             $len = strlen($src);
 
             if (strncmp($path, $src, $len) === 0) {
-                $alt = $dst . substr($path, $len);
+                $alt = $dst.substr($path, $len);
                 if (file_exists($alt)) {
                     return $alt;
                 }
@@ -167,6 +170,7 @@ class AssetBundle
 
     /**
      * Registers the CSS and JS files with the given view.
+     *
      * @param \yii\web\View $view the view that the asset files are to be registered with.
      */
     public function registerAssetFiles($view)
@@ -200,6 +204,7 @@ class AssetBundle
      * Publishes the asset bundle if its source code is not under Web-accessible directory.
      * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
      * CSS or JS files using [[AssetManager::converter|asset converter]].
+     *
      * @param AssetManager $am the asset manager to perform the asset publishing
      */
     public function publish($am)

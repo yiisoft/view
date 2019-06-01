@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Widget;
 
 use yii\base\Application;

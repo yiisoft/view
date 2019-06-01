@@ -1,8 +1,7 @@
 <?php
+
 namespace Yiisoft\Widget;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use yii\base\Application;
 use yii\base\Model;
 use yii\di\Initiable;
 use yii\exceptions\InvalidCallException;

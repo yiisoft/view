@@ -1,10 +1,10 @@
 <?php
+
 namespace Yiisoft\Widget;
 
 use yii\data\Sort;
 use yii\exceptions\InvalidConfigException;
 use yii\helpers\Html;
-use yii\helpers\Yii;
 
 /**
  * LinkSorter renders a list of sort links for the given sort definition.
