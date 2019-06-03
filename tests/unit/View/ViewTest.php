@@ -15,7 +15,7 @@ class ViewTest extends TestCase
     /**
      * @var string path for the test files.
      */
-    protected $testViewPath = '';
+    private $testViewPath = '';
 
     public function setUp()
     {
