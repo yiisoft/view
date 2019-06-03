@@ -66,7 +66,6 @@ class AssetBundleTest extends TestCase
      */
     protected function getView(array $amConfig = [])
     {
-
         new View($this->testViewPath, $theme, $this->eventDispatcher, new NullLogger());
 
         return $this->factory->create([
