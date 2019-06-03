@@ -1,9 +1,7 @@
 <?php
-
 namespace Yiisoft\View;
 
 use yii\helpers\FileHelper;
-use yii\helpers\Yii;
 
 /**
  * Theme represents an application theme.
@@ -57,68 +55,45 @@ use yii\helpers\Yii;
  * you may configure the [[pathMap]] property like described above.
  *
  * For more details and usage information on Theme, see the [guide article on theming](guide:output-theming).
- *
- * @property string $basePath The root path of this theme. All resources of this theme are located under this
- * directory.
- * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
- * are considered to be under this base URL.
  */
 class Theme
 {
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
-     *            This property is used by [[applyTo()]] when a view is trying to apply the theme.
-     *            [Path aliases](guide:concept-aliases) can be used when specifying directories.
-     *            If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
+     * This property is used by [[applyTo()]] when a view is trying to apply the theme.
+     * [Path aliases](guide:concept-aliases) can be used when specifying directories.
+     * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
-    public $pathMap = [];
+    private $pathMap;
 
-    private $_baseUrl;
+    private $baseUrl;
 
-    public function __construct(array $pathMap = [])
+    private $basePath;
+
+    public function __construct(array $pathMap = [], string $basePath = null, string $baseUrl = null)
     {
         $this->pathMap = $pathMap;
+        $this->basePath = $basePath;
+        $this->baseUrl = rtrim($baseUrl, '/');
     }
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
      *                to be under this base URL.
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): ?string
     {
-        return $this->_baseUrl;
+        return $this->baseUrl;
     }
-
-    /**
-     * @param string $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this theme are considered
-     *                    to be under this base URL.
-     */
-    public function setBaseUrl($url)
-    {
-        $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
-    }
-
-    private $_basePath;
 
     /**
      * @return string the root path of this theme. All resources of this theme are located under this directory.
      *
      * @see pathMap
      */
-    public function getBasePath()
+    public function getBasePath(): ?string
     {
-        return $this->_basePath;
-    }
-
-    /**
-     * @param string $path the root path or [path alias](guide:concept-aliases) of this theme. All resources of this theme are located
-     *                     under this directory.
-     *
-     * @see pathMap
-     */
-    public function setBasePath($path)
-    {
-        $this->_basePath = Yii::getAlias($path);
+        return $this->basePath;
     }
 
     /**
@@ -129,23 +104,19 @@ class Theme
      *
      * @return string the themed file, or the original file if the themed version is not available.
      */
-    public function applyTo($path)
+    public function applyTo(string $path): string
     {
-        $pathMap = $this->pathMap;
-        if (empty($pathMap)) {
-            if (($basePath = $this->getBasePath()) === null) {
-                return $path;
-            }
-            $pathMap = [Yii::getApp()->getBasePath() => [$basePath]];
+        if ($this->pathMap === []) {
+            return $path;
         }
         $path = FileHelper::normalizePath($path);
-        foreach ($pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath(Yii::getAlias($from)).DIRECTORY_SEPARATOR;
+        foreach ($this->pathMap as $from => $tos) {
+            $from = FileHelper::normalizePath($from) . '/';
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
-                foreach ((array) $tos as $to) {
-                    $to = FileHelper::normalizePath(Yii::getAlias($to)).DIRECTORY_SEPARATOR;
-                    $file = $to.substr($path, $n);
+                foreach ((array)$tos as $to) {
+                    $to = FileHelper::normalizePath($to) . '/';
+                    $file = $to . substr($path, $n);
                     if (is_file($file)) {
                         return $file;
                     }
@@ -163,10 +134,10 @@ class Theme
      *
      * @return string the absolute URL
      */
-    public function getUrl($url)
+    public function getUrl(string $url): string
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
-            return $baseUrl.'/'.ltrim($url, '/');
+            return $baseUrl . '/' . ltrim($url, '/');
         }
 
         return $url;
@@ -179,10 +150,10 @@ class Theme
      *
      * @return string the absolute file path
      */
-    public function getPath($path)
+    public function getPath(string $path): string
     {
         if (($basePath = $this->getBasePath()) !== null) {
-            return $basePath.DIRECTORY_SEPARATOR.ltrim($path, '/\\');
+            return $basePath . '/' . ltrim($path, '/\\');
         }
 
         return $path;
