@@ -296,7 +296,7 @@ class Widget implements ViewContextInterface
         $event = new BeforeRun();
         $this->eventDispatcher->dispatch($event);
 
-        return $event->isPropagationStopped();
+        return !$event->isPropagationStopped();
     }
 
     /**
