@@ -345,7 +345,7 @@ class View implements DynamicContentAwareInterface
      * @param string $output   the rendering result of the view file. Updates to this parameter
      *                         will be passed back and returned by [[renderFile()]].
      */
-    public function afterRender(string $viewFile, array $params, &$output): void
+    public function afterRender(string $viewFile, array $params, &$output): string
     {
         $event = new AfterRender($viewFile, $params, $output);
         $this->eventDispatcher->dispatch($event);
@@ -449,7 +449,7 @@ class View implements DynamicContentAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function getDynamicPlaceholders()
+    public function getDynamicPlaceholders(): array
     {
         return $this->_dynamicPlaceholders;
     }
@@ -457,7 +457,7 @@ class View implements DynamicContentAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function setDynamicPlaceholders($placeholders)
+    public function setDynamicPlaceholders(array $placeholders): void
     {
         $this->_dynamicPlaceholders = $placeholders;
     }
@@ -465,7 +465,7 @@ class View implements DynamicContentAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function addDynamicPlaceholder($placeholder, $statements)
+    public function addDynamicPlaceholder(string $placeholder, string $statements): void
     {
         foreach ($this->_cacheStack as $cache) {
             $cache->addDynamicPlaceholder($placeholder, $statements);
