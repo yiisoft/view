@@ -1,16 +1,17 @@
 <?php
+
 namespace Yiisoft\View;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use yii\base\Application;
 use yii\i18n\Locale;
-use Yiisoft\Widget\Block;
-use Yiisoft\Widget\ContentDecorator;
-use Yiisoft\Widget\FragmentCache;
 use Yiisoft\View\Event\AfterRender;
 use Yiisoft\View\Event\BeforeRender;
 use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
+use Yiisoft\Widget\Block;
+use Yiisoft\Widget\ContentDecorator;
+use Yiisoft\Widget\FragmentCache;
 
 /**
  * View represents a view object in the MVC pattern.

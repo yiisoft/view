@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Asset;
 
 use yii\helpers\Yii;

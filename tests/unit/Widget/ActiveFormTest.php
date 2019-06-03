@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Widget\Tests;
 
 use yii\base\DynamicModel;

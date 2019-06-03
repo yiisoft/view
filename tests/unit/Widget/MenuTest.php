@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Widget\Tests;
 
 use Yiisoft\Widget\Menu;
