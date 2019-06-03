@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View\Event;
+namespace Yiisoft\View\Event;
 
 /**
  * AfterRender event is triggered by [[View::renderFile()]] right after it renders a view file.

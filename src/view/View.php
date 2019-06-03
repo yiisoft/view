@@ -1,17 +1,16 @@
 <?php
-
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use yii\base\Application;
 use yii\i18n\Locale;
-use yii\widgets\Block;
-use yii\widgets\ContentDecorator;
-use yii\widgets\FragmentCache;
-use Yiisoft\View\View\Event\AfterRender;
-use Yiisoft\View\View\Event\BeforeRender;
-use Yiisoft\View\View\Event\PageBegin;
-use Yiisoft\View\View\Event\PageEnd;
+use Yiisoft\Widget\Block;
+use Yiisoft\Widget\ContentDecorator;
+use Yiisoft\Widget\FragmentCache;
+use Yiisoft\View\Event\AfterRender;
+use Yiisoft\View\Event\BeforeRender;
+use Yiisoft\View\Event\PageBegin;
+use Yiisoft\View\Event\PageEnd;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -23,7 +22,7 @@ use Yiisoft\View\View\Event\PageEnd;
  * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  */
-class Template implements DynamicContentAwareInterface
+class View implements DynamicContentAwareInterface
 {
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.

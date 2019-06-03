@@ -1,10 +1,9 @@
 <?php
-
-namespace Yiisoft\View\Tests\Asset;
+namespace Yiisoft\Asset\Tests;
 
 use PHPUnit\Framework\TestCase;
 use yii\helpers\FileHelper;
-use yii\web\AssetConverter;
+use Yiisoft\Asset\AssetConverter;
 
 /**
  * @group web

@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 /**
  * InvalidCallException represents an exception caused by calling a method in a wrong way.

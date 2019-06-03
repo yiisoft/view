@@ -1,6 +1,6 @@
 <?php
 
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;

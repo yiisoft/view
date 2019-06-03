@@ -1,13 +1,12 @@
 <?php
-
-namespace Yiisoft\View\Tests\Asset;
+namespace Yiisoft\Asset\Tests;
 
 use PHPUnit\Framework\TestCase;
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;
-use yii\web\AssetBundle;
-use yii\web\AssetManager;
-use yii\web\View;
+use yii\helpers\FileHelper;
+use Yiisoft\Asset\AssetBundle;
+use Yiisoft\Asset\AssetManager;
 
 /**
  * @group web

@@ -1,7 +1,7 @@
 <?php
-
-namespace Yiisoft\View\View\Event;
+namespace Yiisoft\View\Event;
 
 class PageBegin extends ViewEvent
 {
+
 }

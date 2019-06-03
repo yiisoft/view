@@ -1,11 +1,8 @@
 <?php
+namespace Yiisoft\Widget\Tests;
 
-namespace Yiisoft\View\Tests\Widget;
-
-use yii\view\Theme;
-use yii\view\View;
-use Yiisoft\Cache\ArrayCache;
-use Yiisoft\Cache\Cache;
+use Yiisoft\View\Theme;
+use Yiisoft\View\View;
 
 /**
  * @group widgets

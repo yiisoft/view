@@ -48,7 +48,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Yiisoft\\View\\Tests\\": "tests"
+            "Yiisoft\\View\\Tests\\": "tests/unit/View",
+            "Yiisoft\\Widget\\Tests\\": "tests/unit/Widget",
+            "Yiisoft\\Asset\\Tests\\": "tests/unit/Asset"
         }
     }
 }

@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 /**
  * ViewNotFoundException represents an exception caused by view file not found.

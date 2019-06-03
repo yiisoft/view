@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 /**
  * ViewContextInterface is the interface that should implemented by classes who want to support relative view names.
