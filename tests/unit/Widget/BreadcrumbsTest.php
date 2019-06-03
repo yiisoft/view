@@ -1,9 +1,7 @@
 <?php
+namespace Yiisoft\Widget\Tests;
 
-namespace Yiisoft\View\Tests\Widget;
-
-use yii\helpers\Yii;
-use yii\widgets\Breadcrumbs;
+use Yiisoft\Widget\Breadcrumbs;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>

@@ -1,11 +1,10 @@
 <?php
+namespace Yiisoft\View\Tests;
 
-namespace Yiisoft\View\Tests\View;
-
+use PHPUnit\Framework\TestCase;
 use yii\helpers\FileHelper;
-use yii\tests\TestCase;
-use yii\view\Theme;
-use yii\view\View;
+use Yiisoft\View\Theme;
+use Yiisoft\View\View;
 
 /**
  * @group view

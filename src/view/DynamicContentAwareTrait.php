@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 /**
  * DynamicContentAwareTrait implements common methods for classes
@@ -16,9 +15,9 @@ trait DynamicContentAwareTrait
     /**
      * Returns the view object that can be used to render views or view files using dynamic contents.
      *
-     * @return Template the view object that can be used to render views or view files.
+     * @return View the view object that can be used to render views or view files.
      */
-    abstract protected function getView(): Template;
+    abstract protected function getView(): View;
 
     /**
      * {@inheritdoc}

@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View;
+namespace Yiisoft\View;
 
 /**
  * DynamicContentAwareInterface is the interface that should be implemented by classes

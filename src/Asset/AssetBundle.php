@@ -1,11 +1,10 @@
 <?php
+namespace Yiisoft\Asset;
 
-namespace Yiisoft\View\Asset;
-
+use Yiisoft\Arrays\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Yii;
-use Yiisoft\Arrays\ArrayHelper;
-use Yiisoft\View\View\Template;
+use Yiisoft\View\View;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -109,9 +108,7 @@ class AssetBundle
 
     /**
      * Registers this asset bundle with a view.
-     *
-     * @param Template $template the view to be registered with
-     *
+     * @param View $template the view to be registered with
      * @return static the registered asset bundle instance
      */
     public static function register($template)

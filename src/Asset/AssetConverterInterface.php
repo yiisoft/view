@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\Asset;
+namespace Yiisoft\Asset;
 
 /**
  * The AssetConverterInterface must be implemented by asset converter classes.

@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\View\Event;
+namespace Yiisoft\View\Event;
 
 /**
  * ViewEvent represents events triggered by the [[View]] component.

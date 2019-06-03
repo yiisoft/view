@@ -1,6 +1,5 @@
 <?php
-
-namespace Yiisoft\View\Asset;
+namespace Yiisoft\Asset;
 
 use yii\helpers\Yii;
 

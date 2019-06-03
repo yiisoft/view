@@ -1,15 +1,14 @@
 <?php
-
-namespace Yiisoft\View\Tests\Widget;
+namespace Yiisoft\Widget\Tests;
 
 use yii\base\DynamicModel;
 use yii\helpers\Yii;
-use yii\view\Theme;
-use yii\web\AssetManager;
-use yii\web\View;
-use yii\widgets\ActiveField;
-use yii\widgets\ActiveForm;
-use yii\widgets\InputWidget;
+use Yiisoft\View\Theme;
+use Yiisoft\Asset\AssetManager;
+use Yiisoft\View\View;
+use Yiisoft\Widget\ActiveField;
+use Yiisoft\Widget\ActiveForm;
+use Yiisoft\Widget\InputWidget;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>

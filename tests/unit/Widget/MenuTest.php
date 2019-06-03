@@ -1,8 +1,7 @@
 <?php
+namespace Yiisoft\Widget\Tests;
 
-namespace Yiisoft\View\Tests\Widget;
-
-use yii\widgets\Menu;
+use Yiisoft\Widget\Menu;
 
 /**
  * @group widgets

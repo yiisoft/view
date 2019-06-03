@@ -1,10 +1,8 @@
 <?php
-
-namespace Yiisoft\View\Tests\Widget;
+namespace Yiisoft\Widget\Tests;
 
 use yii\base\DynamicModel;
-use yii\base\Widget;
-use yii\widgets\ActiveForm;
+use Yiisoft\Widget\ActiveForm;
 
 /**
  * @group widgets
