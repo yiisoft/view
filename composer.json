@@ -16,6 +16,7 @@
         "irc": "irc://irc.freenode.net/yii"
     },
     "require": {
+        "php": "^7.2",
         "yiisoft/arrays": "^3.0@dev",
         "yiisoft/var-dumper": "^3.0@dev"
     },

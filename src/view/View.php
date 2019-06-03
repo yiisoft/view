@@ -162,17 +162,18 @@ class View implements DynamicContentAwareInterface
      * determine the corresponding view file.
      *
      */
-    protected function findTemplateFile(string $view, ViewContextInterface $context = null): string
+    protected function findTemplateFile(string $view, $context = null): string
     {
         if (strncmp($view, '//', 2) === 0) {
-            // e.g. "//layouts/main"
+            // path relative to basePath e.g. "//layouts/main"
             $file = $this->basePath . '/' . ltrim($view, '/');
-        } elseif ($context !== null) {
+        } elseif ($context instanceof ViewContextInterface) {
+            // path provided by context
             $file = $context->getViewPath() . '/' . $view;
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
+            // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;
         } else {
-            // TODO: this isn't right
             $file = $view;
         }
 
@@ -326,7 +327,7 @@ class View implements DynamicContentAwareInterface
         $event = new BeforeRender($viewFile, $params);
         $this->eventDispatcher->dispatch($event);
 
-        return $event->isPropagationStopped();
+        return !$event->isPropagationStopped();
     }
 
     /**

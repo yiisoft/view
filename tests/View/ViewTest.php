@@ -77,9 +77,7 @@ PHP
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
         file_put_contents($baseView, <<<'PHP'
-<?php 
-    echo $this->render("sub"); 
-?>
+<?= $this->render("sub") ?>
 PHP
         );
 
