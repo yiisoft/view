@@ -1,10 +1,11 @@
 <?php
+
 namespace Yiisoft\Widget\Tests;
 
 use yii\base\DynamicModel;
 use yii\helpers\Yii;
-use Yiisoft\View\Theme;
 use Yiisoft\Asset\AssetManager;
+use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\Widget\ActiveField;
 use Yiisoft\Widget\ActiveForm;

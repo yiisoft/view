@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View\Event;
 
 use Psr\EventDispatcher\StoppableEventInterface;

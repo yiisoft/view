@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Asset;
 
 use yii\base\Application;
@@ -35,8 +36,8 @@ class AssetManager
 {
     /**
      * @var array|bool list of asset bundle configurations. This property is provided to customize asset bundles.
-     * When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
-     * the configuration will be applied to the bundle.
+     *                 When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
+     *                 the configuration will be applied to the bundle.
      *
      * The array keys are the asset bundle names, which typically are asset bundle class names without leading backslash.
      * The array values are the corresponding configurations. If a value is false, it means the corresponding asset
@@ -98,9 +99,9 @@ class AssetManager
     public $assetMap = [];
     /**
      * @var bool whether to use symbolic link to publish asset files. Defaults to false, meaning
-     * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
-     * assets will always be consistent with the source assets and there is no copy operation required.
-     * This is especially useful during development.
+     *           asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
+     *           assets will always be consistent with the source assets and there is no copy operation required.
+     *           This is especially useful during development.
      *
      * However, there are special requirements for hosting environments in order to use symbolic links.
      * In particular, symbolic links are supported only on Linux/Unix, and Windows Vista/2008 or greater.
@@ -116,21 +117,21 @@ class AssetManager
     public $linkAssets = false;
     /**
      * @var int the permission to be set for newly published asset files.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * If not set, the permission will be determined by the current environment.
+     *          This value will be used by PHP chmod() function. No umask will be applied.
+     *          If not set, the permission will be determined by the current environment.
      */
     public $fileMode;
     /**
      * @var int the permission to be set for newly generated asset directories.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * Defaults to 0775, meaning the directory is read-writable by owner and group,
-     * but read-only for other users.
+     *          This value will be used by PHP chmod() function. No umask will be applied.
+     *          Defaults to 0775, meaning the directory is read-writable by owner and group,
+     *          but read-only for other users.
      */
     public $dirMode = 0775;
     /**
-     * @var callback a PHP callback that is called before copying each sub-directory or file.
-     * This option is used only when publishing a directory. If the callback returns false, the copy
-     * operation for the sub-directory or file will be cancelled.
+     * @var callable a PHP callback that is called before copying each sub-directory or file.
+     *               This option is used only when publishing a directory. If the callback returns false, the copy
+     *               operation for the sub-directory or file will be cancelled.
      *
      * The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
      * file to be copied from, while `$to` is the copy target.
@@ -139,32 +140,33 @@ class AssetManager
      */
     public $beforeCopy;
     /**
-     * @var callback a PHP callback that is called after a sub-directory or file is successfully copied.
-     * This option is used only when publishing a directory. The signature of the callback is the same as
-     * for [[beforeCopy]].
-     * This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
+     * @var callable a PHP callback that is called after a sub-directory or file is successfully copied.
+     *               This option is used only when publishing a directory. The signature of the callback is the same as
+     *               for [[beforeCopy]].
+     *               This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
      */
     public $afterCopy;
     /**
      * @var bool whether the directory being published should be copied even if
-     * it is found in the target directory. This option is used only when publishing a directory.
-     * You may want to set this to be `true` during the development stage to make sure the published
-     * directory is always up-to-date. Do not set this to true on production servers as it will
-     * significantly degrade the performance.
+     *           it is found in the target directory. This option is used only when publishing a directory.
+     *           You may want to set this to be `true` during the development stage to make sure the published
+     *           directory is always up-to-date. Do not set this to true on production servers as it will
+     *           significantly degrade the performance.
      */
     public $forceCopy = false;
     /**
      * @var bool whether to append a timestamp to the URL of every published asset. When this is true,
-     * the URL of a published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the
-     * last modification time of the published asset file.
-     * You normally would want to set this property to true when you have enabled HTTP caching for assets,
-     * because it allows you to bust caching when the assets are updated.
+     *           the URL of a published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the
+     *           last modification time of the published asset file.
+     *           You normally would want to set this property to true when you have enabled HTTP caching for assets,
+     *           because it allows you to bust caching when the assets are updated.
+     *
      * @since 2.0.3
      */
     public $appendTimestamp = false;
     /**
      * @var callable a callback that will be called to produce hash for asset directory generation.
-     * The signature of the callback should be as follows:
+     *               The signature of the callback should be as follows:
      *
      * ```
      * function ($path)
@@ -228,9 +230,10 @@ class AssetManager
      * This method will first look for the bundle in [[bundles]]. If not found,
      * it will treat `$name` as the class of the asset bundle and create a new instance of it.
      *
-     * @param string $name the class name of the asset bundle (without the leading backslash)
-     * @param bool $publish whether to publish the asset files in the asset bundle before it is returned.
-     * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
+     * @param string $name    the class name of the asset bundle (without the leading backslash)
+     * @param bool   $publish whether to publish the asset files in the asset bundle before it is returned.
+     *                        If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
+     *
      * @return AssetBundle the asset bundle instance
      */
     public function getBundle($name, $publish = true)
@@ -261,12 +264,13 @@ class AssetManager
     /**
      * Loads asset bundle class by name.
      *
-     * @param string $name bundle name
-     * @param array $config bundle object configuration
-     * @param bool $publish if bundle should be published
-     * @return AssetBundle
+     * @param string $name    bundle name
+     * @param array  $config  bundle object configuration
+     * @param bool   $publish if bundle should be published
+     *
      * @throws InvalidConfigException if configuration isn't valid
      *
+     * @return AssetBundle
      * @return AssetBundle
      */
     protected function loadBundle($name, $config = [], $publish = true)

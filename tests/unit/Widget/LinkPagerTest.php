@@ -1,9 +1,10 @@
 <?php
+
 namespace Yiisoft\Widget\Tests;
 
 use yii\data\Pagination;
-use Yiisoft\Widget\LinkPager;
 use Yiisoft\Strings\StringHelper;
+use Yiisoft\Widget\LinkPager;
 
 /**
  * @group widgets
