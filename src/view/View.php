@@ -172,7 +172,8 @@ class View implements DynamicContentAwareInterface
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
             $file = dirname($currentViewFile) . '/' . $view;
         } else {
-            throw new InvalidCallException("Unable to resolve view file for view '$view': no active view context.");
+            // TODO: this isn't right
+            $file = $view;
         }
 
         if (pathinfo($file, PATHINFO_EXTENSION) !== '') {

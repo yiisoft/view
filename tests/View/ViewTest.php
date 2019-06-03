@@ -126,4 +126,29 @@ PHP
     {
         return new View($this->testViewPath, $theme ?: new Theme(), $this->eventDispatcher, new NullLogger());
     }
+
+    /**
+     * Creates test files structure.
+     * @param string $baseDirectory base directory path.
+     * @param array $items file system objects to be created in format: objectName => objectContent
+     * Arrays specifies directories, other values - files.
+     */
+    protected function createFileStructure(array $items, string $baseDirectory = null): void
+    {
+        foreach ($items as $name => $content) {
+            $itemName = $baseDirectory . '/' . $name;
+            if (\is_array($content)) {
+                if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
+                    symlink($baseDirectory . DIRECTORY_SEPARATOR . $content[1], $itemName);
+                } else {
+                    if (!mkdir($itemName, 0777, true) && !is_dir($itemName)) {
+                        throw new \RuntimeException(sprintf('Directory "%s" was not created', $itemName));
+                    }
+                    $this->createFileStructure($content, $itemName);
+                }
+            } else {
+                file_put_contents($itemName, $content);
+            }
+        }
+    }
 }
