@@ -1,5 +1,4 @@
 <?php
-
 namespace Yiisoft\View;
 
 use Psr\EventDispatcher\EventDispatcherInterface;

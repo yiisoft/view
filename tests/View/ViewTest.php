@@ -1,5 +1,4 @@
 <?php
-
 namespace Yiisoft\View\Tests;
 
 use PHPUnit\Framework\TestCase;
