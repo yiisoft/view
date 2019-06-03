@@ -3,7 +3,10 @@
 namespace Yiisoft\View\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
+use Yiisoft\EventDispatcher\Dispatcher;
 use yii\helpers\FileHelper;
+use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 
@@ -17,15 +20,23 @@ class ViewTest extends TestCase
      */
     private $testViewPath = '';
 
+    private $eventDispatcher;
+    private $eventProvider;
+
     public function setUp()
     {
         $this->testViewPath = sys_get_temp_dir() . '/'. str_replace('\\', '_', get_class($this)) . uniqid('', false);
         FileHelper::createDirectory($this->testViewPath);
+
+        $this->eventProvider = new Provider();
+        $this->eventDispatcher = new Dispatcher($this->eventProvider);
     }
 
     public function tearDown()
     {
         FileHelper::removeDirectory($this->testViewPath);
+        $this->eventProvider = null;
+        $this->eventDispatcher = null;
     }
 
     /**
@@ -113,6 +124,6 @@ PHP
 
     private function createView(Theme $theme = null): View
     {
-        return new View($this->app, $theme ?: new Theme());
+        return new View($this->testViewPath, $theme ?: new Theme(), $this->eventDispatcher, new NullLogger());
     }
 }
