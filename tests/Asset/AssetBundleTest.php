@@ -3,21 +3,35 @@
 namespace Yiisoft\Asset\Tests;
 
 use PHPUnit\Framework\TestCase;
-use yii\helpers\FileHelper;
+use Psr\Log\NullLogger;
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetManager;
+use Yiisoft\EventDispatcher\Dispatcher;
+use Yiisoft\EventDispatcher\Provider\Provider;
+use Yiisoft\View\View;
 
 /**
  * @group web
  */
 class AssetBundleTest extends TestCase
 {
+    /**
+     * @var string path for the test files.
+     */
+    private $testViewPath = '';
+
+    private $eventDispatcher;
+    private $eventProvider;
+
     protected function setUp()
     {
-        parent::setUp();
-        $this->mockApplication();
+        $this->testViewPath = sys_get_temp_dir() . '/'. str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        FileHelper::createDirectory($this->testViewPath);
+
+        $this->eventProvider = new Provider();
+        $this->eventDispatcher = new Dispatcher($this->eventProvider);
 
         $this->app->setAlias('@public', '@yii/tests/data/web');
         $this->app->setAlias('@testAssetsPath', '@public/assets');
@@ -52,7 +66,8 @@ class AssetBundleTest extends TestCase
      */
     protected function getView(array $amConfig = [])
     {
-        $this->mockApplication();
+
+        new View($this->testViewPath, $theme, $this->eventDispatcher, new NullLogger());
 
         return $this->factory->create([
             '__class'      => View::class,

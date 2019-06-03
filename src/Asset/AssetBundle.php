@@ -3,9 +3,9 @@
 namespace Yiisoft\Asset;
 
 use yii\helpers\Url;
-use yii\helpers\Yii;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\View;
+use Yiisoft\View\WebView;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -132,7 +132,7 @@ class AssetBundle
             $this->basePath = $this->findPath($this->basePath);
         }
         if ($this->baseUrl !== null) {
-            $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+            $this->baseUrl = rtrim($this->baseUrl, '/');
         }
     }
 
@@ -142,7 +142,7 @@ class AssetBundle
 
     protected function findPath($path)
     {
-        $path = rtrim(Yii::getAlias($path), '/\\');
+        $path = rtrim($path, '/\\');
         if (file_exists($path)) {
             return $path;
         }
@@ -153,8 +153,6 @@ class AssetBundle
     protected function findAlternativePath($path)
     {
         foreach ($this->alternatives as $src => $dst) {
-            $src = Yii::getAlias($src);
-            $dst = Yii::getAlias($dst);
             $len = strlen($src);
 
             if (strncmp($path, $src, $len) === 0) {
@@ -173,7 +171,7 @@ class AssetBundle
      *
      * @param \yii\web\View $view the view that the asset files are to be registered with.
      */
-    public function registerAssetFiles($view)
+    public function registerAssetFiles(WebView $view)
     {
         $manager = $view->getAssetManager();
         foreach ($this->js as $js) {
@@ -207,7 +205,7 @@ class AssetBundle
      *
      * @param AssetManager $am the asset manager to perform the asset publishing
      */
-    public function publish($am)
+    public function publish(AssetManager $am)
     {
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
             [$this->basePath, $this->baseUrl] = $am->publish($this->sourcePath, $this->publishOptions);
