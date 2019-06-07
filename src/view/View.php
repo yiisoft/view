@@ -18,9 +18,6 @@ use Yiisoft\Widget\FragmentCache;
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
- *
- * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
- * rendered. This property is read-only.
  */
 class View implements DynamicContentAwareInterface
 {
@@ -628,7 +625,7 @@ class View implements DynamicContentAwareInterface
         ob_start();
         ob_implicit_flush(false);
 
-        $this->eventDispatcher->dispatch(new PageBegin($this->viewFile));
+        $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
     }
 
     /**
@@ -636,7 +633,7 @@ class View implements DynamicContentAwareInterface
      */
     public function endPage()
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this->viewFile));
+        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
         ob_end_flush();
     }
 }
