@@ -134,7 +134,7 @@ class WebView extends View
     public function beginBody(): void
     {
         echo self::PH_BODY_BEGIN;
-        $this->eventDispatcher->dispatch(new BodyBegin($this->viewFile));
+        $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
     }
 
     /**
@@ -142,7 +142,7 @@ class WebView extends View
      */
     public function endBody(): void
     {
-        $this->eventDispatcher->dispatch(new BodyEnd($this->viewFile));
+        $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
         echo self::PH_BODY_END;
 
         foreach (array_keys($this->assetBundles) as $bundle) {
@@ -158,7 +158,7 @@ class WebView extends View
      */
     public function endPage($ajaxMode = false): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this->viewFile));
+        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
 
         $content = ob_get_clean();
 
