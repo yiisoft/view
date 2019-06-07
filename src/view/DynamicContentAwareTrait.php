@@ -1,18 +1,10 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- *
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace yii\view;
+namespace Yiisoft\View;
 
 /**
  * DynamicContentAwareTrait implements common methods for classes
  * which support a [[View]] dynamic content feature.
- *
- * @author Sergey Makinen <sergey@makinen.ru>
  */
 trait DynamicContentAwareTrait
 {
@@ -26,12 +18,12 @@ trait DynamicContentAwareTrait
      *
      * @return View the view object that can be used to render views or view files.
      */
-    abstract protected function getView();
+    abstract protected function getView(): View;
 
     /**
      * {@inheritdoc}
      */
-    public function getDynamicPlaceholders()
+    public function getDynamicPlaceholders(): array
     {
         return $this->_dynamicPlaceholders;
     }
@@ -39,7 +31,7 @@ trait DynamicContentAwareTrait
     /**
      * {@inheritdoc}
      */
-    public function setDynamicPlaceholders($placeholders)
+    public function setDynamicPlaceholders(array $placeholders): void
     {
         $this->_dynamicPlaceholders = $placeholders;
     }
@@ -47,7 +39,7 @@ trait DynamicContentAwareTrait
     /**
      * {@inheritdoc}
      */
-    public function addDynamicPlaceholder($name, $statements)
+    public function addDynamicPlaceholder(string $name, string $statements): void
     {
         $this->_dynamicPlaceholders[$name] = $statements;
     }
@@ -61,7 +53,7 @@ trait DynamicContentAwareTrait
      *
      * @return string final content.
      */
-    protected function updateDynamicContent($content, $placeholders, $isRestoredFromCache = false)
+    protected function updateDynamicContent(string $content, array $placeholders, bool $isRestoredFromCache = false): string
     {
         if (empty($placeholders) || !is_array($placeholders)) {
             return $content;

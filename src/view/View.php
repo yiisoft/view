@@ -1,20 +1,16 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- *
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
+namespace Yiisoft\View;
 
-namespace yii\view;
-
-use yii\base\Application;
-use yii\base\Component;
-use yii\helpers\FileHelper;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use yii\i18n\Locale;
-use yii\widgets\Block;
-use yii\widgets\ContentDecorator;
-use yii\widgets\FragmentCache;
+use Yiisoft\View\Event\AfterRender;
+use Yiisoft\View\Event\BeforeRender;
+use Yiisoft\View\Event\PageBegin;
+use Yiisoft\View\Event\PageEnd;
+use Yiisoft\Widget\Block;
+use Yiisoft\Widget\ContentDecorator;
+use Yiisoft\Widget\FragmentCache;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -22,13 +18,8 @@ use yii\widgets\FragmentCache;
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
- *
- * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
- * rendered. This property is read-only.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
  */
-class View extends Component implements DynamicContentAwareInterface
+class View implements DynamicContentAwareInterface
 {
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
@@ -52,7 +43,7 @@ class View extends Component implements DynamicContentAwareInterface
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
      * and rendered via [[renderPhpFile()]].
      */
-    public $renderers;
+    protected $renderers = [];
     /**
      * @var string the default view file extension. This will be appended to view file names if they don't have file extensions.
      */
@@ -86,25 +77,36 @@ class View extends Component implements DynamicContentAwareInterface
      */
     private $_viewFiles = [];
 
-    /**
-     * @var Application
-     */
-    protected $app;
+    protected $eventDispatcher;
 
-    public function __construct(Application $app, Theme $theme)
+    private $basePath;
+
+    private $logger;
+
+    private $sourceLanguage = 'en';
+    private $language = 'en';
+
+    public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
     {
-        $this->app = $app;
+        $this->basePath = $basePath;
         $this->theme = $theme;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->logger = $logger;
     }
 
-    public function getApp()
+    public function setRenderers(array $renderers)
     {
-        return $this->app;
+        $this->renderers = $renderers;
     }
 
-    public function getTheme(): Theme
+    public function setSourceLanguage(string $language)
     {
-        return $this->theme;
+        $this->sourceLanguage = $language;
+    }
+
+    public function setLanguage(string $language)
+    {
+        $this->language = $language;
     }
 
     /**
@@ -122,22 +124,22 @@ class View extends Component implements DynamicContentAwareInterface
      *   If `$context` is not given, it will be looked for under the directory containing the view currently
      *   being rendered (i.e., this happens when rendering a view within another view).
      *
-     * @param string $view    the view name.
-     * @param array  $params  the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param string $view the view name.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
-     *                        in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
-     *                        the view file corresponding to a relative view name.
-     *
-     * @throws ViewNotFoundException if the view file does not exist.
-     * @throws InvalidCallException  if the view cannot be resolved.
+     * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
+     * the view file corresponding to a relative view name.
      *
      * @return string the rendering result
      *
+     * @throws InvalidCallException  if the view cannot be resolved.
+     *
+     * @throws ViewNotFoundException if the view file does not exist.
      * @see renderFile()
      */
     public function render($view, $params = [], $context = null)
     {
-        $viewFile = $this->findViewFile($view, $context);
+        $viewFile = $this->findTemplateFile($view, $context);
 
         return $this->renderFile($viewFile, $params, $context);
     }
@@ -145,46 +147,38 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Finds the view file based on the given view name.
      *
-     * @param string $view    the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
-     *                        on how to specify this parameter.
+     * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
+     * on how to specify this parameter.
      * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
-     *                        in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
-     *                        the view file corresponding to a relative view name.
-     *
-     * @throws InvalidCallException if a relative view name is given while there is no active context to
-     *                              determine the corresponding view file.
+     * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
+     * the view file corresponding to a relative view name.
      *
      * @return string the view file path. Note that the file may not exist.
+     * @throws InvalidCallException if a relative view name is given while there is no active context to
+     * determine the corresponding view file.
+     *
      */
-    protected function findViewFile($view, $context = null)
+    protected function findTemplateFile(string $view, $context = null): string
     {
-        if (strncmp($view, '@', 1) === 0) {
-            // e.g. "@app/views/main"
-            $file = $this->app->getAlias($view);
-        } elseif (strncmp($view, '//', 2) === 0) {
-            // e.g. "//layouts/main"
-            $file = $this->app->getViewPath().DIRECTORY_SEPARATOR.ltrim($view, '/');
-        } elseif (strncmp($view, '/', 1) === 0) {
-            // e.g. "/site/index"
-            if ($this->app->controller !== null) {
-                $file = $this->app->controller->module->getViewPath().DIRECTORY_SEPARATOR.ltrim($view, '/');
-            } else {
-                throw new InvalidCallException("Unable to locate view file for view '$view': no active controller.");
-            }
+        if (strncmp($view, '//', 2) === 0) {
+            // path relative to basePath e.g. "//layouts/main"
+            $file = $this->basePath . '/' . ltrim($view, '/');
         } elseif ($context instanceof ViewContextInterface) {
-            $file = $context->getViewPath().DIRECTORY_SEPARATOR.$view;
+            // path provided by context
+            $file = $context->getViewPath() . '/' . $view;
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
-            $file = dirname($currentViewFile).DIRECTORY_SEPARATOR.$view;
+            // path relative to currently rendered view
+            $file = dirname($currentViewFile) . '/' . $view;
         } else {
-            throw new InvalidCallException("Unable to resolve view file for view '$view': no active view context.");
+            $file = $view;
         }
 
         if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
             return $file;
         }
-        $path = $file.'.'.$this->defaultExtension;
+        $path = $file . '.' . $this->defaultExtension;
         if ($this->defaultExtension !== 'php' && !is_file($path)) {
-            $path = $file.'.php';
+            $path = $file . '.php';
         }
 
         return $path;
@@ -203,17 +197,18 @@ class View extends Component implements DynamicContentAwareInterface
      * return it as a string.
      *
      * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
-     * @param array  $params   the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param object $context  the context that the view should use for rendering the view. If null,
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param object $context the context that the view should use for rendering the view. If null,
      *                         existing [[context]] will be used.
      *
+     * @return string the rendering result
      * @throws ViewNotFoundException if the view file does not exist
      *
-     * @return string the rendering result
      */
     public function renderFile($viewFile, $params = [], $context = null)
     {
-        $viewFile = $requestedFile = $this->app->getAlias($viewFile);
+        // TODO: these two match now
+        $requestedFile = $viewFile;
 
         if ($this->theme !== null) {
             $viewFile = $this->theme->applyTo($viewFile);
@@ -230,18 +225,15 @@ class View extends Component implements DynamicContentAwareInterface
         }
         $output = '';
         $this->_viewFiles[] = [
-            'resolved'  => $viewFile,
+            'resolved' => $viewFile,
             'requested' => $requestedFile,
         ];
 
         if ($this->beforeRender($viewFile, $params)) {
-            $this->app->debug("Rendering view file: $viewFile", __METHOD__);
+            $this->logger->debug("Rendering view file: $viewFile");
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
-                if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
-                    $this->renderers[$ext] = $this->app->createObject($this->renderers[$ext]);
-                }
-                /* @var $renderer ViewRenderer */
+                /* @var $renderer TemplateRenderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
@@ -269,8 +261,8 @@ class View extends Component implements DynamicContentAwareInterface
      * If the target and the source language codes are the same,
      * the original file will be returned.
      *
-     * @param string $file           the original file
-     * @param string $language       the target language that the file should be localized to.
+     * @param string $file the original file
+     * @param string $language the target language that the file should be localized to.
      *                               If not set, the value of [[\yii\base\Application::language]] will be used.
      * @param string $sourceLanguage the language that the original file is in.
      *                               If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
@@ -280,16 +272,13 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function localize($file, $language = null, $sourceLanguage = null)
     {
-        if ($language === null) {
-            $language = $this->app->getLocale()->asString();
-        }
-        if ($sourceLanguage === null) {
-            $sourceLanguage = $this->getSourceLocale()->asString();
-        }
+        $language = $language ?? $this->language;
+        $sourceLanguage = $sourceLanguage ?? $this->sourceLanguage;
+
         if ($language === $sourceLanguage) {
             return $file;
         }
-        $desiredFile = dirname($file).DIRECTORY_SEPARATOR.$language.DIRECTORY_SEPARATOR.basename($file);
+        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
         if (is_file($desiredFile)) {
             return $desiredFile;
         }
@@ -298,7 +287,7 @@ class View extends Component implements DynamicContentAwareInterface
         if ($language === $sourceLanguage) {
             return $file;
         }
-        $desiredFile = dirname($file).DIRECTORY_SEPARATOR.$language.DIRECTORY_SEPARATOR.basename($file);
+        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
 
         return is_file($desiredFile) ? $desiredFile : $file;
     }
@@ -321,34 +310,38 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * This method is invoked right before [[renderFile()]] renders a view file.
-     * The default implementation will trigger the [[RenderEvent::BEFORE]] event.
+     * The default implementation will trigger the [[BeforeRender]] event.
      * If you override this method, make sure you call the parent implementation first.
      *
      * @param string $viewFile the view file to be rendered.
-     * @param array  $params   the parameter array passed to the [[render()]] method.
+     * @param array $params the parameter array passed to the [[render()]] method.
      *
      * @return bool whether to continue rendering the view file.
      */
     public function beforeRender(string $viewFile, array $params): bool
     {
-        return $this->trigger(RenderEvent::before($viewFile, $params));
+        $event = new BeforeRender($viewFile, $params);
+        $this->eventDispatcher->dispatch($event);
+
+        return !$event->isPropagationStopped();
     }
 
     /**
      * This method is invoked right after [[renderFile()]] renders a view file.
-     * The default implementation will trigger the [[RenderEvent::AFTER]] event.
+     * The default implementation will trigger the [[AfterRender]] event.
      * If you override this method, make sure you call the parent implementation first.
      *
      * @param string $viewFile the view file being rendered.
-     * @param array  $params   the parameter array passed to the [[render()]] method.
-     * @param string $output   the rendering result of the view file. Updates to this parameter
+     * @param array $params the parameter array passed to the [[render()]] method.
+     * @param string $output the rendering result of the view file. Updates to this parameter
      *                         will be passed back and returned by [[renderFile()]].
      */
-    public function afterRender(string $viewFile, array $params, &$output): void
+    public function afterRender(string $viewFile, array $params, &$output): string
     {
-        if ($this->hasEventHandlers(RenderEvent::AFTER)) {
-            $output = $this->trigger(RenderEvent::after($viewFile, $params, $output));
-        }
+        $event = new AfterRender($viewFile, $params, $output);
+        $this->eventDispatcher->dispatch($event);
+
+        return $event->getResult();
     }
 
     /**
@@ -360,13 +353,13 @@ class View extends Component implements DynamicContentAwareInterface
      *
      * This method should mainly be called by view renderer or [[renderFile()]].
      *
-     * @param string $_file_   the view file.
-     * @param array  $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
-     *
-     * @throws \Exception
-     * @throws \Throwable
+     * @param string $_file_ the view file.
+     * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      *
      * @return string the rendering result
+     * @throws \Throwable
+     *
+     * @throws \Exception
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
@@ -404,7 +397,7 @@ class View extends Component implements DynamicContentAwareInterface
      * ```
      *
      * @param string $statements the PHP statements for generating the dynamic content.
-     * @param array  $params     the parameters (name-value pairs) that will be extracted and made
+     * @param array $params the parameters (name-value pairs) that will be extracted and made
      *                           available in the $statement context. The parameters will be stored in the cache and be reused
      *                           each time $statement is executed. You should make sure, that these are safely serializable.
      *
@@ -414,7 +407,7 @@ class View extends Component implements DynamicContentAwareInterface
     public function renderDynamic($statements, array $params = [])
     {
         if (!empty($params)) {
-            $statements = 'extract(unserialize(\''.str_replace(['\\', '\''], ['\\\\', '\\\''], serialize($params)).'\'));'.$statements;
+            $statements = 'extract(unserialize(\'' . str_replace(['\\', '\''], ['\\\\', '\\\''], serialize($params)) . '\'));' . $statements;
         }
 
         if (!empty($this->_cacheStack)) {
@@ -447,7 +440,7 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function getDynamicPlaceholders()
+    public function getDynamicPlaceholders(): array
     {
         return $this->_dynamicPlaceholders;
     }
@@ -455,7 +448,7 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function setDynamicPlaceholders($placeholders)
+    public function setDynamicPlaceholders(array $placeholders): void
     {
         $this->_dynamicPlaceholders = $placeholders;
     }
@@ -463,7 +456,7 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function addDynamicPlaceholder($placeholder, $statements)
+    public function addDynamicPlaceholder(string $placeholder, string $statements): void
     {
         foreach ($this->_cacheStack as $cache) {
             $cache->addDynamicPlaceholder($placeholder, $statements);
@@ -520,8 +513,8 @@ class View extends Component implements DynamicContentAwareInterface
      *
      * This method is a shortcut to beginning [[Block]].
      *
-     * @param string $id            the block ID.
-     * @param bool   $renderInPlace whether to render the block content in place.
+     * @param string $id the block ID.
+     * @param bool $renderInPlace whether to render the block content in place.
      *                              Defaults to false, meaning the captured block will not be displayed.
      *
      * @return Block the Block widget instance
@@ -529,9 +522,9 @@ class View extends Component implements DynamicContentAwareInterface
     public function beginBlock($id, $renderInPlace = false)
     {
         return Block::begin([
-            'id'            => $id,
+            'id' => $id,
             'renderInPlace' => $renderInPlace,
-            'view'          => $this,
+            'view' => $this,
         ]);
     }
 
@@ -557,7 +550,7 @@ class View extends Component implements DynamicContentAwareInterface
      *
      * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
      *                         This can be specified as either the view file path or [path alias](guide:concept-aliases).
-     * @param array  $params   the variables (name => value) to be extracted and made available in the decorative view.
+     * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
      *
      * @return ContentDecorator the ContentDecorator widget instance
      *
@@ -567,8 +560,8 @@ class View extends Component implements DynamicContentAwareInterface
     {
         return ContentDecorator::begin([
             'viewFile' => $viewFile,
-            'params'   => $params,
-            'view'     => $this,
+            'params' => $params,
+            'view' => $this,
         ]);
     }
 
@@ -595,8 +588,8 @@ class View extends Component implements DynamicContentAwareInterface
      * }
      * ```
      *
-     * @param string $id         a unique ID identifying the fragment to be cached.
-     * @param array  $properties initial property values for [[FragmentCache]]
+     * @param string $id a unique ID identifying the fragment to be cached.
+     * @param array $properties initial property values for [[FragmentCache]]
      *
      * @return bool whether you should generate the content for caching.
      *              False if the cached version is available.
@@ -632,7 +625,7 @@ class View extends Component implements DynamicContentAwareInterface
         ob_start();
         ob_implicit_flush(false);
 
-        $this->trigger(PageEvent::BEGIN);
+        $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
     }
 
     /**
@@ -640,7 +633,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function endPage()
     {
-        $this->trigger(PageEvent::END);
+        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
         ob_end_flush();
     }
 }
