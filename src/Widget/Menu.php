@@ -163,7 +163,7 @@ class Menu extends Widget
      *
      * @return string the result of widget execution to be outputted.
      */
-    public function run()
+    public function run(): string
     {
         if ($this->route === null && $this->app->controller !== null) {
             $this->route = $this->app->controller->getRoute();
