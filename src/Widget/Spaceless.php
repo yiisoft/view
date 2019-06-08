@@ -56,7 +56,7 @@ class Spaceless extends Widget
      *
      * @return string the result of widget execution to be outputted.
      */
-    public function run()
+    public function run(): string
     {
         return trim(preg_replace('/>\s+</', '><', ob_get_clean()));
     }

@@ -193,7 +193,7 @@ class ActiveForm extends Widget implements Initiable
      *
      * @throws InvalidCallException if `beginField()` and `endField()` calls are not matching.
      */
-    public function run()
+    public function run(): string
     {
         if (!empty($this->_fields)) {
             throw new InvalidCallException('Each beginField() should have a matching endField() call.');
