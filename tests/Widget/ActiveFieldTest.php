@@ -539,7 +539,7 @@ class TestInputWidget extends InputWidget
         self::$lastInstance = $this;
     }
 
-    public function run()
+    public function run(): string
     {
         return 'Render: '.get_class($this);
     }
