@@ -140,7 +140,6 @@ class View implements DynamicContentAwareInterface
     public function render($view, $params = [], $context = null)
     {
         $viewFile = $this->findTemplateFile($view, $context);
-
         return $this->renderFile($viewFile, $params, $context);
     }
 
@@ -170,7 +169,7 @@ class View implements DynamicContentAwareInterface
             // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;
         } else {
-            $file = $view;
+            throw new \RuntimeException("Unable to resolve view file for view '$view': no active view context.");
         }
 
         if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
