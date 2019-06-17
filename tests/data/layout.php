@@ -1,5 +1,5 @@
 <?php
-/* @var $this \yii\web\View */
+/* @var $this \Yiisoft\Web\View */
 /* @var $content string */
 ?>
 <?php $this->beginPage(); ?>

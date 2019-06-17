@@ -88,7 +88,7 @@ PHP
             $this->testViewPath => $themePath,
         ]));
 
-        $this->assertSame($subViewContent, $view->render($this->testViewPath . '/base'));
+        $this->assertSame($subViewContent, $view->render('//base'));
     }
 
     /// FIXME

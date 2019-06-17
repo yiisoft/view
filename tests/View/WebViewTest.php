@@ -21,12 +21,15 @@ class WebViewTest extends TestCase
 
     private $layoutPath;
 
+    private $dataDir;
+
     private $eventDispatcher;
     private $eventProvider;
 
     protected function setUp()
     {
-        $this->layoutPath = dirname(__DIR__) . '/data/layout.php';
+        $this->dataDir = dirname(__DIR__) . '/data/';
+        $this->layoutPath = $this->dataDir . 'layout.php';
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
         FileHelper::createDirectory($this->testViewPath);
 
@@ -43,33 +46,33 @@ class WebViewTest extends TestCase
 
     public function testRegisterJsVar(): void
     {
-        $view = $this->createView();
+        $view = $this->createView($this->dataDir);
         $view->registerJsVar('username', 'samdark');
-        $html = $view->render($this->layoutPath, ['content' => 'content']);
+        $html = $view->render('//layout.php', ['content' => 'content']);
         $this->assertContains('<script>var username = "samdark";</script></head>', $html);
 
-        $view = $this->createView();
+        $view = $this->createView($this->dataDir);
         $view->registerJsVar('objectTest', [
             'number' => 42,
             'question' => 'Unknown',
         ]);
-        $html = $view->render($this->layoutPath, ['content' => 'content']);
+        $html = $view->render('//layout.php', ['content' => 'content']);
         $this->assertContains('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
     }
 
     public function testRegisterJsFileWithAlias(): void
     {
-        $view = $this->createView();
+        $view = $this->createView($this->testViewPath);
         $view->registerJsFile('@web/js/somefile.js', ['position' => WebView::POS_HEAD]);
         $html = $view->render($this->layoutPath, ['content' => 'content']);
         $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
 
-        $view = $this->createView();
+        $view = $this->createView($this->testViewPath);
         $view->registerJsFile('@web/js/somefile.js', ['position' => WebView::POS_BEGIN]);
         $html = $view->render($this->layoutPath, ['content' => 'content']);
         $this->assertContains('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
-        $view = $this->createView();
+        $view = $this->createView($this->testViewPath);
         $view->registerJsFile('@web/js/somefile.js', ['position' => WebView::POS_END]);
         $html = $view->render($this->layoutPath, ['content' => 'content']);
         $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
@@ -77,7 +80,7 @@ class WebViewTest extends TestCase
 
     public function testRegisterCssFileWithAlias(): void
     {
-        $view = $this->createView();
+        $view = $this->createView($this->testViewPath);
         $view->registerCssFile('@web/css/somefile.css');
         $html = $view->render($this->layoutPath, ['content' => 'content']);
         $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
@@ -133,8 +136,8 @@ class WebViewTest extends TestCase
         return $matches[1];
     }
 
-    private function createView(): WebView
+    private function createView(string $basePath): WebView
     {
-        return new WebView($this->testViewPath, new Theme([]), $this->eventDispatcher, new NullLogger());
+        return new WebView($basePath, new Theme([]), $this->eventDispatcher, new NullLogger());
     }
 }

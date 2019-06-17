@@ -61,7 +61,7 @@ class AssetBundle
      *
      * ```php
      * public $depends = [
-     *    \yii\web\YiiAsset::class,
+     *    \Yiisoft\Web\YiiAsset::class,
      *    \yii\bootstrap\BootstrapAsset::class,
      * ];
      * ```
@@ -169,7 +169,7 @@ class AssetBundle
     /**
      * Registers the CSS and JS files with the given view.
      *
-     * @param \yii\web\View $view the view that the asset files are to be registered with.
+     * @param \Yiisoft\Web\View $view the view that the asset files are to be registered with.
      */
     public function registerAssetFiles(WebView $view)
     {

@@ -6,7 +6,7 @@ use yii\base\Application;
 use yii\base\Behavior;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\web\JsExpression;
+use Yiisoft\Web\JsExpression;
 
 /**
  * ActiveFormClientScript is a base behavior for [[ActiveForm]], which allows composition of the client-side form validation.

@@ -245,7 +245,7 @@ class ActiveField
      */
     public function end()
     {
-        $html = Html::endTag(ArrayHelper::keyExists('tag', $this->options) ? $this->options['tag'] : 'div');
+        $html = Html::endTag(ArrayHelper::keyExists($this->options, 'tag') ? $this->options['tag'] : 'div');
         $this->form->afterFieldRender($this);
 
         return $html;

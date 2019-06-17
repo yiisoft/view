@@ -33,7 +33,7 @@ use Yiisoft\View\Event\PageEnd;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
- * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
+ * @property \Yiisoft\Web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.
  */
 class WebView extends View
@@ -365,7 +365,7 @@ class WebView extends View
      * $view->registerCsrfMetaTags();
      * ```
      *
-     * The above code will result in `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
+     * The above code will result in `<meta name="csrf-param" content="[Yiisoft\Web\Request::$csrfParam]">`
      * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
      *
      * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
