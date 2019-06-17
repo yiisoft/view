@@ -2,6 +2,7 @@
 
 namespace Yiisoft\Widget;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use yii\exceptions\InvalidConfigException;
 
 /**
@@ -43,16 +44,12 @@ class ContentDecorator extends Widget
      */
     public $params = [];
 
-    /**
-     * Starts recording a clip.
-     */
-    public function init(): void
+    private function __construct(string $viewFile, EventDispatcherInterface $eventDispatcher)
     {
-        parent::init();
+        $this->viewFile = $viewFile;
+        parent::__construct($eventDispatcher);
 
-        if ($this->viewFile === null) {
-            throw new InvalidConfigException('ContentDecorator::viewFile must be set.');
-        }
+        // Starts recording a clip.
         ob_start();
         ob_implicit_flush(false);
     }
@@ -68,6 +65,6 @@ class ContentDecorator extends Widget
         $params = $this->params;
         $params['content'] = ob_get_clean();
         // render under the existing context
-        return $this->view->renderFile($this->viewFile, $params);
+        return $this->getView()->renderFile($this->viewFile, $params);
     }
 }
