@@ -15,8 +15,11 @@
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii"
     },
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
+        "psr/log": "^1.1",
+        "psr/event-dispatcher": "^1.0",
         "yiisoft/arrays": "^3.0@dev",
         "yiisoft/var-dumper": "^3.0@dev"
     },
