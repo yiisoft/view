@@ -84,7 +84,7 @@ class AssetConverter implements AssetConverterInterface
      *
      * @return string the converted asset file path, relative to $basePath.
      */
-    public function convert($asset, $basePath)
+    public function convert($asset, $basePath): string
     {
         $pos = strrpos($asset, '.');
         if ($pos !== false) {
