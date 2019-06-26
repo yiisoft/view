@@ -1,12 +1,16 @@
 <?php
 
+use Yiisoft\Factory\Definitions\Reference;
+use Yiisoft\View\Theme;
+use Yiisoft\View\View;
+
 return [
     'view' => [
-        '__class' => \yii\view\View::class,
+        '__class' => View::class,
     ],
 
-    \yii\view\Theme::class => \yii\di\Reference::to('theme'),
+    Theme::class => Reference::to('theme'),
     'theme'                => [
-        '__class' => \yii\view\Theme::class,
+        '__class' => Theme::class,
     ],
 ];
