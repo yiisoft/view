@@ -32,9 +32,6 @@ use Yiisoft\View\Event\PageEnd;
  * ```
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
- *
- * @property \Yiisoft\Web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
- * component.
  */
 class WebView extends View
 {
@@ -81,44 +78,43 @@ class WebView extends View
      * are the registered [[AssetBundle]] objects.
      * @see registerAssetBundle()
      */
-    public $assetBundles = [];
+    private $assetBundles = [];
     /**
      * @var string the page title
      */
-    public $title;
+    private $title;
     /**
      * @var array the registered meta tags.
      * @see registerMetaTag()
      */
-    public $metaTags = [];
+    private $metaTags = [];
     /**
      * @var array the registered link tags.
      * @see registerLinkTag()
      */
-    public $linkTags = [];
+    private $linkTags = [];
     /**
      * @var array the registered CSS code blocks.
      * @see registerCss()
      */
-    public $css = [];
+    private $css = [];
     /**
      * @var array the registered CSS files.
      * @see registerCssFile()
      */
-    public $cssFiles = [];
+    private $cssFiles = [];
     /**
      * @var array the registered JS code blocks
      * @see registerJs()
      */
-    public $js = [];
+    private $js = [];
     /**
      * @var array the registered JS files.
      * @see registerJsFile()
      */
-    public $jsFiles = [];
+    private $jsFiles = [];
 
-    private $_assetManager;
-
+    private $assetManager;
 
     /**
      * Marks the position of an HTML head section.
@@ -209,7 +205,7 @@ class WebView extends View
      */
     public function getAssetManager(): AssetManager
     {
-        return $this->_assetManager;
+        return $this->assetManager;
     }
 
     /**
@@ -218,7 +214,7 @@ class WebView extends View
      */
     public function setAssetManager(AssetManager $value): void
     {
-        $this->_assetManager = $value;
+        $this->assetManager = $value;
     }
 
     /**
@@ -418,13 +414,13 @@ class WebView extends View
         if (empty($depends)) {
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                '__class' => AssetBundle::class,
+            $bundle = $this->createBundle([
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
             ]);
+            $this->getAssetManager()->bundles[$key] = $bundle;
             $this->registerAssetBundle($key);
         }
     }
@@ -485,13 +481,13 @@ class WebView extends View
             $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                '__class' => AssetBundle::class,
+            $bundle = $this->createBundle([
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
             ]);
+            $this->getAssetManager()->bundles[$key] = $bundle;
             $this->registerAssetBundle($key);
         }
     }
@@ -615,5 +611,20 @@ class WebView extends View
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
+    }
+
+    /**
+     * @param array $options
+     * @return AssetBundle
+     */
+    private function createBundle(array $options): AssetBundle
+    {
+        $bundle = new AssetBundle();
+        $bundle->baseUrl = $options['basUrl'];
+        $bundle->js = $options['js'];
+        $bundle->jsOptions = $options['jsOptions'];
+        $bundle->depends = $options['depends'];
+
+        return $bundle;
     }
 }
