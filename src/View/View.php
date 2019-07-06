@@ -41,9 +41,10 @@ class View implements DynamicContentAwareInterface
      * ```
      *
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
-     * and rendered via [[renderPhpFile()]].
+     * and rendered via PhpTemplateRenderer.
      */
-    protected $renderers = [];
+    protected $renderers = [
+    ];
     /**
      * @var string the default view file extension. This will be appended to view file names if they don't have file extensions.
      */
@@ -231,13 +232,9 @@ class View implements DynamicContentAwareInterface
         if ($this->beforeRender($viewFile, $params)) {
             $this->logger->debug("Rendering view file: $viewFile");
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
-            if (isset($this->renderers[$ext])) {
-                /* @var $renderer TemplateRenderer */
-                $renderer = $this->renderers[$ext];
-                $output = $renderer->render($this, $viewFile, $params);
-            } else {
-                $output = $this->renderPhpFile($viewFile, $params);
-            }
+            $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
+            $output = $renderer->render($this, $viewFile, $params);
+
             $this->afterRender($viewFile, $params, $output);
         }
 
@@ -341,45 +338,6 @@ class View implements DynamicContentAwareInterface
         $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
-    }
-
-    /**
-     * Renders a view file as a PHP script.
-     *
-     * This method treats the view file as a PHP script and includes the file.
-     * It extracts the given parameters and makes them available in the view file.
-     * The method captures the output of the included view file and returns it as a string.
-     *
-     * This method should mainly be called by view renderer or [[renderFile()]].
-     *
-     * @param string $_file_ the view file.
-     * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
-     *
-     * @return string the rendering result
-     * @throws \Throwable
-     *
-     * @throws \Exception
-     */
-    public function renderPhpFile($_file_, $_params_ = [])
-    {
-        $_obInitialLevel_ = ob_get_level();
-        ob_start();
-        ob_implicit_flush(false);
-        extract($_params_, EXTR_OVERWRITE);
-
-        try {
-            require $_file_;
-
-            return ob_get_clean();
-        } catch (\Throwable $e) {
-            while (ob_get_level() > $_obInitialLevel_) {
-                if (!@ob_end_clean()) {
-                    ob_clean();
-                }
-            }
-
-            throw $e;
-        }
     }
 
     /**
