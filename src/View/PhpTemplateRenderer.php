@@ -12,7 +12,7 @@ class PhpTemplateRenderer implements TemplateRenderer
 
         $obInitialLevel = ob_get_level();
         ob_start();
-        ob_implicit_flush(false);
+        ob_implicit_flush(0);
         try {
             $renderer->bindTo($view)();
             return ob_get_clean();
