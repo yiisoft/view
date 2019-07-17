@@ -1,7 +1,7 @@
 <?php
 namespace Yiisoft\View;
 
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 
 /**
  * Theme represents an application theme.

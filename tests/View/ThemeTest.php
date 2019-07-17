@@ -3,7 +3,7 @@
 namespace Yiisoft\View\Tests;
 
 use PHPUnit\Framework\TestCase;
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 use Yiisoft\View\Theme;
 
 class ThemeTest extends TestCase

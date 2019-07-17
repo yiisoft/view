@@ -6,7 +6,7 @@ use yii\base\Application;
 use yii\base\Component;
 use yii\exceptions\InvalidArgumentException;
 use yii\exceptions\InvalidConfigException;
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 use yii\helpers\Url;
 use yii\helpers\Yii;
 
@@ -505,7 +505,7 @@ class AssetManager
         $dstFile = $dstDir.DIRECTORY_SEPARATOR.$fileName;
 
         if (!is_dir($dstDir)) {
-            FileHelper::createDirectory($dstDir, $this->dirMode, true);
+            FileHelper::createDirectory($dstDir, $this->dirMode);
         }
 
         if ($this->linkAssets) {
@@ -556,7 +556,7 @@ class AssetManager
         $dstDir = $this->getRealBasePath().DIRECTORY_SEPARATOR.$dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
-                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
+                FileHelper::createDirectory(dirname($dstDir), $this->dirMode);
 
                 try { // fix #6226 symlinking multi threaded
                     symlink($src, $dstDir);

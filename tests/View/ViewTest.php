@@ -4,7 +4,7 @@ namespace Yiisoft\View\Tests;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Yiisoft\EventDispatcher\Dispatcher;
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;

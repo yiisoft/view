@@ -3,7 +3,7 @@
 namespace Yiisoft\Asset\Tests;
 
 use PHPUnit\Framework\TestCase;
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 use Yiisoft\Asset\AssetConverter;
 
 /**
