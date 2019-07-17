@@ -4,7 +4,7 @@ namespace Yiisoft\Asset\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 use yii\helpers\Yii;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetManager;
