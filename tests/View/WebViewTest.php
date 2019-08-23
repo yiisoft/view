@@ -117,41 +117,6 @@ class WebViewTest extends TestCase
         $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
 
-    public function testRegisterCsrfMetaTags(): void
-    {
-        // TODO: can we implement CSRF with headers instead of a tag?
-        // How would that work with async requests?
-//        $this->mockWebApplication([], null, [
-//            'request' => [
-//                '__class' => Request::class,
-//                'cookieValidationKey' => 'secretkey',
-//                'scriptFile' => __DIR__ . '/baseUrl/index.php',
-//                'scriptUrl' => '/baseUrl/index.php',
-//            ],
-//            'cache' => [
-//                '__class' => FileCache::class,
-//            ],
-//        ]);
-
-//        $view = $this->createView();
-//
-//        $view->registerCsrfMetaTags();
-//        $html = $view->render('@yii/tests/data/views/layout.php', ['content' => 'content']);
-//        $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
-//        $this->assertStringContainsString('<meta name="csrf-token" content="', $html);
-//        $csrfToken1 = $this->getCSRFTokenValue($html);
-//
-//        // regenerate token
-//        $this->app->request->getCsrfToken(true);
-//        $view->registerCsrfMetaTags();
-//        $html = $view->render('@yii/tests/data/views/layout.php', ['content' => 'content']);
-//        $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
-//        $this->assertStringContainsString('<meta name="csrf-token" content="', $html);
-//        $csrfToken2 = $this->getCSRFTokenValue($html);
-//
-//        $this->assertNotSame($csrfToken1, $csrfToken2);
-    }
-
     /**
      * Parses CSRF token from page HTML.
      *
