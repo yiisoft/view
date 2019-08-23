@@ -1,5 +1,5 @@
 <?php
-/* @var $this \Yiisoft\Web\View */
+/* @var $this \Yiisoft\Yii-Web\WebView */
 /* @var $content string */
 ?>
 <?php $this->beginPage(); ?>
@@ -17,4 +17,4 @@
 <?php $this->endBody(); ?>
 </body>
 </html>
-<?php $this->endPage(); ?>
+<?php $this->endPage();

@@ -1,16 +1,17 @@
 <?php
 
+use Yiisoft\Asset\AssetConverter;
+use Yiisoft\Asset\AssetManager;
 use Yiisoft\Factory\Definitions\Reference;
-use Yiisoft\View\Theme;
-use Yiisoft\View\View;
 
 return [
-    'view' => [
-        '__class' => View::class,
+    AssetConverter::class => [
+        '__class' => AssetConverter::class,
+        '__construct()' => [Reference::to(Aliases::class)]
     ],
 
-    Theme::class => Reference::to('theme'),
-    'theme'                => [
-        '__class' => Theme::class,
+    AssetManager::class => [
+        '__class' => AssetManager::class,
+        '__construct()' => [Reference::to(Aliases::class)]
     ],
 ];

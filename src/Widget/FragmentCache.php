@@ -1,11 +1,12 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
-use yii\view\DynamicContentAwareInterface;
-use yii\view\DynamicContentAwareTrait;
 use Yiisoft\Cache\CacheInterface;
 use Yiisoft\Cache\Dependencies\Dependency;
+use Yiisoft\View\DynamicContentAwareInterface;
+use Yiisoft\View\DynamicContentAwareTrait;
 
 /**
  * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
@@ -88,7 +89,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      *
      * @return string the result of widget execution to be outputted.
      */
-    public function run()
+    public function run(): string
     {
         if (($content = $this->getCachedContent()) !== false) {
             return $content;
