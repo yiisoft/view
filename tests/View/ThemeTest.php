@@ -13,12 +13,12 @@ class ThemeTest extends TestCase
      */
     protected $testViewPath;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         FileHelper::removeDirectory($this->testViewPath);
     }

@@ -1,59 +1,59 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Asset;
 
 use yii\helpers\Url;
+use Yiisoft\Aliases\Aliases;
 use Yiisoft\Arrays\ArrayHelper;
-use Yiisoft\View\View;
 use Yiisoft\View\WebView;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
- * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
- * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
- * of the class representing it.
+ * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application. The
+ * name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php) of the class
+ * representing it.
  *
- * An asset bundle can depend on other asset bundles. When registering an asset bundle
- * with a view, all its dependent asset bundles will be automatically registered.
- *
- * For more details and usage information on AssetBundle, see the [guide article on assets](guide:structure-assets).
+ * An asset bundle can depend on other asset bundles. When registering an asset bundle with a view, all its dependent
+ * asset bundles will be automatically registered.
  */
 class AssetBundle
 {
     /**
-     * @var string the directory that contains the source asset files for this asset bundle.
-     *             A source asset file is a file that is part of your source code repository of your Web application.
-     *
-     * You must set this property if the directory containing the source asset files is not Web accessible.
-     * By setting this property, [[AssetManager]] will publish the source asset files
-     * to a Web-accessible directory automatically when the asset bundle is registered on a page.
-     *
-     * If you do not set this property, it means the source asset files are located under [[basePath]].
-     *
-     * You can use either a directory or an alias of the directory.
-     *
-     * @see $publishOptions
-     */
-    public $sourcePath;
-    /**
      * @var string the Web-accessible directory that contains the asset files in this bundle.
      *
-     * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
-     * when it publishes the asset files from [[sourcePath]].
+     * If {@see sourcePath} is set, this property will be *overwritten* by {@see AssetManager} when it publishes the
+     * asset files from {@see sourcePath}.
      *
      * You can use either a directory or an alias of the directory.
      */
     public $basePath;
+
     /**
-     * @var string the base URL for the relative asset files listed in [[js]] and [[css]].
+     * @var string the base URL for the relative asset files listed in {@see js} and {@see css}.
      *
-     * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
-     * when it publishes the asset files from [[sourcePath]].
+     * If {@see {sourcePath} is set, this property will be *overwritten* by {@see {AssetManager} when it publishes the
+     * asset files from {@see {sourcePath}.
      *
      * You can use either a URL or an alias of the URL.
      */
     public $baseUrl;
+
+    /**
+     * @var array list of CSS files that this bundle contains. Each CSS file can be specified in one of the three
+     *            formats as explained in {@see js}.
+     *
+     * Note that only a forward slash "/" should be used as directory separator.
+     */
+    public $css = [];
+
+    /**
+     * @var array the options that will be passed to {@see View::registerCssFile()} when registering the CSS files in
+     *            this bundle.
+     */
+    public $cssOptions = [];
+
     /**
      * @var array list of bundle class names that this bundle depends on.
      *
@@ -67,145 +67,62 @@ class AssetBundle
      * ```
      */
     public $depends = [];
+
     /**
-     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
-     *            specified in one of the following formats:
+     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be specified in one of
+     *            the following formats:
      *
      * - an absolute URL representing an external asset. For example,
      *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
      *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-     * - a relative path representing a local asset (e.g. `js/main.js`). The actual file path of a local
-     *   asset can be determined by prefixing [[basePath]] to the relative path, and the actual URL
-     *   of the asset can be determined by prefixing [[baseUrl]] to the relative path.
-     * - an array, with the first entry being the URL or relative path as described before, and a list of key => value pairs
-     *   that will be used to overwrite [[jsOptions]] settings for this entry.
-     *   This functionality is available since version 2.0.7.
+     * - a relative path representing a local asset (e.g. `js/main.js`). The actual file path of a local asset can be
+     *   determined by prefixing [[basePath]] to the relative path, and the actual URL of the asset can be determined
+     *   by prefixing [[baseUrl]] to the relative path.
+     * - an array, with the first entry being the URL or relative path as described before, and a list of key => value
+     *   pairs that will be used to overwrite {@see jsOptions} settings for this entry.
      *
      * Note that only a forward slash "/" should be used as directory separator.
      */
     public $js = [];
+
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
-     *            in one of the three formats as explained in [[js]].
-     *
-     * Note that only a forward slash "/" should be used as directory separator.
-     */
-    public $css = [];
-    /**
-     * @var array the options that will be passed to [[View::registerJsFile()]]
-     *            when registering the JS files in this bundle.
+     * @var array the options that will be passed to {@see View::registerJsFile()} when registering the JS files in this
+     *            bundle.
      */
     public $jsOptions = [];
+
     /**
-     * @var array the options that will be passed to [[View::registerCssFile()]]
-     *            when registering the CSS files in this bundle.
-     */
-    public $cssOptions = [];
-    /**
-     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
-     *            is being published. This property is used only when [[sourcePath]] is set.
+     * @var array the options to be passed to {@see AssetManager::publish()} when the asset bundle  is being published.
+     *            This property is used only when {@see sourcePath} is set.
      */
     public $publishOptions = [];
 
     /**
-     * Registers this asset bundle with a view.
+     * @var string the directory that contains the source asset files for this asset bundle. A source asset file is a
+     *             file that is part of your source code repository of your Web application.
      *
-     * @param View $template the view to be registered with
+     * You must set this property if the directory containing the source asset files is not Web accessible. By setting
+     * this property, [[AssetManager]] will publish the source asset files to a Web-accessible directory automatically
+     * when the asset bundle is registered on a page.
      *
-     * @return static the registered asset bundle instance
-     */
-    public static function register($template)
-    {
-        return $template->registerAssetBundle(get_called_class());
-    }
-
-    /**
-     * Initializes the bundle.
-     * If you override this method, make sure you call the parent implementation in the last.
-     */
-    public function init(): void
-    {
-        if ($this->sourcePath !== null) {
-            $this->sourcePath = $this->findPath($this->sourcePath);
-        }
-        if ($this->basePath !== null) {
-            $this->basePath = $this->findPath($this->basePath);
-        }
-        if ($this->baseUrl !== null) {
-            $this->baseUrl = rtrim($this->baseUrl, '/');
-        }
-    }
-
-    public $alternatives = [
-        '@npm' => '@root/node_modules',
-    ];
-
-    protected function findPath($path)
-    {
-        $path = rtrim($path, '/\\');
-        if (file_exists($path)) {
-            return $path;
-        }
-
-        return $this->findAlternativePath($path);
-    }
-
-    protected function findAlternativePath($path)
-    {
-        foreach ($this->alternatives as $src => $dst) {
-            $len = strlen($src);
-
-            if (strncmp($path, $src, $len) === 0) {
-                $alt = $dst.substr($path, $len);
-                if (file_exists($alt)) {
-                    return $alt;
-                }
-            }
-        }
-
-        return $path;
-    }
-
-    /**
-     * Registers the CSS and JS files with the given view.
+     * If you do not set this property, it means the source asset files are located under {@see basePath}.
      *
-     * @param \Yiisoft\Web\View $view the view that the asset files are to be registered with.
+     * You can use either a directory or an alias of the directory.
+     *
+     * {@see publishOptions}
      */
-    public function registerAssetFiles(WebView $view)
-    {
-        $manager = $view->getAssetManager();
-        foreach ($this->js as $js) {
-            if (is_array($js)) {
-                $file = array_shift($js);
-                $options = ArrayHelper::merge($this->jsOptions, $js);
-                $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
-            } else {
-                if ($js !== null) {
-                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
-                }
-            }
-        }
-        foreach ($this->css as $css) {
-            if (is_array($css)) {
-                $file = array_shift($css);
-                $options = ArrayHelper::merge($this->cssOptions, $css);
-                $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
-            } else {
-                if ($css !== null) {
-                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
-                }
-            }
-        }
-    }
+    public $sourcePath;
 
     /**
      * Publishes the asset bundle if its source code is not under Web-accessible directory.
-     * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
-     * CSS or JS files using [[AssetManager::converter|asset converter]].
+     *
+     * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding CSS or JS files using
+     * {@see AssetManager::converter|asset converter}.
      *
      * @param AssetManager $am the asset manager to perform the asset publishing
+     * @return void
      */
-    public function publish(AssetManager $am)
+    public function publish(AssetManager $am): void
     {
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
             [$this->basePath, $this->baseUrl] = $am->publish($this->sourcePath, $this->publishOptions);
@@ -234,6 +151,53 @@ class AssetBundle
                     }
                 } elseif (Url::isRelative($css)) {
                     $this->css[$i] = $converter->convert($css, $this->basePath);
+                }
+            }
+        }
+    }
+
+    /**
+     * Registers this asset bundle with a view.
+     *
+     * @param WebView $webView to be registered with
+     *
+     * @return AssetBundle the registered asset bundle instance
+     */
+    public static function register(WebView $webView): AssetBundle
+    {
+        return $webView->registerAssetBundle(static::class);
+    }
+
+    /**
+     * Registers the CSS and JS files with the given view.
+     *
+     * @param Webview $view the view that the asset files are to be registered with.
+     * @return void
+     */
+    public function registerAssetFiles(WebView $view): void
+    {
+        $manager = $view->getAssetManager();
+
+        foreach ($this->js as $js) {
+            if (is_array($js)) {
+                $file = array_shift($js);
+                $options = ArrayHelper::merge($this->jsOptions, $js);
+                $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
+            } else {
+                if ($js !== null) {
+                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
+                }
+            }
+        }
+
+        foreach ($this->css as $css) {
+            if (is_array($css)) {
+                $file = array_shift($css);
+                $options = ArrayHelper::merge($this->cssOptions, $css);
+                $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
+            } else {
+                if ($css !== null) {
+                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
                 }
             }
         }

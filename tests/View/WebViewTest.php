@@ -2,7 +2,10 @@
 namespace Yiisoft\View\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Log\NullLogger;
+use Yiisoft\Aliases\Aliases;
+use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\EventDispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
@@ -15,29 +18,57 @@ use Yiisoft\View\WebView;
 class WebViewTest extends TestCase
 {
     /**
+     * @var Aliases $aliases
+     */
+    private $aliases;
+
+    /**
+     * @var ContainerInterface $container
+     */
+    private $container;
+
+    /**
+     * @var Dispatcher $eventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var Provider $eventProvider
+     */
+    private $eventProvider;
+
+    /**
+     * @var string $dataDir
+     */
+    private $dataDir;
+
+    /**
+     * @var string $layoutPath
+     */
+    private $layoutPath;
+
+    /**
      * @var string path for the test files.
      */
     private $testViewPath = '';
 
-    private $layoutPath;
-
-    private $dataDir;
-
-    private $eventDispatcher;
-    private $eventProvider;
-
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->dataDir = dirname(__DIR__) . '/data/';
-        $this->layoutPath = $this->dataDir . 'layout.php';
+        $config = require __DIR__ . '/config.php';
+
+        $this->container = new Container($config);
+        $this->aliases = $this->container->get(Aliases::class);
+        $this->dataDir = dirname(__DIR__) . '/Public/view';
+        $this->layoutPath = $this->dataDir . '/layout.php';
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+
         FileHelper::createDirectory($this->testViewPath);
 
         $this->eventProvider = new Provider();
         $this->eventDispatcher = new Dispatcher($this->eventProvider);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         FileHelper::removeDirectory($this->testViewPath);
         $this->eventProvider = null;
@@ -49,7 +80,7 @@ class WebViewTest extends TestCase
         $view = $this->createView($this->dataDir);
         $view->registerJsVar('username', 'samdark');
         $html = $view->render('//layout.php', ['content' => 'content']);
-        $this->assertContains('<script>var username = "samdark";</script></head>', $html);
+        $this-> assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
 
         $view = $this->createView($this->dataDir);
         $view->registerJsVar('objectTest', [
@@ -57,33 +88,33 @@ class WebViewTest extends TestCase
             'question' => 'Unknown',
         ]);
         $html = $view->render('//layout.php', ['content' => 'content']);
-        $this->assertContains('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
+        $this-> assertStringContainsString('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
     }
 
     public function testRegisterJsFileWithAlias(): void
     {
         $view = $this->createView($this->testViewPath);
-        $view->registerJsFile('@web/js/somefile.js', ['position' => WebView::POS_HEAD]);
-        $html = $view->render($this->layoutPath, ['content' => 'content']);
-        $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
+        $view->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POS_HEAD]);
+        $html = $view->renderFile($this->layoutPath, ['content' => 'content']);
+        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
 
         $view = $this->createView($this->testViewPath);
-        $view->registerJsFile('@web/js/somefile.js', ['position' => WebView::POS_BEGIN]);
-        $html = $view->render($this->layoutPath, ['content' => 'content']);
-        $this->assertContains('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
+        $view->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POS_BEGIN]);
+        $html = $view->renderFile($this->layoutPath, ['content' => 'content']);
+        $this->assertStringContainsString('<body>' . "\n" . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
         $view = $this->createView($this->testViewPath);
-        $view->registerJsFile('@web/js/somefile.js', ['position' => WebView::POS_END]);
-        $html = $view->render($this->layoutPath, ['content' => 'content']);
-        $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
+        $view->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POS_END]);
+        $html = $view->renderFile($this->layoutPath, ['content' => 'content']);
+        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
 
     public function testRegisterCssFileWithAlias(): void
     {
         $view = $this->createView($this->testViewPath);
-        $view->registerCssFile('@web/css/somefile.css');
-        $html = $view->render($this->layoutPath, ['content' => 'content']);
-        $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
+        $view->registerCssFile($this->aliases->get('@web/css/somefile.css'));
+        $html = $view->renderFile($this->layoutPath, ['content' => 'content']);
+        $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
 
     public function testRegisterCsrfMetaTags(): void
@@ -106,16 +137,16 @@ class WebViewTest extends TestCase
 //
 //        $view->registerCsrfMetaTags();
 //        $html = $view->render('@yii/tests/data/views/layout.php', ['content' => 'content']);
-//        $this->assertContains('<meta name="csrf-param" content="_csrf">', $html);
-//        $this->assertContains('<meta name="csrf-token" content="', $html);
+//        $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
+//        $this->assertStringContainsString('<meta name="csrf-token" content="', $html);
 //        $csrfToken1 = $this->getCSRFTokenValue($html);
 //
 //        // regenerate token
 //        $this->app->request->getCsrfToken(true);
 //        $view->registerCsrfMetaTags();
 //        $html = $view->render('@yii/tests/data/views/layout.php', ['content' => 'content']);
-//        $this->assertContains('<meta name="csrf-param" content="_csrf">', $html);
-//        $this->assertContains('<meta name="csrf-token" content="', $html);
+//        $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
+//        $this->assertStringContainsString('<meta name="csrf-token" content="', $html);
 //        $csrfToken2 = $this->getCSRFTokenValue($html);
 //
 //        $this->assertNotSame($csrfToken1, $csrfToken2);

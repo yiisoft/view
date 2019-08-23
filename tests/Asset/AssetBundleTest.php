@@ -1,410 +1,64 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Asset\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
-use Yiisoft\Files\FileHelper;
-use yii\helpers\Yii;
+use \RuntimeException;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetManager;
-use Yiisoft\EventDispatcher\Dispatcher;
-use Yiisoft\EventDispatcher\Provider\Provider;
-use Yiisoft\View\View;
+use Yiisoft\Asset\Tests\TestCase;
+use Yiisoft\Asset\Tests\Stubs\TestAssetLevel3;
+use Yiisoft\Asset\Tests\Stubs\TestAssetCircleA;
+use Yiisoft\Asset\Tests\Stubs\TestPosBeginAsset;
+use Yiisoft\Asset\Tests\Stubs\TestPosBeginConflictAsset;
+use Yiisoft\Asset\Tests\Stubs\TestPosEndAsset;
+use Yiisoft\Asset\Tests\Stubs\TestPosHeadAsset;
+use Yiisoft\Asset\Tests\Stubs\TestJqueryAsset;
+use Yiisoft\Asset\Tests\Stubs\TestJqueryConflictAsset;
+use Yiisoft\Asset\Tests\Stubs\TestAssetPerFileOptions;
+use Yiisoft\Asset\Tests\Stubs\TestSimpleAsset;
+use Yiisoft\Asset\Tests\Stubs\TestSourceAsset;
+use Yiisoft\Files\FileHelper;
+use Yiisoft\View\WebView;
 
 /**
  * @group web
  */
 class AssetBundleTest extends TestCase
 {
-    /**
-     * @var string path for the test files.
-     */
-    private $testViewPath = '';
-
-    private $eventDispatcher;
-    private $eventProvider;
-
-    protected function setUp()
+    public function testCircularDependency(): void
     {
-        $this->testViewPath = sys_get_temp_dir() . '/'. str_replace('\\', '_', get_class($this)) . uniqid('', false);
-        FileHelper::createDirectory($this->testViewPath);
-
-        $this->eventProvider = new Provider();
-        $this->eventDispatcher = new Dispatcher($this->eventProvider);
-
-        $this->app->setAlias('@public', '@yii/tests/data/web');
-        $this->app->setAlias('@testAssetsPath', '@public/assets');
-        $this->app->setAlias('@testAssetsUrl', '@web/assets');
-        $this->app->setAlias('@testSourcePath', '@public/assetSources');
-
-        // clean up assets directory
-        $handle = opendir($dir = $this->app->getAlias('@testAssetsPath'));
-        if ($handle === false) {
-            throw new \Exception("Unable to open directory: $dir");
-        }
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..' || $file === '.gitignore') {
-                continue;
-            }
-            $path = $dir.DIRECTORY_SEPARATOR.$file;
-            if (is_dir($path)) {
-                FileHelper::removeDirectory($path);
-            } else {
-                FileHelper::unlink($path);
-            }
-        }
-        closedir($handle);
+        $this->expectException(\RuntimeException::class);
+        TestAssetCircleA::register($this->webView);
     }
 
-    /**
-     * Returns View with configured AssetManager.
-     *
-     * @param array $amConfig may be used to override default AssetManager config
-     *
-     * @return View
-     */
-    protected function getView(array $amConfig = [])
+    public function testDuplicateAssetFile(): void
     {
-        new View($this->testViewPath, $theme, $this->eventDispatcher, new NullLogger());
+        $view = $this->webView;
 
-        return $this->factory->create([
-            '__class'      => View::class,
-            'assetManager' => $this->factory->create(array_merge([
-                '__class'  => AssetManager::class,
-                'basePath' => '@testAssetsPath',
-                'baseUrl'  => '@testAssetsUrl',
-            ], $amConfig)),
-        ]);
-    }
+        $this->assertEmpty($view->getAssetBundles());
 
-    public function testSourcesPublish()
-    {
-        $view = $this->getView();
-        $am = $view->assetManager;
-
-        $bundle = TestSourceAsset::register($view);
-        $bundle->publish($am);
-
-        $this->assertTrue(is_dir($bundle->basePath));
-        $this->sourcesPublish_VerifyFiles('css', $bundle);
-        $this->sourcesPublish_VerifyFiles('js', $bundle);
-    }
-
-    private function sourcesPublish_VerifyFiles($type, $bundle)
-    {
-        foreach ($bundle->$type as $filename) {
-            $publishedFile = $bundle->basePath.DIRECTORY_SEPARATOR.$filename;
-            $sourceFile = $bundle->sourcePath.DIRECTORY_SEPARATOR.$filename;
-            $this->assertFileExists($publishedFile);
-            $this->assertFileEquals($publishedFile, $sourceFile);
-        }
-        $this->assertTrue(is_dir($bundle->basePath.DIRECTORY_SEPARATOR.$type));
-    }
-
-    public function testSourcesPublishedBySymlink()
-    {
-        $view = $this->getView(['linkAssets' => true]);
-        $this->verifySourcesPublishedBySymlink($view);
-    }
-
-    public function testSourcesPublishedBySymlink_Issue9333()
-    {
-        $view = $this->getView([
-            'linkAssets'   => true,
-            'hashCallback' => function ($path) {
-                return sprintf('%x/%x', crc32($path), crc32(Yii::getVersion()));
-            },
-        ]);
-        $bundle = $this->verifySourcesPublishedBySymlink($view);
-        $this->assertTrue(is_dir(dirname($bundle->basePath)));
-    }
-
-    public function testSourcesPublish_AssetManagerBeforeCopy()
-    {
-        $view = $this->getView([
-            'beforeCopy' => function ($from, $to) {
-                return false;
-            },
-        ]);
-        $am = $view->assetManager;
-
-        $bundle = TestSourceAsset::register($view);
-        $bundle->publish($am);
-
-        $this->assertFalse(is_dir($bundle->basePath));
-        foreach ($bundle->js as $filename) {
-            $publishedFile = $bundle->basePath.DIRECTORY_SEPARATOR.$filename;
-            $this->assertFileNotExists($publishedFile);
-        }
-    }
-
-    public function testSourcesPublish_AssetBeforeCopy()
-    {
-        $view = $this->getView();
-        $am = $view->assetManager;
-
-        $bundle = new TestSourceAsset();
-        $bundle->publishOptions = [
-            'beforeCopy' => function ($from, $to) {
-                return false;
-            },
-        ];
-        $bundle->publish($am);
-
-        $this->assertFalse(is_dir($bundle->basePath));
-        foreach ($bundle->js as $filename) {
-            $publishedFile = $bundle->basePath.DIRECTORY_SEPARATOR.$filename;
-            $this->assertFileNotExists($publishedFile);
-        }
-    }
-
-    public function testSourcesPublish_publishOptions_Only()
-    {
-        $view = $this->getView();
-        $am = $view->assetManager;
-
-        $bundle = new TestSourceAsset();
-        $bundle->publishOptions = [
-            'only' => [
-                'js/*',
-            ],
-        ];
-        $bundle->publish($am);
-
-        $notNeededFilesDir = dirname($bundle->basePath.DIRECTORY_SEPARATOR.$bundle->css[0]);
-        $this->assertFileNotExists($notNeededFilesDir);
-
-        foreach ($bundle->js as $filename) {
-            $publishedFile = $bundle->basePath.DIRECTORY_SEPARATOR.$filename;
-            $this->assertFileExists($publishedFile);
-        }
-        $this->assertTrue(is_dir(dirname($bundle->basePath.DIRECTORY_SEPARATOR.$bundle->js[0])));
-        $this->assertTrue(is_dir($bundle->basePath));
-    }
-
-    /**
-     * @param View $view
-     *
-     * @return AssetBundle
-     */
-    protected function verifySourcesPublishedBySymlink($view)
-    {
-        $am = $view->assetManager;
-
-        $bundle = TestSourceAsset::register($view);
-        $bundle->publish($am);
-
-        $this->assertTrue(is_dir($bundle->basePath));
-        foreach ($bundle->js as $filename) {
-            $publishedFile = $bundle->basePath.DIRECTORY_SEPARATOR.$filename;
-            $sourceFile = $bundle->basePath.DIRECTORY_SEPARATOR.$filename;
-
-            $this->assertTrue(is_link($bundle->basePath));
-            $this->assertFileExists($publishedFile);
-            $this->assertFileEquals($publishedFile, $sourceFile);
-        }
-
-        $this->assertTrue(FileHelper::unlink($bundle->basePath));
-
-        return $bundle;
-    }
-
-    /**
-     * Properly removes symlinked directory under Windows, MacOS and Linux.
-     *
-     * @param string $file path to symlink
-     *
-     * @return bool
-     */
-    protected function unlink($file)
-    {
-        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
-            return rmdir($file);
-        }
-
-        return unlink($file);
-    }
-
-    public function testRegister()
-    {
-        $view = $this->getView();
-
-        $this->assertEmpty($view->assetBundles);
         TestSimpleAsset::register($view);
-        $this->assertCount(1, $view->assetBundles);
-        $this->assertArrayHasKey('yii\\web\\tests\\TestSimpleAsset', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yii\\web\\tests\\TestSimpleAsset']);
 
-        $expected = <<<'EOF'
-123<script src="/js/jquery.js"></script>4
-EOF;
-        $this->assertEquals($expected, $view->renderFile('@yii/tests/data/views/rawlayout.php'));
-    }
-
-    public function testSimpleDependency()
-    {
-        $view = $this->getView();
-
-        $this->assertEmpty($view->assetBundles);
-        TestAssetBundle::register($view);
-        $this->assertCount(3, $view->assetBundles);
-        $this->assertArrayHasKey(TestAssetBundle::class, $view->assetBundles);
-        $this->assertArrayHasKey(TestJqueryAsset::class, $view->assetBundles);
-        $this->assertArrayHasKey(TestAssetLevel3::class, $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles[TestAssetBundle::class]);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles[TestJqueryAsset::class]);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles[TestAssetLevel3::class]);
-
-        $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>4
-EOF;
-        $this->assertEqualsWithoutLE($expected, $view->renderFile('@yii/tests/data/views/rawlayout.php'));
-    }
-
-    public function positionProvider()
-    {
-        return [
-            [View::POS_HEAD, true],
-            [View::POS_HEAD, false],
-            [View::POS_BEGIN, true],
-            [View::POS_BEGIN, false],
-            [View::POS_END, true],
-            [View::POS_END, false],
-        ];
-    }
-
-    /**
-     * @dataProvider positionProvider
-     *
-     * @param int  $pos
-     * @param bool $jqAlreadyRegistered
-     */
-    public function testPositionDependency($pos, $jqAlreadyRegistered)
-    {
-        $view = $this->getView();
-
-        $view->getAssetManager()->bundles['yii\\web\\tests\\TestAssetBundle'] = [
-            'jsOptions' => [
-                'position' => $pos,
-            ],
-        ];
-
-        $this->assertEmpty($view->assetBundles);
-        if ($jqAlreadyRegistered) {
-            TestJqueryAsset::register($view);
-        }
-        TestAssetBundle::register($view);
-        $this->assertCount(3, $view->assetBundles);
-        $this->assertArrayHasKey('yii\\web\\tests\\TestAssetBundle', $view->assetBundles);
-        $this->assertArrayHasKey('yii\\web\\tests\\TestJqueryAsset', $view->assetBundles);
-        $this->assertArrayHasKey('yii\\web\\tests\\TestAssetLevel3', $view->assetBundles);
-
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yii\\web\\tests\\TestAssetBundle']);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yii\\web\\tests\\TestJqueryAsset']);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yii\\web\\tests\\TestAssetLevel3']);
-
-        $this->assertArrayHasKey('position', $view->assetBundles['yii\\web\\tests\\TestAssetBundle']->jsOptions);
-        $this->assertEquals($pos, $view->assetBundles['yii\\web\\tests\\TestAssetBundle']->jsOptions['position']);
-        $this->assertArrayHasKey('position', $view->assetBundles['yii\\web\\tests\\TestJqueryAsset']->jsOptions);
-        $this->assertEquals($pos, $view->assetBundles['yii\\web\\tests\\TestJqueryAsset']->jsOptions['position']);
-        $this->assertArrayHasKey('position', $view->assetBundles['yii\\web\\tests\\TestAssetLevel3']->jsOptions);
-        $this->assertEquals($pos, $view->assetBundles['yii\\web\\tests\\TestAssetLevel3']->jsOptions['position']);
-
-        switch ($pos) {
-            case View::POS_HEAD:
-                $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">
-<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>234
-EOF;
-            break;
-            case View::POS_BEGIN:
-                $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>34
-EOF;
-            break;
-            default:
-            case View::POS_END:
-                $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>4
-EOF;
-            break;
-        }
-        $this->assertEqualsWithoutLE($expected, $view->renderFile('@yii/tests/data/views/rawlayout.php'));
-    }
-
-    public function positionProvider2()
-    {
-        return [
-            [View::POS_BEGIN, true],
-            [View::POS_BEGIN, false],
-            [View::POS_END, true],
-            [View::POS_END, false],
-        ];
-    }
-
-    /**
-     * @dataProvider positionProvider
-     *
-     * @param int  $pos
-     * @param bool $jqAlreadyRegistered
-     */
-    public function testPositionDependencyConflict($pos, $jqAlreadyRegistered)
-    {
-        $view = $this->getView();
-
-        $view->getAssetManager()->bundles['yii\\web\\tests\\TestAssetBundle'] = [
-            'jsOptions' => [
-                'position' => $pos - 1,
-            ],
-        ];
-        $view->getAssetManager()->bundles['yii\\web\\tests\\TestJqueryAsset'] = [
-            'jsOptions' => [
-                'position' => $pos,
-            ],
-        ];
-
-        $this->assertEmpty($view->assetBundles);
-        if ($jqAlreadyRegistered) {
-            TestJqueryAsset::register($view);
-        }
-        $this->expectException('yii\\exceptions\\InvalidConfigException');
-        TestAssetBundle::register($view);
-    }
-
-    public function testCircularDependency()
-    {
-        $this->expectException('yii\\exceptions\\InvalidConfigException');
-        TestAssetCircleA::register($this->getView());
-    }
-
-    public function testDuplicateAssetFile()
-    {
-        $view = $this->getView();
-
-        $this->assertEmpty($view->assetBundles);
-        TestSimpleAsset::register($view);
-        $this->assertCount(1, $view->assetBundles);
-        $this->assertArrayHasKey('yii\\web\\tests\\TestSimpleAsset', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yii\\web\\tests\\TestSimpleAsset']);
+        $this->assertCount(1, $view->getAssetBundles());
+        $this->assertArrayHasKey(TestSimpleAsset::class, $view->getAssetBundles());
+        $this->assertInstanceOf(AssetBundle::class, $view->getAssetBundles()[TestSimpleAsset::class]);
         // register TestJqueryAsset which also has the jquery.js
+
         TestJqueryAsset::register($view);
 
         $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yii/tests/data/views/rawlayout.php'));
+        $this->assertEquals($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
     }
 
-    public function testPerFileOptions()
+    public function testPerFileOptions(): void
     {
-        $view = $this->getView();
+        $view = $this->webView;
 
-        $this->assertEmpty($view->assetBundles);
+        $this->assertEmpty($view->getAssetBundles());
+
         TestAssetPerFileOptions::register($view);
 
         $expected = <<<'EOF'
@@ -413,12 +67,165 @@ EOF;
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
 <script src="/defered.js" charset="utf-8" defer></script>4
 EOF;
-        $this->assertEqualsWithoutLE($expected, $view->renderFile('@yii/tests/data/views/rawlayout.php'));
+        $this->assertEqualsWithoutLE($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
+    }
+
+    public function positionProvider(): array
+    {
+        return [
+            [TestPosHeadAsset::class, WebView::POS_HEAD, true],
+            [TestPosHeadAsset::class, WebView::POS_HEAD, false],
+            [TestPosBeginAsset::class, WebView::POS_BEGIN, true],
+            [TestPosBeginAsset::class, WebView::POS_BEGIN, false],
+            [TestPosEndAsset::class, WebView::POS_END, true],
+            [TestPosEndAsset::class, WebView::POS_END, false],
+        ];
+    }
+
+    /**
+     * @dataProvider positionProvider
+     *
+     * @param string $assetBundle
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
+     */
+    public function testPositionDependencyPos(string $assetBundle, int $pos, bool $jqAlreadyRegistered): void
+    {
+        $view = $this->webView;
+
+        $this->assertEmpty($view->getAssetBundles());
+
+        if ($jqAlreadyRegistered) {
+            TestJqueryAsset::register($view);
+        }
+
+        $assetBundle::register($view);
+
+        $this->assertCount(3, $view->getAssetBundles());
+
+        $this->assertArrayHasKey($assetBundle, $view->getAssetBundles());
+        $this->assertArrayHasKey(TestJqueryAsset::class, $view->getAssetBundles());
+        $this->assertArrayHasKey(TestAssetLevel3::class, $view->getAssetBundles());
+
+        $this->assertInstanceOf(AssetBundle::class, $view->getAssetBundles()[$assetBundle]);
+        $this->assertInstanceOf(AssetBundle::class, $view->getAssetBundles()[TestJqueryAsset::class]);
+        $this->assertInstanceOf(AssetBundle::class, $view->getAssetBundles()[TestAssetLevel3::class]);
+
+        $this->assertArrayHasKey('position', $view->getAssetBundles()[$assetBundle]->jsOptions);
+        $this->assertEquals($pos, $view->getAssetBundles()[$assetBundle]->jsOptions['position']);
+        $this->assertArrayHasKey('position', $view->getAssetBundles()[TestJqueryAsset::class]->jsOptions);
+        $this->assertEquals($pos, $view->getAssetBundles()[TestJqueryAsset::class]->jsOptions['position']);
+        $this->assertArrayHasKey('position', $view->getAssetBundles()[TestAssetLevel3::class]->jsOptions);
+        $this->assertEquals($pos, $view->getAssetBundles()[TestAssetLevel3::class]->jsOptions['position']);
+
+        switch ($pos) {
+            case WebView::POS_HEAD:
+                $expected = <<<'EOF'
+1<link href="/files/cssFile.css" rel="stylesheet">
+<script src="/js/jquery.js"></script>
+<script src="/files/jsFile.js"></script>234
+EOF;
+                break;
+            case WebView::POS_BEGIN:
+                $expected = <<<'EOF'
+1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
+<script src="/files/jsFile.js"></script>34
+EOF;
+                break;
+            default:
+            case WebView::POS_END:
+                $expected = <<<'EOF'
+1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
+<script src="/files/jsFile.js"></script>4
+EOF;
+                break;
+        }
+        $this->assertEqualsWithoutLE($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
+    }
+
+    public function positionProvider2()
+    {
+        return [
+            [TestPosBeginConflictAsset::class, WebView::POS_BEGIN, true],
+            [TestPosBeginConflictAsset::class, WebView::POS_BEGIN, false],
+        ];
+    }
+
+    /**
+     * @dataProvider positionProvider2
+     *
+     * @param string $assetBundle
+     * @param int  $pos
+     * @param bool $jqAlreadyRegistered
+     */
+    public function testPositionDependencyConflict(string $assetBundle, int $pos, bool $jqAlreadyRegistered): void
+    {
+        $view = $this->webView;
+
+        $this->assertEmpty($view->getAssetBundles());
+
+        if ($jqAlreadyRegistered) {
+            TestJqueryConflictAsset::register($view);
+        }
+
+        $this->expectException(\RuntimeException::class);
+        $assetBundle::register($this->webView);
+    }
+
+    public function testSourcesPublishedBySymlinkIssue9333()
+    {
+        $this->assetManager->setLinkAssets(true);
+        $this->assetManager->setHashCallback(
+            function ($path) {
+                return sprintf('%x/%x', crc32($path), crc32('3.0-dev'));
+            }
+        );
+        $bundle = $this->verifySourcesPublishedBySymlink($this->webView);
+        $this->assertTrue(is_dir(dirname($bundle->basePath)));
+    }
+
+    public function testSourcesPublishOptionsOnly()
+    {
+        $am = $this->webView->getAssetManager();
+
+        $bundle = new TestSourceAsset();
+
+        $bundle->publishOptions = [
+            'only' => [
+                'js/*'
+            ],
+        ];
+
+        $bundle->publish($am);
+
+        $notNeededFilesDir = dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->css[0]);
+
+        $this->assertFileNotExists($notNeededFilesDir);
+
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileExists($publishedFile);
+        }
+
+        $this->assertTrue(is_dir(dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->js[0])));
+        $this->assertTrue(is_dir($bundle->basePath));
     }
 
     public function registerFileDataProvider()
     {
         return [
+            // Custom alias repeats in the asset URL
+            [
+                'css', '@web/assetSources/repeat/css/stub.css', false,
+                '1<link href="/repeat/assetSources/repeat/css/stub.css" rel="stylesheet">234',
+                '/repeat',
+            ],
+            [
+                'js', '@web/assetSources/repeat/js/jquery.js', false,
+                '123<script src="/repeat/assetSources/repeat/js/jquery.js"></script>4',
+                '/repeat',
+            ],
+
             // JS files registration
             [
                 'js', '@web/assetSources/js/missing-file.js', true,
@@ -504,18 +311,6 @@ EOF;
                 '123<script src="/汉语/漢語/assetSources/js/jquery.js"></script>4',
                 '/汉语/漢語',
             ],
-
-            // Custom alias repeats in the asset URL
-            [
-                'css', '@web/assetSources/repeat/css/stub.css', false,
-                '1<link href="/repeat/assetSources/repeat/css/stub.css" rel="stylesheet">234',
-                '/repeat',
-            ],
-            [
-                'js', '@web/assetSources/repeat/js/jquery.js', false,
-                '123<script src="/repeat/assetSources/repeat/js/jquery.js"></script>4',
-                '/repeat',
-            ],
         ];
     }
 
@@ -530,111 +325,51 @@ EOF;
      */
     public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null)
     {
-        $originalAlias = $this->app->getAlias('@web');
+        $originalAlias = $this->aliases->get('@web');
+
         if ($webAlias === null) {
             $webAlias = $originalAlias;
         }
-        $this->app->setAlias('@web', $webAlias);
 
-        $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
-        $method = 'register'.ucfirst($type).'File';
+        $this->aliases->set('@web', $webAlias);
+
+        $path = $this->aliases->get($path);
+        $view = $this->webView;
+        $am = $this->webView->getAssetManager();
+        $am->setAppendTimestamp($appendTimestamp);
+
+        $method = 'register' . ucfirst($type) . 'File';
+
         $view->$method($path);
-        $this->assertEquals($expected, $view->renderFile('@yii/tests/data/views/rawlayout.php'));
 
-        $this->app->setAlias('@web', $originalAlias);
+        $this->assertEquals($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
     }
-}
 
-class TestSimpleAsset extends AssetBundle
-{
-    public $basePath = '@public/js';
-    public $baseUrl = '@web/js';
-    public $js = [
-        'jquery.js',
-    ];
-}
+    /**
+     * @param WebView $view
+     *
+     * @return AssetBundle
+     */
+    public function verifySourcesPublishedBySymlink($view): AssetBundle
+    {
+        $am = $view->getAssetManager();
 
-class TestSourceAsset extends AssetBundle
-{
-    public $sourcePath = '@testSourcePath';
-    public $js = [
-        'js/jquery.js',
-    ];
-    public $css = [
-        'css/stub.css',
-    ];
-}
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
 
-class TestAssetBundle extends AssetBundle
-{
-    public $basePath = '@public/files';
-    public $baseUrl = '@web/files';
-    public $css = [
-        'cssFile.css',
-    ];
-    public $js = [
-        'jsFile.js',
-    ];
-    public $depends = [
-        TestJqueryAsset::class,
-    ];
-}
+        $this->assertTrue(is_dir($bundle->basePath));
 
-class TestJqueryAsset extends AssetBundle
-{
-    public $basePath = '@public/js';
-    public $baseUrl = '@web/js';
-    public $js = [
-        'jquery.js',
-    ];
-    public $depends = [
-        TestAssetLevel3::class,
-    ];
-}
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $sourceFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
 
-class TestAssetLevel3 extends AssetBundle
-{
-    public $basePath = '@public/js';
-    public $baseUrl = '@web/js';
-}
+            $this->assertTrue(is_link($bundle->basePath));
+            $this->assertFileExists($publishedFile);
+            $this->assertFileEquals($publishedFile, $sourceFile);
+        }
 
-class TestAssetCircleA extends AssetBundle
-{
-    public $basePath = '@public/js';
-    public $baseUrl = '@web/js';
-    public $js = [
-        'jquery.js',
-    ];
-    public $depends = [
-        TestAssetCircleB::class,
-    ];
-}
+        $this->assertTrue(FileHelper::unlink($bundle->basePath));
 
-class TestAssetCircleB extends AssetBundle
-{
-    public $basePath = '@public/js';
-    public $baseUrl = '@web/js';
-    public $js = [
-        'jquery.js',
-    ];
-    public $depends = [
-        TestAssetCircleA::class,
-    ];
-}
-
-class TestAssetPerFileOptions extends AssetBundle
-{
-    public $basePath = '@public';
-    public $baseUrl = '@web';
-    public $css = [
-        'default_options.css',
-        ['tv.css', 'media' => 'tv'],
-        ['screen_and_print.css', 'media' => 'screen, print'],
-    ];
-    public $js = [
-        'normal.js',
-        ['defered.js', 'defer' => true],
-    ];
-    public $cssOptions = ['media' => 'screen', 'hreflang' => 'en'];
-    public $jsOptions = ['charset' => 'utf-8'];
+        return $bundle;
+    }
 }

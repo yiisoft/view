@@ -22,7 +22,7 @@ class ViewTest extends TestCase
     private $eventDispatcher;
     private $eventProvider;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testViewPath = sys_get_temp_dir() . '/'. str_replace('\\', '_', get_class($this)) . uniqid('', false);
         FileHelper::createDirectory($this->testViewPath);
@@ -31,7 +31,7 @@ class ViewTest extends TestCase
         $this->eventDispatcher = new Dispatcher($this->eventProvider);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         FileHelper::removeDirectory($this->testViewPath);
         $this->eventProvider = null;

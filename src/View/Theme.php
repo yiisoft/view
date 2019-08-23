@@ -111,7 +111,7 @@ class Theme
         }
         $path = FileHelper::normalizePath($path);
         foreach ($this->pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath($from) . '/';
+            $from = FileHelper::normalizePath((string) $from) . '/';
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
                 foreach ((array)$tos as $to) {
