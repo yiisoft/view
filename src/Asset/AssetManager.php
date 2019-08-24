@@ -481,7 +481,6 @@ class AssetManager
      */
     public function publish(string $path, array $options = []): array
     {
-
         $path = $this->aliases->get($path);
 
         if (isset($this->published[$path])) {

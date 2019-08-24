@@ -6,7 +6,6 @@ namespace Yiisoft\Asset\Tests;
 use \RuntimeException;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetManager;
-use Yiisoft\Asset\Tests\TestCase;
 use Yiisoft\Asset\Tests\Stubs\TestAssetLevel3;
 use Yiisoft\Asset\Tests\Stubs\TestAssetCircleA;
 use Yiisoft\Asset\Tests\Stubs\TestPosBeginAsset;
@@ -19,12 +18,13 @@ use Yiisoft\Asset\Tests\Stubs\TestAssetPerFileOptions;
 use Yiisoft\Asset\Tests\Stubs\TestSimpleAsset;
 use Yiisoft\Asset\Tests\Stubs\TestSourceAsset;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Tests\TestCase;
 use Yiisoft\View\WebView;
 
 /**
- * @group web
+ * AssetBundleTest.
  */
-class AssetBundleTest extends TestCase
+final class AssetBundleTest extends TestCase
 {
     public function testCircularDependency(): void
     {
@@ -48,7 +48,7 @@ class AssetBundleTest extends TestCase
         TestJqueryAsset::register($view);
 
         $expected = <<<'EOF'
-123<script src="/js/jquery.js"></script>4
+123<script src="/baseUrl/js/jquery.js"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
     }
@@ -62,10 +62,10 @@ EOF;
         TestAssetPerFileOptions::register($view);
 
         $expected = <<<'EOF'
-1<link href="/default_options.css" rel="stylesheet" media="screen" hreflang="en">
-<link href="/tv.css" rel="stylesheet" media="tv" hreflang="en">
-<link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
-<script src="/defered.js" charset="utf-8" defer></script>4
+1<link href="/baseUrl/default_options.css" rel="stylesheet" media="screen" hreflang="en">
+<link href="/baseUrl/tv.css" rel="stylesheet" media="tv" hreflang="en">
+<link href="/baseUrl/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/baseUrl/normal.js" charset="utf-8"></script>
+<script src="/baseUrl/defered.js" charset="utf-8" defer></script>4
 EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
     }
@@ -121,29 +121,29 @@ EOF;
         switch ($pos) {
             case WebView::POS_HEAD:
                 $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">
-<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>234
+1<link href="/baseUrl/files/cssFile.css" rel="stylesheet">
+<script src="/baseUrl/js/jquery.js"></script>
+<script src="/baseUrl/files/jsFile.js"></script>234
 EOF;
                 break;
             case WebView::POS_BEGIN:
                 $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>34
+1<link href="/baseUrl/files/cssFile.css" rel="stylesheet">2<script src="/baseUrl/js/jquery.js"></script>
+<script src="/baseUrl/files/jsFile.js"></script>34
 EOF;
                 break;
             default:
             case WebView::POS_END:
                 $expected = <<<'EOF'
-1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>4
+1<link href="/baseUrl/files/cssFile.css" rel="stylesheet">23<script src="/baseUrl/js/jquery.js"></script>
+<script src="/baseUrl/files/jsFile.js"></script>4
 EOF;
                 break;
         }
         $this->assertEqualsWithoutLE($expected, $view->renderFile($this->aliases->get('@view/rawlayout.php')));
     }
 
-    public function positionProvider2()
+    public function positionProvider2(): array
     {
         return [
             [TestPosBeginConflictAsset::class, WebView::POS_BEGIN, true],
@@ -172,7 +172,7 @@ EOF;
         $assetBundle::register($this->webView);
     }
 
-    public function testSourcesPublishedBySymlinkIssue9333()
+    public function testSourcesPublishedBySymlinkIssue9333(): void
     {
         $this->assetManager->setLinkAssets(true);
         $this->assetManager->setHashCallback(
@@ -184,7 +184,7 @@ EOF;
         $this->assertTrue(is_dir(dirname($bundle->basePath)));
     }
 
-    public function testSourcesPublishOptionsOnly()
+    public function testSourcesPublishOptionsOnly(): void
     {
         $am = $this->webView->getAssetManager();
 
@@ -211,7 +211,7 @@ EOF;
         $this->assertTrue(is_dir($bundle->basePath));
     }
 
-    public function registerFileDataProvider()
+    public function registerFileDataProvider(): array
     {
         return [
             // Custom alias repeats in the asset URL
@@ -229,11 +229,11 @@ EOF;
             // JS files registration
             [
                 'js', '@web/assetSources/js/missing-file.js', true,
-                '123<script src="/assetSources/js/missing-file.js"></script>4',
+                '123<script src="/baseUrl/assetSources/js/missing-file.js"></script>4',
             ],
             [
                 'js', '@web/assetSources/js/jquery.js', false,
-                '123<script src="/assetSources/js/jquery.js"></script>4',
+                '123<script src="/baseUrl/assetSources/js/jquery.js"></script>4',
             ],
             [
                 'js', 'http://example.com/assetSources/js/jquery.js', false,
@@ -255,11 +255,11 @@ EOF;
             // CSS file registration
             [
                 'css', '@web/assetSources/css/missing-file.css', true,
-                '1<link href="/assetSources/css/missing-file.css" rel="stylesheet">234',
+                '1<link href="/baseUrl/assetSources/css/missing-file.css" rel="stylesheet">234',
             ],
             [
                 'css', '@web/assetSources/css/stub.css', false,
-                '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
+                '1<link href="/baseUrl/assetSources/css/stub.css" rel="stylesheet">234',
             ],
             [
                 'css', 'http://example.com/assetSources/css/stub.css', false,
@@ -323,7 +323,7 @@ EOF;
      * @param string      $expected
      * @param string|null $webAlias
      */
-    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null)
+    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null): void
     {
         $originalAlias = $this->aliases->get('@web');
 
