@@ -19,13 +19,14 @@ $tempDir = sys_get_temp_dir();
 
 return [
     Aliases::class => [
-        '@root' => dirname(__DIR__),
+        '@root' => __DIR__,
         '@public' => '@root/Public',
         '@basePath' => '@public/assets',
-        '@baseUrl'  => '/assets',
+        '@baseUrl'  => '/baseUrl',
+        '@converter' => '@public/assetconverter',
         '@npm' => '@root/node_modules',
         '@view' => '@public/view',
-        '@web' => '/',
+        '@web' => '@baseUrl',
         '@testSourcePath' => '@public/assetsources'
     ],
 

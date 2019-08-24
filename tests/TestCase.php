@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Yiisoft\Asset\Tests;
+namespace Yiisoft\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Container\ContainerInterface;
@@ -14,6 +14,7 @@ use Yiisoft\Asset\AssetManager;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Di\Container;
 use Yiisoft\View\Theme;
+use Yiisoft\View\View;
 use Yiisoft\View\WebView;
 
 abstract class TestCase extends BaseTestCase
@@ -34,6 +35,21 @@ abstract class TestCase extends BaseTestCase
     private $container;
 
     /**
+     * @var EventDispatcherInterface $eventDispatcher
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @var LoggerInterface $logger
+     */
+    protected $logger;
+
+    /**
+     * @var Theme $theme
+     */
+    protected $theme;
+
+    /**
      * @var WebView $webView
      */
     protected $webview;
@@ -50,18 +66,17 @@ abstract class TestCase extends BaseTestCase
 
         $this->container = new Container($config);
         $this->aliases = $this->container->get(Aliases::class);
-
         $this->assetManager = $this->container->get(AssetManager::class);
 
         $assetBundle = $this->container->get(AssetBundle::class);
-        $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-        $logger = $this->container->get(LoggerInterface::class);
-        $theme = $this->container->get(Theme::class);
-        $view = $this->aliases->get('@view');
 
-        $this->webView = new WebView($view, $theme, $eventDispatcher, $logger);
+        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
+        $this->logger = $this->container->get(LoggerInterface::class);
+        $this->theme = $this->container->get(Theme::class);
+        $this->webView = $this->createWebView($this->aliases->get('@view'));
         $this->webView->setAssetManager($this->assetManager);
-        $this->removeAssets();
+
+        $this->removeAssets('@basePath');
     }
 
     /**
@@ -75,9 +90,73 @@ abstract class TestCase extends BaseTestCase
         parent::tearDown();
     }
 
-    public function removeAssets()
+    /**
+     * Asserting two strings equality ignoring line endings.
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     *
+     * @return void
+     */
+    protected function assertEqualsWithoutLE(string $expected, string $actual, string $message = ''): void
     {
-        $handle = opendir($dir = $this->aliases->get('@basePath'));
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual = str_replace("\r\n", "\n", $actual);
+
+        $this->assertEquals($expected, $actual, $message);
+    }
+
+    /**
+     * Asserting same ignoring slash.
+     *
+     * @param string $expected
+     * @param string $actual
+     *
+     * @return void
+     */
+    protected function assertSameIgnoringSlash(string $expected, string $actual): void
+    {
+        $expected = str_replace(['/', '\\'], '/', $expected);
+        $actual = str_replace(['/', '\\'], '/', $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Create view tests.
+     *
+     * @param string basePath
+     * @param Theme $theme
+     *
+     * @return View
+     */
+    protected function createView($basePath, Theme $theme = null): View
+    {
+        return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->logger);
+    }
+
+    /**
+     * Create webview tests.
+     *
+     * @param string $basePath
+     * @param Theme $theme
+     *
+     * @return View
+     */
+    protected function createWebView(string $basePath): WebView
+    {
+        return new WebView($basePath, $this->theme, $this->eventDispatcher, $this->logger);
+    }
+
+    public function touch(string $path): void
+    {
+        FileHelper::createDirectory(dirname($path));
+
+        touch($path);
+    }
+
+    protected function removeAssets(string $basePath): void
+    {
+        $handle = opendir($dir = $this->aliases->get($basePath));
 
         if ($handle === false) {
             throw new \Exception("Unable to open directory: $dir");
@@ -94,18 +173,19 @@ abstract class TestCase extends BaseTestCase
                 FileHelper::unlink($path);
             }
         }
+
         closedir($handle);
     }
 
     /**
-     * sourcesPublishVerifyFiles
+     * Verify sources publish files assetbundle.
      *
-     * @param [type] $type
-     * @param [type] $bundle
+     * @param string $type
+     * @param AssetBundle $bundle
      *
      * @return void
      */
-    public function sourcesPublishVerifyFiles($type, $bundle)
+    protected function sourcesPublishVerifyFiles(string $type, AssetBundle $bundle): void
     {
         foreach ($bundle->$type as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
@@ -114,6 +194,7 @@ abstract class TestCase extends BaseTestCase
             $this->assertFileExists($publishedFile);
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
+
         $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
@@ -124,26 +205,12 @@ abstract class TestCase extends BaseTestCase
      *
      * @return bool
      */
-    public function unlink($file)
+    protected function unlink(string $file): bool
     {
         if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
             return rmdir($file);
         }
 
         return unlink($file);
-    }
-
-    /**
-     * Asserting two strings equality ignoring line endings.
-     * @param string $expected
-     * @param string $actual
-     * @param string $message
-     */
-    protected function assertEqualsWithoutLE(string $expected, string $actual, string $message = ''): void
-    {
-        $expected = str_replace("\r\n", "\n", $expected);
-        $actual = str_replace("\r\n", "\n", $actual);
-
-        $this->assertEquals($expected, $actual, $message);
     }
 }
