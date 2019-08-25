@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Asset;
 
+use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 
 /**
@@ -85,13 +86,19 @@ class AssetConverter implements AssetConverterInterface
     public $isOutdatedCallback;
 
     /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    /**
      * AssetConverter constructor.
      *
      * @param Aliases $aliases
      */
-    public function __construct(Aliases $aliases)
+    public function __construct(Aliases $aliases, LoggerInterface $logger)
     {
         $this->aliases = $aliases;
+        $this->logger = $logger;
     }
 
     /**
@@ -189,11 +196,11 @@ class AssetConverter implements AssetConverterInterface
         $status = proc_close($proc);
 
         if ($status === 0) {
-            //Yii::debug("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
+            $this->logger->debug(["Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__]);
         } elseif (YII_DEBUG) {
             throw new \Exception("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr");
         } else {
-            //Yii::error("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
+            $this->logger->error(["AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__]);
         }
 
         return $status === 0;

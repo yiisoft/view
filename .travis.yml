@@ -1,109 +1,26 @@
-#
-# Travis Setup
-#
-
-# use ubuntu trusty for newer version of nodejs, used for JS testing
-dist: trusty
-
-# faster builds on new travis setup not using sudo
-# temporary disable, see https://github.com/travis-ci/travis-ci/issues/6842
-#sudo: false
-sudo: required
-group: edge
-
-# build only on master branches
-# commented as this prevents people from running builds on their forks:
-# https://github.com/yiisoft/yii2/commit/bd87be990fa238c6d5e326d0a171f38d02dc253a
-#branches:
-#  only:
-#    - master
-#    - 3.0
-
-
-#
-# Test Matrix
-#
-
 language: php
 
-env:
-  global:
-    - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
-    - TASK_TESTS_PHP=1
-    - TASK_TESTS_COVERAGE=0
+php:
+  - '7.2'
+  - '7.3'
+  - '7.4snapshot'
+
+# faster builds on new travis setup not using sudo
+sudo: false
 
 # cache vendor dirs
 cache:
   directories:
-    - vendor
     - $HOME/.composer/cache
-    - $HOME/.npm
-
-# try running against postgres 9.6
-addons:
-  code_climate:
-    repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.3
-      env: DEFAULT_COMPOSER_FLAGS="$DEFAULT_COMPOSER_FLAGS --ignore-platform-reqs" # php-cs
-    - php: 7.2
-      env: TASK_TESTS_COVERAGE=1
-    - php: nightly
-
-  allow_failures:
-    - php: nightly
 
 install:
-  - |
-    if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
-      # disable xdebug for performance reasons when code coverage is not needed
-      phpenv config-rm xdebug.ini || echo "xdebug is not installed"
-    fi
-
-  # install composer dependencies
-  - travis_retry composer self-update
+  - travis_retry composer self-update && composer --version
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
-
-before_script:
-  # show some versions and env information
-  - php --version
-  - composer --version
-  - |
-    if [ $TASK_TESTS_PHP == 1 ]; then
-      php -r "echo INTL_ICU_VERSION . \"\n\";"
-      php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
-    fi
-
-  # enable code coverage
-  - |
-    if [ $TASK_TESTS_COVERAGE == 1 ]; then
-      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
-    fi
-
-  # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
-  # For Yii2 tests, messages will be enabled by tests/bootstrap.php
-  - |
-    if [[ $TRAVIS_PHP_VERSION == 7.2 || $TRAVIS_PHP_VERSION = nightly ]]; then
-      echo 'Disabled DEPRECATED notifications for PHP >= 7.2';
-      echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
-      phpenv config-add /tmp/php-config.ini;
-    fi
-
+  - travis_retry composer install --prefer-dist --no-interaction
 
 script:
-  # PHP tests
   - |
-    if [ $TASK_TESTS_PHP == 1 ]; then
-      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group wincache,xcache
-    fi
-
+    vendor/bin/phpunit $PHPUNIT_FLAGS --coverage-clover=coverage.clover
 after_script:
-  - |
-    if [ $TASK_TESTS_COVERAGE == 1 ]; then
-      travis_retry wget https://scrutinizer-ci.com/ocular.phar
-      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-    fi
+    - wget -c https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

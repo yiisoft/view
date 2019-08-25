@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Asset;
 
+use Psr\Log\LoggerInterface;
 use yii\helpers\Url;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetBundle;
@@ -216,6 +217,11 @@ class AssetManager
     private $linkAssets = false;
 
     /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    /**
      * @var array published assets
      */
     private $published = [];
@@ -230,9 +236,10 @@ class AssetManager
      *
      * @param Aliases $aliases
      */
-    public function __construct(Aliases $aliases)
+    public function __construct(Aliases $aliases, LoggerInterface $logger)
     {
         $this->aliases = $aliases;
+        $this->logger = $logger;
         $this->setDefaultPaths();
     }
 
@@ -340,12 +347,12 @@ class AssetManager
     public function getConverter(): AssetConverterInterface
     {
         if ($this->converter === null) {
-            $this->converter = new AssetConverter($this->aliases);
+            $this->converter = new AssetConverter($this->aliases, $this->logger);
         } elseif (is_array($this->converter) || is_string($this->converter)) {
             if (is_array($this->converter) && !isset($this->converter['__class'])) {
                 $this->converter['__class'] = AssetConverter::class;
             }
-            $this->converter = new $this->converter($this->aliases);
+            $this->converter = new $this->converter($this->aliases, $this->logger);
         }
 
         return $this->converter;

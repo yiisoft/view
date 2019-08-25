@@ -40,7 +40,7 @@ echo "Hello Yii!";
 EOF
         );
 
-        $converter = new AssetConverter($this->aliases);
+        $converter = new AssetConverter($this->aliases, $this->logger);
         $converter->commands['php'] = ['txt', 'php {from} > {to}'];
 
         $this->assertEquals('test.txt', $converter->convert('test.php', $this->tmpPath));
@@ -61,7 +61,7 @@ echo microtime();
 EOF
         );
 
-        $converter = new AssetConverter($this->aliases);
+        $converter = new AssetConverter($this->aliases, $this->logger);
         $converter->commands['php'] = ['txt', 'php {from} > {to}'];
 
         $converter->convert('test.php', $this->tmpPath);
@@ -88,7 +88,7 @@ echo microtime();
 EOF
         );
 
-        $converter = new AssetConverter($this->aliases);
+        $converter = new AssetConverter($this->aliases, $this->logger);
         $converter->commands['php'] = ['txt', 'php {from} > {to}'];
 
         $converter->convert('test.php', $this->tmpPath);
@@ -116,7 +116,7 @@ echo microtime();
 EOF
         );
 
-        $converter = new AssetConverter($this->aliases);
+        $converter = new AssetConverter($this->aliases, $this->logger);
         $converter->commands['php'] = ['txt', 'php {from} > {to}'];
 
         $converter->convert('test.php', $this->tmpPath);

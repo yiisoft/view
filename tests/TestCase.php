@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Tests;
 
+use hiqdev\composer\config\Builder;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -62,14 +63,13 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $config = require __DIR__ . '/config.php';
+
+        $config = require Builder::path('tests');
 
         $this->container = new Container($config);
+
         $this->aliases = $this->container->get(Aliases::class);
         $this->assetManager = $this->container->get(AssetManager::class);
-
-        $assetBundle = $this->container->get(AssetBundle::class);
-
         $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
         $this->theme = $this->container->get(Theme::class);
