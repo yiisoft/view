@@ -31,7 +31,7 @@ final class WebViewTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->dataDir = dirname(__DIR__) . '/Public/view';
+        $this->dataDir = dirname(__DIR__) . '/public/view';
         $this->layoutPath = $this->dataDir . '/layout.php';
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
 
