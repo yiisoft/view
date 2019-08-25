@@ -449,10 +449,10 @@ class View implements DynamicContentAwareInterface
     /**
      * Set source locale.
      *
-     * @param [type] $locale
+     * @param string $locale
      * @return self
      */
-    public function setSourceLocale($locale): self
+    public function setSourceLocale(string $locale): self
     {
         $this->sourceLocale = Locale::create($locale);
 

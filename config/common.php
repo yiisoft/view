@@ -5,6 +5,7 @@ use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetConverter;
 use Yiisoft\Asset\AssetManager;
 use Yiisoft\Factory\Definitions\Reference;
+use Yiisoft\Log\Logger;
 
 return [
     Aliases::class => [
