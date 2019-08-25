@@ -53,7 +53,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * @var WebView $webView
      */
-    protected $webview;
+    protected $webView;
 
     /**
      * setUp
@@ -124,8 +124,8 @@ abstract class TestCase extends BaseTestCase
     /**
      * Create view tests.
      *
-     * @param string basePath
-     * @param Theme $theme
+     * @param string $basePath
+     * @param Theme  $theme
      *
      * @return View
      */
@@ -138,7 +138,7 @@ abstract class TestCase extends BaseTestCase
      * Create webview tests.
      *
      * @param string $basePath
-     * @param Theme $theme
+     * @param Theme  $theme
      *
      * @return View
      */

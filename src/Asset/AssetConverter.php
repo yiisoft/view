@@ -196,11 +196,11 @@ class AssetConverter implements AssetConverterInterface
         $status = proc_close($proc);
 
         if ($status === 0) {
-            $this->logger->debug(["Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__]);
+            $this->logger->debug("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", [__METHOD__]);
         } elseif (YII_DEBUG) {
             throw new \Exception("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr");
         } else {
-            $this->logger->error(["AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__]);
+            $this->logger->error("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", [__METHOD__]);
         }
 
         return $status === 0;
