@@ -99,13 +99,6 @@ class AssetBundle
     public $publishOptions = [];
 
     /**
-     * list of files depends of work assets.
-     *
-     * @var array $links
-     */
-    public $links = [];
-
-    /**
      * @var string the directory that contains the source asset files for this asset bundle. A source asset file is a
      *             file that is part of your source code repository of your Web application.
      *
@@ -185,14 +178,6 @@ class AssetBundle
     public function registerAssetFiles(WebView $view): void
     {
         $manager = $view->getAssetManager();
-
-        foreach ($this->links as $link) {
-            if (is_array($link)) {
-                $view->registerLinkTag($link, null);
-            } else {
-                $view->registerLinkTag($this->link, null);
-            }
-        }
 
         foreach ($this->js as $js) {
             if (is_array($js)) {
