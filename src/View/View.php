@@ -131,6 +131,16 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
+     * Get basePath.
+     *
+     * @return string
+     */
+    public function getBasePath(): string
+    {
+        return $this->basePath;
+    }
+
+    /**
      * Set renderers.
      *
      * @param array $renderers
