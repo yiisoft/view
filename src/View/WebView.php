@@ -486,7 +486,7 @@ class WebView extends View
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
             ]);
-            $bundles[$key] = $bundle;
+            $bundles = [$key => $bundle];
 
             $this->registerAssetBundle($key);
         }
@@ -559,7 +559,7 @@ class WebView extends View
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
             ]);
-            $bundles[$key] = $bundle;
+            $bundles = [$key => $bundle];
             $this->registerAssetBundle($key);
         }
     }

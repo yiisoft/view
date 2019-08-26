@@ -3,10 +3,8 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Asset;
 
-use yii\helpers\Url;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Arrays\ArrayHelper;
-use Yiisoft\Asset\Info;
 use Yiisoft\View\WebView;
 
 /**
@@ -133,24 +131,24 @@ class AssetBundle
             foreach ($this->js as $i => $js) {
                 if (is_array($js)) {
                     $file = array_shift($js);
-                    if (Info::isRelative($file)) {
+                    if ($this->isRelative($file)) {
                         $js = ArrayHelper::merge($this->jsOptions, $js);
                         array_unshift($js, $converter->convert($file, $this->basePath));
                         $this->js[$i] = $js;
                     }
-                } elseif (Info::isRelative($js)) {
+                } elseif ($this->isRelative($js)) {
                     $this->js[$i] = $converter->convert($js, $this->basePath);
                 }
             }
             foreach ($this->css as $i => $css) {
                 if (is_array($css)) {
                     $file = array_shift($css);
-                    if (Info::isRelative($file)) {
+                    if ($this->isRelative($file)) {
                         $css = ArrayHelper::merge($this->cssOptions, $css);
                         array_unshift($css, $converter->convert($file, $this->basePath));
                         $this->css[$i] = $css;
                     }
-                } elseif (Info::isRelative($css)) {
+                } elseif ($this->isRelative($css)) {
                     $this->css[$i] = $converter->convert($css, $this->basePath);
                 }
             }
@@ -202,5 +200,16 @@ class AssetBundle
                 }
             }
         }
+    }
+
+    /**
+     * Returns a value indicating whether a URL is relative.
+     * A relative URL does not have host info part.
+     * @param string $url the URL to be checked
+     * @return bool whether the URL is relative
+     */
+    protected function isRelative($url)
+    {
+        return strncmp($url, '//', 2) && strpos($url, '://') === false;
     }
 }

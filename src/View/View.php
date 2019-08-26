@@ -27,7 +27,7 @@ class View implements DynamicContentAwareInterface
     /**
      * @var string $basePath view path
      */
-    public $basePath;
+    private $basePath;
 
     /**
      * @var array a list of named output blocks. The keys are the block names and the values are the corresponding block

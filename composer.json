@@ -18,14 +18,13 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
-        "phpunit/phpunit": "^8.0",
+        "psr/container": "1.0.0",
+        "psr/container-implementation": "1.0.0",
+        "psr/event-dispatcher": "1.0.0",
+        "psr/event-dispatcher-implementation": "1.0.0",
         "psr/log": "^1.1",
-        "psr/event-dispatcher": "^1.0",
         "yiisoft/aliases": "^3.0@dev",
         "yiisoft/arrays": "^3.0@dev",
-        "yiisoft/cache": "^3.0@dev",
-        "yiisoft/di": "^3.0@dev",
-        "yiisoft/event-dispatcher": "^3.0@dev",
         "yiisoft/html": "^3.0@dev",
         "yiisoft/json": "^3.0@dev",
         "yiisoft/var-dumper": "^3.0@dev",
@@ -33,8 +32,11 @@
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
-        "yiisoft/log": "^3.0@dev",
-        "yiisoft/strings": "^3.0@dev"
+        "phpunit/phpunit": "^8.0",
+        "yiisoft/cache": "^3.0@dev",
+        "yiisoft/di": "^3.0@dev",
+        "yiisoft/event-dispatcher": "^3.0@dev",
+        "yiisoft/log": "^3.0@dev"
     },
     "extra": {
         "branch-alias": {

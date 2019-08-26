@@ -1,5 +1,6 @@
 <?php
 
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetConverter;
@@ -19,13 +20,15 @@ return [
         ]
     ],
 
-    AssetManager::class => [
-        '__class' => AssetManager::class,
-        '__construct()' => [
-            Reference::to(Aliases::class),
-            Reference::to(LoggerInterface::class)
-        ]
-    ],
+    AssetConverterInterface::class => AssetConverter::class,
+
+    AssetManager::class => function (ContainerInterface $container) {
+        $assetConverterInterface = $container->get(AssetConverterInterface::class);
+        $assetManager = new AssetManager();
+        $assetManager->setConverter($assetConverterInterface);
+
+        return $assetManager;
+    },
 
     LoggerInterface::class => [
         '__class' => Logger::class,
