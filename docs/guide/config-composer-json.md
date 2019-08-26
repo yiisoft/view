@@ -1,6 +1,6 @@
 ## Setting up your composer.json <span id="config-composer-json"></span>
 
-<p align="justify">There are several ways to use the assets in Yii, you can use it in the traditional way in Yii2 by placing the Bower and NPM dependencies, in this case all packages are downloaded from:</p>
+There are several ways to use the assets in Yii, you can use it in the traditional way in Yii2 by placing the Bower and NPM dependencies, in this case all packages are downloaded from:
 
 - [AssetPackagist](https://asset-packagist.org/).
 
@@ -21,9 +21,6 @@ Directory structure:
     },
     "config": {
         "process-timeout": 1800,
-        "fxp-asset": {
-            "enabled": false
-        }
     },
     "repositories": [
         {
@@ -34,7 +31,7 @@ Directory structure:
 }
 ```
 
-<p align="justify">Another option is to move the assets of the vendor directory to the /node_modules directory, we can do it in two ways, the first one maintaining the dependence of <strong>AssetPackagist</strong> and the second way using <strong>foxy with hidev-composer-plugin</strong>, this will allow the assets to be downloaded from <strong>npm</strong>.</p>
+Another option is to move the assets of the vendor directory to the /node_modules directory, we can do it in two ways, the first one maintaining the dependence of <strong>AssetPackagist</strong> and the second way using <strong>foxy with hidev-composer-plugin</strong>, this will allow the assets to be downloaded from <strong>npm</strong>.
 
 Directory structure:
 
@@ -64,9 +61,6 @@ download packages from AssetPackagist
 	},
     "config": {
         "process-timeout": 1800,
-        "fxp-asset": {
-            "enabled": false
-        }
     },
     "extra": {
         "installer-types": [
@@ -89,7 +83,7 @@ download packages from AssetPackagist
 }
 ```
 
-<p align="justify">Now if we want the dependencies to be downloaded from <strong>NPM</strong> we configure it as follows:</p>
+Now if we want the dependencies to be downloaded from <strong>NPM</strong> we configure it as follows:
 
 Directory structure:
 
@@ -118,10 +112,7 @@ download packages from npm
         "psr-4": {"assets\\asset-bootbox\\tests\\": "tests/"}
 	},
     "config": {
-        "process-timeout": 1800,
-        "fxp-asset": {
-            "enabled": false
-        }
+        "process-timeout": 1800
     }
 }
 
@@ -137,8 +128,8 @@ create package.json
 
 ```
 
-<p align="justify">Now when composing update --prefer-dist all your assets will be downloaded from <strong>NPM</strong>, obviously you must have NPM:
+Now when composing update --prefer-dist all your assets will be downloaded from <strong>NPM</strong>, obviously you must have NPM:
 
-- [NPM](https://nodejs.org/en/download/).</p>
+- [NPM](https://nodejs.org/en/download/).
 
-<p align="justify"><strong>Note: In both cases already the AssetManager by default handles the option of alternatives which by default is in '@npm/node_modules', you can move the assets anywhere whenever you configure the path.</strong></p>
+<strong>Note: In both cases already the AssetManager by default handles the option of alternatives which by default is in '@npm/node_modules', you can move the assets anywhere whenever you configure the path.</strong>

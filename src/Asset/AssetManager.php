@@ -4,11 +4,9 @@ declare(strict_types = 1);
 namespace Yiisoft\Asset;
 
 use Psr\Log\LoggerInterface;
-use yii\helpers\Url;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetConverterInterface;
-use Yiisoft\Asset\Info;
 use Yiisoft\Files\FileHelper;
 use YiiSoft\Html\Html;
 
@@ -215,7 +213,7 @@ class AssetManager
      * Options FollowSymLinks
      * ```
      */
-    private $linkAssets = false;
+    private $linkAssets = true;
 
     /**
      * @var LoggerInterface $logger
@@ -272,7 +270,7 @@ class AssetManager
             $baseUrl = $this->aliases->get($bundle->baseUrl);
         }
 
-        if (!Info::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
+        if (!$this->isRelative($asset) || strncmp($asset, '/', 1) === 0) {
             return $asset;
         }
 
@@ -295,10 +293,10 @@ class AssetManager
     public function getAssetPath(AssetBundle $bundle, string $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            return Info::isRelative((string) $actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
+            return $this->isRelative((string) $actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
         }
 
-        return Info::isRelative($asset) ? $bundle->basePath . '/' .$asset : false;
+        return $this->isRelative($asset) ? $bundle->basePath . '/' .$asset : false;
     }
 
     /**
@@ -688,6 +686,17 @@ class AssetManager
     }
 
     /**
+     * Returns a value indicating whether a URL is relative.
+     * A relative URL does not have host info part.
+     * @param string $url the URL to be checked
+     * @return bool whether the URL is relative
+     */
+    protected function isRelative($url)
+    {
+        return strncmp($url, '//', 2) && strpos($url, '://') === false;
+    }
+
+    /**
      * Generate a CRC32 hash for the directory path. Collisions are higher than MD5 but generates a much smaller hash
      * string.
      *
@@ -702,7 +711,7 @@ class AssetManager
         }
         $path = (is_file($path) ? dirname($path) : $path).filemtime($path);
 
-        return sprintf('%x', crc32($path . Info::frameworkVersion() . '|' . $this->linkAssets));
+        return sprintf('%x', crc32($path . '|' . $this->linkAssets));
     }
 
     /**
@@ -719,6 +728,7 @@ class AssetManager
         if (!isset($config['__class'])) {
             $config['__class'] = $name;
         }
+
         /* @var $bundle AssetBundle */
         $bundle = new $config['__class']();
 
@@ -873,7 +883,7 @@ class AssetManager
             return $this->assetMap[$asset];
         }
 
-        if ($bundle->sourcePath !== null && Info::isRelative($asset)) {
+        if ($bundle->sourcePath !== null && $this->isRelative($asset)) {
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 

@@ -1,6 +1,6 @@
 ## Config AssetManager <span id="config-asset-manager"></span>
 
-<p align="justify">The AssetManager and AssetConverter component to configure it must be added to the common.php file of your configuration, to both must pass as a reference to the __construct() Aliases::class and Logger::class, then we will explain the options that you can adjust.</p>
+The AssetManager and AssetConverter component to configure it must be added to the common.php file of your configuration, to both must pass as a reference to the __construct() Aliases::class and Logger::class, then we will explain the options that you can adjust.
 
 ```php
 common.php:
