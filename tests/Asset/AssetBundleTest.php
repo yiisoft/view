@@ -187,6 +187,7 @@ EOF;
     public function testSourcesPublishOptionsOnly(): void
     {
         $am = $this->webView->getAssetManager();
+        $am->setLinkAssets(false);
 
         $bundle = new TestSourceAsset();
 
