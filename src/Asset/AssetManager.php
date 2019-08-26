@@ -8,6 +8,7 @@ use yii\helpers\Url;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetConverterInterface;
+use Yiisoft\Asset\Info;
 use Yiisoft\Files\FileHelper;
 use YiiSoft\Html\Html;
 
@@ -271,7 +272,7 @@ class AssetManager
             $baseUrl = $this->aliases->get($bundle->baseUrl);
         }
 
-        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
+        if (!Info::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
             return $asset;
         }
 
@@ -294,10 +295,10 @@ class AssetManager
     public function getAssetPath(AssetBundle $bundle, string $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            return Url::isRelative((string) $actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
+            return Info::isRelative((string) $actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
         }
 
-        return Url::isRelative($asset) ? $bundle->basePath . '/' .$asset : false;
+        return Info::isRelative($asset) ? $bundle->basePath . '/' .$asset : false;
     }
 
     /**
@@ -687,15 +688,6 @@ class AssetManager
     }
 
     /**
-     * Returns a string representing the current version of the Yii framework.
-     * @return string the version of Yii framework
-     */
-    protected static function getVersion()
-    {
-        return '3.0-dev';
-    }
-
-    /**
      * Generate a CRC32 hash for the directory path. Collisions are higher than MD5 but generates a much smaller hash
      * string.
      *
@@ -710,7 +702,7 @@ class AssetManager
         }
         $path = (is_file($path) ? dirname($path) : $path).filemtime($path);
 
-        return sprintf('%x', crc32($path . static::getVersion() . '|' . $this->linkAssets));
+        return sprintf('%x', crc32($path . Info::frameworkVersion() . '|' . $this->linkAssets));
     }
 
     /**
@@ -881,7 +873,7 @@ class AssetManager
             return $this->assetMap[$asset];
         }
 
-        if ($bundle->sourcePath !== null && Url::isRelative($asset)) {
+        if ($bundle->sourcePath !== null && Info::isRelative($asset)) {
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
