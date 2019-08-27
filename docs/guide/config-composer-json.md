@@ -31,7 +31,7 @@ Directory structure:
 }
 ```
 
-Another option is to move the assets of the vendor directory to the /node_modules directory, we can do it in two ways, the first one maintaining the dependence of <strong>AssetPackagist</strong> and the second way using <strong>foxy with hidev-composer-plugin</strong>, this will allow the assets to be downloaded from <strong>npm</strong>.
+Another option is to move the assets of the vendor directory to the /node_modules directory, we can do it in two ways, the first one maintaining the dependence of **AssetPackagist** and the second way using **foxy with hidev-composer-plugin**, this will allow the assets to be downloaded from **npm**.
 
 Directory structure:
 
@@ -128,8 +128,8 @@ create package.json
 
 ```
 
-Now when composing update --prefer-dist all your assets will be downloaded from <strong>NPM</strong>, obviously you must have NPM:
+Now when doing `composer update --prefer-dist` all your assets will be downloaded from **npm** repository. In order for it to work, **npm** is required:
 
 - [NPM](https://nodejs.org/en/download/).
 
-<strong>Note: In both cases already the AssetManager by default handles the option of alternatives which by default is in '@npm/node_modules', you can move the assets anywhere whenever you configure the path.</strong>
+> Note: By default the `AssetManager` uses `@npm/node_modules` directory in order to store downloaded packages. If you need to move the assets you can adjust the path.
