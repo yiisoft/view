@@ -725,12 +725,7 @@ class AssetManager
      */
     protected function loadBundle(string $name, array $config = [], bool $publish = true): AssetBundle
     {
-        if (!isset($config['__class'])) {
-            $config['__class'] = $name;
-        }
-
-        /* @var $bundle AssetBundle */
-        $bundle = new $config['__class']();
+        $bundle = new $name();
 
         if ($publish) {
             $bundle->publish($this);

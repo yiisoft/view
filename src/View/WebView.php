@@ -698,7 +698,7 @@ class WebView extends View
     private function createBundle(array $options): AssetBundle
     {
         $bundle = new AssetBundle();
-        $bundle->baseUrl = $options['basUrl'];
+        $bundle->baseUrl = $options['baseUrl'];
         $bundle->js = $options['js'];
         $bundle->jsOptions = $options['jsOptions'];
         $bundle->depends = $options['depends'];

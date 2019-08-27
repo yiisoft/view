@@ -1,6 +1,6 @@
 ## Asset Bundles <span id="asset-bundles"></span>
 
-Yii manages assets in the unit of *asset bundle*. An asset bundle is simply a collection of assets located in a directory. When you register an asset bundle, it will include the CSS and JavaScript files in the bundle in the rendered Web page.
+Yii manages assets in the unit of *asset bundle*. An asset bundle is a collection of files located in a directory and a configuration class. When you register the class, asset files such as CSS, JavaScript, images etc. are automatically made accessible from public directory and are referenced in a Web page HTML.
 
 
 ## Defining Asset Bundles <span id="defining-asset-bundles"></span>
