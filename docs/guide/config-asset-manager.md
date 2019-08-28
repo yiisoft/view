@@ -1,10 +1,10 @@
-## Config AssetManager <span id="config-asset-manager"></span>
+## Configuration: asset manager <span id="config-asset-manager"></span>
 
 The AssetManager and AssetConverter component to configure it must be added to the common.php file of your configuration, to both must pass as a reference to the __construct() Aliases::class and Logger::class, then we will explain the options that you can adjust.
 
-```php
-common.php:
+`common.php`:
 
+```php
 <?php
 
 use Psr\Log\LoggerInterface;
@@ -69,7 +69,7 @@ Then in ViewFactory we must configure the assetmanager for the WebView::class
 
 Example:
 
-```
+```php
 <?php
 declare(strict_types = 1);
 
