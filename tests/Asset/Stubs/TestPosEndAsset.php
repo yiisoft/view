@@ -3,7 +3,6 @@
 namespace Yiisoft\Asset\Tests\Stubs;
 
 use Yiisoft\Asset\AssetBundle;
-use Yiisoft\View\WebView;
 
 class TestPosEndAsset extends AssetBundle
 {

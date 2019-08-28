@@ -1,13 +1,9 @@
 <?php
 namespace Yiisoft\View\Tests;
 
-use Psr\Log\NullLogger;
-use Yiisoft\EventDispatcher\Dispatcher;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Tests\TestCase;
 use Yiisoft\View\Theme;
-use Yiisoft\View\View;
 
 /**
  * ViewTest.
