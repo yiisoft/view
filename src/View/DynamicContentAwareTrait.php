@@ -11,7 +11,7 @@ trait DynamicContentAwareTrait
     /**
      * @var string[] a list of placeholders for dynamic content
      */
-    private $_dynamicPlaceholders;
+    private $dynamicPlaceholders;
 
     /**
      * Returns the view object that can be used to render views or view files using dynamic contents.
@@ -20,28 +20,19 @@ trait DynamicContentAwareTrait
      */
     abstract protected function getView(): View;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDynamicPlaceholders(): array
     {
-        return $this->_dynamicPlaceholders;
+        return $this->dynamicPlaceholders;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setDynamicPlaceholders(array $placeholders): void
     {
-        $this->_dynamicPlaceholders = $placeholders;
+        $this->dynamicPlaceholders = $placeholders;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addDynamicPlaceholder(string $name, string $statements): void
     {
-        $this->_dynamicPlaceholders[$name] = $statements;
+        $this->dynamicPlaceholders[$name] = $statements;
     }
 
     /**
@@ -55,7 +46,7 @@ trait DynamicContentAwareTrait
      */
     protected function updateDynamicContent(string $content, array $placeholders, bool $isRestoredFromCache = false): string
     {
-        if (empty($placeholders) || !is_array($placeholders)) {
+        if ($placeholders === []) {
             return $content;
         }
 
