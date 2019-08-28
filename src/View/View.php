@@ -5,8 +5,7 @@ namespace Yiisoft\View;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
-use yii\i18n\Locale;
-use Yiisoft\Asset\AssetManager;
+use Yiisoft\I18n\Locale;
 use Yiisoft\View\Event\AfterRender;
 use Yiisoft\View\Event\BeforeRender;
 use Yiisoft\View\Event\PageBegin;
