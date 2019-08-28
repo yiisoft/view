@@ -1,4 +1,4 @@
-## Setting up your composer.json <span id="config-composer-json"></span>
+## Configuration: composer.json <span id="config-composer-json"></span>
 
 There are several ways to use the assets in Yii, you can use it in the traditional way in Yii2 by placing the Bower and NPM dependencies, in this case all packages are downloaded from:
 
@@ -83,14 +83,16 @@ download packages from AssetPackagist
 }
 ```
 
-Now if we want the dependencies to be downloaded from <strong>NPM</strong> we configure it as follows:
+Now if we want the dependencies to be downloaded from **npm** we configure it as follows:
 
 Directory structure:
 
-- node_modules:
-    - bower
-    - npm
-- vendor:
+```
+node_modules/
+  bower/
+  npm/
+vendor/
+```
 
 ```
 download packages from npm
