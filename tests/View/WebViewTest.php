@@ -57,7 +57,7 @@ final class WebViewTest extends TestCase
             'question' => 'Unknown',
         ]);
         $html = $view->render('//layout.php', ['content' => 'content']);
-        $this-> assertStringContainsString('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
+        $this->assertStringContainsString('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
     }
 
     public function testRegisterJsFileWithAlias(): void
@@ -70,7 +70,7 @@ final class WebViewTest extends TestCase
         $view = $this->createWebView($this->testViewPath);
         $view->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POS_BEGIN]);
         $html = $view->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<body>' . "\n" . '<script src="/baseUrl/js/somefile.js"></script>', $html);
+        $this->assertStringContainsString('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
         $view = $this->createwebView($this->testViewPath);
         $view->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POS_END]);
