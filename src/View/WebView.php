@@ -88,8 +88,6 @@ class WebView extends View
     private $assetBundles = [];
 
     /**
-     * Undocumented variable
-     *
      * @var AssetManager $assetManager
      */
     private $assetManager;
