@@ -3,7 +3,6 @@
 namespace Yiisoft\Asset\Tests;
 
 use Yiisoft\Asset\AssetConverter;
-use Yiisoft\Files\FileHelper;
 use Yiisoft\Tests\TestCase;
 
 /**
@@ -14,7 +13,7 @@ final class AssetConverterTest extends TestCase
     /**
      * @var string temporary files path
      */
-    protected $tmpPath;
+    private $tmpPath;
 
     protected function setUp(): void
     {

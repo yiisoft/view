@@ -3,9 +3,7 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Asset\Tests;
 
-use \RuntimeException;
 use Yiisoft\Asset\AssetBundle;
-use Yiisoft\Asset\AssetManager;
 use Yiisoft\Asset\Tests\Stubs\TestAssetLevel3;
 use Yiisoft\Asset\Tests\Stubs\TestAssetCircleA;
 use Yiisoft\Asset\Tests\Stubs\TestPosBeginAsset;
@@ -358,7 +356,7 @@ EOF;
         $bundle = TestSourceAsset::register($view);
         $bundle->publish($am);
 
-        $this->assertTrue(is_dir($bundle->basePath));
+        $this->assertDirectoryExists($bundle->basePath);
 
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;

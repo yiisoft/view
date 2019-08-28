@@ -1,11 +1,8 @@
 <?php
 namespace Yiisoft\View\Tests;
 
-use Psr\Container\ContainerInterface;
-use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Tests\TestCase;
-use Yiisoft\View\Theme;
 use Yiisoft\View\WebView;
 
 /**

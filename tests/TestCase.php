@@ -7,7 +7,6 @@ use hiqdev\composer\config\Builder;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetBundle;
@@ -195,7 +194,7 @@ abstract class TestCase extends BaseTestCase
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
 
-        $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
+        $this->assertDirectoryExists($bundle->basePath . DIRECTORY_SEPARATOR . $type);
     }
 
     /**
@@ -207,10 +206,6 @@ abstract class TestCase extends BaseTestCase
      */
     protected function unlink(string $file): bool
     {
-        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
-            return rmdir($file);
-        }
-
-        return unlink($file);
+        return FileHelper::unlink($file);
     }
 }
