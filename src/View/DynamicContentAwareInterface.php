@@ -28,7 +28,7 @@ interface DynamicContentAwareInterface
      * Adds a placeholder for dynamic content.
      * This method is used internally to implement the content caching feature.
      *
-     * @param string $name       the placeholder name.
+     * @param string $name the placeholder name.
      * @param string $statements the PHP statements for generating the dynamic content.
      */
     public function addDynamicPlaceholder(string $name, string $statements): void;

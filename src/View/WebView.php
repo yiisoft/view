@@ -175,8 +175,8 @@ class WebView extends View
      * Marks the ending of an HTML page.
      *
      * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
-     *             {@see POS_READY} and {@see POS_LOAD} positions will be rendered at the end of the view like
-     *             normal scripts.
+     * {@see POS_READY} and {@see POS_LOAD} positions will be rendered at the end of the view like
+     * normal scripts.
      */
     public function endPage($ajaxMode = false): void
     {
@@ -202,10 +202,10 @@ class WebView extends View
      * view.
      *
      * @param string $view the view name. Please refer to [[render()]] on how to specify this parameter.
-     * @param array  $params the parameters (name-value pairs) that will be extracted and made available in the view
-     *               file.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view
+     * file.
      * @param object $context the context that the view should use for rendering the view. If null, existing [[context]]
-     *               will be used.
+     * will be used.
      *
      * @return string the rendering result
      *
@@ -308,10 +308,10 @@ class WebView extends View
      *
      * All dependent asset bundles will be registered.
      *
-     * @param string   $name the class name of the asset bundle (without the leading backslash)
+     * @param string $name the class name of the asset bundle (without the leading backslash)
      * @param int|null $position if set, this forces a minimum position for javascript files. This will adjust depending
-     *                 assets javascript file position or fail if requirement can not be met. If this is null, asset
-     *                 bundles position settings will not be changed.
+     * assets javascript file position or fail if requirement can not be met. If this is null, asset
+     * bundles position settings will not be changed.
      *
      * {@see registerJsFile()} for more details on javascript position.
      *
@@ -374,10 +374,10 @@ class WebView extends View
      *
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
-     * @param array  $options the HTML attributes for the meta tag.
+     * @param array $options the HTML attributes for the meta tag.
      * @param string $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
-     *               latter will overwrite the former. If this is null, the new meta tag will be appended to the
-     *               existing ones.
+     * latter will overwrite the former. If this is null, the new meta tag will be appended to the
+     * existing ones.
      *
      * @return void
      */
@@ -405,10 +405,10 @@ class WebView extends View
      * **Note:** To register link tags for CSS stylesheets, use [[registerCssFile()]] instead, which has more options
      * for this kind of link tag.
      *
-     * @param array       $options the HTML attributes for the link tag.
+     * @param array $options the HTML attributes for the link tag.
      * @param string|null $key the key that identifies the link tag. If two link tags are registered with the same
-     *                    key, the latter will overwrite the former. If this is null, the new link tag will be appended
-     *                    to the existing ones.
+     * key, the latter will overwrite the former. If this is null, the new link tag will be appended
+     * to the existing ones.
      */
     public function registerLinkTag(array $options, ?string $key = null): void
     {
@@ -443,9 +443,9 @@ class WebView extends View
      * Registers a CSS code block.
      *
      * @param string $css the content of the CSS code block to be registered
-     * @param array  $options the HTML attributes for the `<style>`-tag.
+     * @param array $options the HTML attributes for the `<style>`-tag.
      * @param string $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
-     *               code blocks are registered with the same key, the latter will overwrite the former.
+     * code blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerCss(string $css, array $options = [], string $key = null): void
     {
@@ -461,13 +461,14 @@ class WebView extends View
      * and {@see registerAssetBundle()} instead.
      *
      * @param string $url the CSS file to be registered.
-     * @param array  $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
-     *               for the supported options. The following options are specially handled and are not treated as HTML
-     *               attributes:
+     * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
+     * for the supported options. The following options are specially handled and are not treated as HTML
+     * attributes:
      *
-     *               - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
+     *   - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
+     *
      * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
-     *               files are registered with the same key, the latter will overwrite the former.
+     * files are registered with the same key, the latter will overwrite the former.
      *
      * @return void
      */
@@ -496,7 +497,7 @@ class WebView extends View
      * Registers a JS code block.
      *
      * @param string $js the JS code block to be registered
-     * @param int    $position the position at which the JS script tag should be inserted in a page.
+     * @param int $position the position at which the JS script tag should be inserted in a page.
      *
      * The possible values are:
      *
@@ -507,7 +508,7 @@ class WebView extends View
      * - [[POS_READY]]: executed when HTML document composition is ready.
      *
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
-     *               blocks are registered with the same key, the latter will overwrite the former.
+     * blocks are registered with the same key, the latter will overwrite the former.
      *
      * @return void
      */
@@ -525,8 +526,8 @@ class WebView extends View
      * and {@see registerAssetBundle()} instead.
      *
      * @param string $url the JS file to be registered.
-     * @param array  $options the HTML attributes for the script tag. The following options are specially handled and
-     *               are not treated as HTML attributes:
+     * @param array $options the HTML attributes for the script tag. The following options are specially handled and
+     * are not treated as HTML attributes:
      *
      * - `depends`: array, specifies the names of the asset bundles that this JS file depends on.
      * - `position`: specifies where the JS script tag should be inserted in a page. The possible values are:
@@ -537,9 +538,9 @@ class WebView extends View
      * Please refer to {@see \Yiisoft\Html\Html::jsFile()} for other supported options.
      *
      * @param string $key the key that identifies the JS script file. If null, it will use $url as the key. If two JS
-     *               files are registered with the same key at the same position, the latter will overwrite the former.
-     *               Note that position option takes precedence, thus files registered with the same key, but different
-     *               position option will not override each other.
+     * files are registered with the same key at the same position, the latter will overwrite the former.
+     * Note that position option takes precedence, thus files registered with the same key, but different
+     * position option will not override each other.
      *
      * @return void
      */
@@ -568,9 +569,9 @@ class WebView extends View
      * Registers a JS code block defining a variable. The name of variable will be used as key, preventing duplicated
      * variable names.
      *
-     * @param string       $name Name of the variable
+     * @param string $name Name of the variable
      * @param array|string $value Value of the variable
-     * @param int          $position the position in a page at which the JavaScript variable should be inserted.
+     * @param int $position the position in a page at which the JavaScript variable should be inserted.
      *
      * The possible values are:
      *
@@ -647,7 +648,7 @@ class WebView extends View
      * The content is rendered using the registered JS code blocks and files.
      *
      * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
-     *             [[POS_READY]] and [[POS_LOAD]] positions will be rendered at the end of the view like normal scripts.
+     * [[POS_READY]] and [[POS_LOAD]] positions will be rendered at the end of the view like normal scripts.
      *
      * @return string the rendered content
      */
