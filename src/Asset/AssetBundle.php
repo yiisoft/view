@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Asset;
 
-use Yiisoft\Aliases\Aliases;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\WebView;
 
@@ -182,10 +181,8 @@ class AssetBundle
                 $file = array_shift($js);
                 $options = ArrayHelper::merge($this->jsOptions, $js);
                 $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
-            } else {
-                if ($js !== null) {
-                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
-                }
+            } elseif ($js !== null) {
+                $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
             }
         }
 
@@ -194,10 +191,8 @@ class AssetBundle
                 $file = array_shift($css);
                 $options = ArrayHelper::merge($this->cssOptions, $css);
                 $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
-            } else {
-                if ($css !== null) {
-                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
-                }
+            } elseif ($css !== null) {
+                $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
             }
         }
     }
@@ -208,7 +203,7 @@ class AssetBundle
      * @param string $url the URL to be checked
      * @return bool whether the URL is relative
      */
-    protected function isRelative($url)
+    protected function isRelative(string $url): bool
     {
         return strncmp($url, '//', 2) && strpos($url, '://') === false;
     }

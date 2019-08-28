@@ -1,14 +1,11 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Yiisoft\Asset;
 
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Asset\AssetBundle;
-use Yiisoft\Asset\AssetConverterInterface;
 use Yiisoft\Files\FileHelper;
-use YiiSoft\Html\Html;
 
 /**
  * AssetManager manages asset bundle configuration and loading.
@@ -19,7 +16,6 @@ use YiiSoft\Html\Html;
  * following example:
  *
  * ```php
-
  * ```
  *
  * @property AssetConverterInterface $converter The asset converter. Note that the type of this property differs in
@@ -110,7 +106,7 @@ class AssetManager
      * The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or file to
      * be copied from, while `$to` is the copy target.
      *
-     * This is passed as a parameter `beforeCopy` to {@see Yiisoft\Files\FileHelper::copyDirectory()}.
+     * This is passed as a parameter `beforeCopy` to {@see \Yiisoft\Files\FileHelper::copyDirectory()}.
      */
     private $beforeCopy;
 
@@ -248,7 +244,7 @@ class AssetManager
      * the given asset path.
      *
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string      $asset the asset path. This should be one of the assets listed in {@see AssetBundle::$js} or
+     * @param string $asset the asset path. This should be one of the assets listed in {@see AssetBundle::$js} or
      *                    {@see AssetBundle::$css}.
      *
      * @return string the actual URL for the specified asset.
@@ -256,8 +252,8 @@ class AssetManager
     public function getAssetUrl(AssetBundle $bundle, string $asset): string
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            if (strncmp((string) $actualAsset, '@web/', 5) === 0) {
-                $asset = substr((string) $actualAsset, 5);
+            if (strncmp((string)$actualAsset, '@web/', 5) === 0) {
+                $asset = substr((string)$actualAsset, 5);
                 $basePath = $this->aliases->get('@public');
                 $baseUrl = $this->aliases->get('@web');
             } else {
@@ -285,7 +281,7 @@ class AssetManager
      * Returns the actual file path for the specified asset.
      *
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string      $asset  the asset path. This should be one of the assets listed in {@see AssetBundle::$js} or
+     * @param string $asset the asset path. This should be one of the assets listed in {@see AssetBundle::$js} or
      *                    {@see AssetBundle::$css}.
      *
      * @return false|string the actual file path, or `false` if the asset is specified as an absolute URL
@@ -293,10 +289,10 @@ class AssetManager
     public function getAssetPath(AssetBundle $bundle, string $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            return $this->isRelative((string) $actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
+            return $this->isRelative((string)$actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
         }
 
-        return $this->isRelative($asset) ? $bundle->basePath . '/' .$asset : false;
+        return $this->isRelative($asset) ? $bundle->basePath . '/' . $asset : false;
     }
 
     /**
@@ -305,8 +301,8 @@ class AssetManager
      * This method will first look for the bundle in {@see bundles()}. If not found, it will treat `$name` as the class
      * of the asset bundle and create a new instance of it.
      *
-     * @param string $name    the class name of the asset bundle (without the leading backslash)
-     * @param bool   $publish whether to publish the asset files in the asset bundle before it is returned. If you set
+     * @param string $name the class name of the asset bundle (without the leading backslash)
+     * @param bool $publish whether to publish the asset files in the asset bundle before it is returned. If you set
      *                        this false, you must manually call `AssetBundle::publish()` to publish the asset files.
      *
      * @return AssetBundle the asset bundle instance
@@ -365,21 +361,21 @@ class AssetManager
      *
      * @param string $path directory or file path being published
      *
-     * @return string|bool string the published file path. False if the file or directory does not exist
+     * @return string|null string the published file path. Null if the file or directory does not exist
      */
-    public function getPublishedPath(string $path)
+    public function getPublishedPath(string $path): ?string
     {
         $path = $this->aliases->get($path);
 
         if (isset($this->published[$path])) {
             return $this->published[$path][0];
         }
-        if (is_string($path) && ($path = realpath($path)) !== false) {
+        if (($path = realpath($path)) !== false) {
             return $this->getRealBasePath() . DIRECTORY_SEPARATOR . $this->hash($path) . (is_file($path) ?
-                   DIRECTORY_SEPARATOR . basename($path) : '');
+                    DIRECTORY_SEPARATOR . basename($path) : '');
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -390,19 +386,19 @@ class AssetManager
      *
      * @param string $path directory or file path being published
      *
-     * @return string|bool string the published URL for the file or directory. False if the file or directory does not
+     * @return string|null string the published URL for the file or directory. Null if the file or directory does not
      *                     exist.
      */
-    public function getPublishedUrl(string $path)
+    public function getPublishedUrl(string $path): ?string
     {
         if (isset($this->published[$path])) {
             return $this->published[$path][1];
         }
-        if (is_string($path) && ($path = realpath($path)) !== false) {
-            return $this->baseUrl.'/'.$this->hash($path).(is_file($path) ? '/'.basename($path) : '');
+        if (($path = realpath($path)) !== false) {
+            return $this->baseUrl . '/' . $this->hash($path) . (is_file($path) ? '/' . basenaame($path) : '');
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -410,10 +406,10 @@ class AssetManager
      *
      * @return bool|string
      */
-    public function getRealBasePath()
+    public function getRealBasePath(): string
     {
         if ($this->realBasePath === null) {
-            $this->realBasePath = (string) $this->prepareBasePath($this->basePath);
+            $this->realBasePath = (string)$this->prepareBasePath($this->basePath);
         }
 
         return $this->realBasePath;
@@ -424,9 +420,9 @@ class AssetManager
      *
      * @param string $basePath
      *
+     * @return string|bool
      * @throws \InvalidArgumentException
      *
-     * @return string|bool
      */
     public function prepareBasePath(string $basePath)
     {
@@ -465,8 +461,8 @@ class AssetManager
      * and doing that in the application deployment phase, before system goes live. See more in the following
      * discussion: http://code.google.com/p/yii/issues/detail?id=2579
      *
-     * @param string $path    the asset (file or directory) to be published
-     * @param array  $options the options to be applied when publishing a directory. The following options are
+     * @param string $path the asset (file or directory) to be published
+     * @param array $options the options to be applied when publishing a directory. The following options are
      *               supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.
@@ -481,9 +477,9 @@ class AssetManager
      * - forceCopy: boolean, whether the directory being published should be copied even if it is found in the target
      *   directory. This option is used only when publishing a directory. This overrides {@see forceCopy} if set.
      *
+     * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws \InvalidArgumentException if the asset to be published does not exist.
      *
-     * @return array the path (directory or file path) and the URL that the asset is published as.
      */
     public function publish(string $path, array $options = []): array
     {
@@ -709,7 +705,7 @@ class AssetManager
         if (is_callable($this->hashCallback)) {
             return call_user_func($this->hashCallback, $path);
         }
-        $path = (is_file($path) ? dirname($path) : $path).filemtime($path);
+        $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
 
         return sprintf('%x', crc32($path . '|' . $this->linkAssets));
     }
@@ -717,14 +713,15 @@ class AssetManager
     /**
      * Loads asset bundle class by name.
      *
-     * @param string $name    bundle name
-     * @param array  $config  bundle object configuration
-     * @param bool   $publish if bundle should be published
+     * @param string $name bundle name
+     * @param array $config bundle object configuration
+     * @param bool $publish if bundle should be published
      *
      * @return AssetBundle
      */
     protected function loadBundle(string $name, array $config = [], bool $publish = true): AssetBundle
     {
+        /** @var AssetBundle $bundle */
         $bundle = new $name();
 
         if ($publish) {
@@ -746,9 +743,9 @@ class AssetManager
         if (!isset($this->dummyBundles[$name])) {
             $this->dummyBundles[$name] = $this->loadBundle($name, [
                 'sourcePath' => null,
-                'js'         => [],
-                'css'        => [],
-                'depends'    => [],
+                'js' => [],
+                'css' => [],
+                'depends' => [],
             ]);
         }
 
@@ -760,15 +757,15 @@ class AssetManager
      *
      * @param string $src the asset file to be published
      *
+     * @return array the path and the URL that the asset is published as.
      * @throws \Exception if the asset to be published does not exist.
      *
-     * @return array the path and the URL that the asset is published as.
      */
     protected function publishFile(string $src): array
     {
         $dir = $this->hash($src);
         $fileName = basename($src);
-        $dstDir = $this->getRealBasePath() .DIRECTORY_SEPARATOR . $dir;
+        $dstDir = $this->getRealBasePath() . DIRECTORY_SEPARATOR . $dir;
         $dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
 
         if (!is_dir($dstDir)) {
@@ -798,8 +795,8 @@ class AssetManager
     /**
      * Publishes a directory.
      *
-     * @param string $src     the asset directory to be published
-     * @param array  $options the options to be applied when publishing a directory. The following options are
+     * @param string $src the asset directory to be published
+     * @param array $options the options to be applied when publishing a directory. The following options are
      *                        supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.
@@ -814,9 +811,9 @@ class AssetManager
      * - forceCopy: boolean, whether the directory being published should be copied even if it is found in the target
      *   directory. This option is used only when publishing a directory. This overrides {@see forceCopy} if set.
      *
+     * @return array the path directory and the URL that the asset is published as.
      * @throws \Exception if the asset to be published does not exist.
      *
-     * @return array the path directory and the URL that the asset is published as.
      */
     protected function publishDirectory(string $src, array $options): array
     {
@@ -839,8 +836,8 @@ class AssetManager
             $opts = array_merge(
                 $options,
                 [
-                    'dirMode'              => $this->dirMode,
-                    'fileMode'             => $this->fileMode,
+                    'dirMode' => $this->dirMode,
+                    'fileMode' => $this->fileMode,
                     'copyEmptyDirectories' => false,
                 ]
             );
@@ -849,7 +846,7 @@ class AssetManager
                 if ($this->beforeCopy !== null) {
                     $opts['beforeCopy'] = $this->beforeCopy;
                 } else {
-                    $opts['beforeCopy'] = function ($from, $to) {
+                    $opts['beforeCopy'] = static function ($from, $to) {
                         return strncmp(basename($from), '.', 1) !== 0;
                     };
                 }
@@ -863,12 +860,12 @@ class AssetManager
         }
 
 
-        return [$dstDir, $this->baseUrl.'/'.$dir];
+        return [$dstDir, $this->baseUrl . '/' . $dir];
     }
 
     /**
      * @param AssetBundle $bundle
-     * @param string      $asset
+     * @param string $asset
      *
      * @return string|bool
      */
@@ -909,7 +906,7 @@ class AssetManager
             throw new \InvalidArgumentException("The directory does not exist: {$this->basePath}");
         }
 
-        $this->basePath = (string) realpath($this->basePath);
+        $this->basePath = (string)realpath($this->basePath);
         $this->baseUrl = rtrim($this->aliases->get($this->baseUrl), '/');
     }
 
