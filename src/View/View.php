@@ -113,14 +113,6 @@ class View implements DynamicContentAwareInterface
      */
     private $viewFiles = [];
 
-    /**
-     * View constructor.
-     *
-     * @param string $basePath
-     * @param Theme $theme
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LoggerInterface $logger
-     */
     public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
     {
         $this->basePath = $basePath;
@@ -129,44 +121,21 @@ class View implements DynamicContentAwareInterface
         $this->logger = $logger;
     }
 
-    /**
-     * Get basePath.
-     *
-     * @return string
-     */
     public function getBasePath(): string
     {
         return $this->basePath;
     }
 
-    /**
-     * Set renderers.
-     *
-     * @param array $renderers
-     * @return void
-     */
     public function setRenderers(array $renderers): void
     {
         $this->renderers = $renderers;
     }
 
-    /**
-     * Set source language.
-     *
-     * @param string $language
-     * @return void
-     */
     public function setSourceLanguage(string $language): void
     {
         $this->sourceLanguage = $language;
     }
 
-    /**
-     * Set language.
-     *
-     * @param string $language
-     * @return void
-     */
     public function setLanguage(string $language): void
     {
         $this->language = $language;
