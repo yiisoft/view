@@ -111,7 +111,11 @@ class Theme
         }
         $path = FileHelper::normalizePath($path);
         foreach ($this->pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath((string) $from) . '/';
+            if (!is_string($from)) {
+                throw new \InvalidArgumentException('Pathmap should contain strings');
+            }
+
+            $from = FileHelper::normalizePath($from) . '/';
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
                 foreach ((array)$tos as $to) {
