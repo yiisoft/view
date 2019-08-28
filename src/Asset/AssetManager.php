@@ -46,9 +46,9 @@ class AssetManager
 
     /**
      * @var bool whether to append a timestamp to the URL of every published asset. When this is true, the URL of a
-     *           published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the last modification
-     *           time of the published asset file. You normally would want to set this property to true when you have
-     *           enabled HTTP caching for assets, because it allows you to bust caching when the assets are updated.
+     * published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the last modification
+     * time of the published asset file. You normally would want to set this property to true when you have
+     * enabled HTTP caching for assets, because it allows you to bust caching when the assets are updated.
      */
     private $appendTimestamp = false;
 
@@ -391,7 +391,7 @@ class AssetManager
             return $this->published[$path][1];
         }
         if (($path = realpath($path)) !== false) {
-            return $this->baseUrl . '/' . $this->hash($path) . (is_file($path) ? '/' . basenaame($path) : '');
+            return $this->baseUrl . '/' . $this->hash($path) . (is_file($path) ? '/' . basename($path) : '');
         }
 
         return null;
