@@ -104,12 +104,12 @@ class AssetConverter implements AssetConverterInterface
     /**
      * Converts a given asset file into a CSS or JS file.
      *
-     * @param string $asset    the asset file path, relative to $basePath
+     * @param string $asset the asset file path, relative to $basePath
      * @param string $basePath the directory the $asset is relative to.
      *
      * @return string the converted asset file path, relative to $basePath.
      */
-    public function convert($asset, $basePath): string
+    public function convert(string $asset, string $basePath): string
     {
         $pos = strrpos($asset, '.');
         if ($pos !== false) {
@@ -138,10 +138,8 @@ class AssetConverter implements AssetConverterInterface
      * @param string $targetExtension target asset file extension.
      *
      * @return bool whether asset is outdated or not.
-     *
-     * @since 3.0.0
      */
-    protected function isOutdated($basePath, $sourceFile, $targetFile, $sourceExtension, $targetExtension)
+    protected function isOutdated(string $basePath, string $sourceFile, string $targetFile, string $sourceExtension, string $targetExtension): bool
     {
         $resultModificationTime = @filemtime("$basePath/$targetFile");
         if ($resultModificationTime === false || $resultModificationTime === null) {
@@ -172,7 +170,7 @@ class AssetConverter implements AssetConverterInterface
      *
      * @return bool true on success, false on failure. Failures will be logged.
      */
-    protected function runCommand($command, $basePath, $asset, $result)
+    protected function runCommand(string $command, string $basePath, string $asset, string $result): bool
     {
         $command = $this->aliases->get($command);
 
