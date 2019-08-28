@@ -153,10 +153,10 @@ EOF;
      * @dataProvider positionProvider2
      *
      * @param string $assetBundle
-     * @param int  $pos
+     * @param int $position
      * @param bool $jqAlreadyRegistered
      */
-    public function testPositionDependencyConflict(string $assetBundle, int $pos, bool $jqAlreadyRegistered): void
+    public function testPositionDependencyConflict(string $assetBundle, int $position, bool $jqAlreadyRegistered): void
     {
         $view = $this->webView;
 
@@ -174,12 +174,12 @@ EOF;
     {
         $this->assetManager->setLinkAssets(true);
         $this->assetManager->setHashCallback(
-            function ($path) {
+            static function ($path) {
                 return sprintf('%x/%x', crc32($path), crc32('3.0-dev'));
             }
         );
         $bundle = $this->verifySourcesPublishedBySymlink($this->webView);
-        $this->assertTrue(is_dir(dirname($bundle->basePath)));
+        $this->assertDirectoryExists(dirname($bundle->basePath));
     }
 
     public function testSourcesPublishOptionsOnly(): void
@@ -206,8 +206,8 @@ EOF;
             $this->assertFileExists($publishedFile);
         }
 
-        $this->assertTrue(is_dir(dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->js[0])));
-        $this->assertTrue(is_dir($bundle->basePath));
+        $this->assertDirectoryExists(dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->js[0]));
+        $this->assertDirectoryExists($bundle->basePath);
     }
 
     public function registerFileDataProvider(): array
