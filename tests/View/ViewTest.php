@@ -1,41 +1,31 @@
 <?php
 namespace Yiisoft\View\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
-use Yiisoft\EventDispatcher\Dispatcher;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\EventDispatcher\Provider\Provider;
+use Yiisoft\Tests\TestCase;
 use Yiisoft\View\Theme;
-use Yiisoft\View\View;
 
 /**
- * @group view
+ * ViewTest.
  */
-class ViewTest extends TestCase
+final class ViewTest extends TestCase
 {
     /**
      * @var string path for the test files.
      */
     private $testViewPath = '';
 
-    private $eventDispatcher;
-    private $eventProvider;
-
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
         $this->testViewPath = sys_get_temp_dir() . '/'. str_replace('\\', '_', get_class($this)) . uniqid('', false);
         FileHelper::createDirectory($this->testViewPath);
-
-        $this->eventProvider = new Provider();
-        $this->eventDispatcher = new Dispatcher($this->eventProvider);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
         FileHelper::removeDirectory($this->testViewPath);
-        $this->eventProvider = null;
-        $this->eventDispatcher = null;
     }
 
     /**
@@ -43,7 +33,7 @@ class ViewTest extends TestCase
      */
     public function testExceptionOnRenderFile(): void
     {
-        $view = $this->createView();
+        $view = $this->createView($this->testViewPath);
 
         $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
         file_put_contents($exceptionViewFile, <<<'PHP'
@@ -84,18 +74,19 @@ PHP
         $subViewContent = 'subviewcontent';
         file_put_contents($subView, $subViewContent);
 
-        $view = $this->createView(new Theme([
-            $this->testViewPath => $themePath,
-        ]));
+        $view = $this->createView(
+            $this->testViewPath,
+            new Theme([
+                $this->testViewPath => $themePath,
+            ])
+        );
 
         $this->assertSame($subViewContent, $view->render('//base'));
     }
 
-    /// FIXME
-    /// copied from FileHelperTest without required fixes
     public function testLocalizedDirectory(): void
     {
-        $view = $this->createView();
+        $view = $this->createView($this->testViewPath);
         $this->createFileStructure([
             'views' => [
                 'faq.php' => 'English FAQ',
@@ -117,11 +108,6 @@ PHP
             $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
             $view->localize($viewFile, $currentLanguage, $sourceLanguage)
         );
-    }
-
-    private function createView(Theme $theme = null): View
-    {
-        return new View($this->testViewPath, $theme ?: new Theme(), $this->eventDispatcher, new NullLogger());
     }
 
     /**

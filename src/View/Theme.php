@@ -79,7 +79,7 @@ class Theme
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
-     *                to be under this base URL.
+     * to be under this base URL.
      */
     public function getBaseUrl(): ?string
     {
@@ -111,6 +111,10 @@ class Theme
         }
         $path = FileHelper::normalizePath($path);
         foreach ($this->pathMap as $from => $tos) {
+            if (!is_string($from)) {
+                throw new \InvalidArgumentException('Pathmap should contain strings');
+            }
+
             $from = FileHelper::normalizePath($from) . '/';
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);

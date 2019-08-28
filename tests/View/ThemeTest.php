@@ -2,24 +2,29 @@
 
 namespace Yiisoft\View\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Tests\TestCase;
 use Yiisoft\View\Theme;
 
-class ThemeTest extends TestCase
+/**
+ * ThemeTest.
+ */
+final class ThemeTest extends TestCase
 {
     /**
      * @var string path for the test files.
      */
     protected $testViewPath;
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
         FileHelper::removeDirectory($this->testViewPath);
     }
 
@@ -115,21 +120,8 @@ class ThemeTest extends TestCase
         $this->assertSameIgnoringSlash('/app/views/non-existing.php', $path);
     }
 
-    private function getPath(string $path)
+    private function getPath(string $path): string
     {
         return $this->testViewPath . $path;
-    }
-
-    private function touch(string $path)
-    {
-        FileHelper::createDirectory(dirname($path));
-        touch($path);
-    }
-
-    private function assertSameIgnoringSlash(string $expected, string $actual): void
-    {
-        $expected = str_replace(['/', '\\'], '/', $expected);
-        $actual = str_replace(['/', '\\'], '/', $actual);
-        $this->assertSame($expected, $actual);
     }
 }

@@ -18,29 +18,34 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
+        "psr/container": "1.0.0",
+        "psr/container-implementation": "1.0.0",
+        "psr/event-dispatcher": "1.0.0",
+        "psr/event-dispatcher-implementation": "1.0.0",
         "psr/log": "^1.1",
-        "psr/event-dispatcher": "^1.0",
+        "yiisoft/aliases": "^3.0@dev",
         "yiisoft/arrays": "^3.0@dev",
+        "yiisoft/html": "^3.0@dev",
+        "yiisoft/json": "^3.0@dev",
         "yiisoft/var-dumper": "^3.0@dev",
-        "yiisoft/files": "^3.0@dev"
+        "yiisoft/files": "^3.0@dev",
+        "yiisoft/i18n": "^3.0@dev"
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
-        "yiisoft/di": "^3.0@dev",
-        "yiisoft/log": "^3.0@dev",
+        "phpunit/phpunit": "^8.0",
         "yiisoft/cache": "^3.0@dev",
-        "yiisoft/yii-core": "^3.0@dev",
-        "yiisoft/strings": "^3.0@dev",
+        "yiisoft/di": "^3.0@dev",
         "yiisoft/event-dispatcher": "^3.0@dev",
-        "phpunit/phpunit": "^7.3",
-        "friendsofphp/php-cs-fixer": "^2.2"
+        "yiisoft/log": "^3.0@dev"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         },
         "config-plugin": {
-            "common": "config/common.php"
+            "common": "config/common.php",
+            "tests": "config/tests.php"
         }
     },
     "autoload": {
@@ -52,6 +57,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Yiisoft\\Tests\\": "tests",
             "Yiisoft\\View\\Tests\\": "tests/View",
             "Yiisoft\\Widget\\Tests\\": "tests/Widget",
             "Yiisoft\\Asset\\Tests\\": "tests/Asset"
