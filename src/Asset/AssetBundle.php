@@ -40,7 +40,7 @@ class AssetBundle
 
     /**
      * @var array list of CSS files that this bundle contains. Each CSS file can be specified in one of the three
-     *            formats as explained in {@see js}.
+     * formats as explained in {@see js}.
      *
      * Note that only a forward slash "/" should be used as directory separator.
      */
@@ -48,7 +48,7 @@ class AssetBundle
 
     /**
      * @var array the options that will be passed to {@see View::registerCssFile()} when registering the CSS files in
-     *            this bundle.
+     * this bundle.
      */
     public $cssOptions = [];
 
@@ -68,7 +68,7 @@ class AssetBundle
 
     /**
      * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be specified in one of
-     *            the following formats:
+     * the following formats:
      *
      * - an absolute URL representing an external asset. For example,
      *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
@@ -85,19 +85,19 @@ class AssetBundle
 
     /**
      * @var array the options that will be passed to {@see View::registerJsFile()} when registering the JS files in this
-     *            bundle.
+     * bundle.
      */
     public $jsOptions = [];
 
     /**
      * @var array the options to be passed to {@see AssetManager::publish()} when the asset bundle  is being published.
-     *            This property is used only when {@see sourcePath} is set.
+     * This property is used only when {@see sourcePath} is set.
      */
     public $publishOptions = [];
 
     /**
      * @var string the directory that contains the source asset files for this asset bundle. A source asset file is a
-     *             file that is part of your source code repository of your Web application.
+     * file that is part of your source code repository of your Web application.
      *
      * You must set this property if the directory containing the source asset files is not Web accessible. By setting
      * this property, [[AssetManager]] will publish the source asset files to a Web-accessible directory automatically

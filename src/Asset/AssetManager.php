@@ -17,18 +17,14 @@ use Yiisoft\Files\FileHelper;
  *
  * ```php
  * ```
- *
- * @property AssetConverterInterface $converter The asset converter. Note that the type of this property differs in
- *                                   getter and setter. See {@see getConverter()} and {@see setConverter()} for
- *                                   details.
  */
 class AssetManager
 {
     /**
      * @var callable a PHP callback that is called after a sub-directory or file is successfully copied. This option is
-     *               used only when publishing a directory. The signature of the callback is the same as for
-     *               {@see {beforeCopy}.
-     *               This is passed as a parameter `afterCopy` to {@see \Yiisoft\Files\FileHelper::copyDirectory()}.
+     * used only when publishing a directory. The signature of the callback is the same as for
+     * {@see {beforeCopy}.
+     * This is passed as a parameter `afterCopy` to {@see \Yiisoft\Files\FileHelper::copyDirectory()}.
      */
     private $afterCopy;
 
@@ -100,8 +96,8 @@ class AssetManager
 
     /**
      * @var callable a PHP callback that is called before copying each sub-directory or file. This option is used only
-     *               when publishing a directory. If the callback returns false, the copy operation for the
-     *               sub-directory or file will be cancelled.
+     * when publishing a directory. If the callback returns false, the copy operation for the
+     * sub-directory or file will be cancelled.
      *
      * The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or file to
      * be copied from, while `$to` is the copy target.
@@ -112,8 +108,8 @@ class AssetManager
 
     /**
      * @var array|bool list of asset bundle configurations. This property is provided to customize asset bundles.
-     *                 When a bundle is being loaded by {@see getBundle()}, if it has a corresponding configuration
-     *                 specified here, the configuration will be applied to the bundle.
+     * When a bundle is being loaded by {@see getBundle()}, if it has a corresponding configuration
+     * specified here, the configuration will be applied to the bundle.
      *
      * The array keys are the asset bundle names, which typically are asset bundle class names without leading
      * backslash. The array values are the corresponding configurations. If a value is false, it means the corresponding
@@ -144,8 +140,8 @@ class AssetManager
 
     /**
      * @var int the permission to be set for newly generated asset directories. This value will be used by PHP chmod()
-     *          function. No umask will be applied. Defaults to 0775, meaning the directory is read-writable by owner
-     *          and group, but read-only for other users.
+     * function. No umask will be applied. Defaults to 0775, meaning the directory is read-writable by owner
+     * and group, but read-only for other users.
      */
     private $dirMode = 0775;
 
@@ -156,22 +152,22 @@ class AssetManager
 
     /**
      * @var int the permission to be set for newly published asset files. This value will be used by PHP chmod()
-     *          function. No umask will be applied. If not set, the permission will be determined by the current
-     *          environment.
+     * function. No umask will be applied. If not set, the permission will be determined by the current
+     * environment.
      */
     private $fileMode;
 
     /**
      * @var bool whether the directory being published should be copied even if it is found in the target directory.
-     *           This option is used only when publishing a directory. You may want to set this to be `true` during the
-     *           development stage to make sure the published directory is always up-to-date. Do not set this to true
-     *           on production servers as it will significantly degrade the performance.
+     * This option is used only when publishing a directory. You may want to set this to be `true` during the
+     * development stage to make sure the published directory is always up-to-date. Do not set this to true
+     * on production servers as it will significantly degrade the performance.
      */
     private $forceCopy = false;
 
     /**
      * @var callable a callback that will be called to produce hash for asset directory generation. The signature of the
-     *               callback should be as follows:
+     * callback should be as follows:
      *
      * ```
      * function ($path)
@@ -195,9 +191,9 @@ class AssetManager
 
     /**
      * @var bool whether to use symbolic link to publish asset files. Defaults to false, meaning asset files are copied
-     *           to {@see basePath}. Using symbolic links has the benefit that the published assets will always be
-     *           consistent with the source assets and there is no copy operation required. This is especially useful
-     *           during development.
+     * to {@see basePath}. Using symbolic links has the benefit that the published assets will always be
+     * consistent with the source assets and there is no copy operation required. This is especially useful
+     * during development.
      *
      * However, there are special requirements for hosting environments in order to use symbolic links. In particular,
      * symbolic links are supported only on Linux/Unix, and Windows Vista/2008 or greater.
@@ -245,7 +241,7 @@ class AssetManager
      *
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in {@see AssetBundle::$js} or
-     *                    {@see AssetBundle::$css}.
+     * {@see AssetBundle::$css}.
      *
      * @return string the actual URL for the specified asset.
      */
@@ -282,7 +278,7 @@ class AssetManager
      *
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in {@see AssetBundle::$js} or
-     *                    {@see AssetBundle::$css}.
+     * {@see AssetBundle::$css}.
      *
      * @return false|string the actual file path, or `false` if the asset is specified as an absolute URL
      */
@@ -303,7 +299,7 @@ class AssetManager
      *
      * @param string $name the class name of the asset bundle (without the leading backslash)
      * @param bool $publish whether to publish the asset files in the asset bundle before it is returned. If you set
-     *                        this false, you must manually call `AssetBundle::publish()` to publish the asset files.
+     * this false, you must manually call `AssetBundle::publish()` to publish the asset files.
      *
      * @return AssetBundle the asset bundle instance
      *
@@ -463,7 +459,7 @@ class AssetManager
      *
      * @param string $path the asset (file or directory) to be published
      * @param array $options the options to be applied when publishing a directory. The following options are
-     *               supported:
+     * supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.
      * - except: array, list of patterns that the files or directories should match if they want to be excluded from
@@ -617,8 +613,8 @@ class AssetManager
      * Sets the asset converter.
      *
      * @param AssetConverterInterface $value the asset converter. This can be eitheran object implementing the
-     *                                      {@see AssetConverterInterface}, or a configuration array that can be used
-     *                                      to create the asset converter object.
+     * {@see AssetConverterInterface}, or a configuration array that can be used
+     * to create the asset converter object.
      */
     public function setConverter(AssetConverterInterface $value): void
     {
@@ -797,7 +793,7 @@ class AssetManager
      *
      * @param string $src the asset directory to be published
      * @param array $options the options to be applied when publishing a directory. The following options are
-     *                        supported:
+     * supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.
      * - except: array, list of patterns that the files or directories should match if they want to be excluded from
