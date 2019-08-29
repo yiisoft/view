@@ -137,6 +137,10 @@ class Widget implements ViewContextInterface
     {
     }
 
+    public function show(): string
+    {
+    }
+
     /**
      * Executes the widget.
      *
@@ -195,10 +199,16 @@ class Widget implements ViewContextInterface
      * The default implementation returns the 'views' subdirectory under the directory containing the widget class file.
      *
      * @return string the directory containing the view files for this widget.
+     *
+     * @throws \InvalidArgumentException
      */
     public function getViewPath(): string
     {
         $class = new ReflectionClass($this);
+
+        if (!is_string($class->getFileName())) {
+            throw new \InvalidArgumentException('Pathmap should contain strings');
+        }
 
         return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
     }

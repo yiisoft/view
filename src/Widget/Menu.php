@@ -22,18 +22,9 @@ use Yiisoft\Html\Html;
  *
  * ```php
  * echo Menu::Widget()
- *     ->items() => [
- *         // Important: you need to specify url as 'controller/action',
- *         // not just as 'controller' even if default action is used.
- *         ['label' => 'Home', 'url' => 'site/index',
- *         // 'Products' menu item will be selected as long as the route is 'product/index'
- *         ['label' => 'Products', 'url' => 'product/index', 'items' => [
- *             ['label' => 'New Arrivals', 'url' => 'product/index/new'],
- *             ['label' => 'Most Popular', 'url' => 'product/index/popular'],
- *         ]],
+ *     ->items([
  *         ['label' => 'Login', 'url' => 'site/login', 'visible' => true],
- *     ],
- * ]);
+ *     ]);
  * ```
  */
 class Menu extends Widget
@@ -170,6 +161,13 @@ class Menu extends Widget
         return Html::tag($tag, $this->renderItems($items), $options);
     }
 
+    /**
+     * {@see activateItems}
+     *
+     * @param boolean $value
+     *
+     * @return Widget
+     */
     public function activateItems(bool $value): Widget
     {
         $this->activateItems = $value;
@@ -177,6 +175,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see activateParents}
+     *
+     * @param boolean $value
+     *
+     * @return Widget
+     */
     public function activateParents(bool $value): Widget
     {
         $this->activateParents = $value;
@@ -184,6 +189,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see activeCssClass}
+     *
+     * @param string $value
+     *
+     * @return Widget
+     */
     public function activeCssClass(string $value): Widget
     {
         $this->activeCssClass = $value;
@@ -191,6 +203,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see encodeLabels}
+     *
+     * @param boolean $value
+     *
+     * @return Widget
+     */
     public function encodeLabels(bool $value): Widget
     {
         $this->encodeLabels = $value;
@@ -198,6 +217,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see firstItemCssClass}
+     *
+     * @param string $value
+     *
+     * @return Widget
+     */
     public function firstItemCssClass(string $value): Widget
     {
         $this->firstItemCssClass = $value;
@@ -205,6 +231,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see hideEmptyItems}
+     *
+     * @param boolean $value
+     *
+     * @return Widget
+     */
     public function hideEmptyItems(bool $value): Widget
     {
         $this->hideEmptyItems = $value;
@@ -212,6 +245,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see items}
+     *
+     * @param array $value
+     *
+     * @return Widget
+     */
     public function items(array $value): Widget
     {
         $this->items = $value;
@@ -219,6 +259,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see itemOptions}
+     *
+     * @param array $value
+     *
+     * @return Widget
+     */
     public function itemOptions(array $value): Widget
     {
         $this->itemOptions = $value;
@@ -226,6 +273,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see labelTemplate}
+     *
+     * @param string $value
+     *
+     * @return Widget
+     */
     public function labelTemplate(string $value): Widget
     {
         $this->labelTemplate = $value;
@@ -233,6 +287,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see lastItemCssClass}
+     *
+     * @param string $value
+     *
+     * @return Widget
+     */
     public function lastItemCssClass(string $value): Widget
     {
         $this->lastItemCssClass = $value;
@@ -240,6 +301,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see linkTemplate}
+     *
+     * @param string $value
+     *
+     * @return Widget
+     */
     public function linkTemplate(string $value): Widget
     {
         $this->linkTemplate = $value;
@@ -247,6 +315,13 @@ class Menu extends Widget
         return $this;
     }
 
+    /**
+     * {@see options}
+     *
+     * @param array $value
+     *
+     * @return Widget
+     */
     public function options(array $value): Widget
     {
         $this->options = $value;
@@ -261,7 +336,7 @@ class Menu extends Widget
      *
      * @return string the rendering result
      */
-    protected function renderItems($items)
+    protected function renderItems(array $items): string
     {
         $n = count($items);
         $lines = [];
@@ -297,11 +372,12 @@ class Menu extends Widget
      * Renders the content of a menu item.
      * Note that the container and the sub-menus are not rendered here.
      *
-     * @param array $item the menu item to be rendered. Please refer to [[items]] to see what data might be in the item.
+     * @param array $item the menu item to be rendered. Please refer to {@see items} to see what data might be in the
+     *              item.
      *
      * @return string the rendering result
      */
-    protected function renderItem($item)
+    protected function renderItem(array $item): string
     {
         if (isset($item['url'])) {
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
@@ -320,14 +396,14 @@ class Menu extends Widget
     }
 
     /**
-     * Normalizes the [[items]] property to remove invisible items and activate certain items.
+     * Normalizes the {@see items} property to remove invisible items and activate certain items.
      *
      * @param array $items  the items to be normalized.
-     * @param bool  $active whether there is an active child menu item.
+     * @param bool|null $active whether there is an active child menu item.
      *
      * @return array the normalized menu items
      */
-    protected function normalizeItems($items, &$active)
+    protected function normalizeItems(array $items, ?bool &$active): array
     {
         foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
@@ -368,41 +444,21 @@ class Menu extends Widget
 
     /**
      * Checks whether a menu item is active.
-     * This is done by checking if [[route]] and [[params]] match that specified in the `url` option of the menu item.
-     * When the `url` option of a menu item is specified in terms of an array, its first element is treated
-     * as the route for the item and the rest of the elements are the associated parameters.
-     * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
-     * be considered active.
+     *
+     * This is done by checking match that specified in the `url` option of the menu item.
+     * Only when 'url' match $_SERVER['REQUEST_URI'] respectively, will a menu item be considered active.
      *
      * @param array $item the menu item to be checked
      *
      * @return bool whether the menu item is active
      */
-    protected function isItemActive($item)
+    protected function isItemActive(array $item, bool $active = false): bool
     {
-        if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = $this->app->getAlias($item['url'][0]);
-            if ($route[0] !== '/' && $this->app->controller) {
-                $route = $this->app->controller->module->getUniqueId().'/'.$route;
-            }
-            if (ltrim($route, '/') !== $this->route) {
-                return false;
-            }
-            unset($item['url']['#']);
-            if (count($item['url']) > 1) {
-                $params = $item['url'];
-                unset($params[0]);
-                foreach ($params as $name => $value) {
-                    if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+        if (($this->activateItems) && ($_SERVER['REQUEST_URI'] !== '/') && ($item['url'] === $_SERVER['REQUEST_URI'])) {
+            $active = true;
         }
 
-        return false;
+        return $active;
     }
 
     public function __toString()
