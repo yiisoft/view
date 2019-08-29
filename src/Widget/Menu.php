@@ -1,38 +1,37 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
 use Closure;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
  *
- * The main property of Menu is [[items]], which specifies the possible items in the menu.
- * A menu item can contain sub-items which specify the sub-menu under that menu item.
+ * The main property of Menu is {@see items}, which specifies the possible items in the menu. A menu item can contain
+ * sub-items which specify the sub-menu under that menu item.
  *
- * Menu checks the current route and request parameters to toggle certain menu items
- * with active state.
+ * Menu checks the current route and request parameters to toggle certain menu items with active state.
  *
- * Note that Menu only renders the HTML tags about the menu. It does not do any styling.
- * You are responsible to provide CSS styles to make it look like a real menu.
+ * Note that Menu only renders the HTML tags about the menu. It does not do any styling. You are responsible to provide
+ * CSS styles to make it look like a real menu.
  *
  * The following example shows how to use Menu:
  *
  * ```php
- * echo Menu::widget([
- *     'items' => [
+ * echo Menu::Widget()
+ *     ->items() => [
  *         // Important: you need to specify url as 'controller/action',
  *         // not just as 'controller' even if default action is used.
- *         ['label' => 'Home', 'url' => ['site/index']],
+ *         ['label' => 'Home', 'url' => 'site/index',
  *         // 'Products' menu item will be selected as long as the route is 'product/index'
- *         ['label' => 'Products', 'url' => ['product/index'], 'items' => [
- *             ['label' => 'New Arrivals', 'url' => ['product/index', 'tag' => 'new']],
- *             ['label' => 'Most Popular', 'url' => ['product/index', 'tag' => 'popular']],
+ *         ['label' => 'Products', 'url' => 'product/index', 'items' => [
+ *             ['label' => 'New Arrivals', 'url' => 'product/index/new'],
+ *             ['label' => 'Most Popular', 'url' => 'product/index/popular'],
  *         ]],
- *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => $this->app->user->isGuest],
+ *         ['label' => 'Login', 'url' => 'site/login', 'visible' => true],
  *     ],
  * ]);
  * ```
@@ -42,136 +41,125 @@ class Menu extends Widget
     /**
      * @var array list of menu items. Each menu item should be an array of the following structure:
      *
-     * - label: string, optional, specifies the menu item label. When [[encodeLabels]] is true, the label
-     *   will be HTML-encoded. If the label is not specified, an empty string will be used.
-     * - encode: boolean, optional, whether this item`s label should be HTML-encoded. This param will override
-     *   global [[encodeLabels]] param.
-     * - url: string or array, optional, specifies the URL of the menu item. It will be processed by [[Url::to]].
-     *   When this is set, the actual menu item content will be generated using [[linkTemplate]];
-     *   otherwise, [[labelTemplate]] will be used.
+     * - label: string, optional, specifies the menu item label. When {@see encodeLabels} is true, the label will be
+     *   HTML-encoded. If the label is not specified, an empty string will be used.
+     * - encode: boolean, optional, whether this item`s label should be HTML-encoded. This param will override global
+     *   {@see encodeLabels} param.
+     * - url: string or array, optional, specifies the URL of the menu item. When this is set, the actual menu item
+     *   content will be generated using {@see linkTemplate}; otherwise, {@see labelTemplate} will be used.
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
      * - items: array, optional, specifies the sub-menu items. Its format is the same as the parent items.
-     * - active: boolean or Closure, optional, whether this menu item is in active state (currently selected).
-     *   When using a closure, its signature should be `function ($item, $hasActiveChild, $isItemActive, $widget)`.
-     *   Closure must return `true` if item should be marked as `active`, otherwise - `false`.
-     *   If a menu item is active, its CSS class will be appended with [[activeCssClass]].
-     *   If this option is not set, the menu item will be set active automatically when the current request
-     *   is triggered by `url`. For more details, please refer to [[isItemActive()]].
-     * - template: string, optional, the template used to render the content of this menu item.
-     *   The token `{url}` will be replaced by the URL associated with this menu item,
-     *   and the token `{label}` will be replaced by the label of the menu item.
-     *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
-     * - submenuTemplate: string, optional, the template used to render the list of sub-menus.
-     *   The token `{items}` will be replaced with the rendered sub-menu items.
-     *   If this option is not set, [[submenuTemplate]] will be used instead.
+     * - active: boolean or Closure, optional, whether this menu item is in active state (currently selected). When
+     *   using a closure, its signature should be `function ($item, $hasActiveChild, $isItemActive, $Widget)`. Closure
+     *   must return `true` if item should be marked as `active`, otherwise - `false`. If a menu item is active, its CSS
+     *   class will be appended with {@see activeCssClass}. If this option is not set, the menu item will be set active
+     *   automatically when the current request is triggered by `url`. For more details, please refer to
+     *   {@see isItemActive()}.
+     * - template: string, optional, the template used to render the content of this menu item. The token `{url}` will
+     *   be replaced by the URL associated with this menu item, and the token `{label}` will be replaced by the label
+     *   of the menu item. If this option is not set, {@see linkTemplate} or {@see labelTemplate} will be used instead.
+     * - submenuTemplate: string, optional, the template used to render the list of sub-menus. The token `{items}` will
+     *   be replaced with the rendered sub-menu items. If this option is not set, [[submenuTemplate]] will be used
+     *   instead.
      * - options: array, optional, the HTML attributes for the menu container tag.
      */
-    public $items = [];
+    private $items = [];
+
     /**
-     * @var array list of HTML attributes shared by all menu [[items]]. If any individual menu item
-     *            specifies its `options`, it will be merged with this property before being used to generate the HTML
-     *            attributes for the menu item tag. The following special options are recognized:
+     * @var array list of HTML attributes shared by all menu [[items]]. If any individual menu item specifies its
+     *            `options`, it will be merged with this property before being used to generate the HTML attributes for
+     *            the menu item tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "li", the tag name of the item container tags.
-     *   Set to false to disable container tag.
-     *   See also [[\yii\helpers\Html::tag()]].
+     * - tag: string, defaults to "li", the tag name of the item container tags. Set to false to disable container tag.
+     *   See also {@see \Yiisoft\Html\Html::tag()}
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * {@see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered}
      */
-    public $itemOptions = [];
+    private $itemOptions = [];
+
     /**
-     * @var string the template used to render the body of a menu which is a link.
-     *             In this template, the token `{url}` will be replaced with the corresponding link URL;
-     *             while `{label}` will be replaced with the link text.
-     *             This property will be overridden by the `template` option set in individual menu items via [[items]].
+     * @var string the template used to render the body of a menu which is a link. In this template, the token `{url}`
+     *             will be replaced with the corresponding link URL; while `{label}` will be replaced with the link
+     *             text. This property will be overridden by the `template` option set in individual menu items via
+     *             {@see items}.
      */
-    public $linkTemplate = '<a href="{url}">{label}</a>';
+    private $linkTemplate = '<a href="{url}">{label}</a>';
+
     /**
      * @var string the template used to render the body of a menu which is NOT a link.
      *             In this template, the token `{label}` will be replaced with the label of the menu item.
-     *             This property will be overridden by the `template` option set in individual menu items via [[items]].
+     *             This property will be overridden by the `template` option set in individual menu items via
+     *             {@see items}.
      */
-    public $labelTemplate = '{label}';
+    private $labelTemplate = '{label}';
+
     /**
      * @var string the template used to render a list of sub-menus.
      *             In this template, the token `{items}` will be replaced with the rendered sub-menu items.
      */
-    public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
+    private $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
+
     /**
      * @var bool whether the labels for menu items should be HTML-encoded.
      */
-    public $encodeLabels = true;
+    private $encodeLabels = true;
+
     /**
      * @var string the CSS class to be appended to the active menu item.
      */
-    public $activeCssClass = 'active';
+    private $activeCssClass = 'active';
+
     /**
-     * @var bool whether to automatically activate items according to whether their route setting
-     *           matches the currently requested route.
+     * @var bool whether to automatically activate items according to whether their route setting matches the currently
+     *           requested route.
      *
-     * @see isItemActive()
+     * {@see isItemActive()}
      */
-    public $activateItems = true;
+    private $activateItems = true;
+
     /**
-     * @var bool whether to activate parent menu items when one of the corresponding child menu items is active.
-     *           The activated parent menu items will also have its CSS classes appended with [[activeCssClass]].
+     * @var bool whether to activate parent menu items when one of the corresponding child menu items is active. The
+     *           activated parent menu items will also have its CSS classes appended with {@see activeCssClass}.
      */
-    public $activateParents = false;
+    private $activateParents = false;
+
     /**
-     * @var bool whether to hide empty menu items. An empty menu item is one whose `url` option is not
-     *           set and which has no visible child menu items.
+     * @var bool whether to hide empty menu items. An empty menu item is one whose `url` option is not set and which has
+     *           no visible child menu items.
      */
-    public $hideEmptyItems = true;
+    private $hideEmptyItems = true;
+
     /**
      * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
      *
      * - tag: string, defaults to "ul", the tag name of the item container tags. Set to false to disable container tag.
-     *   See also [[\yii\helpers\Html::tag()]].
+     *   See also {@see \Yiisoft\Html\Html::tag()}.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * {@see \Yiisoft\Html\Html::renderTagAttributes()} for details on how attributes are being rendered.
      */
-    public $options = [];
+    private $options = [];
+
     /**
-     * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
-     *             Defaults to null, meaning no such CSS class will be assigned.
+     * @var string the CSS class that will be assigned to the first item in the main menu or each submenu. Defaults to
+     *             null, meaning no such CSS class will be assigned.
      */
-    public $firstItemCssClass;
+    private $firstItemCssClass;
+
     /**
-     * @var string the CSS class that will be assigned to the last item in the main menu or each submenu.
-     *             Defaults to null, meaning no such CSS class will be assigned.
+     * @var string the CSS class that will be assigned to the last item in the main menu or each submenu. Defaults to
+     *             null, meaning no such CSS class will be assigned.
      */
-    public $lastItemCssClass;
-    /**
-     * @var string the route used to determine if a menu item is active or not.
-     *             If not set, it will use the route of the current request.
-     *
-     * @see params
-     * @see isItemActive()
-     */
-    public $route;
-    /**
-     * @var array the parameters used to determine if a menu item is active or not.
-     *            If not set, it will use `$_GET`.
-     *
-     * @see route
-     * @see isItemActive()
-     */
-    public $params;
+    private $lastItemCssClass;
 
     /**
      * Renders the menu.
      *
-     * @return string the result of widget execution to be outputted.
+     * @return string the result of Widget execution to be outputted.
      */
-    public function run(): string
+    public function show(): string
     {
-        if ($this->route === null && $this->app->controller !== null) {
-            $this->route = $this->app->controller->getRoute();
-        }
-        if ($this->params === null) {
-            $this->params = $this->app->request->getQueryParams();
-        }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
+
         if (empty($items)) {
             return '';
         }
@@ -180,6 +168,90 @@ class Menu extends Widget
         $tag = ArrayHelper::remove($options, 'tag', 'ul');
 
         return Html::tag($tag, $this->renderItems($items), $options);
+    }
+
+    public function activateItems(bool $value): Widget
+    {
+        $this->activateItems = $value;
+
+        return $this;
+    }
+
+    public function activateParents(bool $value): Widget
+    {
+        $this->activateParents = $value;
+
+        return $this;
+    }
+
+    public function activeCssClass(string $value): Widget
+    {
+        $this->activeCssClass = $value;
+
+        return $this;
+    }
+
+    public function encodeLabels(bool $value): Widget
+    {
+        $this->encodeLabels = $value;
+
+        return $this;
+    }
+
+    public function firstItemCssClass(string $value): Widget
+    {
+        $this->firstItemCssClass = $value;
+
+        return $this;
+    }
+
+    public function hideEmptyItems(bool $value): Widget
+    {
+        $this->hideEmptyItems = $value;
+
+        return $this;
+    }
+
+    public function items(array $value): Widget
+    {
+        $this->items = $value;
+
+        return $this;
+    }
+
+    public function itemOptions(array $value): Widget
+    {
+        $this->itemOptions = $value;
+
+        return $this;
+    }
+
+    public function labelTemplate(string $value): Widget
+    {
+        $this->labelTemplate = $value;
+
+        return $this;
+    }
+
+    public function lastItemCssClass(string $value): Widget
+    {
+        $this->lastItemCssClass = $value;
+
+        return $this;
+    }
+
+    public function linkTemplate(string $value): Widget
+    {
+        $this->linkTemplate = $value;
+
+        return $this;
+    }
+
+    public function options(array $value): Widget
+    {
+        $this->options = $value;
+
+        return $this;
     }
 
     /**
@@ -235,7 +307,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}'   => Html::encode(Url::to($item['url'])),
+                '{url}'   => Html::encode($item['url']),
                 '{label}' => $item['label'],
             ]);
         }
@@ -331,5 +403,10 @@ class Menu extends Widget
         }
 
         return false;
+    }
+
+    public function __toString()
+    {
+        return $this->show();
     }
 }
