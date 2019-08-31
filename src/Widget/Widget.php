@@ -31,9 +31,9 @@ class Widget implements ViewContextInterface
     protected static $stack;
 
     /**
-     * @var Webview $view
+     * @var WebView $view
      */
-    private $view;
+    protected static $webView;
 
     /**
      * @var Widget $widget
@@ -115,12 +115,12 @@ class Widget implements ViewContextInterface
     /**
      * Returns the view object that can be used to render views or view files.
      *
-     * The {@see render()} and [[renderFile()]] methods will use this view object to implement the actual view
+     * The {@see render()} and {@see renderFile()} methods will use this view object to implement the actual view
      * rendering. If not set, it will default to the "view" application component.
      */
     public function getView(): WebView
     {
-        return $this->view;
+        return self::$webView;
     }
 
     /**
@@ -128,9 +128,9 @@ class Widget implements ViewContextInterface
      *
      * @param WebView $view the view object that can be used to render views or view files.
      */
-    public function setView(WebView $view): void
+    public function setView(WebView $webView): void
     {
-        $this->view = $view;
+        self::$webView = $webView;
     }
 
     public function init(): void

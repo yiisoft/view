@@ -83,6 +83,7 @@ abstract class TestCase extends BaseTestCase
         $this->webView = $this->createWebView($this->aliases->get('@view'));
         $this->webView->setAssetManager($this->assetManager);
         $this->widget = $this->container->get(Widget::class);
+        $this->widget->setView($this->webView);
 
         $this->removeAssets('@basePath');
     }

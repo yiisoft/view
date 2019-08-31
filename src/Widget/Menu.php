@@ -115,6 +115,11 @@ class Menu extends Widget
     private $activateParents = false;
 
     /**
+     * @var string $currentPath Allows you to assign the current path of the url from request controller.
+     */
+    private $currentPath;
+
+    /**
      * @var bool whether to hide empty menu items. An empty menu item is one whose `url` option is not set and which has
      *           no visible child menu items.
      */
@@ -199,6 +204,20 @@ class Menu extends Widget
     public function activeCssClass(string $value): Widget
     {
         $this->activeCssClass = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@see currentPath}
+     *
+     * @param boolean $value
+     *
+     * @return Widget
+     */
+    public function currentPath(string $value): Widget
+    {
+        $this->currentPath = $value;
 
         return $this;
     }
@@ -340,28 +359,35 @@ class Menu extends Widget
     {
         $n = count($items);
         $lines = [];
+
         foreach ($items as $i => $item) {
             $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
             $tag = ArrayHelper::remove($options, 'tag', 'li');
             $class = [];
+
             if ($item['active']) {
                 $class[] = $this->activeCssClass;
             }
+
             if ($i === 0 && $this->firstItemCssClass !== null) {
                 $class[] = $this->firstItemCssClass;
             }
+
             if ($i === $n - 1 && $this->lastItemCssClass !== null) {
                 $class[] = $this->lastItemCssClass;
             }
+
             Html::addCssClass($options, $class);
 
             $menu = $this->renderItem($item);
+
             if (!empty($item['items'])) {
                 $submenuTemplate = ArrayHelper::getValue($item, 'submenuTemplate', $this->submenuTemplate);
                 $menu .= strtr($submenuTemplate, [
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
+
             $lines[] = Html::tag($tag, $menu, $options);
         }
 
@@ -410,12 +436,15 @@ class Menu extends Widget
                 unset($items[$i]);
                 continue;
             }
+
             if (!isset($item['label'])) {
                 $item['label'] = '';
             }
+
             $encodeLabel = $item['encode'] ?? $this->encodeLabels;
             $items[$i]['label'] = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $hasActiveChild = false;
+
             if (isset($item['items'])) {
                 $items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);
                 if (empty($items[$i]['items']) && $this->hideEmptyItems) {
@@ -426,6 +455,7 @@ class Menu extends Widget
                     }
                 }
             }
+
             if (!isset($item['active'])) {
                 if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item)) {
                     $active = $items[$i]['active'] = true;
@@ -454,8 +484,10 @@ class Menu extends Widget
      */
     protected function isItemActive(array $item, bool $active = false): bool
     {
-        if (($this->activateItems) && ($_SERVER['REQUEST_URI'] !== '/') && ($item['url'] === $_SERVER['REQUEST_URI'])) {
-            $active = true;
+        if (isset($item['url'])) {
+            if (($this->activateItems) && ($this->currentPath !== '/') && ($item['url'] === $this->currentPath)) {
+                $active = true;
+            }
         }
 
         return $active;
