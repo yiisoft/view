@@ -31,12 +31,12 @@ class ContentDecoratorTest extends TestCase
             ->params([])
             ->init();
 
-            echo "\t\t<div class='left-column'>\n";
-            echo "\t\t\t<p>This is a left bar!</p>\n";
-            echo "\t\t</div>\n\n";
-            echo "\t\t<div class='right-column'>\n";
-            echo "\t\t\t<p>This is a right bar!</p>\n";
-            echo "\t\t</div>\n";
+        echo "\t\t<div class='left-column'>\n";
+        echo "\t\t\t<p>This is a left bar!</p>\n";
+        echo "\t\t</div>\n\n";
+        echo "\t\t<div class='right-column'>\n";
+        echo "\t\t\t<p>This is a right bar!</p>\n";
+        echo "\t\t</div>\n";
 
         ContentDecorator::end();
 
