@@ -80,10 +80,9 @@ abstract class TestCase extends BaseTestCase
         $this->listenerProvider = $this->container->get(ListenerProviderInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
         $this->theme = $this->container->get(Theme::class);
-        $this->webView = $this->createWebView($this->aliases->get('@view'));
+        $this->webView = $this->container->get(WebView::class);
         $this->webView->setAssetManager($this->assetManager);
         $this->widget = $this->container->get(Widget::class);
-        $this->widget->setView($this->webView);
 
         $this->removeAssets('@basePath');
     }
@@ -141,19 +140,6 @@ abstract class TestCase extends BaseTestCase
     protected function createView($basePath, Theme $theme = null): View
     {
         return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->logger);
-    }
-
-    /**
-     * Create webview tests.
-     *
-     * @param string $basePath
-     * @param Theme  $theme
-     *
-     * @return View
-     */
-    protected function createWebView(string $basePath): WebView
-    {
-        return new WebView($basePath, $this->theme, $this->eventDispatcher, $this->logger);
     }
 
     public function touch(string $path): void

@@ -41,11 +41,4 @@ return [
             'targets' => [],
         ],
     ],
-
-    Widget::class => [
-        '__class' => Widget::class,
-        '__construct()' => [
-            Reference::to(EventDispatcherInterface::class),
-        ]
-    ],
 ];
