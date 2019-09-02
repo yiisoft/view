@@ -33,7 +33,7 @@ class View implements DynamicContentAwareInterface
      * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
      * They can be later accessed somewhere else through this property.
      */
-    public $blocks;
+    private $blocks;
 
     /**
      * @var ViewContextInterface the context under which the {@see {renderFile()} method is being invoked.
@@ -139,6 +139,34 @@ class View implements DynamicContentAwareInterface
     public function setLanguage(string $language): void
     {
         $this->language = $language;
+    }
+
+    /**
+     * {@see blocks}
+     *
+     * @param array $value
+     *
+     * @return void
+     */
+    public function setBlocks(string $id, string $value): void
+    {
+        $this->blocks[$id] = $value;
+    }
+
+    /**
+     * {@see blocks}
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function getBlock(string $value): string
+    {
+        if (isset($this->blocks[$value])) {
+            return $this->blocks[$value];
+        } else {
+            throw new \InvalidArgumentException('Block: ' . $value.  ' not found.');
+        }
     }
 
     /**
@@ -515,13 +543,11 @@ class View implements DynamicContentAwareInterface
      *
      * @return Block the Block widget instance
      */
-    public function beginBlock($id, $renderInPlace = false): Block
+    public function beginBlock(string $id, $renderInPlace = false): Block
     {
-        return Block::begin([
-            'id' => $id,
-            'renderInPlace' => $renderInPlace,
-            'view' => $this,
-        ]);
+        return Block::begin()
+            ->id($id)
+            ->renderInPlace($renderInPlace);
     }
 
     /**
@@ -556,11 +582,9 @@ class View implements DynamicContentAwareInterface
      */
     public function beginContent(string $viewFile, array $params = []): ContentDecorator
     {
-        return ContentDecorator::begin([
-            'viewFile' => $viewFile,
-            'params' => $params,
-            'view' => $this,
-        ]);
+        return ContentDecorator::begin()
+            ->params($params)
+            ->viewFile($viewFile);
     }
 
     /**
