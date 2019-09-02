@@ -19,6 +19,10 @@ use Yiisoft\Widget\Widget;
 $tempDir = sys_get_temp_dir();
 
 return [
+    ContainerInterface::class => function (ContainerInterface $container) {
+        return $container;
+    },
+
     Aliases::class => [
         '@root' => dirname(__DIR__, 1),
         '@public' => '@root/tests/public',
@@ -71,20 +75,20 @@ return [
         '__class' => Theme::class,
     ],
 
-    View::class => [
-        '__class' => View::class,
-        '__construct()' => [
-            'basePath'=> $tempDir . DIRECTORY_SEPARATOR . 'views',
-            'theme'=> Reference::to(Theme::class),
-            'eventDispatcher' => Reference::to(EventDispatcherInterface::class),
-            'logger' => Reference::to(LoggerInterface::class)
-        ],
-    ],
+    WebView::class => function (ContainerInterface $container) {
+        $aliases = $container->get(Aliases::class);
+        $eventDispatcher = $container->get(EventDispatcherInterface::class);
+        $theme = $container->get(Theme::class);
+        $logger = $container->get(LoggerInterface::class);
+
+        return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $logger);
+    },
 
     Widget::class => [
         '__class' => Widget::class,
         '__construct()' => [
             Reference::to(EventDispatcherInterface::class),
+            Reference::to(WebView::class),
         ]
     ],
 ];

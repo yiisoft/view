@@ -40,9 +40,10 @@ class Widget implements ViewContextInterface
      */
     protected static $widget;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher, WebView $webView)
     {
         self::$eventDispatcher = $eventDispatcher;
+        self::$webView = $webView;
     }
 
     /**
@@ -58,7 +59,7 @@ class Widget implements ViewContextInterface
      */
     public static function begin(): Widget
     {
-        $widget = new static(self::$eventDispatcher);
+        $widget = new static(self::$eventDispatcher, self::$webView);
 
         self::$stack[] = $widget;
 
@@ -105,7 +106,7 @@ class Widget implements ViewContextInterface
      */
     public static function widget(): Widget
     {
-        $widget = new static(self::$eventDispatcher);
+        $widget = new static(self::$eventDispatcher, self::$webView);
 
         static::$widget = $widget;
 
@@ -121,16 +122,6 @@ class Widget implements ViewContextInterface
     public function getView(): WebView
     {
         return self::$webView;
-    }
-
-    /**
-     * Sets the view object to be used by this widget.
-     *
-     * @param WebView $view the view object that can be used to render views or view files.
-     */
-    public function setView(WebView $webView): void
-    {
-        self::$webView = $webView;
     }
 
     public function init(): void
