@@ -180,7 +180,7 @@ class BreadcrumbsTest extends TestCase
         $expectedHtml = "<div class=\"breadcrumb\"><a href=\"/\">Home</a>\n" .
             "My Home Page\n" .
             "http://my.example.com/yii2/link/page\n" .
-            "</div>";
+            '</div>';
 
         $this->assertEquals($expectedHtml, $actualHtml);
 

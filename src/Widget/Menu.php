@@ -26,6 +26,8 @@ use Yiisoft\Html\Html;
  *         ['label' => 'Login', 'url' => 'site/login', 'visible' => true],
  *     ]);
  * ```
+ *
+ * @method static Menu widget()
  */
 class Menu extends Widget
 {
@@ -171,9 +173,9 @@ class Menu extends Widget
      *
      * @param boolean $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function activateItems(bool $value): Widget
+    public function activateItems(bool $value): self
     {
         $this->activateItems = $value;
 
@@ -185,9 +187,9 @@ class Menu extends Widget
      *
      * @param boolean $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function activateParents(bool $value): Widget
+    public function activateParents(bool $value): self
     {
         $this->activateParents = $value;
 
@@ -199,9 +201,9 @@ class Menu extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function activeCssClass(string $value): Widget
+    public function activeCssClass(string $value): self
     {
         $this->activeCssClass = $value;
 
@@ -211,11 +213,11 @@ class Menu extends Widget
     /**
      * {@see currentPath}
      *
-     * @param boolean $value
+     * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function currentPath(string $value): Widget
+    public function currentPath(string $value): self
     {
         $this->currentPath = $value;
 
@@ -227,9 +229,9 @@ class Menu extends Widget
      *
      * @param boolean $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function encodeLabels(bool $value): Widget
+    public function encodeLabels(bool $value): self
     {
         $this->encodeLabels = $value;
 
@@ -241,9 +243,9 @@ class Menu extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function firstItemCssClass(string $value): Widget
+    public function firstItemCssClass(string $value): self
     {
         $this->firstItemCssClass = $value;
 
@@ -255,9 +257,9 @@ class Menu extends Widget
      *
      * @param boolean $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function hideEmptyItems(bool $value): Widget
+    public function hideEmptyItems(bool $value): self
     {
         $this->hideEmptyItems = $value;
 
@@ -269,9 +271,9 @@ class Menu extends Widget
      *
      * @param array $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function items(array $value): Widget
+    public function items(array $value): self
     {
         $this->items = $value;
 
@@ -283,9 +285,9 @@ class Menu extends Widget
      *
      * @param array $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function itemOptions(array $value): Widget
+    public function itemOptions(array $value): self
     {
         $this->itemOptions = $value;
 
@@ -297,9 +299,9 @@ class Menu extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function labelTemplate(string $value): Widget
+    public function labelTemplate(string $value): self
     {
         $this->labelTemplate = $value;
 
@@ -311,9 +313,9 @@ class Menu extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function lastItemCssClass(string $value): Widget
+    public function lastItemCssClass(string $value): self
     {
         $this->lastItemCssClass = $value;
 
@@ -325,9 +327,9 @@ class Menu extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function linkTemplate(string $value): Widget
+    public function linkTemplate(string $value): self
     {
         $this->linkTemplate = $value;
 
@@ -339,9 +341,9 @@ class Menu extends Widget
      *
      * @param array $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function options(array $value): Widget
+    public function options(array $value): self
     {
         $this->options = $value;
 
@@ -457,7 +459,7 @@ class Menu extends Widget
             }
 
             if (!isset($item['active'])) {
-                if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item)) {
+                if (($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item))) {
                     $active = $items[$i]['active'] = true;
                 } else {
                     $items[$i]['active'] = false;
@@ -480,14 +482,13 @@ class Menu extends Widget
      *
      * @param array $item the menu item to be checked
      *
+     * @param bool $active
      * @return bool whether the menu item is active
      */
     protected function isItemActive(array $item, bool $active = false): bool
     {
-        if (isset($item['url'])) {
-            if (($this->activateItems) && ($this->currentPath !== '/') && ($item['url'] === $this->currentPath)) {
-                $active = true;
-            }
+        if ($this->activateItems && $this->currentPath !== '/' && isset($item['url']) && $item['url'] === $this->currentPath) {
+            $active = true;
         }
 
         return $active;

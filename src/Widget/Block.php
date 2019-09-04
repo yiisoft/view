@@ -32,6 +32,9 @@ namespace Yiisoft\Widget;
  *
  * Second parameter defines if block content should be outputted which is desired when rendering its content but isn't
  * desired when redefining it in subviews.
+ *
+ * @method static Block begin()
+ * @method static Block end()
  */
 class Block extends Widget
 {
@@ -81,11 +84,11 @@ class Block extends Widget
     /**
      * {@see renderInPlace}
      *
-     * @param boolean $value
+     * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function id(string $value): Widget
+    public function id(string $value): self
     {
         $this->id = $value;
 
@@ -97,9 +100,9 @@ class Block extends Widget
      *
      * @param boolean $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function renderInPlace(bool $value): Widget
+    public function renderInPlace(bool $value): self
     {
         $this->renderInPlace = $value;
 

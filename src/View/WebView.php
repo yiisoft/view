@@ -320,14 +320,13 @@ class WebView extends View
     public function registerAssetBundle(string $name, ?int $position = null): AssetBundle
     {
         if (!isset($this->assetBundles[$name])) {
-            $am = $this->getAssetManager();
-            $bundle = $am->getBundle($name);
+            $bundle = $this->getAssetManager()->getBundle($name);
 
             $this->assetBundles[$name] = false;
 
             // register dependencies
 
-            $pos = isset($bundle->jsOptions['position']) ? $bundle->jsOptions['position'] : null;
+            $pos = $bundle->jsOptions['position'] ?? null;
 
             foreach ($bundle->depends as $dep) {
                 $this->registerAssetBundle($dep, $pos);
@@ -341,7 +340,7 @@ class WebView extends View
         }
 
         if ($position !== null) {
-            $pos = isset($bundle->jsOptions['position']) ? $bundle->jsOptions['position'] : null;
+            $pos = $bundle->jsOptions['position'] ?? null;
 
             if ($pos === null) {
                 $bundle->jsOptions['position'] = $pos = $position;

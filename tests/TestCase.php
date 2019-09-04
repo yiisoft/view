@@ -62,6 +62,11 @@ abstract class TestCase extends BaseTestCase
     protected $widget;
 
     /**
+     * @var ListenerProviderInterface
+     */
+    protected $listenerProvider;
+
+    /**
      * setUp
      *
      * @return void

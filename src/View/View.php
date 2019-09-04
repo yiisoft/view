@@ -144,7 +144,8 @@ class View implements DynamicContentAwareInterface
     /**
      * {@see blocks}
      *
-     * @param array $value
+     * @param string $id
+     * @param string $value
      *
      * @return void
      */
@@ -164,9 +165,9 @@ class View implements DynamicContentAwareInterface
     {
         if (isset($this->blocks[$value])) {
             return $this->blocks[$value];
-        } else {
-            throw new \InvalidArgumentException('Block: ' . $value.  ' not found.');
         }
+
+        throw new \InvalidArgumentException('Block: ' . $value.  ' not found.');
     }
 
     /**
@@ -198,7 +199,7 @@ class View implements DynamicContentAwareInterface
      *
      * {@see renderFile()}
      */
-    public function render($view, $params = [], $context = null)
+    public function render($view, $params = [], $context = null): string
     {
         $viewFile = $this->findTemplateFile($view, $context);
         return $this->renderFile($viewFile, $params, $context);
@@ -262,9 +263,10 @@ class View implements DynamicContentAwareInterface
      * @param object $context the context that the view should use for rendering the view. If null, existing [[context]]
      * will be used.
      *
-     * @throws ViewNotFoundException if the view file does not exist
-     *
      * @return string the rendering result
+     * @throws \Throwable
+     *
+     * @throws ViewNotFoundException if the view file does not exist
      */
     public function renderFile(string $viewFile, array $params = [], object $context = null): string
     {
@@ -296,7 +298,7 @@ class View implements DynamicContentAwareInterface
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
             $output = $renderer->render($this, $viewFile, $params);
 
-            $this->afterRender($viewFile, $params, $output);
+            $output = $this->afterRender($viewFile, $params, $output);
         }
 
         array_pop($this->viewFiles);
@@ -375,7 +377,7 @@ class View implements DynamicContentAwareInterface
     public function beforeRender(string $viewFile, array $params): bool
     {
         $event = new BeforeRender($viewFile, $params);
-        $this->eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return !$event->isPropagationStopped();
     }
@@ -394,7 +396,7 @@ class View implements DynamicContentAwareInterface
     public function afterRender(string $viewFile, array $params, &$output): string
     {
         $event = new AfterRender($viewFile, $params, $output);
-        $this->eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
     }
@@ -503,7 +505,7 @@ class View implements DynamicContentAwareInterface
      *
      * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
      */
-    public function getDynamicContents()
+    public function getDynamicContents(): array
     {
         return $this->cacheStack;
     }
