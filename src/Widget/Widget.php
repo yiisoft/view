@@ -26,7 +26,7 @@ class Widget implements ViewContextInterface
      * The widgets that are currently being rendered (not ended). This property is maintained by {@see static::begin()}
      * and {@see static::end()} methods.
      *
-     * @var Widget $stack
+     * @var Widget[] $stack
      */
     protected static $stack;
 

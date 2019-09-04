@@ -28,7 +28,7 @@ namespace Yiisoft\Widget;
  *
  * in subviews show block:
  *
- * <?php echo $this->getBlock('index');
+ * <?= $this->getBlock('index') ?>
  *
  * Second parameter defines if block content should be outputted which is desired when rendering its content but isn't
  * desired when redefining it in subviews.
