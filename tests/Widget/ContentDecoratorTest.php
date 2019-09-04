@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget\Tests;
 
@@ -7,14 +8,14 @@ use Yiisoft\Widget\ContentDecorator;
 use Yiisoft\Widget\Event\BeforeRun;
 
 /**
- * @group widgets
+ * ContentDecoratorTest.
  */
 class ContentDecoratorTest extends TestCase
 {
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
 

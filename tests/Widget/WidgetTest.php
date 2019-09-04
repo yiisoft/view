@@ -21,14 +21,14 @@ class WidgetTest extends TestCase
      */
     protected $widget;
 
-    public function testWidget()
+    public function testWidget(): void
     {
         $output = TestWidget::widget()->id('w0')->run();
 
         $this->assertSame('<run-w0>', $output);
     }
 
-    public function testBeginEnd()
+    public function testBeginEnd(): void
     {
         ob_start();
         ob_implicit_flush(0);
@@ -46,7 +46,7 @@ class WidgetTest extends TestCase
     /**
      * @depends testBeginEnd
      */
-    public function testStackTracking()
+    public function testStackTracking(): void
     {
         $this->expectException('BadFunctionCallException');
         TestWidget::end();
@@ -55,7 +55,7 @@ class WidgetTest extends TestCase
     /**
      * @depends testBeginEnd
      */
-    public function testStackTrackingDisorder()
+    public function testStackTrackingDisorder(): void
     {
         $this->expectException('BadFunctionCallException');
         TestWidgetA::begin();

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget\Tests;
 
@@ -6,13 +7,16 @@ use Yiisoft\Tests\TestCase;
 use Yiisoft\Widget\Menu;
 
 /**
- * @group widgets
+ * MenuTest.
  */
 class MenuTest extends TestCase
 {
-    public function testEncodeLabel()
+    public function testEncodeLabelTrue(): void
     {
-        $output = Menu::widget()
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->encodeLabels(true)
             ->items([
                 [
@@ -31,9 +35,16 @@ class MenuTest extends TestCase
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
+    }
 
-        $output = Menu::widget()
+    public function testEncodeLabelFalse(): void
+    {
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->encodeLabels(false)
             ->items([
                 [
@@ -52,15 +63,19 @@ HTML;
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
     }
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/8064
      */
-    public function testTagOption()
+    public function testTagOption(): void
     {
-        $output = Menu::widget()
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->encodeLabels(true)
             ->options([
                 'tag' => false,
@@ -82,9 +97,15 @@ HTML;
 <div><a href="#">item1</a></div>
 <a href="#">item2</a>
 HTML;
-        $this->assertEqualsWithoutLE($expected, $output);
 
-        $output = Menu::widget()
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+
+        ob_end_clean();
+
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->encodeLabels(true)
             ->options([
                 'tag' => false,
@@ -105,13 +126,16 @@ HTML;
 <a href="#">item1</a>
 <a href="#">item2</a>
 HTML;
-
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
     }
 
-    public function testItemTemplate()
+    public function testItemTemplate(): void
     {
-        $output = Menu::widget()
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->labelTemplate('')
             ->linkTemplate('')
             ->items([
@@ -134,13 +158,16 @@ HTML;
 <li>label: item2</li>
 <li></li></ul>
 HTML;
-
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
     }
 
-    public function testActiveItemClosure()
+    public function testActiveItemClosure(): void
     {
-        $output = Menu::widget()
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->linkTemplate('')
             ->labelTemplate('')
             ->items([
@@ -168,13 +195,16 @@ HTML;
 <li>label: item2</li>
 <li class="active"></li></ul>
 HTML;
-
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
     }
 
-    public function testItemClassAsArray()
+    public function testItemClassAsArray(): void
     {
-        $output = Menu::widget()
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->encodeLabels(true)
             ->activeCssClass('item-active')
             ->items([
@@ -221,12 +251,16 @@ HTML;
 <li><a href="#">item3</a></li>
 <li class="some-other-class foo_bar_baz_class"><a href="#">item4</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
     }
 
-    public function testItemClassAsString()
+    public function testItemClassAsString(): void
     {
-        $output = Menu::widget()
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo Menu::widget()
             ->encodeLabels(true)
             ->activeCssClass('item-active')
             ->items([
@@ -264,6 +298,7 @@ HTML;
 <li class="some classes"><a href="#">item3</a></li>
 <li class="another-class other--class two classes item-active"><a href="#">item4</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, $output);
+        $this->assertEqualsWithoutLE($expected, ob_get_contents());
+        ob_end_clean();
     }
 }

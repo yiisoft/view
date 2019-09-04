@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget\Tests;
 
@@ -11,7 +12,7 @@ use Yiisoft\Widget\Event\BeforeRun;
  */
 class BlockTest extends TestCase
 {
-    public function testBlock()
+    public function testBlock(): void
     {
         Block::begin()
             ->id('testme')
@@ -24,7 +25,7 @@ class BlockTest extends TestCase
         $this->assertStringContainsString('<block-testme>', $this->webView->getBlock('testme'));
     }
 
-    public function testBlockRenderInPlaceTrue()
+    public function testBlockRenderInPlaceTrue(): void
     {
         ob_start();
         ob_implicit_flush(0);
@@ -41,7 +42,7 @@ class BlockTest extends TestCase
         $this->assertStringContainsString('<block-testme>', ob_get_clean());
     }
 
-    public function testGetBlockException()
+    public function testGetBlockException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->webView->getBlock('notfound');
@@ -50,7 +51,7 @@ class BlockTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
 
