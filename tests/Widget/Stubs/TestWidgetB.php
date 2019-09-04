@@ -10,12 +10,24 @@ use Yiisoft\Widget\Widget;
  */
 class TestWidgetB extends Widget
 {
+    /**
+     * @var string $id;
+     */
+    private $id;
+
     public function init(): void
     {
     }
 
     public function run(): string
     {
-        return '<run-' . $this->getId() . '>';
+        return '<run-' . $this->id . '>';
+    }
+
+    public function id(string $value): Widget
+    {
+        $this->id = $value;
+
+        return $this;
     }
 }

@@ -12,7 +12,6 @@ use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Log\Logger;
 use Yiisoft\View\Theme;
-use Yiisoft\View\View;
 use Yiisoft\View\WebView;
 use Yiisoft\Widget\Widget;
 

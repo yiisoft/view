@@ -15,7 +15,7 @@ class TestWidget extends Widget
      */
     private $id;
 
-    public function show(): string
+    public function getContent(): string
     {
         return '<run-' . $this->id . '>';
     }
