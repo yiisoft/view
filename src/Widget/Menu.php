@@ -152,7 +152,7 @@ class Menu extends Widget
      *
      * @return string the result of Widget execution to be outputted.
      */
-    public function show(): string
+    public function getContent(): string
     {
         $items = $this->normalizeItems($this->items, $hasActiveChild);
 
@@ -495,6 +495,6 @@ class Menu extends Widget
 
     public function __toString()
     {
-        return $this->show();
+        return $this->run();
     }
 }

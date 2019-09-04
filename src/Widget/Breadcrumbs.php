@@ -125,7 +125,7 @@ class Breadcrumbs extends Widget
      *
      * @return string the result of widget execution to be outputted.
      */
-    public function show(): string
+    public function getContent(): string
     {
         if (empty($this->links)) {
             return '';
@@ -304,6 +304,6 @@ class Breadcrumbs extends Widget
 
     public function __toString()
     {
-        return $this->show();
+        return $this->run();
     }
 }

@@ -143,7 +143,7 @@ class Widget implements ViewContextInterface
         $widget = static::$widget;
 
         if ($widget->beforeRun()) {
-            $result = $widget->show();
+            $result = $widget->getContent();
             $out = $widget->afterRun($result);
         }
 
@@ -196,10 +196,6 @@ class Widget implements ViewContextInterface
     public function getViewPath(): string
     {
         $class = new ReflectionClass($this);
-
-        if (!is_string($class->getFileName())) {
-            throw new \InvalidArgumentException('Pathmap should contain strings');
-        }
 
         return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
     }
