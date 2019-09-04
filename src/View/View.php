@@ -33,7 +33,7 @@ class View implements DynamicContentAwareInterface
      * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
      * They can be later accessed somewhere else through this property.
      */
-    public $blocks;
+    private $blocks;
 
     /**
      * @var ViewContextInterface the context under which the {@see {renderFile()} method is being invoked.
@@ -142,6 +142,35 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
+     * {@see blocks}
+     *
+     * @param string $id
+     * @param string $value
+     *
+     * @return void
+     */
+    public function setBlocks(string $id, string $value): void
+    {
+        $this->blocks[$id] = $value;
+    }
+
+    /**
+     * {@see blocks}
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function getBlock(string $value): string
+    {
+        if (isset($this->blocks[$value])) {
+            return $this->blocks[$value];
+        }
+
+        throw new \InvalidArgumentException('Block: ' . $value.  ' not found.');
+    }
+
+    /**
      * Renders a view.
      *
      * The view to be rendered can be specified in one of the following formats:
@@ -170,7 +199,7 @@ class View implements DynamicContentAwareInterface
      *
      * {@see renderFile()}
      */
-    public function render($view, $params = [], $context = null)
+    public function render($view, $params = [], $context = null): string
     {
         $viewFile = $this->findTemplateFile($view, $context);
         return $this->renderFile($viewFile, $params, $context);
@@ -234,9 +263,10 @@ class View implements DynamicContentAwareInterface
      * @param object $context the context that the view should use for rendering the view. If null, existing [[context]]
      * will be used.
      *
-     * @throws ViewNotFoundException if the view file does not exist
-     *
      * @return string the rendering result
+     * @throws \Throwable
+     *
+     * @throws ViewNotFoundException if the view file does not exist
      */
     public function renderFile(string $viewFile, array $params = [], object $context = null): string
     {
@@ -268,7 +298,7 @@ class View implements DynamicContentAwareInterface
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
             $output = $renderer->render($this, $viewFile, $params);
 
-            $this->afterRender($viewFile, $params, $output);
+            $output = $this->afterRender($viewFile, $params, $output);
         }
 
         array_pop($this->viewFiles);
@@ -347,7 +377,7 @@ class View implements DynamicContentAwareInterface
     public function beforeRender(string $viewFile, array $params): bool
     {
         $event = new BeforeRender($viewFile, $params);
-        $this->eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return !$event->isPropagationStopped();
     }
@@ -366,7 +396,7 @@ class View implements DynamicContentAwareInterface
     public function afterRender(string $viewFile, array $params, &$output): string
     {
         $event = new AfterRender($viewFile, $params, $output);
-        $this->eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
     }
@@ -475,7 +505,7 @@ class View implements DynamicContentAwareInterface
      *
      * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
      */
-    public function getDynamicContents()
+    public function getDynamicContents(): array
     {
         return $this->cacheStack;
     }
@@ -515,13 +545,11 @@ class View implements DynamicContentAwareInterface
      *
      * @return Block the Block widget instance
      */
-    public function beginBlock($id, $renderInPlace = false): Block
+    public function beginBlock(string $id, $renderInPlace = false): Block
     {
-        return Block::begin([
-            'id' => $id,
-            'renderInPlace' => $renderInPlace,
-            'view' => $this,
-        ]);
+        return Block::begin()
+            ->id($id)
+            ->renderInPlace($renderInPlace);
     }
 
     /**
@@ -556,11 +584,9 @@ class View implements DynamicContentAwareInterface
      */
     public function beginContent(string $viewFile, array $params = []): ContentDecorator
     {
-        return ContentDecorator::begin([
-            'viewFile' => $viewFile,
-            'params' => $params,
-            'view' => $this,
-        ]);
+        return ContentDecorator::begin()
+            ->params($params)
+            ->viewFile($viewFile);
     }
 
     /**

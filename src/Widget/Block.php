@@ -1,38 +1,53 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
 /**
- * Block records all output between [[begin()]] and [[end()]] calls and stores it in [[\yii\base\View::$blocks]].
- * for later use.
+ * Block records all output between {@see begin()} and {@see end()} calls and stores it in
+ * {@see \Yiisoft\View\View::$blocks}.
  *
- * [[\yii\base\View]] component contains two methods [[\yii\base\View::beginBlock()]] and [[\yii\base\View::endBlock()]].
+ * {@see \Yiisoft\View\View} component contains two methods {\Yiisoft\View\View::beginBlock()} and
+ * {[\Yiisoft\View\View::endBlock()}.
+ *
  * The general idea is that you're defining block default in a view or layout:
  *
  * ```php
- * <?php $this->beginBlock('messages', true) ?>
+ * <?php $this->beginBlock('index') ?>
  * Nothing.
  * <?php $this->endBlock() ?>
  * ```
  *
- * And then overriding default in sub-views:
+ * And then overriding default in views:
  *
  * ```php
- * <?php $this->beginBlock('username') ?>
+ * <?php $this->beginBlock('index') ?>
  * Umm... hello?
  * <?php $this->endBlock() ?>
  * ```
  *
+ * in subviews show block:
+ *
+ * <?= $this->getBlock('index') ?>
+ *
  * Second parameter defines if block content should be outputted which is desired when rendering its content but isn't
  * desired when redefining it in subviews.
+ *
+ * @method static Block begin()
+ * @method static Block end()
  */
 class Block extends Widget
 {
     /**
-     * @var bool whether to render the block content in place. Defaults to false,
-     *           meaning the captured block content will not be displayed.
+     * @var string $id
      */
-    public $renderInPlace = false;
+    private $id;
+
+    /**
+     * @var bool whether to render the block content in place. Defaults to false, meaning the captured block content
+     *           will not be displayed.
+     */
+    private $renderInPlace = false;
 
     /**
      * Starts recording a block.
@@ -42,7 +57,7 @@ class Block extends Widget
         parent::init();
 
         ob_start();
-        ob_implicit_flush(false);
+        ob_implicit_flush(0);
     }
 
     /**
@@ -54,11 +69,43 @@ class Block extends Widget
     public function run(): string
     {
         $block = ob_get_clean();
+
         if ($this->renderInPlace) {
             return $block;
         }
-        $this->view->blocks[$this->getId()] = $block;
+
+        if (!empty($block)) {
+            $this->getView()->setBlocks($this->id, $block);
+        }
 
         return '';
+    }
+
+    /**
+     * {@see renderInPlace}
+     *
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function id(string $value): self
+    {
+        $this->id = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@see renderInPlace}
+     *
+     * @param boolean $value
+     *
+     * @return $this
+     */
+    public function renderInPlace(bool $value): self
+    {
+        $this->renderInPlace = $value;
+
+        return $this;
     }
 }

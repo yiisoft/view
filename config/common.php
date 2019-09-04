@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetConverter;
@@ -8,6 +9,7 @@ use Yiisoft\Asset\AssetConverterInterface;
 use Yiisoft\Asset\AssetManager;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Log\Logger;
+use Yiisoft\Widget\Widget;
 
 return [
     Aliases::class => [

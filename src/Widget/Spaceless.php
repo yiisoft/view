@@ -1,10 +1,11 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
 /**
- * Spaceless widget removes whitespace characters between HTML tags. Whitespaces within HTML tags
- * or in a plain text are always left untouched.
+ * Spaceless widget removes whitespace characters between HTML tags. Whitespaces within HTML tags or in a plain text are
+ * always left untouched.
  *
  * Usage example:
  *
@@ -28,13 +29,13 @@ namespace Yiisoft\Widget;
  *     <div class="nav-bar"><!-- tags --></div><div class="content"><!-- tags --></div></body>
  * ```
  *
- * This method is not designed for content compression (you should use `gzip` output compression to
- * achieve it). Main intention is to strip out extra whitespace characters between HTML tags in order
- * to avoid browser rendering quirks in some circumstances (e.g. newlines between inline-block elements).
+ * This method is not designed for content compression (you should use `gzip` output compression to achieve it). Main
+ * intention is to strip out extra whitespace characters between HTML tags in order to avoid browser rendering quirks
+ * in some circumstances (e.g. newlines between inline-block elements).
  *
- * Note, never use this method with `pre` or `textarea` tags. It's not that trivial to deal with such tags
- * as it may seem at first sight. For this case you should consider using
- * [HTML Tidy Project](http://tidy.sourceforge.net/) instead.
+ * Note, never use this method with `pre` or `textarea` tags. It's not that trivial to deal with such tags as it may
+ * seem at first sight. For this case you should consider using [HTML Tidy Project](http://tidy.sourceforge.net/)
+ * instead.
  *
  * @see http://tidy.sourceforge.net/
  */
@@ -46,8 +47,9 @@ class Spaceless extends Widget
     public function init(): void
     {
         parent::init();
+
         ob_start();
-        ob_implicit_flush(false);
+        ob_implicit_flush(0);
     }
 
     /**

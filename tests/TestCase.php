@@ -7,6 +7,7 @@ use hiqdev\composer\config\Builder;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Asset\AssetBundle;
@@ -16,6 +17,7 @@ use Yiisoft\Di\Container;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
+use Yiisoft\Widget\Widget;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -55,6 +57,16 @@ abstract class TestCase extends BaseTestCase
     protected $webView;
 
     /**
+     * @var Widget $widget
+     */
+    protected $widget;
+
+    /**
+     * @var ListenerProviderInterface
+     */
+    protected $listenerProvider;
+
+    /**
      * setUp
      *
      * @return void
@@ -70,10 +82,12 @@ abstract class TestCase extends BaseTestCase
         $this->aliases = $this->container->get(Aliases::class);
         $this->assetManager = $this->container->get(AssetManager::class);
         $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
+        $this->listenerProvider = $this->container->get(ListenerProviderInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
         $this->theme = $this->container->get(Theme::class);
-        $this->webView = $this->createWebView($this->aliases->get('@view'));
+        $this->webView = $this->container->get(WebView::class);
         $this->webView->setAssetManager($this->assetManager);
+        $this->widget = $this->container->get(Widget::class);
 
         $this->removeAssets('@basePath');
     }
@@ -131,19 +145,6 @@ abstract class TestCase extends BaseTestCase
     protected function createView($basePath, Theme $theme = null): View
     {
         return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->logger);
-    }
-
-    /**
-     * Create webview tests.
-     *
-     * @param string $basePath
-     * @param Theme  $theme
-     *
-     * @return View
-     */
-    protected function createWebView(string $basePath): WebView
-    {
-        return new WebView($basePath, $this->theme, $this->eventDispatcher, $this->logger);
     }
 
     public function touch(string $path): void

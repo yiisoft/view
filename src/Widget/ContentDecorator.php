@@ -1,19 +1,17 @@
 <?php
+declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use yii\exceptions\InvalidConfigException;
-
 /**
- * ContentDecorator records all output between [[begin()]] and [[end()]] calls, passes it to the given view file
+ * ContentDecorator records all output between {@see begin()} and {@see end()]} calls, passes it to the given view file
  * as `$content` and then echoes rendering result.
  *
  * ```php
- * <?php ContentDecorator::begin([
- *     'viewFile' => '@app/views/layouts/base.php',
- *     'params' => [],
- *     'view' => $this,
+ * <?php ContentDecorator::begin()
+ *     viewFile('@app/views/layouts/base.php'),
+ *     params([]),
+ *     view($this),
  * ]) ?>
  *
  * some content here
@@ -21,8 +19,8 @@ use yii\exceptions\InvalidConfigException;
  * <?php ContentDecorator::end() ?>
  * ```
  *
- * There are [[\yii\base\View::beginContent()]] and [[\yii\base\View::endContent()]] wrapper methods in the
- * [[\yii\base\View]] component to make syntax more friendly. In the view these could be used as follows:
+ * There are {@see \Yiisoft\View\View::beginContent()} and {@see \Yiisoft\View\View::endContent()} wrapper methods in
+ * the {@see \Yiisoft\View\View} component to make syntax more friendly. In the view these could be used as follows:
  *
  * ```php
  * <?php $this->beginContent('@app/views/layouts/base.php') ?>
@@ -31,27 +29,30 @@ use yii\exceptions\InvalidConfigException;
  *
  * <?php $this->endContent() ?>
  * ```
+ *
+ * @method static ContentDecorator begin()
+ * @method static ContentDecorator end()
  */
 class ContentDecorator extends Widget
 {
     /**
-     * @var string the view file that will be used to decorate the content enclosed by this widget.
-     *             This can be specified as either the view file path or [path alias](guide:concept-aliases).
-     */
-    public $viewFile;
-    /**
      * @var array the parameters (name => value) to be extracted and made available in the decorative view.
      */
-    public $params = [];
+    private $params = [];
 
-    private function __construct(string $viewFile, EventDispatcherInterface $eventDispatcher)
+    /**
+     * @var string the view file that will be used to decorate the content enclosed by this widget. This can be
+     *             specified as either the view file path or alias path.
+     */
+    private $viewFile;
+
+    public function init(): void
     {
-        $this->viewFile = $viewFile;
-        parent::__construct($eventDispatcher);
+        parent::init();
 
         // Starts recording a clip.
         ob_start();
-        ob_implicit_flush(false);
+        ob_implicit_flush(0);
     }
 
     /**
@@ -64,7 +65,23 @@ class ContentDecorator extends Widget
     {
         $params = $this->params;
         $params['content'] = ob_get_clean();
+
         // render under the existing context
+
         return $this->getView()->renderFile($this->viewFile, $params);
+    }
+
+    public function params(array $value): self
+    {
+        $this->params = $value;
+
+        return $this;
+    }
+
+    public function viewFile(string $value): self
+    {
+        $this->viewFile = $value;
+
+        return $this;
     }
 }
