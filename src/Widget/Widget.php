@@ -128,7 +128,7 @@ class Widget implements ViewContextInterface
     {
     }
 
-    public function show(): string
+    public function getContent(): string
     {
     }
 
@@ -179,6 +179,7 @@ class Widget implements ViewContextInterface
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      *
      * @return string the rendering result.
+     * @throws \Throwable
      */
     public function renderFile(string $file, array $params = []): string
     {
@@ -192,6 +193,7 @@ class Widget implements ViewContextInterface
      * @return string the directory containing the view files for this widget.
      *
      * @throws \InvalidArgumentException
+     * @throws \ReflectionException
      */
     public function getViewPath(): string
     {
@@ -226,7 +228,7 @@ class Widget implements ViewContextInterface
     public function beforeRun(): bool
     {
         $event = new BeforeRun();
-        self::$eventDispatcher->dispatch($event);
+        $event = self::$eventDispatcher->dispatch($event);
 
         return !$event->isPropagationStopped();
     }
@@ -255,7 +257,7 @@ class Widget implements ViewContextInterface
     public function afterRun($result)
     {
         $event = new AfterRun($result);
-        self::$eventDispatcher->dispatch($event);
+        $event = self::$eventDispatcher->dispatch($event);
 
         return $event->getResult();
     }

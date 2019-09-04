@@ -3,9 +3,6 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
-use Yiisoft\View\WebView;
-use Yiisoft\Widget\Widget;
-
 /**
  * ContentDecorator records all output between {@see begin()} and {@see end()]} calls, passes it to the given view file
  * as `$content` and then echoes rendering result.
@@ -32,6 +29,9 @@ use Yiisoft\Widget\Widget;
  *
  * <?php $this->endContent() ?>
  * ```
+ *
+ * @method static ContentDecorator begin()
+ * @method static ContentDecorator end()
  */
 class ContentDecorator extends Widget
 {
@@ -71,14 +71,14 @@ class ContentDecorator extends Widget
         return $this->getView()->renderFile($this->viewFile, $params);
     }
 
-    public function params(array $value): Widget
+    public function params(array $value): self
     {
         $this->params = $value;
 
         return $this;
     }
 
-    public function viewFile(string $value): Widget
+    public function viewFile(string $value): self
     {
         $this->viewFile = $value;
 

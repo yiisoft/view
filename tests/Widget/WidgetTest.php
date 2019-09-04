@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget\Tests;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\EventDispatcher\ListenerProviderInterface;
 use Yiisoft\Tests\TestCase;
 use Yiisoft\Widget\Tests\Stubs\TestWidget;
 use Yiisoft\Widget\Tests\Stubs\TestWidgetA;
@@ -35,7 +33,7 @@ class WidgetTest extends TestCase
 
         $widget = TestWidgetA::begin()->id('test');
 
-        $this->assertTrue($widget instanceof Widget);
+        $this->assertInstanceOf(Widget::class, $widget);
 
         TestWidgetA::end();
         $output = ob_get_clean();

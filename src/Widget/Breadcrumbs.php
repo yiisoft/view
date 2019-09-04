@@ -4,7 +4,6 @@ namespace Yiisoft\Widget;
 
 use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
-use Yiisoft\Widget\Widget;
 
 /**
  * Breadcrumbs displays a list of links indicating the position of the current page in the whole site hierarchy.
@@ -39,6 +38,8 @@ use Yiisoft\Widget\Widget;
  * echo Breadcrumbs::widget()
  *     ->links() => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [];
  * ```
+ *
+ * @method static Breadcrumbs widget()
  */
 class Breadcrumbs extends Widget
 {
@@ -67,7 +68,7 @@ class Breadcrumbs extends Widget
     private $homeLink = true;
 
     /**
-     * @var string $homeUrlLink
+     * @var array $homeUrlLink
      */
     private $homeUrlLink;
 
@@ -142,7 +143,7 @@ class Breadcrumbs extends Widget
             $links[] = $this->renderItem($this->homeUrlLink, $this->itemTemplate);
         }
 
-        foreach ($this->links as $key => $link) {
+        foreach ($this->links as $link) {
             if (!is_array($link)) {
                 $link = ['label' => $link];
             }
@@ -152,7 +153,7 @@ class Breadcrumbs extends Widget
             }
         }
 
-        return Html::tag((!empty($this->tag)) ? $this->tag : false, implode('', $links), $this->options);
+        return Html::tag(!empty($this->tag) ? $this->tag : false, implode('', $links), $this->options);
     }
 
     /**
@@ -166,7 +167,7 @@ class Breadcrumbs extends Widget
      *
      * @return string the rendering result
      */
-    protected function renderItem(array $link, string $template)
+    protected function renderItem(array $link, string $template): string
     {
         $encodeLabel = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
         $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
@@ -191,9 +192,9 @@ class Breadcrumbs extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function tag(string $value): Widget
+    public function tag(string $value): self
     {
         $this->tag = $value;
 
@@ -205,9 +206,9 @@ class Breadcrumbs extends Widget
      *
      * @param array $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function options(array $value): Widget
+    public function options(array $value): self
     {
         $this->options = $value;
 
@@ -219,9 +220,9 @@ class Breadcrumbs extends Widget
      *
      * @param boolean $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function encodeLabels(bool $value): Widget
+    public function encodeLabels(bool $value): self
     {
         $this->encodeLabels = $value;
 
@@ -233,9 +234,9 @@ class Breadcrumbs extends Widget
      *
      * @param bool $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function homeLink(bool $value): Widget
+    public function homeLink(bool $value): self
     {
         $this->homeLink = $value;
 
@@ -245,11 +246,11 @@ class Breadcrumbs extends Widget
     /**
      * {@see links}
      *
-     * @param string $value
+     * @param array $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function homeUrlLink(array $value): Widget
+    public function homeUrlLink(array $value): self
     {
         $this->homeUrlLink = $value;
 
@@ -261,9 +262,9 @@ class Breadcrumbs extends Widget
      *
      * @param array $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function links(array $value): Widget
+    public function links(array $value): self
     {
         if (!array_key_exists('label', $value)) {
             throw new \InvalidArgumentException('The "label" element is required for each link.');
@@ -279,9 +280,9 @@ class Breadcrumbs extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function itemTemplate(string $value): Widget
+    public function itemTemplate(string $value): self
     {
         $this->itemTemplate = $value;
 
@@ -293,9 +294,9 @@ class Breadcrumbs extends Widget
      *
      * @param string $value
      *
-     * @return Widget
+     * @return $this
      */
-    public function activeItemTemplate(string $value): Widget
+    public function activeItemTemplate(string $value): self
     {
         $this->activeItemTemplate = $value;
 

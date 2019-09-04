@@ -20,7 +20,7 @@ class ContentDecoratorTest extends TestCase
         $initTriggered = false;
 
         // adding some listeners
-        $this->listenerProvider->attach(function (BeforeRun $event) use (&$initTriggered) {
+        $this->listenerProvider->attach(static function (BeforeRun $event) use (&$initTriggered) {
             $initTriggered = true;
         });
 

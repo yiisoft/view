@@ -93,7 +93,9 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     {
         if (($content = $this->getCachedContent()) !== false) {
             return $content;
-        } elseif ($this->cache instanceof CacheInterface) {
+        }
+
+        if ($this->cache instanceof CacheInterface) {
             $this->getView()->popDynamicContent();
 
             $content = ob_get_clean();

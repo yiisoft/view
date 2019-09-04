@@ -35,8 +35,7 @@ class MenuTest extends TestCase
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 
     public function testEncodeLabelFalse(): void
@@ -63,8 +62,7 @@ HTML;
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 
     /**
@@ -98,9 +96,7 @@ HTML;
 <a href="#">item2</a>
 HTML;
 
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
 
         ob_start();
         ob_implicit_flush(0);
@@ -126,8 +122,7 @@ HTML;
 <a href="#">item1</a>
 <a href="#">item2</a>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 
     public function testItemTemplate(): void
@@ -158,8 +153,7 @@ HTML;
 <li>label: item2</li>
 <li></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 
     public function testActiveItemClosure(): void
@@ -195,8 +189,7 @@ HTML;
 <li>label: item2</li>
 <li class="active"></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 
     public function testItemClassAsArray(): void
@@ -251,8 +244,7 @@ HTML;
 <li><a href="#">item3</a></li>
 <li class="some-other-class foo_bar_baz_class"><a href="#">item4</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 
     public function testItemClassAsString(): void
@@ -298,7 +290,6 @@ HTML;
 <li class="some classes"><a href="#">item3</a></li>
 <li class="another-class other--class two classes item-active"><a href="#">item4</a></li></ul>
 HTML;
-        $this->assertEqualsWithoutLE($expected, ob_get_contents());
-        ob_end_clean();
+        $this->assertEqualsWithoutLE($expected, ob_get_clean());
     }
 }
