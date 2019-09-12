@@ -323,7 +323,7 @@ class View implements DynamicContentAwareInterface
         if ($this->beforeRender($viewFile, $parameters)) {
             $this->logger->debug("Rendering view file: $viewFile");
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
-            $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
+            $renderer = $this->renderers[$ext] ?? new PhpTemplateRendererInterface();
             $output = $renderer->render($this, $viewFile, $parameters);
 
             $output = $this->afterRender($viewFile, $parameters, $output);
