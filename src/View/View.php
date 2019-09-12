@@ -47,7 +47,7 @@ class View implements DynamicContentAwareInterface
     public $defaultExtension = 'php';
 
     /**
-     * @var mixed custom parameters that are shared among view templates.
+     * @var array custom parameters that are shared among view templates.
      */
     public $params = [];
 
