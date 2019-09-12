@@ -9,9 +9,9 @@ namespace Yiisoft\Widget;
  *
  * ```php
  * <?php ContentDecorator::begin()
- *     viewFile('@app/views/layouts/base.php'),
- *     params([]),
- *     view($this),
+ *     ->viewFile('@app/views/layouts/base.php'),
+ *     ->params([]),
+ *     ->view($this),
  * ]) ?>
  *
  * some content here
