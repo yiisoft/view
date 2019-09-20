@@ -1,7 +1,7 @@
 <?php
 namespace Yiisoft\View;
 
-class PhpTemplateRendererInterface implements TemplateRendererInterface
+class PhpTemplateRenderer implements TemplateRendererInterface
 {
     public function render(View $view, string $template, array $params): string
     {
