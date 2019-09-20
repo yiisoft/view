@@ -5,16 +5,16 @@ class PhpTemplateRenderer implements TemplateRendererInterface
 {
     public function render(View $view, string $template, array $params): string
     {
-        $renderer = function () use ($template, $params) {
-            extract($params, EXTR_OVERWRITE);
-            require $template;
+        $renderer = function () {
+            extract(func_get_arg(1), EXTR_OVERWRITE);
+            require func_get_arg(0);
         };
 
         $obInitialLevel = ob_get_level();
         ob_start();
         ob_implicit_flush(0);
         try {
-            $renderer->bindTo($view)();
+            $renderer->bindTo($view)($template, $params);
             return ob_get_clean();
         } catch (\Throwable $e) {
             while (ob_get_level() > $obInitialLevel) {
