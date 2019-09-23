@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
+use Yiisoft\View\WebView;
+
 /**
  * Block records all output between {@see begin()} and {@see end()} calls and stores it in
  * {@see \Yiisoft\View\View::$blocks}.
@@ -33,8 +35,8 @@ namespace Yiisoft\Widget;
  * Second parameter defines if block content should be outputted which is desired when rendering its content but isn't
  * desired when redefining it in subviews.
  *
- * @method static Block begin()
- * @method static Block end()
+ * @method static Block begin(WebView $view)
+ * @method static Block end(WebView $view)
  */
 class Block extends Widget
 {

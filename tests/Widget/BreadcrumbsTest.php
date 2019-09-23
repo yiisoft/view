@@ -16,7 +16,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->links([
                 'label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'
             ]);
@@ -38,7 +38,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget();
+        echo Breadcrumbs::widget($this->webView);
 
         $actualHtml = ob_get_contents();
 
@@ -52,7 +52,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->homeLink(false)
             ->links([
                 'label' => 'My Home Page',
@@ -75,7 +75,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->homeLink(false)
             ->homeUrlLink(['label' => 'home-link'])
             ->links(['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page']);
@@ -96,7 +96,7 @@ class BreadcrumbsTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->homeLink(false)
             ->links([
                 'url' => 'http://my.example.com/yii2/link/page',
@@ -108,7 +108,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->activeItemTemplate("<li>{link}</li>\n")
             ->encodeLabels(false)
             ->homeLink(false)
@@ -129,7 +129,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->activeItemTemplate("<li>{link}</li>\n")
             ->homeLink(false)
             ->links(['label' => 'My-<br>Test-Label'])
@@ -148,7 +148,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->homeLink(false)
             ->links(['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'])
             ->options(['class' => 'breadcrumb external']);
@@ -167,7 +167,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo Breadcrumbs::widget($this->webView)
             ->activeItemTemplate("{link}\n")
             ->itemTemplate("{link}\n")
             ->homeLink(true)

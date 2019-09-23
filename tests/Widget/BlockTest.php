@@ -14,13 +14,13 @@ class BlockTest extends TestCase
 {
     public function testBlock(): void
     {
-        Block::begin()
+        Block::begin($this->webView)
             ->id('testme')
             ->init();
 
         echo '<block-testme>';
 
-        Block::end();
+        $this->webView->endWidget(Block::class);
 
         $this->assertStringContainsString('<block-testme>', $this->webView->getBlock('testme'));
     }
@@ -30,14 +30,14 @@ class BlockTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        Block::begin()
+        Block::begin($this->webView)
             ->id('testme')
             ->renderInPlace(true)
             ->init();
 
         echo '<block-testme>';
 
-        Block::end();
+        Block::end($this->webView);
 
         $this->assertStringContainsString('<block-testme>', ob_get_clean());
     }
@@ -63,8 +63,8 @@ class BlockTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        Block::begin()->init();
-        Block::end();
+        Block::begin($this->webView)->init();
+        Block::end($this->webView);
 
         ob_get_clean();
 

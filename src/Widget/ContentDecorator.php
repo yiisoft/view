@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
+use Yiisoft\View\WebView;
+
 /**
  * ContentDecorator records all output between {@see begin()} and {@see end()]} calls, passes it to the given view file
  * as `$content` and then echoes rendering result.
@@ -30,8 +32,8 @@ namespace Yiisoft\Widget;
  * <?php $this->endContent() ?>
  * ```
  *
- * @method static ContentDecorator begin()
- * @method static ContentDecorator end()
+ * @method static ContentDecorator begin(WebView $view)
+ * @method static ContentDecorator end(WebView $view)
  */
 class ContentDecorator extends Widget
 {

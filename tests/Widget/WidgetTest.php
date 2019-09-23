@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Yiisoft\Widget\Tests;
 
@@ -21,7 +21,7 @@ class WidgetTest extends TestCase
 
     public function testWidget(): void
     {
-        $output = TestWidget::widget()->id('w0')->run();
+        $output = TestWidget::widget($this->webView)->id('w0')->run();
 
         $this->assertSame('<run-w0>', $output);
     }
@@ -31,11 +31,11 @@ class WidgetTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        $widget = TestWidgetA::begin()->id('test');
+        $widget = TestWidgetA::begin($this->webView)->id('test');
 
         $this->assertInstanceOf(Widget::class, $widget);
 
-        TestWidgetA::end();
+        TestWidgetA::end($this->webView);
         $output = ob_get_clean();
 
         $this->assertSame('<run-test>', $output);
@@ -47,7 +47,7 @@ class WidgetTest extends TestCase
     public function testStackTracking(): void
     {
         $this->expectException('BadFunctionCallException');
-        TestWidget::end();
+        TestWidget::end($this->webView);
     }
 
     /**
@@ -56,7 +56,8 @@ class WidgetTest extends TestCase
     public function testStackTrackingDisorder(): void
     {
         $this->expectException('BadFunctionCallException');
-        TestWidgetA::begin();
-        TestWidgetB::end();
+
+        TestWidgetA::begin($this->webView)->id('test');
+        TestWidgetB::end($this->webView);
     }
 }

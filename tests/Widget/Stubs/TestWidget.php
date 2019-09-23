@@ -3,11 +3,12 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget\Tests\Stubs;
 
+use Yiisoft\View\WebView;
 use Yiisoft\Widget\Widget;
 
 /**
  * TestWidget
- * @method static TestWidget widget()
+ * @method static TestWidget widget(WebView $view)
  */
 class TestWidget extends Widget
 {

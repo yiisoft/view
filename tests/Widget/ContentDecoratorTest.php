@@ -27,7 +27,7 @@ class ContentDecoratorTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        ContentDecorator::begin()
+        ContentDecorator::begin($this->webView)
             ->viewFile($this->aliases->get('@view/layout.php'))
             ->params([])
             ->init();
@@ -39,7 +39,7 @@ class ContentDecoratorTest extends TestCase
         echo "\t\t\t<p>This is a right bar!</p>\n";
         echo "\t\t</div>\n";
 
-        ContentDecorator::end();
+        ContentDecorator::end($this->webView);
 
         $this->assertTrue($initTriggered);
 

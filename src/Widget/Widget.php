@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
-use ReflectionClass;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ReflectionClass;
 use Yiisoft\View\ViewContextInterface;
 use Yiisoft\View\WebView;
 use Yiisoft\Widget\Event\AfterRun;
@@ -20,97 +20,32 @@ class Widget implements ViewContextInterface
     /**
      * @var EventDispatcherInterface event handler.
      */
-    protected static $eventDispatcher;
-
-    /**
-     * The widgets that are currently being rendered (not ended). This property is maintained by {@see static::begin()}
-     * and {@see static::end()} methods.
-     *
-     * @var Widget[] $stack
-     */
-    protected static $stack;
+    protected $eventDispatcher;
 
     /**
      * @var WebView $view
      */
-    protected static $webView;
-
-    /**
-     * @var Widget $widget
-     */
-    protected static $widget;
+    protected $webView;
 
     public function __construct(EventDispatcherInterface $eventDispatcher, WebView $webView)
     {
-        self::$eventDispatcher = $eventDispatcher;
-        self::$webView = $webView;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->webView = $webView;
     }
 
-    /**
-     * Begins a widget.
-     *
-     * This method creates an instance of the calling class. It will apply the configuration to the created instance.
-     * A matching {@see end()} call should be called later. As some widgets may use output buffering, the {@see end()}
-     * call should be made in the same view to avoid breaking the nesting of output buffers.
-     *
-     * @return Widget the newly created widget instance.
-     *
-     * {@see end()}
-     */
-    public static function begin(): Widget
+    public static function begin(WebView $view): self
     {
-        $widget = new static(self::$eventDispatcher, self::$webView);
-
-        self::$stack[] = $widget;
-
-        return $widget;
+        return $view->beginWidget(static::class);
     }
 
-    /**
-     * Ends a widget
-     *
-     * Note that the rendering result of the widget is directly echoed out
-     *
-     * @return Widget the widget instance that is ended
-     *
-     * @throws \BadFunctionCallException if {@see begin()]} and {@see end()} calls are not properly nested.
-     *
-     * {@see begin()}
-     */
-    public static function end(): Widget
+    public static function end(WebView $view): self
     {
-        if (!empty(self::$stack)) {
-            $widget = array_pop(self::$stack);
-
-            if (get_class($widget) === static::class) {
-                /* @var $widget Widget */
-                if ($widget->beforeRun()) {
-                    $result = $widget->run();
-                    $result = $widget->afterRun($result);
-                    echo $result;
-                }
-
-                return $widget;
-            }
-            throw new \BadFunctionCallException('Expecting end() of ' . get_class($widget) . ', found ' . static::class);
-        }
-        throw new \BadFunctionCallException(
-            'Unexpected ' . static::class . '::end() call. A matching begin() is not found.'
-        );
+        return $view->endWidget(static::class);
     }
 
-    /**
-     * Creates a widget instance.
-     *
-     * @return Widget $widget.
-     */
-    public static function widget(): Widget
+    public static function widget(WebView $view): self
     {
-        $widget = new static(self::$eventDispatcher, self::$webView);
-
-        static::$widget = $widget;
-
-        return $widget;
+        return $view->widget(static::class);
     }
 
     /**
@@ -121,7 +56,7 @@ class Widget implements ViewContextInterface
      */
     public function getView(): WebView
     {
-        return self::$webView;
+        return $this->webView;
     }
 
     public function init(): void
@@ -140,11 +75,10 @@ class Widget implements ViewContextInterface
     public function run(): string
     {
         $out = '';
-        $widget = static::$widget;
 
-        if ($widget->beforeRun()) {
-            $result = $widget->getContent();
-            $out = $widget->afterRun($result);
+        if ($this->beforeRun()) {
+            $result = $this->getContent();
+            $out = $this->afterRun($result);
         }
 
         return $out;
@@ -228,7 +162,7 @@ class Widget implements ViewContextInterface
     public function beforeRun(): bool
     {
         $event = new BeforeRun();
-        $event = self::$eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return !$event->isPropagationStopped();
     }
@@ -257,8 +191,13 @@ class Widget implements ViewContextInterface
     public function afterRun($result)
     {
         $event = new AfterRun($result);
-        $event = self::$eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
+    }
+
+    public function __toString()
+    {
+        return $this->run();
     }
 }

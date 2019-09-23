@@ -4,6 +4,7 @@ namespace Yiisoft\Widget;
 
 use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\View\WebView;
 
 /**
  * Breadcrumbs displays a list of links indicating the position of the current page in the whole site hierarchy.
@@ -39,7 +40,7 @@ use Yiisoft\Arrays\ArrayHelper;
  *     ->links() => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [];
  * ```
  *
- * @method static Breadcrumbs widget()
+ * @method static Breadcrumbs widget(WebView $view)
  */
 class Breadcrumbs extends Widget
 {

@@ -6,6 +6,7 @@ namespace Yiisoft\Widget;
 use Closure;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\View\WebView;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -27,7 +28,7 @@ use Yiisoft\Html\Html;
  *     ]);
  * ```
  *
- * @method static Menu widget()
+ * @method static Menu widget(WebView $view)
  */
 class Menu extends Widget
 {

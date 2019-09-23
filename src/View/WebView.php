@@ -1,15 +1,21 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Yiisoft\View;
 
+use BadFunctionCallException;
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetManager;
+use Yiisoft\Di\Container;
 use Yiisoft\Html\Html;
-use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
+use Yiisoft\Widget\Widget;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -80,6 +86,14 @@ class WebView extends View
     private const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
     /**
+     * The widgets that are currently being rendered (not ended). This property is maintained by {@see beginWidget()}
+     * and {@see endWidget()} methods.
+     *
+     * @var Widget[] $stack
+     */
+    protected $stack;
+
+    /**
      * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
      * are the registered {@see AssetBundle} objects.
      *
@@ -138,6 +152,88 @@ class WebView extends View
      * {@see registerJsFile()}
      */
     private $jsFiles = [];
+
+    /**
+     * @var ContainerInterface|Container
+     */
+    private $container;
+
+    public function __construct(
+        string $basePath,
+        Theme $theme,
+        EventDispatcherInterface $eventDispatcher,
+        LoggerInterface $logger,
+        ContainerInterface $container
+    ) {
+        parent::__construct($basePath, $theme, $eventDispatcher, $logger);
+        $this->container = $container;
+    }
+
+    /**
+     * @param string $class
+     * @return Widget
+     */
+    public function widget(string $class): Widget
+    {
+        if ($this->container->has($class)) {
+            return $this->container->get($class);
+        }
+
+        $this->container->set($class, ['__class' => $class]);
+
+        return $this->container->get($class);
+    }
+
+    /**
+     * Begins a widget.
+     *
+     * This method creates an instance of the $class widget. It will apply the configuration to the created instance.
+     * A matching {@see endWidget()} call should be called later. As some widgets may use output buffering, the {@see endWidget()}
+     * call should be made in the same view to avoid breaking the nesting of output buffers.
+     *
+     * @param string $class
+     * @return Widget the newly created widget instance.
+     *
+     * {@see endWidget()}
+     */
+    public function beginWidget(string $class): Widget
+    {
+        $widget = $this->widget($class);
+        $this->stack[] = $widget;
+        return $widget;
+    }
+
+    /**
+     * Ends a widget
+     *
+     * Note that the rendering result of the widget is directly echoed out
+     *
+     * @param string $class
+     * @return Widget the widget instance that is ended
+     *
+     * {@see beginWidget()}
+     */
+    public function endWidget(string $class): Widget
+    {
+        if (!empty($this->stack)) {
+            $widget = array_pop($this->stack);
+
+            if (get_class($widget) === $class) {
+                /* @var $widget Widget */
+                if ($widget->beforeRun()) {
+                    $result = $widget->run();
+                    $result = $widget->afterRun($result);
+                    echo $result;
+                }
+
+                return $widget;
+            }
+
+            throw new BadFunctionCallException('Expecting end() of ' . get_class($widget) . ', found ' . $class);
+        }
+
+        throw new BadFunctionCallException('Unexpected ' . $class . '::end() call. A matching begin() is not found.');
+    }
 
     /**
      * Marks the position of an HTML head section.

@@ -81,7 +81,7 @@ return [
         $theme = $container->get(Theme::class);
         $logger = $container->get(LoggerInterface::class);
 
-        return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $logger);
+        return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $logger, $container);
     },
 
     View::class => function (ContainerInterface $container) {
@@ -92,12 +92,4 @@ return [
 
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
-
-    Widget::class => [
-        '__class' => Widget::class,
-        '__construct()' => [
-            Reference::to(EventDispatcherInterface::class),
-            Reference::to(WebView::class),
-        ]
-    ],
 ];
