@@ -33,16 +33,31 @@ class Widget implements ViewContextInterface
         $this->webView = $webView;
     }
 
+    /**
+     * @see WebView::beginWidget()
+     * @param WebView $view
+     * @return static
+     */
     public static function begin(WebView $view): self
     {
         return $view->beginWidget(static::class);
     }
 
+    /**
+     * @see WebView::endWidget()
+     * @param WebView $view
+     * @return static
+     */
     public static function end(WebView $view): self
     {
         return $view->endWidget(static::class);
     }
 
+    /**
+     * @see WebView::widget()
+     * @param WebView $view
+     * @return static
+     */
     public static function widget(WebView $view): self
     {
         return $view->widget(static::class);
