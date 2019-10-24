@@ -247,10 +247,6 @@ class WebView extends View
         return $this->assetManager;
     }
 
-
-    /**
-     * @return EventDispatcherInterface. Defaults to the "eventDispatcher" application component.
-     */
     public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
