@@ -46,8 +46,6 @@ class Spaceless extends Widget
      */
     public function init(): void
     {
-        parent::init();
-
         ob_start();
         ob_implicit_flush(0);
     }

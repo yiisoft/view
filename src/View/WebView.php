@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Yiisoft\View;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Yiisoft\Asset\AssetBundle;
 use Yiisoft\Asset\AssetManager;
 use Yiisoft\Html\Html;
@@ -244,6 +245,15 @@ class WebView extends View
     public function getAssetManager(): AssetManager
     {
         return $this->assetManager;
+    }
+
+
+    /**
+     * @return EventDispatcherInterface. Defaults to the "eventDispatcher" application component.
+     */
+    public function getEventDispatcher(): EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
     }
 
     /**

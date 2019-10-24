@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
+use Yiisoft\View\WebView;
+
 /**
  * Block records all output between {@see begin()} and {@see end()} calls and stores it in
  * {@see \Yiisoft\View\View::$blocks}.
@@ -50,12 +52,21 @@ class Block extends Widget
     private $renderInPlace = false;
 
     /**
+     * @param WebView $webView
+     */
+    private $webView;
+
+    public function __construct(WebView $webView)
+    {
+        parent::__construct($webView);
+        $this->webView = $webView;
+    }
+
+    /**
      * Starts recording a block.
      */
     public function init(): void
     {
-        parent::init();
-
         ob_start();
         ob_implicit_flush(0);
     }
@@ -75,7 +86,7 @@ class Block extends Widget
         }
 
         if (!empty($block)) {
-            $this->getView()->setBlocks($this->id, $block);
+            $this->webView->setBlocks($this->id, $block);
         }
 
         return '';

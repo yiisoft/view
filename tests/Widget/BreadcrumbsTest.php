@@ -16,12 +16,12 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->links([
                 'label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'
             ]);
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"/\">Home</a></li>\n" .
         "<li class=\"active\">My Home Page</li>\n" .
@@ -29,8 +29,6 @@ class BreadcrumbsTest extends TestCase
         '</ul>';
 
         $this->assertEquals($expectedHtml, $actualHtml);
-
-        ob_end_clean();
     }
 
     public function testEmptyLinks(): void
@@ -38,13 +36,11 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget();
+        echo (new Breadcrumbs($this->webView));
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $this->assertEmpty($actualHtml);
-
-        ob_end_clean();
     }
 
     public function testHomeLinkFalse(): void
@@ -52,22 +48,20 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->homeLink(false)
             ->links([
                 'label' => 'My Home Page',
                 'url' => 'http://my.example.com/yii2/link/page'
             ]);
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $expectedHtml = "<ul class=\"breadcrumb\"><li class=\"active\">My Home Page</li>\n" .
             "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n" .
             '</ul>';
 
         $this->assertEquals($expectedHtml, $actualHtml);
-
-        ob_end_clean();
     }
 
     public function testHomeUrlLink(): void
@@ -75,7 +69,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->homeLink(false)
             ->homeUrlLink(['label' => 'home-link'])
             ->links(['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page']);
@@ -85,18 +79,16 @@ class BreadcrumbsTest extends TestCase
             "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n" .
             '</ul>';
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $this->assertEquals($expectedHtml, $actualHtml);
-
-        ob_end_clean();
     }
 
     public function testRenderItemException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->homeLink(false)
             ->links([
                 'url' => 'http://my.example.com/yii2/link/page',
@@ -108,7 +100,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->activeItemTemplate("<li>{link}</li>\n")
             ->encodeLabels(false)
             ->homeLink(false)
@@ -116,11 +108,9 @@ class BreadcrumbsTest extends TestCase
             ->options([])
             ->tag('');
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $this->assertEquals("<li>My-<br>Test-Label</li>\n", $actualHtml);
-
-        ob_end_clean();
     }
 
 
@@ -129,18 +119,16 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->activeItemTemplate("<li>{link}</li>\n")
             ->homeLink(false)
             ->links(['label' => 'My-<br>Test-Label'])
             ->options([])
             ->tag('');
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $this->assertEquals("<li>My-&lt;br&gt;Test-Label</li>\n", $actualHtml);
-
-        ob_end_clean();
     }
 
     public function testOptions(): void
@@ -148,18 +136,16 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->homeLink(false)
             ->links(['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'])
             ->options(['class' => 'breadcrumb external']);
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $expectedHtml = "<ul class=\"breadcrumb external\"><li class=\"active\">My Home Page</li>\n";
 
         $this->assertStringContainsString($expectedHtml, $actualHtml);
-
-        ob_end_clean();
     }
 
     public function testTag(): void
@@ -167,7 +153,7 @@ class BreadcrumbsTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Breadcrumbs::widget()
+        echo (new Breadcrumbs($this->webView))
             ->activeItemTemplate("{link}\n")
             ->itemTemplate("{link}\n")
             ->homeLink(true)
@@ -175,7 +161,7 @@ class BreadcrumbsTest extends TestCase
             ->options(['class' => 'breadcrumb'])
             ->tag('div');
 
-        $actualHtml = ob_get_contents();
+        $actualHtml = ob_get_clean();
 
         $expectedHtml = "<div class=\"breadcrumb\"><a href=\"/\">Home</a>\n" .
             "My Home Page\n" .
@@ -183,7 +169,5 @@ class BreadcrumbsTest extends TestCase
             '</div>';
 
         $this->assertEquals($expectedHtml, $actualHtml);
-
-        ob_end_clean();
     }
 }

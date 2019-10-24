@@ -9,127 +9,74 @@ use Yiisoft\View\ViewContextInterface;
 use Yiisoft\View\WebView;
 use Yiisoft\Widget\Event\AfterRun;
 use Yiisoft\Widget\Event\BeforeRun;
+use Yiisoft\Widget\Exception\InvalidConfigException;
 
 /**
  * Widget is the base class for widgets.
  *
  * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
  */
-class Widget implements ViewContextInterface
+class Widget
 {
     /**
-     * @var EventDispatcherInterface event handler.
+     * @var EventDispatcherInterface $eventDispatcher
      */
-    protected static $eventDispatcher;
+    private $eventDispatcher;
 
     /**
-     * The widgets that are currently being rendered (not ended). This property is maintained by {@see static::begin()}
-     * and {@see static::end()} methods.
+     * The widgets that are currently being rendered (not ended). This property is maintained by {@see begin()} and
+     * {@see end} methods.
      *
      * @var Widget[] $stack
      */
-    protected static $stack;
+    private $stack;
 
-    /**
-     * @var WebView $view
-     */
-    protected static $webView;
-
-    /**
-     * @var Widget $widget
-     */
-    protected static $widget;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher, WebView $webView)
+    public function __construct(WebView $webView)
     {
-        self::$eventDispatcher = $eventDispatcher;
-        self::$webView = $webView;
+        $this->eventDispatcher = $webView->getEventDispatcher();
     }
 
     /**
-     * Begins a widget.
+     * Begin the rendering of content.
      *
-     * This method creates an instance of the calling class. It will apply the configuration to the created instance.
-     * A matching {@see end()} call should be called later. As some widgets may use output buffering, the {@see end()}
-     * call should be made in the same view to avoid breaking the nesting of output buffers.
-     *
-     * @return Widget the newly created widget instance.
-     *
-     * {@see end()}
+     * @return Widget
      */
-    public static function begin(): Widget
+    public function begin(): Widget
     {
-        $widget = new static(self::$eventDispatcher, self::$webView);
+        $this->stack[] = $this;
+        $this->init();
 
-        self::$stack[] = $widget;
-
-        return $widget;
+        return $this;
     }
 
     /**
-     * Ends a widget
+     * Ends the rendering of content.
      *
-     * Note that the rendering result of the widget is directly echoed out
+     * @param string $class
      *
-     * @return Widget the widget instance that is ended
-     *
-     * @throws \BadFunctionCallException if {@see begin()]} and {@see end()} calls are not properly nested.
-     *
-     * {@see begin()}
+     * @return Widget
      */
-    public static function end(): Widget
+    public function end(): Widget
     {
-        if (!empty(self::$stack)) {
-            $widget = array_pop(self::$stack);
+        if (!empty($this->stack)) {
+            $widget = array_pop($this->stack);
 
-            if (get_class($widget) === static::class) {
+            if (get_class($widget) === get_called_class()) {
                 /* @var $widget Widget */
                 if ($widget->beforeRun()) {
                     $result = $widget->run();
                     $result = $widget->afterRun($result);
                     echo $result;
                 }
-
                 return $widget;
             }
-            throw new \BadFunctionCallException('Expecting end() of ' . get_class($widget) . ', found ' . static::class);
+            throw new InvalidConfigException(
+                'Expecting end() of ' . get_class($widget) . ', found ' . get_called_class()
+            );
         }
-        throw new \BadFunctionCallException(
-            'Unexpected ' . static::class . '::end() call. A matching begin() is not found.'
+        throw new InvalidConfigException(
+            'Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.'
         );
-    }
-
-    /**
-     * Creates a widget instance.
-     *
-     * @return Widget $widget.
-     */
-    public static function widget(): Widget
-    {
-        $widget = new static(self::$eventDispatcher, self::$webView);
-
-        static::$widget = $widget;
-
-        return $widget;
-    }
-
-    /**
-     * Returns the view object that can be used to render views or view files.
-     *
-     * The {@see render()} and {@see renderFile()} methods will use this view object to implement the actual view
-     * rendering. If not set, it will default to the "view" application component.
-     */
-    public function getView(): WebView
-    {
-        return self::$webView;
-    }
-
-    public function init(): void
-    {
-    }
-
-    public function getContent(): string
-    {
     }
 
     /**
@@ -140,66 +87,13 @@ class Widget implements ViewContextInterface
     public function run(): string
     {
         $out = '';
-        $widget = static::$widget;
 
-        if ($widget->beforeRun()) {
-            $result = $widget->getContent();
-            $out = $widget->afterRun($result);
+        if ($this->beforeRun()) {
+            $result = $this->getContent();
+            $out = $this->afterRun($result);
         }
 
         return $out;
-    }
-
-    /**
-     * Renders a view.
-     *
-     * The view to be rendered can be specified in one of the following formats:
-     *
-     * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
-     * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
-     * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
-     * - relative path (e.g. "index"): the actual view file will be looked for under {@see viewPath}.
-     *
-     * If the view name does not contain a file extension, it will use the default one `.php`.
-     *
-     * @param string $view the view name.
-     * @param array $params the parameters (name-value pairs) that should be made available in the view.
-     *
-     * @return string the rendering result.
-     */
-    public function render(string $view, array $params = []): string
-    {
-        return $this->getView()->render($view, $params, $this);
-    }
-
-    /**
-     * Renders a view file.
-     *
-     * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
-     * @param array $params the parameters (name-value pairs) that should be made available in the view.
-     *
-     * @return string the rendering result.
-     * @throws \Throwable
-     */
-    public function renderFile(string $file, array $params = []): string
-    {
-        return $this->getView()->renderFile($file, $params, $this);
-    }
-
-    /**
-     * Returns the directory containing the view files for this widget.
-     * The default implementation returns the 'views' subdirectory under the directory containing the widget class file.
-     *
-     * @return string the directory containing the view files for this widget.
-     *
-     * @throws \InvalidArgumentException
-     * @throws \ReflectionException
-     */
-    public function getViewPath(): string
-    {
-        $class = new ReflectionClass($this);
-
-        return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
     }
 
     /**
@@ -228,7 +122,7 @@ class Widget implements ViewContextInterface
     public function beforeRun(): bool
     {
         $event = new BeforeRun();
-        $event = self::$eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return !$event->isPropagationStopped();
     }
@@ -236,7 +130,7 @@ class Widget implements ViewContextInterface
     /**
      * This method is invoked right after a widget is executed.
      *
-     * The method will trigger the {@see {AfterRun()} event. The return value of the method will be used as the widget
+     * The method will trigger the {@see AfterRun()} event. The return value of the method will be used as the widget
      * return value.
      *
      * If you override this method, your code should look like the following:
@@ -257,7 +151,7 @@ class Widget implements ViewContextInterface
     public function afterRun($result)
     {
         $event = new AfterRun($result);
-        $event = self::$eventDispatcher->dispatch($event);
+        $event = $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
     }

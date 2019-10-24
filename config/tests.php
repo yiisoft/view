@@ -92,12 +92,4 @@ return [
 
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
-
-    Widget::class => [
-        '__class' => Widget::class,
-        '__construct()' => [
-            Reference::to(EventDispatcherInterface::class),
-            Reference::to(WebView::class),
-        ]
-    ],
 ];

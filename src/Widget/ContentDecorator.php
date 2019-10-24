@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
+use Yiisoft\View\WebView;
+
 /**
  * ContentDecorator records all output between {@see begin()} and {@see end()]} calls, passes it to the given view file
  * as `$content` and then echoes rendering result.
@@ -46,10 +48,19 @@ class ContentDecorator extends Widget
      */
     private $viewFile;
 
+    /**
+     * @param WebView $webView
+     */
+    private $webView;
+
+    public function __construct(WebView $webView)
+    {
+        parent::__construct($webView);
+        $this->webView = $webView;
+    }
+
     public function init(): void
     {
-        parent::init();
-
         // Starts recording a clip.
         ob_start();
         ob_implicit_flush(0);
@@ -68,7 +79,7 @@ class ContentDecorator extends Widget
 
         // render under the existing context
 
-        return $this->getView()->renderFile($this->viewFile, $params);
+        return $this->webView->renderFile($this->viewFile, $params);
     }
 
     public function params(array $value): self

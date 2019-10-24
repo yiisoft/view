@@ -87,7 +87,6 @@ abstract class TestCase extends BaseTestCase
         $this->theme = $this->container->get(Theme::class);
         $this->webView = $this->container->get(WebView::class);
         $this->webView->setAssetManager($this->assetManager);
-        $this->widget = $this->container->get(Widget::class);
 
         $this->removeAssets('@basePath');
     }

@@ -16,7 +16,7 @@ class MenuTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->encodeLabels(true)
             ->items([
                 [
@@ -43,7 +43,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->encodeLabels(false)
             ->items([
                 [
@@ -73,7 +73,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->encodeLabels(true)
             ->options([
                 'tag' => false,
@@ -101,7 +101,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->encodeLabels(true)
             ->options([
                 'tag' => false,
@@ -130,7 +130,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->labelTemplate('')
             ->linkTemplate('')
             ->items([
@@ -161,7 +161,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->linkTemplate('')
             ->labelTemplate('')
             ->items([
@@ -197,7 +197,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->encodeLabels(true)
             ->activeCssClass('item-active')
             ->items([
@@ -252,7 +252,7 @@ HTML;
         ob_start();
         ob_implicit_flush(0);
 
-        echo Menu::widget()
+        echo (new Menu($this->webView))
             ->encodeLabels(true)
             ->activeCssClass('item-active')
             ->items([

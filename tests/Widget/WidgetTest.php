@@ -8,6 +8,7 @@ use Yiisoft\Widget\Tests\Stubs\TestWidget;
 use Yiisoft\Widget\Tests\Stubs\TestWidgetA;
 use Yiisoft\Widget\Tests\Stubs\TestWidgetB;
 use Yiisoft\Widget\Widget;
+use Yiisoft\Widget\Exception\InvalidConfigException;
 
 /**
  * WidgetTest.
@@ -21,9 +22,11 @@ class WidgetTest extends TestCase
 
     public function testWidget(): void
     {
-        $output = TestWidget::widget()->id('w0')->run();
+        $testWidget = (new TestWidget($this->webView))
+            ->id('w0')
+            ->run();
 
-        $this->assertSame('<run-w0>', $output);
+        $this->assertSame('<run-w0>', $testWidget);
     }
 
     public function testBeginEnd(): void
@@ -31,14 +34,35 @@ class WidgetTest extends TestCase
         ob_start();
         ob_implicit_flush(0);
 
-        $widget = TestWidgetA::begin()->id('test');
+        $testWidgetA = (new TestWidgetA($this->webView))
+            ->id('test')
+            ->begin();
 
-        $this->assertInstanceOf(Widget::class, $widget);
+        $this->assertInstanceOf(Widget::class, $testWidgetA);
 
-        TestWidgetA::end();
+        $testWidgetA->end();
+
         $output = ob_get_clean();
 
         $this->assertSame('<run-test>', $output);
+    }
+
+    public function testWidgetConstruc(): void
+    {
+        ob_start();
+        ob_implicit_flush(0);
+
+        $testWidgetB = (new TestWidgetB($this->webView, $this->logger))
+            ->id('test')
+            ->begin();
+
+        $this->assertInstanceOf(Widget::class, $testWidgetB);
+
+        $testWidgetB->end();
+
+        $output = ob_get_clean();
+
+        $this->assertSame('<run-test-construct>', $output);
     }
 
     /**
@@ -46,8 +70,9 @@ class WidgetTest extends TestCase
      */
     public function testStackTracking(): void
     {
-        $this->expectException('BadFunctionCallException');
-        TestWidget::end();
+        $this->expectException(InvalidConfigException::class);
+        $testWidgetA = new TestWidgetA($this->webView);
+        $testWidgetA->end();
     }
 
     /**
@@ -55,8 +80,10 @@ class WidgetTest extends TestCase
      */
     public function testStackTrackingDisorder(): void
     {
-        $this->expectException('BadFunctionCallException');
-        TestWidgetA::begin();
-        TestWidgetB::end();
+        $this->expectException(InvalidConfigException::class);
+        $testWidgetA = new TestWidgetA($this->webView);
+        $testWidgetB = new TestWidgetB($this->webView, $this->logger);
+        $testWidgetA->begin();
+        $testWidgetB->end();
     }
 }

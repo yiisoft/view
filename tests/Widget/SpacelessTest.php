@@ -19,20 +19,22 @@ class SpacelessTest extends TestCase
 
         echo "<body>\n";
 
-        Spaceless::begin()->init();
+        $spaceless = new Spaceless($this->webView);
+
+        $spaceless->begin();
         echo "\t<div class='wrapper'>\n";
 
-        Spaceless::begin()->init();
+        $spaceless->begin();
         echo "\t\t<div class='left-column'>\n";
         echo "\t\t\t<p>This is a left bar!</p>\n";
         echo "\t\t</div>\n\n";
         echo "\t\t<div class='right-column'>\n";
         echo "\t\t\t<p>This is a right bar!</p>\n";
         echo "\t\t</div>\n";
-        Spaceless::end();
+        $spaceless->end();
 
         echo "\t</div>\n";
-        Spaceless::end();
+        $spaceless->end();
 
         echo "\t<p>Bye!</p>\n";
         echo "</body>\n";
@@ -51,8 +53,10 @@ class SpacelessTest extends TestCase
             $initTriggered = true;
         });
 
-        Spaceless::begin()->init();
-        Spaceless::end();
+        $spaceless = new Spaceless($this->webView);
+
+        $spaceless->begin();
+        $spaceless->end();
 
         $this->assertTrue($initTriggered);
     }
