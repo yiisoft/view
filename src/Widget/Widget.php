@@ -22,7 +22,10 @@ class Widget implements ViewContextInterface
      * @var EventDispatcherInterface event handler.
      */
     protected static $eventDispatcher;
-
+    /**
+     * @var Widget $widget
+     */
+    protected static $widget;
     /**
      * The widgets that are currently being rendered (not ended). This property is maintained by {@see static::begin()}
      * and {@see static::end()} methods.
@@ -30,16 +33,10 @@ class Widget implements ViewContextInterface
      * @var Widget[] $stack
      */
     protected static $stack;
-
     /**
      * @var WebView $view
      */
     protected static $webView;
-
-    /**
-     * @var Widget $widget
-     */
-    protected static $widget;
 
     public function __construct(EventDispatcherInterface $eventDispatcher, WebView $webView)
     {
@@ -153,20 +150,17 @@ class Widget implements ViewContextInterface
 
     /**
      * Renders a view.
-     *
      * The view to be rendered can be specified in one of the following formats:
-     *
      * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
      * - relative path (e.g. "index"): the actual view file will be looked for under {@see viewPath}.
-     *
      * If the view name does not contain a file extension, it will use the default one `.php`.
      *
      * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
-     *
      * @return string the rendering result.
+     * @throws \Throwable
      */
     public function render(string $view, array $params = []): string
     {
@@ -251,11 +245,11 @@ class Widget implements ViewContextInterface
      * }
      * ```
      *
-     * @param mixed $result the widget return result.
+     * @param string $result the widget return result.
      *
-     * @return mixed the processed widget result.
+     * @return string the processed widget result.
      */
-    public function afterRun($result)
+    public function afterRun(string $result): string
     {
         $event = new AfterRun($result);
         $event = self::$eventDispatcher->dispatch($event);
