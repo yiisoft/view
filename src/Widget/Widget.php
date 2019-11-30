@@ -3,8 +3,9 @@ declare(strict_types = 1);
 
 namespace Yiisoft\Widget;
 
-use ReflectionClass;
+use BadFunctionCallException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ReflectionClass;
 use Yiisoft\View\ViewContextInterface;
 use Yiisoft\View\WebView;
 use Yiisoft\Widget\Event\AfterRun;
@@ -73,30 +74,29 @@ class Widget implements ViewContextInterface
      *
      * @return Widget the widget instance that is ended
      *
-     * @throws \BadFunctionCallException if {@see begin()]} and {@see end()} calls are not properly nested.
+     * @throws BadFunctionCallException if {@see begin()]} and {@see end()} calls are not properly nested.
      *
      * {@see begin()}
      */
     public static function end(): Widget
     {
-        if (!empty(self::$stack)) {
-            $widget = array_pop(self::$stack);
-
-            if (get_class($widget) === static::class) {
-                /* @var $widget Widget */
-                if ($widget->beforeRun()) {
-                    $result = $widget->run();
-                    $result = $widget->afterRun($result);
-                    echo $result;
-                }
-
-                return $widget;
-            }
-            throw new \BadFunctionCallException('Expecting end() of ' . get_class($widget) . ', found ' . static::class);
+        if (empty(self::$stack)) {
+            throw new BadFunctionCallException(
+                'Unexpected ' . static::class . '::end() call. A matching begin() is not found.'
+            );
         }
-        throw new \BadFunctionCallException(
-            'Unexpected ' . static::class . '::end() call. A matching begin() is not found.'
-        );
+
+        $widget = array_pop(self::$stack);
+        if (get_class($widget) !== static::class) {
+            throw new BadFunctionCallException('Expecting end() of ' . get_class($widget) . ', found ' . static::class);
+        }
+        if ($widget->beforeRun()) {
+            $result = $widget->run();
+            $result = $widget->afterRun($result);
+            echo $result;
+        }
+
+        return $widget;
     }
 
     /**
