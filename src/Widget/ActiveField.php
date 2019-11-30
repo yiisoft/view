@@ -146,11 +146,11 @@ class ActiveField
      * @var string this property holds a custom input id if it was set using [[inputOptions]] or in one of the
      *             `$options` parameters of the `input*` methods.
      */
-    private $_inputId;
+    private $inputId;
     /**
      * @var bool if "for" field label attribute should be skipped.
      */
-    private $_skipLabelFor = false;
+    private $skipLabelFor = false;
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -267,7 +267,7 @@ class ActiveField
             $options['label'] = $label;
         }
 
-        if ($this->_skipLabelFor) {
+        if ($this->skipLabelFor) {
             $options['for'] = null;
         }
 
@@ -711,7 +711,7 @@ class ActiveField
 
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
-        $this->_skipLabelFor = true;
+        $this->skipLabelFor = true;
         $this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -737,7 +737,7 @@ class ActiveField
 
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
-        $this->_skipLabelFor = true;
+        $this->skipLabelFor = true;
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -803,7 +803,7 @@ class ActiveField
         if (!isset($options['id'])) {
             return;
         }
-        $this->_inputId = $options['id'];
+        $this->inputId = $options['id'];
         if (!isset($this->labelOptions['for'])) {
             $this->labelOptions['for'] = $options['id'];
         }
@@ -836,7 +836,7 @@ class ActiveField
      */
     public function getInputId()
     {
-        return $this->_inputId ?: Html::getInputId($this->model, $this->attribute);
+        return $this->inputId ?: Html::getInputId($this->model, $this->attribute);
     }
 
     /**
