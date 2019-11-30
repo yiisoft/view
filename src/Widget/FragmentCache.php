@@ -72,8 +72,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     {
         parent::init();
 
-        $this->cache = $this->enabled ? $this->app->ensureObject($this->cache, CacheInterface::class) : null;
-
         if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->pushDynamicContent($this);
             ob_start();
@@ -101,9 +99,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
             $content = ob_get_clean();
             if ($content === false || $content === '') {
                 return '';
-            }
-            if (is_array($this->dependency)) {
-                $this->dependency = $this->app->createObject($this->dependency);
             }
             $data = [$content, $this->getDynamicPlaceholders()];
             $this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
