@@ -130,6 +130,7 @@ class Widget implements ViewContextInterface
 
     public function getContent(): string
     {
+        return '';
     }
 
     /**
