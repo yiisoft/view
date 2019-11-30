@@ -156,6 +156,7 @@ class LinkPager extends Widget
      */
     protected function registerLinkTags()
     {
+        // TODO fix that
         return;
         $view = $this->getView();
         foreach ($this->paginator->getLinks() as $rel => $href) {
