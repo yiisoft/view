@@ -31,7 +31,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     public $duration = 60;
     /**
-     * @var array|Dependency the dependency that the cached content depends on.
+     * @var Dependency the dependency that the cached content depends on.
      *                       This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      *                       For example,
      *
@@ -60,13 +60,14 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     public $variations;
     /**
-     * @var bool whether to enable the fragment cache. You may use this property to turn on and off
-     *           the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
+     * @var string|bool the cached content. False if the content is not cached.
      */
     private $content = false;
 
     /**
      * Initializes the FragmentCache object.
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function init(): void
     {
@@ -86,6 +87,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * This method does nothing if valid content is already found in cache.
      *
      * @return string the result of widget execution to be outputted.
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function run(): string
     {
@@ -113,6 +115,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * Returns the cached content if available.
      *
      * @return string|false the cached content. False is returned if valid content is not found in the cache.
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function getCachedContent()
     {
