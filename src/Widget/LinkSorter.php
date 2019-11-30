@@ -2,6 +2,7 @@
 
 namespace Yiisoft\Widget;
 
+use Yiisoft\Data\Reader\Sort;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 
@@ -13,7 +14,7 @@ use Yiisoft\Html\Html;
 class LinkSorter extends Widget
 {
     /**
-     * @var Sort the sort definition
+     * @var \Yiisoft\Data\Reader\Sort the sort definition
      */
     public $sort;
     /**
