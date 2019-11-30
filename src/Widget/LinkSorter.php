@@ -79,12 +79,12 @@ class LinkSorter extends Widget
      *
      * @return string the rendering result
      */
-    protected function renderSortLinks()
+    protected function renderSortLinks(): string
     {
-        $attributes = empty($this->attributes) ? array_keys($this->sort->attributes) : $this->attributes;
+        $attributes = empty($this->attributes) ? array_keys($this->sort->getCriteria()) : $this->attributes;
         $links = [];
         foreach ($attributes as $name) {
-            $links[] = $this->sort->link($name, $this->linkOptions);
+            $links[] = Html::a($name, sprintf('?sort=%s', $name), $this->linkOptions);
         }
 
         return Html::ul($links, array_merge($this->options, ['encode' => false]));
