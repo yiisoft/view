@@ -49,6 +49,20 @@ class LinkSorter extends Widget
         }
     }
 
+    public function sort(Sort $sort): self
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    public function attributes(array $attributes): self
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
     /**
      * Executes the widget.
      * This method renders the sort links.
