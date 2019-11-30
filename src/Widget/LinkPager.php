@@ -2,10 +2,8 @@
 
 namespace Yiisoft\Widget;
 
-use yii\data\Pagination;
-use yii\exceptions\InvalidConfigException;
-use yii\helpers\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -22,14 +20,14 @@ use Yiisoft\Arrays\ArrayHelper;
 class LinkPager extends Widget
 {
     /**
-     * @var Pagination the pagination object that this pager is associated with.
+     * @var \Yiisoft\Data\Paginator\PaginatorInterface the pagination object that this pager is associated with.
      *                 You must set this property in order to make LinkPager work.
      */
     public $pagination;
     /**
      * @var array HTML attributes for the pager container tag.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'pagination'];
     /**
@@ -39,7 +37,7 @@ class LinkPager extends Widget
     /**
      * @var array HTML attributes for the link in a pager container tag.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $linkOptions = [];
     /**

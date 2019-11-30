@@ -2,15 +2,12 @@
 
 namespace Yiisoft\Widget;
 
-use yii\data\Sort;
-use yii\exceptions\InvalidConfigException;
-use yii\helpers\Html;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
+use Yiisoft\Html\Html;
 
 /**
  * LinkSorter renders a list of sort links for the given sort definition.
- *
  * LinkSorter will generate a hyperlink for every attribute declared in [[sort]].
- *
  * For more details and usage information on LinkSorter, see the [guide article on sorting](guide:output-sorting).
  */
 class LinkSorter extends Widget
@@ -27,14 +24,14 @@ class LinkSorter extends Widget
     /**
      * @var array HTML attributes for the sorter container tag.
      *
-     * @see \yii\helpers\Html::ul() for special attributes.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::ul() for special attributes.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'sorter'];
     /**
      * @var array HTML attributes for the link in a sorter container tag which are passed to [[Sort::link()]].
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $linkOptions = [];
 
