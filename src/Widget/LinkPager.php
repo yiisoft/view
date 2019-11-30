@@ -3,6 +3,7 @@
 namespace Yiisoft\Widget;
 
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 
 /**
@@ -20,10 +21,10 @@ use Yiisoft\Html\Html;
 class LinkPager extends Widget
 {
     /**
-     * @var \Yiisoft\Data\Paginator\PaginatorInterface the pagination object that this pager is associated with.
+     * @var \Yiisoft\Data\Paginator\OffsetPaginator the pagination object that this pager is associated with.
      *                 You must set this property in order to make LinkPager work.
      */
-    public $pagination;
+    public $paginator;
     /**
      * @var array HTML attributes for the pager container tag.
      *
@@ -127,7 +128,7 @@ class LinkPager extends Widget
     {
         parent::init();
 
-        if ($this->pagination === null) {
+        if ($this->paginator === null) {
             throw new InvalidConfigException('The "pagination" property must be set.');
         }
     }
@@ -155,8 +156,9 @@ class LinkPager extends Widget
      */
     protected function registerLinkTags()
     {
+        return;
         $view = $this->getView();
-        foreach ($this->pagination->getLinks() as $rel => $href) {
+        foreach ($this->paginator->getLinks() as $rel => $href) {
             $view->registerLinkTag(['rel' => $rel, 'href' => $href], $rel);
         }
     }
@@ -168,13 +170,13 @@ class LinkPager extends Widget
      */
     protected function renderPageButtons()
     {
-        $pageCount = $this->pagination->getPageCount();
+        $pageCount = $this->paginator->getTotalPages();
         if ($pageCount < 2 && $this->hideOnSinglePage) {
             return '';
         }
 
         $buttons = [];
-        $currentPage = $this->pagination->getPage();
+        $currentPage = $this->paginator->getCurrentPage();
 
         // first page
         $firstPageLabel = $this->firstPageLabel === true ? '1' : $this->firstPageLabel;
@@ -247,7 +249,7 @@ class LinkPager extends Widget
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;
 
-        return Html::tag($linkWrapTag, Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
+        return Html::tag($linkWrapTag, Html::a($label, $this->paginator->withNextPageToken($page), $linkOptions), $options);
     }
 
     /**
@@ -255,8 +257,8 @@ class LinkPager extends Widget
      */
     protected function getPageRange()
     {
-        $currentPage = $this->pagination->getPage();
-        $pageCount = $this->pagination->getPageCount();
+        $currentPage = $this->paginator->getCurrentPage();
+        $pageCount = $this->paginator->getTotalPages();
 
         $beginPage = max(0, $currentPage - (int) ($this->maxButtonCount / 2));
         if (($endPage = $beginPage + $this->maxButtonCount - 1) >= $pageCount) {
