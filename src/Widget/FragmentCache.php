@@ -63,7 +63,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * @var bool whether to enable the fragment cache. You may use this property to turn on and off
      *           the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
      */
-    public $enabled = true;
+    private $content = false;
 
     /**
      * Initializes the FragmentCache object.
@@ -115,41 +115,34 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     }
 
     /**
-     * @var string|bool the cached content. False if the content is not cached.
-     */
-    private $_content;
-
-    /**
      * Returns the cached content if available.
      *
      * @return string|false the cached content. False is returned if valid content is not found in the cache.
      */
     public function getCachedContent()
     {
-        if ($this->_content !== null) {
-            return $this->_content;
+        if ($this->content !== null) {
+            return $this->content;
         }
 
-        $this->_content = false;
-
         if (!($this->cache instanceof CacheInterface)) {
-            return $this->_content;
+            return $this->content;
         }
 
         $key = $this->calculateKey();
         $data = $this->cache->get($key);
         if (!is_array($data) || count($data) !== 2) {
-            return $this->_content;
+            return $this->content;
         }
 
-        [$this->_content, $placeholders] = $data;
+        [$this->content, $placeholders] = $data;
         if (!is_array($placeholders) || count($placeholders) === 0) {
-            return $this->_content;
+            return $this->content;
         }
 
-        $this->_content = $this->updateDynamicContent($this->_content, $placeholders, true);
+        $this->content = $this->updateDynamicContent($this->content, $placeholders, true);
 
-        return $this->_content;
+        return $this->content;
     }
 
     /**
