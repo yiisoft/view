@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Yiisoft\Widget;
 
 use Yiisoft\Cache\CacheInterface;
-use Yiisoft\Cache\Dependencies\Dependency;
+use Yiisoft\Cache\Dependency\Dependency;
 use Yiisoft\View\DynamicContentAwareInterface;
 use Yiisoft\View\DynamicContentAwareTrait;
 
