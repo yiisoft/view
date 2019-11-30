@@ -10,6 +10,7 @@ use Yiisoft\Html\Html;
  * LinkSorter renders a list of sort links for the given sort definition.
  * LinkSorter will generate a hyperlink for every attribute declared in [[sort]].
  * For more details and usage information on LinkSorter, see the [guide article on sorting](guide:output-sorting).
+ * @method static LinkSorter widget()
  */
 class LinkSorter extends Widget
 {
