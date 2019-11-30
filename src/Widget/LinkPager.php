@@ -17,6 +17,7 @@ use Yiisoft\Html\Html;
  * With the default configuration, LinkPager should look good using Twitter Bootstrap CSS framework.
  *
  * For more details and usage information on LinkPager, see the [guide article on pagination](guide:output-pagination).
+ * TODO write tests
  */
 class LinkPager extends Widget
 {
