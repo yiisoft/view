@@ -25,7 +25,6 @@
         "psr/log": "^1.1",
         "yiisoft/aliases": "^3.0@dev",
         "yiisoft/arrays": "^3.0@dev",
-        "yiisoft/data": "^3.0@dev",
         "yiisoft/files": "^3.0@dev",
         "yiisoft/html": "^3.0@dev",
         "yiisoft/i18n": "^3.0@dev",
