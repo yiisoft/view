@@ -2,10 +2,9 @@
 
 namespace Yiisoft\Widget;
 
-use yii\base\ErrorHandler;
 use yii\base\Model;
-use yii\helpers\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 
 /**
  * ActiveField represents a form input field within an [[ActiveForm]].
@@ -33,11 +32,11 @@ class ActiveField
      *            The following special options are recognized:
      *
      * - `tag`: the tag name of the container element. Defaults to `div`. Setting it to `false` will not render a container tag.
-     *   See also [[\yii\helpers\Html::tag()]].
+     *   See also [[Html::tag()]].
      *
      * If you set a custom `id` for the container element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'form-group'];
     /**
@@ -51,7 +50,7 @@ class ActiveField
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $inputOptions = ['class' => 'form-control'];
     /**
@@ -60,19 +59,19 @@ class ActiveField
      *            The following special options are recognized:
      *
      * - `tag`: the tag name of the container element. Defaults to `div`. Setting it to `false` will not render a container tag.
-     *   See also [[\yii\helpers\Html::tag()]].
+     *   See also [[Html::tag()]].
      * - `encode`: whether to encode the error output. Defaults to `true`.
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $errorOptions = ['class' => 'help-block'];
     /**
      * @var array the default options for the label tags. The parameter passed to [[label()]] will be
      *            merged with this property when rendering the label tag.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $labelOptions = ['class' => 'control-label'];
     /**
@@ -81,9 +80,9 @@ class ActiveField
      *            The following special options are recognized:
      *
      * - `tag`: the tag name of the container element. Defaults to `div`. Setting it to `false` will not render a container tag.
-     *   See also [[\yii\helpers\Html::tag()]].
+     *   See also [[Html::tag()]].
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $hintOptions = ['class' => 'hint-block'];
     /**
@@ -147,11 +146,11 @@ class ActiveField
      * @var string this property holds a custom input id if it was set using [[inputOptions]] or in one of the
      *             `$options` parameters of the `input*` methods.
      */
-    private $_inputId;
+    private $inputId;
     /**
      * @var bool if "for" field label attribute should be skipped.
      */
-    private $_skipLabelFor = false;
+    private $skipLabelFor = false;
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -160,15 +159,7 @@ class ActiveField
      */
     public function __toString()
     {
-        // __toString cannot throw exception
-        // use trigger_error to bypass this limitation
-        try {
-            return $this->render();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-
-            return '';
-        }
+        return $this->render();
     }
 
     /**
@@ -276,7 +267,7 @@ class ActiveField
             $options['label'] = $label;
         }
 
-        if ($this->_skipLabelFor) {
+        if ($this->skipLabelFor) {
             $options['for'] = null;
         }
 
@@ -296,7 +287,7 @@ class ActiveField
      * The following options are specially handled:
      *
      * - `tag`: this specifies the tag name. If not set, `div` will be used.
-     *   See also [[\yii\helpers\Html::tag()]].
+     *   See also [[Html::tag()]].
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      *
@@ -330,7 +321,7 @@ class ActiveField
      * The following options are specially handled:
      *
      * - `tag`: this specifies the tag name. If not set, `div` will be used.
-     *   See also [[\yii\helpers\Html::tag()]].
+     *   See also [[Html::tag()]].
      *
      * @return $this the field object itself.
      */
@@ -414,7 +405,7 @@ class ActiveField
      *
      * Note that this method is provided for completeness. In most cases because you do not need
      * to validate a hidden input, you should not need to use this method. Instead, you should
-     * use [[\yii\helpers\Html::activeHiddenInput()]].
+     * use [[Html::activeHiddenInput()]].
      *
      * This method will generate the `name` and `value` tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
@@ -643,7 +634,7 @@ class ActiveField
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs.
      *
-     * For the list of available options please refer to the `$options` parameter of [[\yii\helpers\Html::activeDropDownList()]].
+     * For the list of available options please refer to the `$options` parameter of [[Html::activeDropDownList()]].
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
@@ -678,7 +669,7 @@ class ActiveField
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs.
      *
-     * For the list of available options please refer to the `$options` parameter of [[\yii\helpers\Html::activeListBox()]].
+     * For the list of available options please refer to the `$options` parameter of [[Html::activeListBox()]].
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
@@ -708,7 +699,7 @@ class ActiveField
      * @param array $items   the data item used to generate the checkboxes.
      *                       The array values are the labels, while the array keys are the corresponding checkbox values.
      * @param array $options options (name => config) for the checkbox list.
-     *                       For the list of available options please refer to the `$options` parameter of [[\yii\helpers\Html::activeCheckboxList()]].
+     *                       For the list of available options please refer to the `$options` parameter of [[Html::activeCheckboxList()]].
      *
      * @return $this the field object itself.
      */
@@ -720,7 +711,7 @@ class ActiveField
 
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
-        $this->_skipLabelFor = true;
+        $this->skipLabelFor = true;
         $this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -734,7 +725,7 @@ class ActiveField
      * @param array $items   the data item used to generate the radio buttons.
      *                       The array values are the labels, while the array keys are the corresponding radio values.
      * @param array $options options (name => config) for the radio button list.
-     *                       For the list of available options please refer to the `$options` parameter of [[\yii\helpers\Html::activeRadioList()]].
+     *                       For the list of available options please refer to the `$options` parameter of [[Html::activeRadioList()]].
      *
      * @return $this the field object itself.
      */
@@ -746,7 +737,7 @@ class ActiveField
 
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
-        $this->_skipLabelFor = true;
+        $this->skipLabelFor = true;
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -812,7 +803,7 @@ class ActiveField
         if (!isset($options['id'])) {
             return;
         }
-        $this->_inputId = $options['id'];
+        $this->inputId = $options['id'];
         if (!isset($this->labelOptions['for'])) {
             $this->labelOptions['for'] = $options['id'];
         }
@@ -845,7 +836,7 @@ class ActiveField
      */
     public function getInputId()
     {
-        return $this->_inputId ?: Html::getInputId($this->model, $this->attribute);
+        return $this->inputId ?: Html::getInputId($this->model, $this->attribute);
     }
 
     /**

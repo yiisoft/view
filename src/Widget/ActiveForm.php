@@ -2,13 +2,9 @@
 
 namespace Yiisoft\Widget;
 
-use yii\base\Model;
-use yii\di\Initiable;
-use yii\exceptions\InvalidCallException;
-use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
+use Yiisoft\View\InvalidCallException;
 use Yiisoft\Widget\Event\AfterActiveFieldRender;
 use Yiisoft\Widget\Event\BeforeActiveFieldRender;
 
@@ -17,19 +13,19 @@ use Yiisoft\Widget\Event\BeforeActiveFieldRender;
  *
  * For more details and usage information on ActiveForm, see the [guide article on forms](guide:input-forms).
  */
-class ActiveForm extends Widget implements Initiable
+class ActiveForm extends Widget
 {
     /**
      * Add validation state class to container tag.
      */
-    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    public const VALIDATION_STATE_ON_CONTAINER = 'container';
     /**
      * Add validation state class to input tag.
      */
-    const VALIDATION_STATE_ON_INPUT = 'input';
+    public const VALIDATION_STATE_ON_INPUT = 'input';
 
     /**
-     * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @var array|string the form action URL. This parameter will be processed by [[Url::to()]].
      *
      * @see method for specifying the HTTP method for this form.
      */
@@ -53,7 +49,7 @@ class ActiveForm extends Widget implements Initiable
     /**
      * @var array the HTML attributes (name-value pairs) for the form tag.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
     /**
@@ -218,7 +214,7 @@ class ActiveForm extends Widget implements Initiable
      * - `footer`: string, the footer HTML for the error summary.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
-     * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * be HTML-encoded using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
      *
      * @return string the generated error summary.
      *
@@ -405,7 +401,7 @@ class ActiveForm extends Widget implements Initiable
      */
     public function beforeFieldRender(ActiveField $field)
     {
-        $this->eventDispatcher->dispatch(new BeforeActiveFieldRender($field));
+        self::$eventDispatcher->dispatch(new BeforeActiveFieldRender($field));
     }
 
     /**
@@ -416,6 +412,6 @@ class ActiveForm extends Widget implements Initiable
      */
     public function afterFieldRender(ActiveField $field)
     {
-        $this->eventDispatcher->dispatch(new AfterActiveFieldRender($field));
+        self::$eventDispatcher->dispatch(new AfterActiveFieldRender($field));
     }
 }
