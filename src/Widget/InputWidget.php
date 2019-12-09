@@ -2,33 +2,27 @@
 
 namespace Yiisoft\Widget;
 
-use yii\base\Model;
-use yii\di\Initiable;
-use yii\exceptions\InvalidConfigException;
-use yii\helpers\Html;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
+use Yiisoft\Html\Html;
 
 /**
  * InputWidget is the base class for widgets that collect user inputs.
- *
  * An input widget can be associated with a data [[model]] and an [[attribute]],
  * or a [[name]] and a [[value]]. If the former, the name and the value will
  * be generated automatically (subclasses may call [[renderInputHtml()]] to follow this behavior).
- *
  * Classes extending from this widget can be used in an [[\yii\widgets\ActiveForm|ActiveForm]]
  * using the [[\yii\widgets\ActiveField::widget()|widget()]] method, for example like this:
- *
  * ```php
  * <?= $form->field($model, 'from_date')->widget('WidgetClassName', [
  *     // configure additional widget properties here
  * ]) ?>
  * ```
- *
  * For more details and usage information on InputWidget, see the [guide article on forms](guide:input-forms).
  */
-class InputWidget extends Widget implements Initiable
+class InputWidget extends Widget
 {
     /**
-     * @var \yii\widgets\ActiveField active input field, which triggers this widget rendering.
+     * @var ActiveField active input field, which triggers this widget rendering.
      *                               This field will be automatically filled up in case widget instance is created via [[\yii\widgets\ActiveField::widget()]].
      */
     public $field;
@@ -51,7 +45,7 @@ class InputWidget extends Widget implements Initiable
     /**
      * @var array the HTML attributes for the input tag.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
 

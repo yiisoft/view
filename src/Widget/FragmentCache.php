@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Yiisoft\Widget;
 
 use Yiisoft\Cache\CacheInterface;
-use Yiisoft\Cache\Dependencies\Dependency;
+use Yiisoft\Cache\Dependency\Dependency;
 use Yiisoft\View\DynamicContentAwareInterface;
 use Yiisoft\View\DynamicContentAwareTrait;
 
@@ -31,7 +31,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     public $duration = 60;
     /**
-     * @var array|Dependency the dependency that the cached content depends on.
+     * @var Dependency the dependency that the cached content depends on.
      *                       This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      *                       For example,
      *
@@ -60,19 +60,18 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     public $variations;
     /**
-     * @var bool whether to enable the fragment cache. You may use this property to turn on and off
-     *           the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
+     * @var string|bool the cached content. False if the content is not cached.
      */
-    public $enabled = true;
+    private $content = false;
 
     /**
      * Initializes the FragmentCache object.
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function init(): void
     {
         parent::init();
-
-        $this->cache = $this->enabled ? $this->app->ensureObject($this->cache, CacheInterface::class) : null;
 
         if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->pushDynamicContent($this);
@@ -88,6 +87,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * This method does nothing if valid content is already found in cache.
      *
      * @return string the result of widget execution to be outputted.
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function run(): string
     {
@@ -102,9 +102,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
             if ($content === false || $content === '') {
                 return '';
             }
-            if (is_array($this->dependency)) {
-                $this->dependency = $this->app->createObject($this->dependency);
-            }
             $data = [$content, $this->getDynamicPlaceholders()];
             $this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
 
@@ -115,41 +112,35 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     }
 
     /**
-     * @var string|bool the cached content. False if the content is not cached.
-     */
-    private $_content;
-
-    /**
      * Returns the cached content if available.
      *
      * @return string|false the cached content. False is returned if valid content is not found in the cache.
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function getCachedContent()
     {
-        if ($this->_content !== null) {
-            return $this->_content;
+        if ($this->content !== null) {
+            return $this->content;
         }
 
-        $this->_content = false;
-
         if (!($this->cache instanceof CacheInterface)) {
-            return $this->_content;
+            return $this->content;
         }
 
         $key = $this->calculateKey();
         $data = $this->cache->get($key);
         if (!is_array($data) || count($data) !== 2) {
-            return $this->_content;
+            return $this->content;
         }
 
-        [$this->_content, $placeholders] = $data;
+        [$this->content, $placeholders] = $data;
         if (!is_array($placeholders) || count($placeholders) === 0) {
-            return $this->_content;
+            return $this->content;
         }
 
-        $this->_content = $this->updateDynamicContent($this->_content, $placeholders, true);
+        $this->content = $this->updateDynamicContent($this->content, $placeholders, true);
 
-        return $this->_content;
+        return $this->content;
     }
 
     /**
