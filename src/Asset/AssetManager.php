@@ -258,8 +258,8 @@ class AssetManager
                 $baseUrl = $this->baseUrl;
             }
         } else {
-            $basePath = $this->aliases->get($bundle->basePath);
-            $baseUrl = $this->aliases->get($bundle->baseUrl);
+            $basePath = $bundle->basePath === null ? '' : $this->aliases->get($bundle->basePath);
+            $baseUrl = $bundle->baseUrl === null ? '' : $this->aliases->get($bundle->baseUrl);
         }
 
         if (!$this->isRelative($asset) || strncmp($asset, '/', 1) === 0) {
