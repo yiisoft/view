@@ -95,49 +95,49 @@ class WebView extends View
     /**
      * @var string the page title
      */
-    private $title;
+    private string $title;
 
     /**
      * @var array the registered meta tags.
      *
      * {@see registerMetaTag()}
      */
-    private $metaTags = [];
+    private array $metaTags = [];
 
     /**
      * @var array the registered link tags.
      *
      * {@see registerLinkTag()}
      */
-    private $linkTags = [];
+    private array $linkTags = [];
 
     /**
      * @var array the registered CSS code blocks.
      *
      * {@see registerCss()}
      */
-    private $css = [];
+    private array $css = [];
 
     /**
      * @var array the registered CSS files.
      *
      * {@see registerCssFile()}
      */
-    private $cssFiles = [];
+    private array $cssFiles = [];
 
     /**
      * @var array the registered JS code blocks
      *
      * {@see registerJs()}
      */
-    private $js = [];
+    private array $js = [];
 
     /**
      * @var array the registered JS files.
      *
      * {@see registerJsFile()}
      */
-    private $jsFiles = [];
+    private array $jsFiles = [];
 
     /**
      * Marks the position of an HTML head section.
@@ -202,14 +202,14 @@ class WebView extends View
      * @param string $view the view name. Please refer to [[render()]] on how to specify this parameter.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param object $context the context that the view should use for rendering the view. If null, existing [[context]]
-     * will be used.
+     * @param ViewContextInterface|null $context the context that the view should use for rendering the view. If null,
+     * existing [[context]] will be used.
      *
      * @return string the rendering result
      *
      * {@see render()}
      */
-    public function renderAjax(string $view, array $params = [], $context = null): string
+    public function renderAjax(string $view, array $params = [], ?ViewContextInterface $context = null): string
     {
         $viewFile = $this->findViewFile($view, $context);
 
@@ -702,5 +702,15 @@ class WebView extends View
         $bundle->depends = $options['depends'];
 
         return $bundle;
+    }
+
+    public function setCssFiles(array $value): void
+    {
+        $this->cssFiles = $value;
+    }
+
+    public function setJsFiles(array $value): void
+    {
+        $this->jsFiles = $value;
     }
 }
