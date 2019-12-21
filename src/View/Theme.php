@@ -64,11 +64,11 @@ class Theme
      * [Path aliases](guide:concept-aliases) can be used when specifying directories.
      * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
-    private $pathMap;
+    private array $pathMap;
 
-    private $baseUrl;
+    private ?string $baseUrl;
 
-    private $basePath;
+    private ?string $basePath;
 
     public function __construct(array $pathMap = [], string $basePath = null, string $baseUrl = null)
     {

@@ -9,7 +9,7 @@ use Psr\EventDispatcher\StoppableEventInterface;
  */
 class BeforeRender extends ViewEvent implements StoppableEventInterface
 {
-    private $stopPropagation = false;
+    private bool $stopPropagation = false;
 
     public function stopPropagation(): void
     {
