@@ -19,24 +19,13 @@ use Yiisoft\Widget\Event\BeforeRun;
 class Widget implements ViewContextInterface
 {
     /**
-     * @var EventDispatcherInterface event handler.
-     */
-    protected static $eventDispatcher;
-    /**
-     * @var Widget $widget
-     */
-    protected static $widget;
-    /**
      * The widgets that are currently being rendered (not ended). This property is maintained by {@see static::begin()}
      * and {@see static::end()} methods.
-     *
-     * @var Widget[] $stack
      */
-    protected static $stack;
-    /**
-     * @var WebView $view
-     */
-    protected static $webView;
+    protected static array $stack;
+    protected static EventDispatcherInterface $eventDispatcher;
+    protected static Widget $widget;
+    protected static WebView $webView;
 
     public function __construct(EventDispatcherInterface $eventDispatcher, WebView $webView)
     {
