@@ -19,24 +19,13 @@ use Yiisoft\Widget\Event\BeforeRun;
 class Widget implements ViewContextInterface
 {
     /**
-     * @var EventDispatcherInterface event handler.
-     */
-    protected static $eventDispatcher;
-    /**
-     * @var Widget $widget
-     */
-    protected static $widget;
-    /**
      * The widgets that are currently being rendered (not ended). This property is maintained by {@see static::begin()}
      * and {@see static::end()} methods.
-     *
-     * @var Widget[] $stack
      */
-    protected static $stack;
-    /**
-     * @var WebView $view
-     */
-    protected static $webView;
+    protected static array $stack;
+    protected static EventDispatcherInterface $eventDispatcher;
+    protected static Widget $widget;
+    protected static WebView $webView;
 
     public function __construct(EventDispatcherInterface $eventDispatcher, WebView $webView)
     {
@@ -51,11 +40,11 @@ class Widget implements ViewContextInterface
      * A matching {@see end()} call should be called later. As some widgets may use output buffering, the {@see end()}
      * call should be made in the same view to avoid breaking the nesting of output buffers.
      *
-     * @return Widget the newly created widget instance.
+     * @return static the newly created widget instance.
      *
      * {@see end()}
      */
-    public static function begin(): Widget
+    public static function begin(): self
     {
         $widget = new static(self::$eventDispatcher, self::$webView);
 
@@ -69,13 +58,13 @@ class Widget implements ViewContextInterface
      *
      * Note that the rendering result of the widget is directly echoed out
      *
-     * @return Widget the widget instance that is ended
+     * @return static the widget instance that is ended
      *
      * @throws BadFunctionCallException if {@see begin()]} and {@see end()} calls are not properly nested.
      *
-     * {@see begin()}
+     * @see begin()
      */
-    public static function end(): Widget
+    public static function end(): self
     {
         if (empty(self::$stack)) {
             throw new BadFunctionCallException(
@@ -99,9 +88,9 @@ class Widget implements ViewContextInterface
     /**
      * Creates a widget instance.
      *
-     * @return Widget $widget.
+     * @return static $widget.
      */
-    public static function widget(): Widget
+    public static function widget(): self
     {
         $widget = new static(self::$eventDispatcher, self::$webView);
 

@@ -29,9 +29,6 @@ namespace Yiisoft\Widget;
  *
  * <?php $this->endContent() ?>
  * ```
- *
- * @method static ContentDecorator begin()
- * @method static ContentDecorator end()
  */
 class ContentDecorator extends Widget
 {
