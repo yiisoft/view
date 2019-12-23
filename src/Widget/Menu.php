@@ -26,8 +26,6 @@ use Yiisoft\Html\Html;
  *         ['label' => 'Login', 'url' => 'site/login', 'visible' => true],
  *     ]);
  * ```
- *
- * @method static Menu widget()
  */
 class Menu extends Widget
 {

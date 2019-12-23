@@ -7,7 +7,6 @@ use Yiisoft\Widget\Widget;
 
 /**
  * TestWidget
- * @method static TestWidget widget()
  */
 class TestWidget extends Widget
 {

@@ -32,9 +32,6 @@ namespace Yiisoft\Widget;
  *
  * Second parameter defines if block content should be outputted which is desired when rendering its content but isn't
  * desired when redefining it in subviews.
- *
- * @method static Block begin()
- * @method static Block end()
  */
 class Block extends Widget
 {

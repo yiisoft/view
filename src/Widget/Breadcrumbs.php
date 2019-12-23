@@ -2,8 +2,8 @@
 
 namespace Yiisoft\Widget;
 
-use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 
 /**
  * Breadcrumbs displays a list of links indicating the position of the current page in the whole site hierarchy.
@@ -38,8 +38,6 @@ use Yiisoft\Arrays\ArrayHelper;
  * echo Breadcrumbs::widget()
  *     ->links() => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [];
  * ```
- *
- * @method static Breadcrumbs widget()
  */
 class Breadcrumbs extends Widget
 {
