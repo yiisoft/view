@@ -3,41 +3,76 @@ language: php
 env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
+    - TASK_STATIC_ANALYSIS=0
+    - TASK_TESTS_COVERAGE=0
+
+matrix:
+  include:
+    - php: "7.4"
+      env:
+        - TASK_STATIC_ANALYSIS=0 # set to 1 to enable static analysis
+        - TASK_TESTS_COVERAGE=1
+
+# faster builds on new travis setup not using sudo
+sudo: false
 
 # cache vendor dirs
 cache:
   directories:
-    - vendor
     - $HOME/.composer/cache
-
-matrix:
-  fast_finish: true
-  include:
-    - php: "7.2"
-    - php: "7.3"
-    - php: "7.4snapshot"
-    - php: nightly
-
-  allow_failures:
-    - php: nightly
 
 before_install:
   - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
 
 install:
-  - travis_retry composer self-update
-  - travis_retry composer global require hirak/prestissimo
+  - travis_retry composer self-update && composer --version
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
+  - |
+    if [ $TASK_STATIC_ANALYSIS == 1 ]; then
+      pecl install ast
+    fi
 
 before_script:
-  # show some versions and env information
   - php --version
   - composer --version
+  # enable code coverage
+  - |
+    if [ $TASK_TESTS_COVERAGE == 1 ]; then
+        PHPUNIT_COVERAGE_FLAG="--coverage-clover=coverage.clover"
+    fi
 
 script:
-  - phpdbg -qrr vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+  - phpdbg -qrr vendor/bin/phpunit --verbose $PHPUNIT_COVERAGE_FLAG
+  - |
+    if [ $TASK_STATIC_ANALYSIS == 1 ]; then
+      composer phan
+    fi
+  - |
+    if [ $TASK_STATIC_ANALYSIS == 1 ]; then
+      cat analysis.txt
+    fi
 
 after_script:
-    - travis_retry wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    if [ $TASK_TESTS_COVERAGE == 1 ]; then
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi
+
+notifications:
+  slack:
+    -
+      rooms:
+        -
+          secure: dmXXaqfqW9g/Q4MlT/Xgv3ko3y7rEv0ku8xszdJUXDX3zTokSPjYA82etbYnWCD1CkbceQZ61UZ//FFzW8wHmgxIOlZy+qzRAaG4ABJBjvpkqdOU+wKM+PXGcVb4qZn9sNnvU1M4r/X8jkiBhjR2Aw65VYxApwg92yRArcmHDUjgJ4aTUG51pYJne4xDdmYGosOn2OnvcaO535NFXeD7KtlAvm3i0nMvZu1hVbWiz/znlx4GtGTC6EHFy2nKtbPB/RqRii7zUumetX+9gJdvW83YCqmPaoLWOMcnReb3iWegixDt8/j8Ia8+WfbqYx52WTHjagrRYcqOj9WMrw8Ynp2yFy8gcvrXkfKeXx6p8PMVRb2n1bDMvMqMyfJmHHHYKo593sa++zSnFZBcZiUTUQaiRQ1WLDd/TlDFc3Xuu/2vr5/IrFVwz6Dja/sYY6V1oKlyPDc6Kpij3xNVpoJmPk0+MOQuy2eimpw/UEFB0/dv4wEc7D0960d4sWVZBNtmJR9AuCJaMQph0DuWZBTqLHWkgl+Ky7R3TFbl1Ab7b663j2YiZdc6RK4qBmbuV2Ja3QU+Jrdt+Lik4ofZ0AlXcX4OW871kmO80J9C9/Ro1i+tRmQ7zrZysxyk684uSmb+CtxUv8nTK6x6VD+BwZq8hSMM5BBhyB0gBp9K5B1WR3A=
+      on_success: always
+      on_failure: never
+      on_pull_requests: false
+    -
+      rooms:
+        -
+          secure: TfOC2SpEBj49/oryv8hcLV2NgmJ0AJPoVGVIUjEasE+0tLA5v4WJ+KWCm8HuWAgQEaOS6iTj5Dle0GgmcK8RQaI1k+PI6JcrPtPn+yt7shIEfmydKKVDo3Wqqjc0IJ18sWHMochZqOzNToUrHvoCpabASg/YRGx0Wz8XT/DR3AYW0ayQlzU2c0Nnj0WNSEe2HWxVc1H5hDltwiRTJ1AmEWXlQMoMFExC86VnyCSUW3ZS6MXK3zlBo2lqbX9zuzhBlG5MgsI3Cgy5pt1pxlWHdaijnzWdoOaXIgnTCXRoTIns8CPwTu1JBr418f0EZRWKY9f6/grQsrd+QgCPDIAbnUIXtu/02WIQTL92G6GGPYJR+UMd8olLTesVvSWhFPLNT5bkFfHT0A/zHsPbFjZ8RARIbVMQeMIS3h2mboXHGUad3XGlB6Ur/iThT7FbPCqot032PXLYVAs4eKS1xleXjhFe0Ph8PqeuC2FQDKSiRtV02/2LagBi2V4tr4xyLlxP7s+PniRDrGg3UU+8C1x4AA3gO7vFuothCkBe3vkIHe5VdtOnvwV9SIY8ec0re7pR9jhlfkVj5Xb/ZSwuEDPmijHZQMEL+3rZzMbJCmq2yXMzT/r10gARKWr3s2KkUQHOBPgKlJOWt+DP1a37SBEW5X0MThV+6t0jsU7snxCVMlM=
+      on_success: never
+      on_failure: always
+      on_pull_requests: false

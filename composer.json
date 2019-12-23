@@ -17,7 +17,7 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "psr/container": "1.0.0",
         "psr/container-implementation": "1.0.0",
         "psr/event-dispatcher": "1.0.0",
@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
-        "phpunit/phpunit": "^8.0",
+        "phpunit/phpunit": "^8.4",
         "yiisoft/cache": "^3.0@dev",
         "yiisoft/di": "^3.0@dev",
         "yiisoft/event-dispatcher": "^3.0@dev",
