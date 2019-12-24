@@ -37,47 +37,47 @@ class WebView extends View
      * The location of registered JavaScript code block or files.
      * This means the location is in the head section.
      */
-    public const POS_HEAD = 1;
+    public const POSITION_HEAD = 1;
 
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is at the beginning of the body section.
      */
-    public const POS_BEGIN = 2;
+    public const POSITION_BEGIN = 2;
 
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is at the end of the body section.
      */
-    public const POS_END = 3;
+    public const POSITION_END = 3;
 
     /**
      * The location of registered JavaScript code block.
      * This means the JavaScript code block will be executed when HTML document composition is ready.
      */
-    public const POS_READY = 4;
+    public const POSITION_READY = 4;
 
     /**
      * The location of registered JavaScript code block.
      * This means the JavaScript code block will be executed when HTML page is completely loaded.
      */
-    public const POS_LOAD = 5;
+    public const POSITION_LOAD = 5;
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the head section.
      */
-    private const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
+    private const PLACEHOLDER_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the beginning of the body
      * section.
      */
-    private const PH_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+    private const PLACEHOLDER_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
-    private const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+    private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
     /**
      * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
@@ -144,7 +144,7 @@ class WebView extends View
      */
     public function head(): void
     {
-        echo self::PH_HEAD;
+        echo self::PLACEHOLDER_HEAD;
     }
 
     /**
@@ -152,7 +152,7 @@ class WebView extends View
      */
     public function beginBody(): void
     {
-        echo self::PH_BODY_BEGIN;
+        echo self::PLACEHOLDER_BODY_BEGIN;
         $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
     }
 
@@ -162,7 +162,7 @@ class WebView extends View
     public function endBody(): void
     {
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
-        echo self::PH_BODY_END;
+        echo self::PLACEHOLDER_BODY_END;
 
         foreach (array_keys($this->assetBundles) as $bundle) {
             $this->registerAssetFiles($bundle);
@@ -173,7 +173,7 @@ class WebView extends View
      * Marks the ending of an HTML page.
      *
      * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
-     * {@see POS_READY} and {@see POS_LOAD} positions will be rendered at the end of the view like
+     * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like
      * normal scripts.
      */
     public function endPage($ajaxMode = false): void
@@ -183,9 +183,9 @@ class WebView extends View
         $content = ob_get_clean();
 
         echo strtr($content, [
-            self::PH_HEAD => $this->renderHeadHtml(),
-            self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
-            self::PH_BODY_END => $this->renderBodyEndHtml($ajaxMode),
+            self::PLACEHOLDER_HEAD => $this->renderHeadHtml(),
+            self::PLACEHOLDER_BODY_BEGIN => $this->renderBodyBeginHtml(),
+            self::PLACEHOLDER_BODY_END => $this->renderBodyEndHtml($ajaxMode),
         ]);
 
         $this->clear();
@@ -498,18 +498,18 @@ class WebView extends View
      *
      * The possible values are:
      *
-     * - [[POS_HEAD]]: in the head section
-     * - [[POS_BEGIN]]: at the beginning of the body section
-     * - [[POS_END]]: at the end of the body section. This is the default value.
-     * - [[POS_LOAD]]: executed when HTML page is completely loaded.
-     * - [[POS_READY]]: executed when HTML document composition is ready.
+     * - [[POSITION_HEAD]]: in the head section
+     * - [[POSITION_BEGIN]]: at the beginning of the body section
+     * - [[POSITION_END]]: at the end of the body section. This is the default value.
+     * - [[POSITION_LOAD]]: executed when HTML page is completely loaded.
+     * - [[POSITION_READY]]: executed when HTML document composition is ready.
      *
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      *
      * @return void
      */
-    public function registerJs(string $js, int $position = self::POS_END, string $key = null): void
+    public function registerJs(string $js, int $position = self::POSITION_END, string $key = null): void
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
@@ -528,9 +528,9 @@ class WebView extends View
      *
      * - `depends`: array, specifies the names of the asset bundles that this JS file depends on.
      * - `position`: specifies where the JS script tag should be inserted in a page. The possible values are:
-     *     * [[POS_HEAD]]: in the head section
-     *     * [[POS_BEGIN]]: at the beginning of the body section
-     *     * [[POS_END]]: at the end of the body section. This is the default value.
+     *     * [[POSITION_HEAD]]: in the head section
+     *     * [[POSITION_BEGIN]]: at the beginning of the body section
+     *     * [[POSITION_END]]: at the end of the body section. This is the default value.
      *
      * Please refer to {@see \Yiisoft\Html\Html::jsFile()} for other supported options.
      *
@@ -548,7 +548,7 @@ class WebView extends View
         $depends = ArrayHelper::remove($options, 'depends', []);
 
         if (empty($depends)) {
-            $position = ArrayHelper::remove($options, 'position', self::POS_END);
+            $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
             $bundle = $this->createBundle([
@@ -572,15 +572,15 @@ class WebView extends View
      *
      * The possible values are:
      *
-     * - [[POS_HEAD]]: in the head section. This is the default value.
-     * - [[POS_BEGIN]]: at the beginning of the body section.
-     * - [[POS_END]]: at the end of the body section.
-     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
+     * - [[POSITION_HEAD]]: in the head section. This is the default value.
+     * - [[POSITION_BEGIN]]: at the beginning of the body section.
+     * - [[POSITION_END]]: at the end of the body section.
+     * - [[POSITION_LOAD]]: enclosed within jQuery(window).load().
      *   Note that by using this position, the method will automatically register the jQuery js file.
-     * - [[POS_READY]]: enclosed within jQuery(document).ready().
+     * - [[POSITION_READY]]: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      */
-    public function registerJsVar(string $name, $value, int $position = self::POS_HEAD): void
+    public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
     {
         $js = sprintf('var %s = %s;', $name, \Yiisoft\Json\Json::htmlEncode($value));
         $this->registerJs($js, $position, $name);
@@ -609,11 +609,11 @@ class WebView extends View
         if (!empty($this->css)) {
             $lines[] = implode("\n", $this->css);
         }
-        if (!empty($this->jsFiles[self::POS_HEAD])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
+        if (!empty($this->jsFiles[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
         }
-        if (!empty($this->js[self::POS_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]));
+        if (!empty($this->js[self::POSITION_HEAD])) {
+            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]));
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -629,11 +629,11 @@ class WebView extends View
     protected function renderBodyBeginHtml(): string
     {
         $lines = [];
-        if (!empty($this->jsFiles[self::POS_BEGIN])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
+        if (!empty($this->jsFiles[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
-        if (!empty($this->js[self::POS_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]));
+        if (!empty($this->js[self::POSITION_BEGIN])) {
+            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]));
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -645,7 +645,7 @@ class WebView extends View
      * The content is rendered using the registered JS code blocks and files.
      *
      * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
-     * [[POS_READY]] and [[POS_LOAD]] positions will be rendered at the end of the view like normal scripts.
+     * [[POSITION_READY]] and [[POSITION_LOAD]] positions will be rendered at the end of the view like normal scripts.
      *
      * @return string the rendered content
      */
@@ -653,34 +653,34 @@ class WebView extends View
     {
         $lines = [];
 
-        if (!empty($this->jsFiles[self::POS_END])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POS_END]);
+        if (!empty($this->jsFiles[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->jsFiles[self::POSITION_END]);
         }
 
         if ($ajaxMode) {
             $scripts = [];
-            if (!empty($this->js[self::POS_END])) {
-                $scripts[] = implode("\n", $this->js[self::POS_END]);
+            if (!empty($this->js[self::POSITION_END])) {
+                $scripts[] = implode("\n", $this->js[self::POSITION_END]);
             }
-            if (!empty($this->js[self::POS_READY])) {
-                $scripts[] = implode("\n", $this->js[self::POS_READY]);
+            if (!empty($this->js[self::POSITION_READY])) {
+                $scripts[] = implode("\n", $this->js[self::POSITION_READY]);
             }
-            if (!empty($this->js[self::POS_LOAD])) {
-                $scripts[] = implode("\n", $this->js[self::POS_LOAD]);
+            if (!empty($this->js[self::POSITION_LOAD])) {
+                $scripts[] = implode("\n", $this->js[self::POSITION_LOAD]);
             }
             if (!empty($scripts)) {
                 $lines[] = Html::script(implode("\n", $scripts));
             }
         } else {
-            if (!empty($this->js[self::POS_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POS_END]));
+            if (!empty($this->js[self::POSITION_END])) {
+                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]));
             }
-            if (!empty($this->js[self::POS_READY])) {
-                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+            if (!empty($this->js[self::POSITION_READY])) {
+                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
-            if (!empty($this->js[self::POS_LOAD])) {
-                $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
+            if (!empty($this->js[self::POSITION_LOAD])) {
+                $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }

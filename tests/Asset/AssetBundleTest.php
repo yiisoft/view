@@ -71,12 +71,12 @@ EOF;
     public function positionProvider(): array
     {
         return [
-            [TestPosHeadAsset::class, WebView::POS_HEAD, true],
-            [TestPosHeadAsset::class, WebView::POS_HEAD, false],
-            [TestPosBeginAsset::class, WebView::POS_BEGIN, true],
-            [TestPosBeginAsset::class, WebView::POS_BEGIN, false],
-            [TestPosEndAsset::class, WebView::POS_END, true],
-            [TestPosEndAsset::class, WebView::POS_END, false],
+            [TestPosHeadAsset::class, WebView::POSITION_HEAD, true],
+            [TestPosHeadAsset::class, WebView::POSITION_HEAD, false],
+            [TestPosBeginAsset::class, WebView::POSITION_BEGIN, true],
+            [TestPosBeginAsset::class, WebView::POSITION_BEGIN, false],
+            [TestPosEndAsset::class, WebView::POSITION_END, true],
+            [TestPosEndAsset::class, WebView::POSITION_END, false],
         ];
     }
 
@@ -117,21 +117,21 @@ EOF;
         $this->assertEquals($pos, $view->getAssetBundles()[TestAssetLevel3::class]->jsOptions['position']);
 
         switch ($pos) {
-            case WebView::POS_HEAD:
+            case WebView::POSITION_HEAD:
                 $expected = <<<'EOF'
 1<link href="/baseUrl/files/cssFile.css" rel="stylesheet">
 <script src="/baseUrl/js/jquery.js"></script>
 <script src="/baseUrl/files/jsFile.js"></script>234
 EOF;
                 break;
-            case WebView::POS_BEGIN:
+            case WebView::POSITION_BEGIN:
                 $expected = <<<'EOF'
 1<link href="/baseUrl/files/cssFile.css" rel="stylesheet">2<script src="/baseUrl/js/jquery.js"></script>
 <script src="/baseUrl/files/jsFile.js"></script>34
 EOF;
                 break;
             default:
-            case WebView::POS_END:
+            case WebView::POSITION_END:
                 $expected = <<<'EOF'
 1<link href="/baseUrl/files/cssFile.css" rel="stylesheet">23<script src="/baseUrl/js/jquery.js"></script>
 <script src="/baseUrl/files/jsFile.js"></script>4
@@ -144,8 +144,8 @@ EOF;
     public function positionProvider2(): array
     {
         return [
-            [TestPosBeginConflictAsset::class, WebView::POS_BEGIN, true],
-            [TestPosBeginConflictAsset::class, WebView::POS_BEGIN, false],
+            [TestPosBeginConflictAsset::class, WebView::POSITION_BEGIN, true],
+            [TestPosBeginConflictAsset::class, WebView::POSITION_BEGIN, false],
         ];
     }
 
