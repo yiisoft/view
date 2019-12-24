@@ -38,7 +38,7 @@ class View implements DynamicContentAwareInterface
     /**
      * @var ViewContextInterface the context under which the {@see {renderFile()} method is being invoked.
      */
-    private $context;
+    private ?ViewContextInterface $context = null;
 
     /**
      * @var string the default view file extension. This will be appended to view file names if they don't have file
