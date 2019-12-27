@@ -30,7 +30,7 @@ final class WebViewTest extends TestCase
         parent::setUp();
         $this->dataDir = dirname(__DIR__) . '/public/view';
         $this->layoutPath = $this->dataDir . '/layout.php';
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid('', false);
 
         FileHelper::createDirectory($this->testViewPath);
     }

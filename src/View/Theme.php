@@ -115,11 +115,11 @@ class Theme
                 throw new \InvalidArgumentException('Pathmap should contain strings');
             }
 
-            $from = FileHelper::normalizePath($from) . '/';
+            $from = FileHelper::normalizePath($from) . DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
                 foreach ((array)$tos as $to) {
-                    $to = FileHelper::normalizePath($to) . '/';
+                    $to = FileHelper::normalizePath($to) . DIRECTORY_SEPARATOR;
                     $file = $to . substr($path, $n);
                     if (is_file($file)) {
                         return $file;
@@ -157,7 +157,7 @@ class Theme
     public function getPath(string $path): string
     {
         if (($basePath = $this->getBasePath()) !== null) {
-            return $basePath . '/' . ltrim($path, '/\\');
+            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
         }
 
         return $path;
