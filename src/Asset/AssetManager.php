@@ -285,10 +285,10 @@ class AssetManager
     public function getAssetPath(AssetBundle $bundle, string $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            return $this->isRelative((string)$actualAsset) ? $this->getRealBasePath() . '/' . $actualAsset : false;
+            return $this->isRelative((string)$actualAsset) ? $this->getRealBasePath() . DIRECTORY_SEPARATOR . $actualAsset : false;
         }
 
-        return $this->isRelative($asset) ? $bundle->basePath . '/' . $asset : false;
+        return $this->isRelative($asset) ? $bundle->basePath . DIRECTORY_SEPARATOR . $asset : false;
     }
 
     /**

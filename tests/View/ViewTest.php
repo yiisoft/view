@@ -21,7 +21,7 @@ final class ViewTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid('', false);
         FileHelper::createDirectory($this->testViewPath);
     }
 
@@ -122,7 +122,7 @@ PHP
     private function createFileStructure(array $items, string $baseDirectory = null): void
     {
         foreach ($items as $name => $content) {
-            $itemName = $baseDirectory . '/' . $name;
+            $itemName = $baseDirectory . DIRECTORY_SEPARATOR . $name;
             if (\is_array($content)) {
                 if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
                     symlink($baseDirectory . DIRECTORY_SEPARATOR . $content[1], $itemName);

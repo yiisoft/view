@@ -19,7 +19,7 @@ final class ThemeTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid('', false);
     }
 
     public function tearDown(): void

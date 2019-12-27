@@ -249,13 +249,13 @@ class View implements DynamicContentAwareInterface
     {
         if (strncmp($view, '//', 2) === 0) {
             // path relative to basePath e.g. "//layouts/main"
-            $file = $this->basePath . '/' . ltrim($view, '/');
+            $file = $this->basePath . DIRECTORY_SEPARATOR . ltrim($view, DIRECTORY_SEPARATOR);
         } elseif ($context instanceof ViewContextInterface) {
             // path provided by context
-            $file = $context->getViewPath() . '/' . $view;
+            $file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
             // path relative to currently rendered view
-            $file = dirname($currentViewFile) . '/' . $view;
+            $file = dirname($currentViewFile) . DIRECTORY_SEPARATOR . $view;
         } else {
             throw new \RuntimeException("Unable to resolve view file for view '$view': no active view context.");
         }
