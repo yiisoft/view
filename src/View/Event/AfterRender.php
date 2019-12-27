@@ -7,20 +7,20 @@ namespace Yiisoft\View\Event;
  */
 class AfterRender extends ViewEvent
 {
-    private $result;
+    private string $result;
 
     /**
      * AfterRender constructor.
      *
-     * @param $result
+     * @param string $result
      */
-    public function __construct(string $file, array $parameters, $result)
+    public function __construct(string $file, array $parameters, string $result)
     {
         $this->result = $result;
         parent::__construct($file, $parameters);
     }
 
-    public function getResult()
+    public function getResult(): string
     {
         return $this->result;
     }

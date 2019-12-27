@@ -26,35 +26,35 @@ class View implements DynamicContentAwareInterface
     /**
      * @var string $basePath view path
      */
-    private $basePath;
+    private string $basePath;
 
     /**
      * @var array a list of named output blocks. The keys are the block names and the values are the corresponding block
      * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
      * They can be later accessed somewhere else through this property.
      */
-    private $blocks;
+    private array $blocks;
 
     /**
      * @var ViewContextInterface the context under which the {@see {renderFile()} method is being invoked.
      */
-    private $context;
+    private ?ViewContextInterface $context = null;
 
     /**
      * @var string the default view file extension. This will be appended to view file names if they don't have file
      * extensions.
      */
-    private $defaultExtension = 'php';
+    private string $defaultExtension = 'php';
 
     /**
      * @var array custom parameters that are shared among view templates.
      */
-    private $defaultParameters = [];
+    private array $defaultParameters = [];
 
     /**
      * @var EventDispatcherInterface $eventDispatcher
      */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * @var array a list of available renderers indexed by their corresponding supported file extensions. Each renderer
@@ -70,12 +70,12 @@ class View implements DynamicContentAwareInterface
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP and rendered
      * via PhpTemplateRenderer.
      */
-    protected $renderers = [];
+    protected array $renderers = [];
 
     /**
      * @var Theme the theme object.
      */
-    protected $theme;
+    protected Theme $theme;
 
     /**
      * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
@@ -85,22 +85,22 @@ class View implements DynamicContentAwareInterface
     /**
      * @var array a list of placeholders for embedding dynamic contents.
      */
-    private $dynamicPlaceholders = [];
+    private array $dynamicPlaceholders = [];
 
     /**
      * @var string $language
      */
-    private $language = 'en';
+    private string $language = 'en';
 
     /**
      * @var LoggerInterface $logger
      */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @var string $sourceLanguage
      */
-    private $sourceLanguage = 'en';
+    private string $sourceLanguage = 'en';
 
     /**
      * @var Locale source locale used to find localized view file.
@@ -111,7 +111,7 @@ class View implements DynamicContentAwareInterface
      * @var array the view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
      */
-    private $viewFiles = [];
+    private array $viewFiles = [];
 
     public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
     {
@@ -213,8 +213,8 @@ class View implements DynamicContentAwareInterface
      * @param string $view the view name.
      * @param array $parameters the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param object $context the context to be assigned to the view and can later be accessed via [[context]] in the
-     * view. If the context implements {@see ViewContextInterface}, it may also be used to locate
+     * @param ViewContextInterface|null $context the context to be assigned to the view and can later be accessed via
+     * [[context]] in the view. If the context implements {@see ViewContextInterface}, it may also be used to locate
      * the view file corresponding to a relative view name.
      *
      * @return string the rendering result
@@ -225,7 +225,7 @@ class View implements DynamicContentAwareInterface
      *
      * {@see renderFile()}
      */
-    public function render(string $view, array $parameters = [], object $context = null): string
+    public function render(string $view, array $parameters = [], ?ViewContextInterface $context = null): string
     {
         $viewFile = $this->findTemplateFile($view, $context);
         return $this->renderFile($viewFile, $parameters, $context);
@@ -236,16 +236,16 @@ class View implements DynamicContentAwareInterface
      *
      * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to
      * {@see render()} on how to specify this parameter.
-     * @param object $context the context to be assigned to the view and can later be accessed via [[context]] in the
-     * view. If the context implements [[ViewContextInterface]], it may also be used to locate the view
-     * file corresponding to a relative view name.
+     * @param ViewContextInterface|null $context the context to be assigned to the view and can later be accessed via
+     * [[context]] in the view. If the context implements [[ViewContextInterface]], it may also be used to locate the
+     * view file corresponding to a relative view name.
      *
      * @throws InvalidCallException if a relative view name is given while there is no active context to determine the
      * corresponding view file.
      *
      * @return string the view file path. Note that the file may not exist.
      */
-    protected function findTemplateFile(string $view, $context = null): string
+    protected function findTemplateFile(string $view, ?ViewContextInterface $context = null): string
     {
         if (strncmp($view, '//', 2) === 0) {
             // path relative to basePath e.g. "//layouts/main"
@@ -286,15 +286,15 @@ class View implements DynamicContentAwareInterface
      * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
      * @param array $parameters the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param object $context the context that the view should use for rendering the view. If null, existing [[context]]
-     * will be used.
+     * @param ViewContextInterface|null $context the context that the view should use for rendering the view. If null,
+     * existing [[context]] will be used.
      *
      * @return string the rendering result
      * @throws \Throwable
      *
      * @throws ViewNotFoundException if the view file does not exist
      */
-    public function renderFile(string $viewFile, array $parameters = [], object $context = null): string
+    public function renderFile(string $viewFile, array $parameters = [], ?ViewContextInterface $context = null): string
     {
         $parameters = array_merge($this->defaultParameters, $parameters);
 
