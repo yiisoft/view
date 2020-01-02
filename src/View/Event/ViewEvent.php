@@ -8,7 +8,7 @@ namespace Yiisoft\View\Event;
 abstract class ViewEvent
 {
     /**
-     * @var string the view file being rendered.
+     * @var string|bool the view file being rendered.
      */
     private $file;
     /**
@@ -16,7 +16,7 @@ abstract class ViewEvent
      */
     private $parameters;
 
-    public function __construct(string $file, array $parameters = [])
+    public function __construct($file, array $parameters = [])
     {
         $this->file = $file;
         $this->parameters = $parameters;

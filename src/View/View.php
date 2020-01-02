@@ -228,6 +228,7 @@ class View implements DynamicContentAwareInterface
     public function render(string $view, array $parameters = [], ?ViewContextInterface $context = null): string
     {
         $viewFile = $this->findTemplateFile($view, $context);
+
         return $this->renderFile($viewFile, $parameters, $context);
     }
 
@@ -301,9 +302,10 @@ class View implements DynamicContentAwareInterface
         // TODO: these two match now
         $requestedFile = $viewFile;
 
-        if ($this->theme !== null) {
+        if (!empty($this->theme)) {
             $viewFile = $this->theme->applyTo($viewFile);
         }
+
         if (is_file($viewFile)) {
             $viewFile = $this->localize($viewFile);
         } else {
@@ -651,7 +653,8 @@ class View implements DynamicContentAwareInterface
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        $cache = FragmentCache::begin($properties);
+        $cache = FragmentCache::begin();
+
         if ($cache->getCachedContent() !== false) {
             $this->endCache();
 

@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace Yiisoft\View;
 
-use Yiisoft\Asset\AssetBundle;
-use Yiisoft\Asset\AssetManager;
 use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\Event\BodyBegin;
@@ -80,19 +78,6 @@ class WebView extends View
     private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
     /**
-     * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
-     * are the registered {@see AssetBundle} objects.
-     *
-     * {@see registerAssetBundle()}
-     */
-    private $assetBundles = [];
-
-    /**
-     * @var AssetManager $assetManager
-     */
-    private $assetManager;
-
-    /**
      * @var string the page title
      */
     private string $title;
@@ -163,10 +148,6 @@ class WebView extends View
     {
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
         echo self::PLACEHOLDER_BODY_END;
-
-        foreach (array_keys($this->assetBundles) as $bundle) {
-            $this->registerAssetFiles($bundle);
-        }
     }
 
     /**
@@ -199,11 +180,11 @@ class WebView extends View
      * method is able to inject into the rendering result with JS/CSS scripts and files that are registered with the
      * view.
      *
-     * @param string $view the view name. Please refer to [[render()]] on how to specify this parameter.
+     * @param string $view the view name. Please refer to {@see render()} on how to specify this parameter.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      * @param ViewContextInterface|null $context the context that the view should use for rendering the view. If null,
-     * existing [[context]] will be used.
+     * existing {@see context} will be used.
      *
      * @return string the rendering result
      *
@@ -211,7 +192,7 @@ class WebView extends View
      */
     public function renderAjax(string $view, array $params = [], ?ViewContextInterface $context = null): string
     {
-        $viewFile = $this->findViewFile($view, $context);
+        $viewFile = $this->findTemplateFile($view, $context);
 
         ob_start();
         ob_implicit_flush(0);
@@ -227,38 +208,6 @@ class WebView extends View
     }
 
     /**
-     * Registers the asset manager being used by this view object.
-     *
-     * @return array the asset manager. Defaults to the "assetManager" application component.
-     */
-    public function getAssetBundles(): array
-    {
-        return $this->assetBundles;
-    }
-
-    /**
-     * Registers the asset manager being used by this view object.
-     *
-     * @return AssetManager the asset manager. Defaults to the "assetManager" application component.
-     */
-    public function getAssetManager(): AssetManager
-    {
-        return $this->assetManager;
-    }
-
-    /**
-     * Sets the asset manager.
-     *
-     * @param AssetManager $value the asset manager
-     *
-     * @return void
-     */
-    public function setAssetManager(AssetManager $value): void
-    {
-        $this->assetManager = $value;
-    }
-
-    /**
      * Clears up the registered meta tags, link tags, css/js scripts and files.
      *
      * @return void
@@ -271,90 +220,6 @@ class WebView extends View
         $this->cssFiles = [];
         $this->js = [];
         $this->jsFiles = [];
-        $this->assetBundles = [];
-    }
-
-    /**
-     * Registers all files provided by an asset bundle including depending bundles files.
-     *
-     * Removes a bundle from {@see assetBundles} once files are registered.
-     *
-     * @param string $name name of the bundle to register
-     *
-     * @return void
-     */
-    protected function registerAssetFiles(string $name): void
-    {
-        if (!isset($this->assetBundles[$name])) {
-            return;
-        }
-
-        $bundle = $this->assetBundles[$name];
-
-        if ($bundle) {
-            foreach ($bundle->depends as $dep) {
-                $this->registerAssetFiles($dep);
-            }
-            $bundle->registerAssetFiles($this);
-        }
-
-        unset($this->assetBundles[$name]);
-    }
-
-    /**
-     * Registers the named asset bundle.
-     *
-     * All dependent asset bundles will be registered.
-     *
-     * @param string $name the class name of the asset bundle (without the leading backslash)
-     * @param int|null $position if set, this forces a minimum position for javascript files. This will adjust depending
-     * assets javascript file position or fail if requirement can not be met. If this is null, asset
-     * bundles position settings will not be changed.
-     *
-     * {@see registerJsFile()} for more details on javascript position.
-     *
-     * @throws \RuntimeException if the asset bundle does not exist or a circular dependency is detected
-     *
-     * @return AssetBundle the registered asset bundle instance
-     */
-    public function registerAssetBundle(string $name, ?int $position = null): AssetBundle
-    {
-        if (!isset($this->assetBundles[$name])) {
-            $bundle = $this->getAssetManager()->getBundle($name);
-
-            $this->assetBundles[$name] = false;
-
-            // register dependencies
-
-            $pos = $bundle->jsOptions['position'] ?? null;
-
-            foreach ($bundle->depends as $dep) {
-                $this->registerAssetBundle($dep, $pos);
-            }
-
-            $this->assetBundles[$name] = $bundle;
-        } elseif ($this->assetBundles[$name] === false) {
-            throw new \RuntimeException("A circular dependency is detected for bundle '$name'.");
-        } else {
-            $bundle = $this->assetBundles[$name];
-        }
-
-        if ($position !== null) {
-            $pos = $bundle->jsOptions['position'] ?? null;
-
-            if ($pos === null) {
-                $bundle->jsOptions['position'] = $pos = $position;
-            } elseif ($pos > $position) {
-                throw new \RuntimeException("An asset bundle that depends on '$name' has a higher javascript file position configured than '$name'.");
-            }
-
-            // update position for all dependencies
-            foreach ($bundle->depends as $dep) {
-                $this->registerAssetBundle($dep, $pos);
-            }
-        }
-
-        return $bundle;
     }
 
     /**
@@ -399,8 +264,8 @@ class WebView extends View
      *
      * which will result in the following HTML: `<link rel="icon" type="image/png" href="/myicon.png">`.
      *
-     * **Note:** To register link tags for CSS stylesheets, use [[registerCssFile()]] instead, which has more options
-     * for this kind of link tag.
+     * **Note:** To register link tags for CSS stylesheets, use {@see registerCssFile()]} instead, which has more
+     * options for this kind of link tag.
      *
      * @param array $options the HTML attributes for the link tag.
      * @param string|null $key the key that identifies the link tag. If two link tags are registered with the same
@@ -425,7 +290,7 @@ class WebView extends View
      * $view->registerCsrfMetaTags();
      * ```
      *
-     * The above code will result in `<meta name="csrf-param" content="[Yiisoft\Web\Request::$csrfParam]">` and
+     * The above code will result in `<meta name="csrf-param" content="[\Yiisoft\Web\Request::$csrfParam]">` and
      * `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
      *
      * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
@@ -454,15 +319,12 @@ class WebView extends View
      * Registers a CSS file.
      *
      * This method should be used for simple registration of CSS files. If you want to use features of
-     * {@see AssetManager} like appending timestamps to the URL and file publishing options, use {@see AssetBundle}
-     * and {@see registerAssetBundle()} instead.
+     * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
+     * {@see \Yiisoft\Assets\AssetBundle}.
      *
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
-     * for the supported options. The following options are specially handled and are not treated as HTML
-     * attributes:
-     *
-     *   - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
+     * for the supported options.
      *
      * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
@@ -473,21 +335,7 @@ class WebView extends View
     {
         $key = $key ?: $url;
 
-        $depends = ArrayHelper::remove($options, 'depends', []);
-
-        if (empty($depends)) {
-            $this->cssFiles[$key] = Html::cssFile($url, $options);
-        } else {
-            $bundle = $this->createBundle([
-                'baseUrl' => '',
-                'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
-                'cssOptions' => $options,
-                'depends' => (array) $depends,
-            ]);
-            $bundles = [$key => $bundle];
-
-            $this->registerAssetBundle($key);
-        }
+        $this->cssFiles[$key] = Html::cssFile($url, $options);
     }
 
     /**
@@ -498,11 +346,11 @@ class WebView extends View
      *
      * The possible values are:
      *
-     * - [[POSITION_HEAD]]: in the head section
-     * - [[POSITION_BEGIN]]: at the beginning of the body section
-     * - [[POSITION_END]]: at the end of the body section. This is the default value.
-     * - [[POSITION_LOAD]]: executed when HTML page is completely loaded.
-     * - [[POSITION_READY]]: executed when HTML document composition is ready.
+     * - {@see POSITION_HEAD}: in the head section
+     * - {@see POSITION_BEGIN}: at the beginning of the body section
+     * - {@see POSITION_END}: at the end of the body section. This is the default value.
+     * - {@see POSITION_LOAD}: executed when HTML page is completely loaded.
+     * - {@see POSITION_READY}: executed when HTML document composition is ready.
      *
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
@@ -519,18 +367,17 @@ class WebView extends View
      * Registers a JS file.
      *
      * This method should be used for simple registration of JS files. If you want to use features of
-     * {@see AssetManager} like appending timestamps to the URL and file publishing options, use {@see AssetBundle}
-     * and {@see registerAssetBundle()} instead.
+     * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
+     * {@see \Yiisoft\Assets\AssetBundle}.
      *
      * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. The following options are specially handled and
      * are not treated as HTML attributes:
      *
-     * - `depends`: array, specifies the names of the asset bundles that this JS file depends on.
      * - `position`: specifies where the JS script tag should be inserted in a page. The possible values are:
-     *     * [[POSITION_HEAD]]: in the head section
-     *     * [[POSITION_BEGIN]]: at the beginning of the body section
-     *     * [[POSITION_END]]: at the end of the body section. This is the default value.
+     *     * {@see POSITION_HEAD}: in the head section
+     *     * {@see POSITION_BEGIN}: at the beginning of the body section
+     *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
      * Please refer to {@see \Yiisoft\Html\Html::jsFile()} for other supported options.
      *
@@ -545,21 +392,8 @@ class WebView extends View
     {
         $key = $key ?: $url;
 
-        $depends = ArrayHelper::remove($options, 'depends', []);
-
-        if (empty($depends)) {
-            $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-            $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
-        } else {
-            $bundle = $this->createBundle([
-                'baseUrl' => '',
-                'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
-                'jsOptions' => $options,
-                'depends' => (array) $depends,
-            ]);
-            $bundles = [$key => $bundle];
-            $this->registerAssetBundle($key);
-        }
+        $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
+        $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
     }
 
     /**
@@ -572,12 +406,12 @@ class WebView extends View
      *
      * The possible values are:
      *
-     * - [[POSITION_HEAD]]: in the head section. This is the default value.
-     * - [[POSITION_BEGIN]]: at the beginning of the body section.
-     * - [[POSITION_END]]: at the end of the body section.
-     * - [[POSITION_LOAD]]: enclosed within jQuery(window).load().
+     * - {@see POSITION_HEAD}: in the head section. This is the default value.
+     * - {@see POSITION_BEGIN}: at the beginning of the body section.
+     * - {@see POSITION_END}: at the end of the body section.
+     * - {@see POSITION_LOAD}: enclosed within jQuery(window).load().
      *   Note that by using this position, the method will automatically register the jQuery js file.
-     * - [[POSITION_READY]]: enclosed within jQuery(document).ready().
+     * - {@see POSITION_READY}: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      */
     public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
@@ -645,7 +479,8 @@ class WebView extends View
      * The content is rendered using the registered JS code blocks and files.
      *
      * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
-     * [[POSITION_READY]] and [[POSITION_LOAD]] positions will be rendered at the end of the view like normal scripts.
+     * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like normal
+     * scripts.
      *
      * @return string the rendered content
      */
@@ -689,28 +524,70 @@ class WebView extends View
     }
 
     /**
-     * @param array $options
+     * Get title in views.
      *
-     * @return AssetBundle
+     *
+     * in Layout:
+     *
+     * ```php
+     * <title><?= Html::encode($this->getTitle()) ?></title>
+     * ```
+     *
+     * in Views:
+     *
+     * ```php
+     * $this->setTitle('Web Application - Yii 3.0.');
+     * ```
+     *
+     * @return string
      */
-    private function createBundle(array $options): AssetBundle
+    public function getTitle(): string
     {
-        $bundle = new AssetBundle();
-        $bundle->baseUrl = $options['baseUrl'];
-        $bundle->js = $options['js'];
-        $bundle->jsOptions = $options['jsOptions'];
-        $bundle->depends = $options['depends'];
-
-        return $bundle;
+        return $this->title;
     }
 
-    public function setCssFiles(array $value): void
+    /**
+     * It processes the CSS configuration generated by the asset manager and converts it into HTML code.
+     *
+     * @param array $cssFiles
+     * @return void
+     */
+    public function setCssFiles(array $cssFiles): void
     {
-        $this->cssFiles = $value;
+        foreach ($cssFiles as $key => $value) {
+            $this->registerCssFile(
+                $cssFiles[$key]['url'],
+                $cssFiles[$key]['attributes']
+            );
+        }
     }
 
-    public function setJsFiles(array $value): void
+    /**
+     * It processes the JS configuration generated by the asset manager and converts it into HTML code.
+     *
+     * @param array $jsFiles
+     * @return void
+     */
+    public function setJsFiles(array $jsFiles): void
     {
-        $this->jsFiles = $value;
+        foreach ($jsFiles as $key => $value) {
+            $this->registerJsFile(
+                $jsFiles[$key]['url'],
+                $jsFiles[$key]['attributes']
+            );
+        }
+    }
+
+    /**
+     * Set title in views.
+     *
+     * {@see getTitle()}
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setTitle($value): void
+    {
+        $this->title = $value;
     }
 }

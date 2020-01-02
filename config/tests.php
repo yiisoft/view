@@ -5,8 +5,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Asset\AssetConverter;
-use Yiisoft\Asset\AssetManager;
 use Yiisoft\EventDispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
@@ -27,30 +25,8 @@ return [
         '@root' => dirname(__DIR__, 1),
         '@public' => '@root/tests/public',
         '@basePath' => '@public/assets',
-        '@baseUrl'  => '/baseUrl',
-        '@converter' => '@public/assetconverter',
-        '@npm' => '@root/node_modules',
         '@view' => '@public/view',
-        '@web' => '@baseUrl',
-        '@testSourcePath' => '@public/assetsources'
-    ],
-
-    AssetConverter::class => [
-        '__class' => AssetConverter::class,
-        '__construct()' => [
-            Reference::to(Aliases::class),
-            Reference::to(LoggerInterface::class)
-        ]
-    ],
-
-    AssetManager::class => [
-        '__class' => AssetManager::class,
-        '__construct()' => [
-            Reference::to(Aliases::class),
-            Reference::to(LoggerInterface::class)
-        ],
-        'setBasePath' => ['@basePath'],
-        'setBaseUrl'  => ['@baseUrl'],
+        '@web' => '/baseUrl',
     ],
 
     ListenerProviderInterface::class => [
@@ -69,10 +45,6 @@ return [
         '__construct()' => [
             'targets' => [],
         ],
-    ],
-
-    Theme::class => [
-        '__class' => Theme::class,
     ],
 
     WebView::class => function (ContainerInterface $container) {
