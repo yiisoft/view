@@ -27,11 +27,6 @@ abstract class TestCase extends BaseTestCase
     protected $aliases;
 
     /**
-     * @var AssetManager $assetManager
-     */
-    protected $assetManager;
-
-    /**
      * @var ContainerInterface $container
      */
     private $container;
@@ -80,13 +75,11 @@ abstract class TestCase extends BaseTestCase
         $this->container = new Container($config);
 
         $this->aliases = $this->container->get(Aliases::class);
-        $this->assetManager = $this->container->get(AssetManager::class);
         $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->listenerProvider = $this->container->get(ListenerProviderInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
         $this->theme = $this->container->get(Theme::class);
         $this->webView = $this->container->get(WebView::class);
-        $this->webView->setAssetManager($this->assetManager);
         $this->widget = $this->container->get(Widget::class);
 
         $this->removeAssets('@basePath');

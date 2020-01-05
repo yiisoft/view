@@ -28,8 +28,7 @@
         "yiisoft/files": "^3.0@dev",
         "yiisoft/html": "^3.0@dev",
         "yiisoft/i18n": "^3.0@dev",
-        "yiisoft/json": "^3.0@dev",
-        "yiisoft/var-dumper": "^3.0@dev"
+        "yiisoft/json": "^3.0@dev"
     },
     "require-dev": {
         "hiqdev/composer-config-plugin": "^1.0@dev",
@@ -51,16 +50,14 @@
     "autoload": {
         "psr-4": {
             "Yiisoft\\View\\": "src/View",
-            "Yiisoft\\Widget\\": "src/Widget",
-            "Yiisoft\\Asset\\": "src/Asset"
+            "Yiisoft\\Widget\\": "src/Widget"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Yiisoft\\Tests\\": "tests",
             "Yiisoft\\View\\Tests\\": "tests/View",
-            "Yiisoft\\Widget\\Tests\\": "tests/Widget",
-            "Yiisoft\\Asset\\Tests\\": "tests/Asset"
+            "Yiisoft\\Widget\\Tests\\": "tests/Widget"
         }
     },
     "config": {
