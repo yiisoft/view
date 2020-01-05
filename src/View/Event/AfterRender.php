@@ -9,11 +9,6 @@ class AfterRender extends ViewEvent
 {
     private string $result;
 
-    /**
-     * AfterRender constructor.
-     *
-     * @param string $result
-     */
     public function __construct(string $file, array $parameters, string $result)
     {
         $this->result = $result;
