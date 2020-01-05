@@ -8,15 +8,15 @@ namespace Yiisoft\View\Event;
 abstract class ViewEvent
 {
     /**
-     * @var string|bool the view file being rendered.
+     * @var string the view file being rendered.
      */
-    private $file;
+    private string $file;
     /**
      * @var array the parameter array passed to the [[View::render()]] method.
      */
-    private $parameters;
+    private array $parameters;
 
-    public function __construct($file, array $parameters = [])
+    public function __construct(string $file, array $parameters = [])
     {
         $this->file = $file;
         $this->parameters = $parameters;
