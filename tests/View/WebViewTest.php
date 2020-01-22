@@ -5,25 +5,15 @@ use Yiisoft\Files\FileHelper;
 use Yiisoft\Tests\TestCase;
 use Yiisoft\View\WebView;
 
-/**
- * WebViewTest.
- */
 final class WebViewTest extends TestCase
 {
-    /**
-     * @var string $dataDir
-     */
-    private $dataDir;
-
-    /**
-     * @var string $layoutPath
-     */
-    private $layoutPath;
+    private string $dataDir;
+    private string $layoutPath;
 
     /**
      * @var string path for the test files.
      */
-    private $testViewPath = '';
+    private string $testViewPath = '';
 
     protected function setUp(): void
     {
@@ -35,7 +25,7 @@ final class WebViewTest extends TestCase
         FileHelper::createDirectory($this->testViewPath);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
         FileHelper::removeDirectory($this->testViewPath);
@@ -63,7 +53,7 @@ final class WebViewTest extends TestCase
 
         $this->webView->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POSITION_BEGIN]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<body>' . "\n" . '<script src="/baseUrl/js/somefile.js"></script>', $html);
+        $this->assertStringContainsString('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
         $this->webView->registerJsFile($this->aliases->get('@web/js/somefile.js'), ['position' => WebView::POSITION_END]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
@@ -75,20 +65,5 @@ final class WebViewTest extends TestCase
         $this->webView->registerCssFile($this->aliases->get('@web/css/somefile.css'));
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
-    }
-
-    /**
-     * Parses CSRF token from page HTML.
-     *
-     * @param string $html
-     * @return string CSRF token
-     */
-    private function getCSRFTokenValue(string $html): string
-    {
-        if (!preg_match('~<meta name="csrf-token" content="([^"]+)">~', $html, $matches)) {
-            $this->fail("No CSRF-token meta tag found. HTML was:\n$html");
-        }
-
-        return $matches[1];
     }
 }
