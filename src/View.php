@@ -10,9 +10,7 @@ use Yiisoft\View\Event\AfterRender;
 use Yiisoft\View\Event\BeforeRender;
 use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
-use Yiisoft\Widget\Block;
-use Yiisoft\Widget\ContentDecorator;
-use Yiisoft\Widget\FragmentCache;
+use Yiisoft\View\Exception\ViewNotFoundException;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -562,116 +560,6 @@ class View implements DynamicContentAwareInterface
     public function popDynamicContent(): void
     {
         array_pop($this->cacheStack);
-    }
-
-    /**
-     * Begins recording a block.
-     *
-     * This method is a shortcut to beginning {@see Block}.
-     *
-     * @param string $id the block ID.
-     * @param bool $renderInPlace whether to render the block content in place.
-     * Defaults to false, meaning the captured block will not be displayed.
-     *
-     * @return Block the Block widget instance
-     */
-    public function beginBlock(string $id, $renderInPlace = false): Block
-    {
-        return Block::begin()
-            ->id($id)
-            ->renderInPlace($renderInPlace);
-    }
-
-    /**
-     * Ends recording a block.
-     *
-     * @return void
-     */
-    public function endBlock(): void
-    {
-        Block::end();
-    }
-
-    /**
-     * Begins the rendering of content that is to be decorated by the specified view.
-     *
-     * This method can be used to implement nested layout. For example, a layout can be embedded in another layout file
-     * specified as '@app/views/layouts/base.php' like the following:
-     *
-     * ```php
-     * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
-     * //...layout content here...
-     * <?php $this->endContent(); ?>
-     * ```
-     *
-     * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget. This can
-     * be specified as either the view file path or [path alias](guide:concept-aliases).
-     * @param array $parameters the variables (name => value) to be extracted and made available in the decorative view.
-     *
-     * @return ContentDecorator the ContentDecorator widget instance
-     *
-     * {@see ContentDecorator}
-     */
-    public function beginContent(string $viewFile, array $parameters = []): ContentDecorator
-    {
-        return ContentDecorator::begin()
-            ->params($parameters)
-            ->viewFile($viewFile);
-    }
-
-    /**
-     * Ends the rendering of content.
-     *
-     * @return void
-     */
-    public function endContent(): void
-    {
-        ContentDecorator::end();
-    }
-
-    /**
-     * Begins fragment caching.
-     *
-     * This method will display cached content if it is available. If not, it will start caching and would expect an
-     * {@see endCache()} call to end the cache and save the content into cache. A typical usage of fragment caching is
-     * as follows,
-     *
-     * ```php
-     * if ($this->beginCache($id)) {
-     *     // ...generate content here
-     *     $this->endCache();
-     * }
-     * ```
-     *
-     * @param string $id a unique ID identifying the fragment to be cached.
-     * @param array $properties initial property values for {@see FragmentCache}
-     *
-     * @return bool whether you should generate the content for caching.
-     * False if the cached version is available.
-     */
-    public function beginCache(string $id, array $properties = []): bool
-    {
-        $properties['id'] = $id;
-        $properties['view'] = $this;
-        $cache = FragmentCache::begin();
-
-        if ($cache->getCachedContent() !== false) {
-            $this->endCache();
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Ends fragment caching.
-     *
-     * @return void
-     */
-    public function endCache(): void
-    {
-        FragmentCache::end();
     }
 
     /**

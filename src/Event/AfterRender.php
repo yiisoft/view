@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Yiisoft\View\Event;
 
 /**
- * AfterRender event is triggered by [[View::renderFile()]] right after it renders a view file.
+ * AfterRender event is triggered by {@see View::renderFile()} right after it renders a view file.
  */
 class AfterRender extends ViewEvent
 {

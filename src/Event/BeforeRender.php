@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Yiisoft\View\Event;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
- * BeforeRender event is triggered by [[View::renderFile()]] right before it renders a view file.
+ * BeforeRender event is triggered by {@see View::renderFile()} right before it renders a view file.
  */
 class BeforeRender extends ViewEvent implements StoppableEventInterface
 {

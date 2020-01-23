@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Yiisoft\View\Event;
 
 /**
- * ViewEvent represents events triggered by the [[View]] component.
+ * ViewEvent represents events triggered by the {@see View} component.
  */
 abstract class ViewEvent
 {
@@ -12,7 +13,7 @@ abstract class ViewEvent
      */
     private string $file;
     /**
-     * @var array the parameter array passed to the [[View::render()]] method.
+     * @var array the parameter array passed to the {@see View::render()} method.
      */
     private array $parameters;
 
