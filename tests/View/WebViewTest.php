@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View\Tests;
 
 use Yiisoft\Files\FileHelper;

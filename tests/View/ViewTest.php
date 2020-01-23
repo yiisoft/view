@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View\Tests;
 
 use hiqdev\composer\config\Builder;
