@@ -49,15 +49,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Yiisoft\\View\\": "src/View",
-            "Yiisoft\\Widget\\": "src/Widget"
+            "Yiisoft\\View\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Yiisoft\\Tests\\": "tests",
-            "Yiisoft\\View\\Tests\\": "tests/View",
-            "Yiisoft\\Widget\\Tests\\": "tests/Widget"
+            "Yiisoft\\View\\Tests\\": "tests"
         }
     },
     "config": {
