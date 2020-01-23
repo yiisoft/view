@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Tests;
+namespace Yiisoft\View\Tests;
 
 use hiqdev\composer\config\Builder;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -11,14 +11,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Asset\AssetBundle;
-use Yiisoft\Asset\AssetManager;
-use Yiisoft\Files\FileHelper;
 use Yiisoft\Di\Container;
+use Yiisoft\Files\FileHelper;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
-use Yiisoft\Widget\Widget;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -53,11 +50,6 @@ abstract class TestCase extends BaseTestCase
     protected $webView;
 
     /**
-     * @var Widget $widget
-     */
-    protected $widget;
-
-    /**
      * @var ListenerProviderInterface
      */
     protected $listenerProvider;
@@ -79,11 +71,7 @@ abstract class TestCase extends BaseTestCase
         $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->listenerProvider = $this->container->get(ListenerProviderInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
-        $this->theme = $this->container->get(Theme::class);
         $this->webView = $this->container->get(WebView::class);
-        $this->widget = $this->container->get(Widget::class);
-
-        $this->removeAssets('@basePath');
     }
 
     /**
@@ -141,66 +129,10 @@ abstract class TestCase extends BaseTestCase
         return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->logger);
     }
 
-    public function touch(string $path): void
+    protected function touch(string $path): void
     {
         FileHelper::createDirectory(dirname($path));
 
         touch($path);
-    }
-
-    protected function removeAssets(string $basePath): void
-    {
-        $handle = opendir($dir = $this->aliases->get($basePath));
-
-        if ($handle === false) {
-            throw new \Exception("Unable to open directory: $dir");
-        }
-
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..' || $file === '.gitignore') {
-                continue;
-            }
-            $path = $dir.DIRECTORY_SEPARATOR.$file;
-            if (is_dir($path)) {
-                FileHelper::removeDirectory($path);
-            } else {
-                FileHelper::unlink($path);
-            }
-        }
-
-        closedir($handle);
-    }
-
-    /**
-     * Verify sources publish files assetbundle.
-     *
-     * @param string $type
-     * @param AssetBundle $bundle
-     *
-     * @return void
-     */
-    protected function sourcesPublishVerifyFiles(string $type, AssetBundle $bundle): void
-    {
-        foreach ($bundle->$type as $filename) {
-            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
-            $sourceFile = $this->aliases->get($bundle->sourcePath) . DIRECTORY_SEPARATOR . $filename;
-
-            $this->assertFileExists($publishedFile);
-            $this->assertFileEquals($publishedFile, $sourceFile);
-        }
-
-        $this->assertDirectoryExists($bundle->basePath . DIRECTORY_SEPARATOR . $type);
-    }
-
-    /**
-     * Properly removes symlinked directory under Windows, MacOS and Linux.
-     *
-     * @param string $file path to symlink
-     *
-     * @return bool
-     */
-    protected function unlink(string $file): bool
-    {
-        return FileHelper::unlink($file);
     }
 }
