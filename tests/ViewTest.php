@@ -6,7 +6,6 @@ namespace Yiisoft\View\Tests;
 use hiqdev\composer\config\Builder;
 use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Tests\TestCase;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 

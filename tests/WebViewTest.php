@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Tests\TestCase;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends \Yiisoft\View\Tests\TestCase
