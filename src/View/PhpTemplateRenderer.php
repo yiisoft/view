@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\View;
 
 class PhpTemplateRenderer implements TemplateRendererInterface
