@@ -1,11 +1,13 @@
 <?php
+declare(strict_types=1);
+
 namespace Yiisoft\View\Tests;
 
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Tests\TestCase;
 use Yiisoft\View\WebView;
 
-final class WebViewTest extends TestCase
+final class WebViewTest extends \Yiisoft\View\Tests\TestCase
 {
     private string $dataDir;
     private string $layoutPath;
@@ -18,7 +20,8 @@ final class WebViewTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->dataDir = dirname(__DIR__) . '/public/view';
+
+        $this->dataDir = dirname(__DIR__) . '/tests/public/view';
         $this->layoutPath = $this->dataDir . '/layout.php';
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
 

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Yiisoft\View\Tests;
 
 use hiqdev\composer\config\Builder;
@@ -11,7 +13,7 @@ use Yiisoft\View\View;
 /**
  * ViewTest.
  */
-final class ViewTest extends TestCase
+final class ViewTest extends \Yiisoft\View\Tests\TestCase
 {
     /**
      * @var string path for the test files.
@@ -21,7 +23,9 @@ final class ViewTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+
         FileHelper::createDirectory($this->testViewPath);
     }
 

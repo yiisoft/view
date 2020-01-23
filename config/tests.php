@@ -12,7 +12,6 @@ use Yiisoft\Log\Logger;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
-use Yiisoft\Widget\Widget;
 
 $tempDir = sys_get_temp_dir();
 
@@ -64,12 +63,4 @@ return [
 
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
-
-    Widget::class => [
-        '__class' => Widget::class,
-        '__construct()' => [
-            Reference::to(EventDispatcherInterface::class),
-            Reference::to(WebView::class),
-        ]
-    ],
 ];
