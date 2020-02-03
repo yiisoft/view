@@ -12,7 +12,7 @@ trait DynamicContentAwareTrait
     /**
      * @var string[] a list of placeholders for dynamic content
      */
-    private $dynamicPlaceholders;
+    private array $dynamicPlaceholders = [];
 
     /**
      * Returns the view object that can be used to render views or view files using dynamic contents.
