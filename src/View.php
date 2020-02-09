@@ -106,6 +106,8 @@ class View implements DynamicContentAwareInterface
      */
     private $sourceLocale;
 
+    private string $placeholderSalt = '';
+
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
@@ -118,6 +120,16 @@ class View implements DynamicContentAwareInterface
         $this->theme = $theme;
         $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
+    }
+
+    public function setPlaceholderSalt(string $salt): void
+    {
+        $this->placeholderSalt = $salt;
+    }
+
+    protected function getPlaceholderSalt(): string
+    {
+        return $this->placeholderSalt;
     }
 
     public function getBasePath(): string
@@ -460,7 +472,7 @@ class View implements DynamicContentAwareInterface
 
         if (!empty($this->cacheStack)) {
             $n = count($this->dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";
+            $placeholder = "<![CDATA[YII-DYNAMIC-$n-" . $this->getPlaceholderSalt() . "]]>";
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
