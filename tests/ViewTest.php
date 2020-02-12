@@ -7,6 +7,8 @@ namespace Yiisoft\View\Tests;
 use hiqdev\composer\config\Builder;
 use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\View\DynamicContentAwareInterface;
+use Yiisoft\View\DynamicContentAwareTrait;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 
@@ -164,5 +166,15 @@ PHP
             'parameter' => 'local_parameter',
         ]);
         $this->assertStringContainsString('local_parameter', $output);
+    }
+
+    public function testPlaceholderSalt(): void
+    {
+        $config = require Builder::path('tests');
+
+        $container = new Container($config);
+        $view = $container->get(View::class);
+        $view->setPlaceholderSalt('apple');
+        $this->assertSame(md5('apple'), $view->getPlaceholderSignature());
     }
 }

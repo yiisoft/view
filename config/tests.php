@@ -9,6 +9,7 @@ use Yiisoft\EventDispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Log\Logger;
+use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
@@ -62,5 +63,14 @@ return [
         $logger = $container->get(LoggerInterface::class);
 
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
+    },
+
+    WebViewPlaceholderMock::class => function (ContainerInterface $container) {
+        $aliases = $container->get(Aliases::class);
+        $eventDispatcher = $container->get(EventDispatcherInterface::class);
+        $theme = $container->get(Theme::class);
+        $logger = $container->get(LoggerInterface::class);
+
+        return new WebViewPlaceholderMock($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
 ];

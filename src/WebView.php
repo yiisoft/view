@@ -130,7 +130,7 @@ class WebView extends View
      */
     public function head(): void
     {
-        echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSalt());
+        echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
     }
 
     /**
@@ -138,7 +138,7 @@ class WebView extends View
      */
     public function beginBody(): void
     {
-        echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSalt());
+        echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
         $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
     }
 
@@ -148,7 +148,7 @@ class WebView extends View
     public function endBody(): void
     {
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
-        echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSalt());
+        echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
     }
 
     /**
@@ -164,10 +164,11 @@ class WebView extends View
 
         $content = ob_get_clean();
 
+        var_dump(get_called_class());
         echo strtr($content, [
-            sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSalt()) => $this->renderHeadHtml(),
-            sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSalt()) => $this->renderBodyBeginHtml(),
-            sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSalt()) => $this->renderBodyEndHtml($ajaxMode),
+            sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
+            sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
+            sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
         ]);
 
         $this->clear();
