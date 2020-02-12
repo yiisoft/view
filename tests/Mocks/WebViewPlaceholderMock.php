@@ -1,12 +1,8 @@
 <?php
 
-
 namespace Yiisoft\View\Tests\Mocks;
 
-
-use Yiisoft\View\WebView;
-
-class WebViewPlaceholderMock extends WebView
+class WebViewPlaceholderMock extends \Yiisoft\View\WebView
 {
     public function endPage($ajaxMode = false): void
     {
