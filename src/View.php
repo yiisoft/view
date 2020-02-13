@@ -377,7 +377,7 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * @return string|null the view file currently being rendered. False if no view file is being rendered.
+     * @return string|null the view file currently being rendered. NULL if no view file is being rendered.
      */
     public function getViewFile(): ?string
     {
@@ -385,7 +385,7 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * @return string|null the requested view currently being rendered. False if no view file is being rendered.
+     * @return string|null the requested view currently being rendered. NULL if no view file is being rendered.
      */
     protected function getRequestedViewFile(): ?string
     {
