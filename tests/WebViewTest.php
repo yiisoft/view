@@ -34,6 +34,24 @@ final class WebViewTest extends \Yiisoft\View\Tests\TestCase
         FileHelper::removeDirectory($this->testViewPath);
     }
 
+    public function testViewFileNullBeginBody(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->webView->beginBody();
+    }
+
+    public function testViewFileNullEndBody(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->webView->endBody();
+    }
+
+    public function testViewFileNullEndPage(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->webView->endPage();
+    }
+
     public function testRegisterJsVar(): void
     {
         $this->webView->registerJsVar('username', 'samdark');

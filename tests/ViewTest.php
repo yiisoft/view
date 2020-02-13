@@ -142,6 +142,28 @@ PHP
         }
     }
 
+    public function testViewFileNullBeginPage(): void
+    {
+        $config = require Builder::path('tests');
+
+        $container = new Container($config);
+        $view = $container->get(View::class);
+
+        $this->expectException(\LogicException::class);
+        $view->beginPage();
+    }
+
+    public function testViewFileNullEndPage(): void
+    {
+        $config = require Builder::path('tests');
+
+        $container = new Container($config);
+        $view = $container->get(View::class);
+
+        $this->expectException(\LogicException::class);
+        $view->endPage();
+    }
+
     public function testDefaultParameterIsPassedToView(): void
     {
         $config = require Builder::path('tests');

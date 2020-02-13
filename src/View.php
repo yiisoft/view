@@ -253,7 +253,7 @@ class View implements DynamicContentAwareInterface
         } elseif ($context instanceof ViewContextInterface) {
             // path provided by context
             $file = $context->getViewPath() . '/' . $view;
-        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
+        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
             // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;
         } else {
@@ -377,19 +377,19 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * @return string|bool the view file currently being rendered. False if no view file is being rendered.
+     * @return string|null the view file currently being rendered. False if no view file is being rendered.
      */
-    public function getViewFile()
+    public function getViewFile(): ?string
     {
-        return empty($this->viewFiles) ? false : end($this->viewFiles)['resolved'];
+        return empty($this->viewFiles) ? null : end($this->viewFiles)['resolved'];
     }
 
     /**
-     * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
+     * @return string|null the requested view currently being rendered. False if no view file is being rendered.
      */
-    protected function getRequestedViewFile()
+    protected function getRequestedViewFile(): ?string
     {
-        return empty($this->viewFiles) ? false : end($this->viewFiles)['requested'];
+        return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
     }
 
     /**
@@ -570,6 +570,9 @@ class View implements DynamicContentAwareInterface
      */
     public function beginPage(): void
     {
+        if ($this->getViewFile() === null) {
+            throw new \LogicException('View file cannot be null.');
+        }
         ob_start();
         ob_implicit_flush(0);
 
@@ -583,6 +586,9 @@ class View implements DynamicContentAwareInterface
      */
     public function endPage(): void
     {
+        if ($this->getViewFile() === null) {
+            throw new \LogicException('View file cannot be null.');
+        }
         $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
         ob_end_flush();
     }

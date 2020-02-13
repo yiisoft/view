@@ -138,6 +138,9 @@ class WebView extends View
      */
     public function beginBody(): void
     {
+        if ($this->getViewFile() === null) {
+            throw new \LogicException('View file cannot be null.');
+        }
         echo self::PLACEHOLDER_BODY_BEGIN;
         $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
     }
@@ -147,6 +150,9 @@ class WebView extends View
      */
     public function endBody(): void
     {
+        if ($this->getViewFile() === null) {
+            throw new \LogicException('View file cannot be null.');
+        }
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
         echo self::PLACEHOLDER_BODY_END;
     }
@@ -160,6 +166,9 @@ class WebView extends View
      */
     public function endPage($ajaxMode = false): void
     {
+        if ($this->getViewFile() === null) {
+            throw new \LogicException('View file cannot be null.');
+        }
         $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
 
         $content = ob_get_clean();
