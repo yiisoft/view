@@ -164,7 +164,6 @@ class WebView extends View
 
         $content = ob_get_clean();
 
-        var_dump(get_called_class());
         echo strtr($content, [
             sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
             sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
