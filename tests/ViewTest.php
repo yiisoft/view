@@ -175,6 +175,6 @@ PHP
         $container = new Container($config);
         $view = $container->get(View::class);
         $view->setPlaceholderSalt('apple');
-        $this->assertSame(md5('apple'), $view->getPlaceholderSignature());
+        $this->assertSame(dechex(crc32('apple')), $view->getPlaceholderSignature());
     }
 }

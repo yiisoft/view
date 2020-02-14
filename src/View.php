@@ -106,7 +106,7 @@ class View implements DynamicContentAwareInterface
      */
     private $sourceLocale;
 
-    private string $placeholderSalt = __DIR__;
+    private string $placeholderSignature;
 
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
@@ -120,16 +120,17 @@ class View implements DynamicContentAwareInterface
         $this->theme = $theme;
         $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
+        $this->setPlaceholderSalt(__DIR__);
     }
 
     public function setPlaceholderSalt(string $salt): void
     {
-        $this->placeholderSalt = $salt;
+        $this->placeholderSignature = dechex(crc32($salt));
     }
 
     public function getPlaceholderSignature(): string
     {
-        return md5($this->placeholderSalt);
+        return $this->placeholderSignature;
     }
 
     public function getBasePath(): string
