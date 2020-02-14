@@ -161,6 +161,7 @@ PHP
         $view = $container->get(View::class);
 
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Need to call beginPage() before endPage().');
         $view->endPage();
     }
 

@@ -166,8 +166,8 @@ class WebView extends View
      */
     public function endPage($ajaxMode = false): void
     {
-        if ($this->getViewFile() === null) {
-            throw new \LogicException('View file cannot be null.');
+        if (!$this->getBeginPageIsCalled()) {
+            throw new \LogicException('Need to call beginPage() before endPage().');
         }
         $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
 
@@ -180,6 +180,7 @@ class WebView extends View
         ]);
 
         $this->clear();
+        $this->setBeginPageIsCalled(false);
     }
 
     /**

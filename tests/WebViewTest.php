@@ -49,6 +49,7 @@ final class WebViewTest extends \Yiisoft\View\Tests\TestCase
     public function testViewFileNullEndPage(): void
     {
         $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Need to call beginPage() before endPage().');
         $this->webView->endPage();
     }
 

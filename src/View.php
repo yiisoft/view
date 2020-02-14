@@ -106,6 +106,8 @@ class View implements DynamicContentAwareInterface
      */
     private $sourceLocale;
 
+    private $beginPageIsCalled = false;
+
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
@@ -573,6 +575,7 @@ class View implements DynamicContentAwareInterface
         if ($this->getViewFile() === null) {
             throw new \LogicException('View file cannot be null.');
         }
+        $this->setBeginPageIsCalled(true);
         ob_start();
         ob_implicit_flush(0);
 
@@ -586,10 +589,21 @@ class View implements DynamicContentAwareInterface
      */
     public function endPage(): void
     {
-        if ($this->getViewFile() === null) {
-            throw new \LogicException('View file cannot be null.');
+        if (!$this->getBeginPageIsCalled()) {
+            throw new \LogicException('Need to call beginPage() before endPage().');
         }
         $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
         ob_end_flush();
+        $this->setBeginPageIsCalled(false);
+    }
+
+    protected function getBeginPageIsCalled(): bool
+    {
+        return $this->beginPageIsCalled;
+    }
+
+    protected function setBeginPageIsCalled(bool $set): void
+    {
+        $this->beginPageIsCalled = $set;
     }
 }
