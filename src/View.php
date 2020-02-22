@@ -473,7 +473,7 @@ class View implements DynamicContentAwareInterface
 
         if (!empty($this->cacheStack)) {
             $n = count($this->dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n-" . $this->getPlaceholderSignature() . "]]>";
+            $placeholder = "<![CDATA[YII-DYNAMIC-$n-{$this->getPlaceholderSignature()}]]>";
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;

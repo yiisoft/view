@@ -2,11 +2,13 @@
 
 namespace Yiisoft\View\Tests\Mocks;
 
-class WebViewPlaceholderMock extends \Yiisoft\View\WebView
+use Yiisoft\View\WebView;
+
+class WebViewPlaceholderMock extends WebView
 {
     public function endPage($ajaxMode = false): void
     {
-        $this->setPlaceholderSalt("" . time());
+        $this->setPlaceholderSalt((string)time());
         parent::endPage($ajaxMode);
     }
 }

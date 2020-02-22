@@ -7,8 +7,6 @@ namespace Yiisoft\View\Tests;
 use hiqdev\composer\config\Builder;
 use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\View\DynamicContentAwareInterface;
-use Yiisoft\View\DynamicContentAwareTrait;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 
