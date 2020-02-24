@@ -165,4 +165,14 @@ PHP
         ]);
         $this->assertStringContainsString('local_parameter', $output);
     }
+
+    public function testPlaceholderSalt(): void
+    {
+        $config = require Builder::path('tests');
+
+        $container = new Container($config);
+        $view = $container->get(View::class);
+        $view->setPlaceholderSalt('apple');
+        $this->assertSame(dechex(crc32('apple')), $view->getPlaceholderSignature());
+    }
 }
