@@ -65,18 +65,18 @@ class WebView extends View
     /**
      * This is internally used as the placeholder for receiving the content registered for the head section.
      */
-    private const PLACEHOLDER_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
+    private const PLACEHOLDER_HEAD = '<![CDATA[YII-BLOCK-HEAD-%s]]>';
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the beginning of the body
      * section.
      */
-    private const PLACEHOLDER_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+    private const PLACEHOLDER_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN-%s]]>';
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
-    private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+    private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END-%s]]>';
 
     /**
      * @var string the page title
@@ -130,7 +130,7 @@ class WebView extends View
      */
     public function head(): void
     {
-        echo self::PLACEHOLDER_HEAD;
+        echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
     }
 
     /**
@@ -138,7 +138,7 @@ class WebView extends View
      */
     public function beginBody(): void
     {
-        echo self::PLACEHOLDER_BODY_BEGIN;
+        echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
         $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
     }
 
@@ -148,7 +148,7 @@ class WebView extends View
     public function endBody(): void
     {
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
-        echo self::PLACEHOLDER_BODY_END;
+        echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
     }
 
     /**
@@ -165,9 +165,9 @@ class WebView extends View
         $content = ob_get_clean();
 
         echo strtr($content, [
-            self::PLACEHOLDER_HEAD => $this->renderHeadHtml(),
-            self::PLACEHOLDER_BODY_BEGIN => $this->renderBodyBeginHtml(),
-            self::PLACEHOLDER_BODY_END => $this->renderBodyEndHtml($ajaxMode),
+            sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
+            sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
+            sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
         ]);
 
         $this->clear();

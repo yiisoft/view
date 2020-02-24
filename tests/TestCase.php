@@ -74,6 +74,11 @@ abstract class TestCase extends BaseTestCase
         $this->webView = $this->container->get(WebView::class);
     }
 
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
+    }
+
     /**
      * tearDown
      *
