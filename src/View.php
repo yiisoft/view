@@ -204,7 +204,7 @@ class View implements DynamicContentAwareInterface
             return $this->blocks[$value];
         }
 
-        throw new \InvalidArgumentException('Block: ' . $value.  ' not found.');
+        throw new \InvalidArgumentException('Block: ' . $value . ' not found.');
     }
 
     /**
