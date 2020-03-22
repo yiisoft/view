@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
-use hiqdev\composer\config\Builder;
+use Yiisoft\Composer\Config\Builder;
 use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\View\Theme;
