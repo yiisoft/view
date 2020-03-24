@@ -9,11 +9,9 @@
 This library provides PHP-based templates rendering.
 It is used in [Yii Framework] but is supposed to be usable separately.
 
-[Yii Framework]: https://github.com/yiisoft/core
+[Yii Framework]: https://www.yiiframework.com
 
 For license information check the [LICENSE](LICENSE.md)-file.
-
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/view/v/stable.png)](https://packagist.org/packages/yiisoft/view)
 [![Total Downloads](https://poser.pugx.org/yiisoft/view/downloads.png)](https://packagist.org/packages/yiisoft/view)
