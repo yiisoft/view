@@ -23,7 +23,7 @@
         "psr/event-dispatcher": "1.0.0",
         "psr/event-dispatcher-implementation": "1.0.0",
         "psr/log": "^1.1",
-        "yiisoft/aliases": "^3.0@dev",
+        "yiisoft/aliases": "^1.0",
         "yiisoft/arrays": "^3.0@dev",
         "yiisoft/files": "^3.0@dev",
         "yiisoft/html": "^3.0@dev",
