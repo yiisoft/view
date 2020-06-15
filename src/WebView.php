@@ -542,9 +542,9 @@ class WebView extends View
      *
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->title ?? null;
     }
 
     /**
