@@ -69,17 +69,15 @@ class Theme
      * If this property is empty or not set, a mapping {@see Application::basePath} to {@see basePath} will be used.
      */
     private array $pathMap = [];
+    private string $baseUrl = '';
+    private string $basePath = '';
 
-    private ?string $baseUrl = null;
-
-    private ?string $basePath = null;
-
-    public function __construct(array $pathMap = [], string $basePath = null, string $baseUrl = null)
+    public function __construct(array $pathMap = [], string $basePath = '', string $baseUrl = '')
     {
         $this->pathMap = $pathMap;
         $this->basePath = $basePath;
 
-        if ($baseUrl !== null) {
+        if ($baseUrl !== '') {
             $this->baseUrl = rtrim($baseUrl, '/');
         }
     }
@@ -88,7 +86,7 @@ class Theme
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
-    public function getBaseUrl(): ?string
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
@@ -98,7 +96,7 @@ class Theme
      *
      * @see pathMap
      */
-    public function getBasePath(): ?string
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
@@ -148,7 +146,7 @@ class Theme
      */
     public function getUrl(string $url): string
     {
-        if (($baseUrl = $this->getBaseUrl()) !== null) {
+        if (($baseUrl = $this->getBaseUrl()) !== '') {
             return $baseUrl . '/' . ltrim($url, '/');
         }
 
@@ -164,7 +162,7 @@ class Theme
      */
     public function getPath(string $path): string
     {
-        if (($basePath = $this->getBasePath()) !== null) {
+        if (($basePath = $this->getBasePath()) !== '') {
             return $basePath . '/' . ltrim($path, '/\\');
         }
 

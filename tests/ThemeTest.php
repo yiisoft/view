@@ -32,28 +32,28 @@ final class ThemeTest extends \Yiisoft\View\Tests\TestCase
 
     public function testGetUrlWithoutBaseUrl(): void
     {
-        $theme = new Theme([], null, null);
+        $theme = new Theme([], '', '');
         $result = $theme->getUrl('/test');
         $this->assertSame('/test', $result);
     }
 
     public function testGetUrlWithBaseUrl(): void
     {
-        $theme = new Theme([], null, 'https://yiiframework.com/');
+        $theme = new Theme([], '', 'https://yiiframework.com/');
         $result = $theme->getUrl('/test');
         $this->assertSame('https://yiiframework.com/test', $result);
     }
 
     public function testGetPathWithoutBasePath(): void
     {
-        $theme = new Theme([], null, null);
+        $theme = new Theme([], '', '');
         $result = $theme->getPath('/test');
         $this->assertSame('/test', $result);
     }
 
     public function testGetPathWithBasePath(): void
     {
-        $theme = new Theme([], '/var/www/yiiframework.com', null);
+        $theme = new Theme([], '/var/www/yiiframework.com', '');
         $result = $theme->getPath('test');
         $this->assertSame('/var/www/yiiframework.com/test', $result);
     }
