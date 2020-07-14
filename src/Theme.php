@@ -9,7 +9,7 @@ use Yiisoft\Files\FileHelper;
 /**
  * Theme represents an application theme.
  *
- * When {@see View} renders a view file, it will check the {@see View::theme|active theme} to see if there is a themed
+ * When {@see View} renders a view file, it will check the {@see View::theme} to see if there is a themed
  * version of the view file exists. If so, the themed version will be rendered instead.
  *
  * A theme is a directory consisting of view files which are meant to replace their non-themed counterparts.
@@ -41,7 +41,7 @@ use Yiisoft\Files\FileHelper;
  * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
  * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
  *
- * To use a theme, you should configure the {@see View::theme|theme} property of the "view" application
+ * To use a theme, you should configure the {@see View::theme} property of the "view" application
  * component like the following:
  *
  * ```php
@@ -55,7 +55,7 @@ use Yiisoft\Files\FileHelper;
  *
  * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder that contains
  * the entry script of the application. If your theme is designed to handle modules, you may configure the
- * {@see pathMap} property like described above.
+ * {@see Theme::pathMap} property like described above.
  *
  * For more details and usage information on Theme, see the [guide article on theming](guide:output-theming).
  */
@@ -118,7 +118,7 @@ class Theme
         $path = FileHelper::normalizePath($path);
         foreach ($this->pathMap as $from => $tos) {
             if (!is_string($from)) {
-                throw new \InvalidArgumentException('Pathmap should contain strings');
+                throw new \InvalidArgumentException('Theme::$pathMap should contain strings');
             }
 
             $from = FileHelper::normalizePath($from) . '/';

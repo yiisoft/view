@@ -7,7 +7,7 @@ namespace Yiisoft\View;
 /**
  * ViewContextInterface is the interface that should implemented by classes who want to support relative view names.
  *
- * The method [[getViewPath()]] should be implemented to return the view path that may be prefixed to a relative view name.
+ * The method {@see ViewContextInterface::getViewPath()} should be implemented to return the view path that may be prefixed to a relative view name.
  */
 interface ViewContextInterface
 {
