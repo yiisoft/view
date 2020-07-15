@@ -103,9 +103,9 @@ class View implements DynamicContentAwareInterface
     private string $sourceLanguage = 'en';
 
     /**
-     * @var Locale source locale used to find localized view file.
+     * @var Locale|null source locale used to find localized view file.
      */
-    private Locale $sourceLocale;
+    private ?Locale $sourceLocale = null;
 
     private string $placeholderSignature;
 
@@ -254,7 +254,7 @@ class View implements DynamicContentAwareInterface
      * {@see context} in the view. If the context implements {@see ViewContextInterface}, it may also be used to locate the
      * view file corresponding to a relative view name.
      *
-     * @throws InvalidCallException if a relative view name is given while there is no active context to determine the
+     * @throws \RuntimeException if a relative view name is given while there is no active context to determine the
      * corresponding view file.
      *
      * @return string the view file path. Note that the file may not exist.

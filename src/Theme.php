@@ -74,6 +74,11 @@ class Theme
 
     public function __construct(array $pathMap = [], string $basePath = '', string $baseUrl = '')
     {
+        foreach ($pathMap as $from => $tos) {
+            if (!is_string($from)) {
+                throw new \InvalidArgumentException('Theme::$pathMap should contain strings');
+            }
+        }
         $this->pathMap = $pathMap;
         $this->basePath = $basePath;
 
@@ -117,10 +122,6 @@ class Theme
         }
         $path = FileHelper::normalizePath($path);
         foreach ($this->pathMap as $from => $tos) {
-            if (!is_string($from)) {
-                throw new \InvalidArgumentException('Theme::$pathMap should contain strings');
-            }
-
             $from = FileHelper::normalizePath($from) . '/';
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
