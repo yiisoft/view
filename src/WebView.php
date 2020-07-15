@@ -305,7 +305,13 @@ class WebView extends View
      */
     public function registerCsrfMetaTags(): void
     {
-        $this->metaTags['csrf_meta_tags'] = $this->csrf();
+        $this->registerMetaTag(
+            [
+                'name' => 'csrf',
+                'content' => $this->csrf(),
+            ],
+            'csrf_meta_tags'
+        );
     }
 
     /**
