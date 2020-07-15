@@ -36,7 +36,7 @@ class View implements DynamicContentAwareInterface
     private array $blocks;
 
     /**
-     * @var ViewContextInterface the context under which the {@see renderFile()} method is being invoked.
+     * @var ViewContextInterface|null the context under which the {@see renderFile()} method is being invoked.
      */
     private ?ViewContextInterface $context = null;
 
@@ -219,7 +219,7 @@ class View implements DynamicContentAwareInterface
      * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash. The actual
      *   view file will be looked for under the [[Module::viewPath|view path]] of the [[Controller::module|current module]].
      * - relative view (e.g. "index"): the view name does not start with `@` or `/`. The corresponding view file will be
-     *   looked for under the {@see ViewContextInterface::getViewPath()|view path} of the view `$context`.
+     *   looked for under the {@see ViewContextInterface::getViewPath()} of the view `$context`.
      *   If `$context` is not given, it will be looked for under the directory containing the view currently
      *   being rendered (i.e., this happens when rendering a view within another view).
      *
@@ -491,7 +491,7 @@ class View implements DynamicContentAwareInterface
     public function getSourceLocale(): Locale
     {
         if ($this->sourceLocale === null) {
-            $this->sourceLocale = Locale::create('en-US');
+            $this->sourceLocale = new Locale('en-US');
         }
 
         return $this->sourceLocale;
@@ -505,7 +505,7 @@ class View implements DynamicContentAwareInterface
      */
     public function setSourceLocale(string $locale): self
     {
-        $this->sourceLocale = Locale::create($locale);
+        $this->sourceLocale = new Locale($locale);
 
         return $this;
     }
