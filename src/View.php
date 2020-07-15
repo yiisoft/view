@@ -16,7 +16,7 @@ use Yiisoft\View\Exception\ViewNotFoundException;
 /**
  * View represents a view object in the MVC pattern.
  *
- * View provides a set of methods (e.g. {@see render()}) for rendering purpose.
+ * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  */
@@ -35,7 +35,7 @@ class View implements DynamicContentAwareInterface
     private array $blocks;
 
     /**
-     * @var ViewContextInterface the context under which the {@see {renderFile()} method is being invoked.
+     * @var ViewContextInterface|null the context under which the {@see renderFile()} method is being invoked.
      */
     private ?ViewContextInterface $context = null;
 
@@ -79,7 +79,7 @@ class View implements DynamicContentAwareInterface
     /**
      * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      */
-    private $cacheStack = [];
+    private array $cacheStack = [];
 
     /**
      * @var array a list of placeholders for embedding dynamic contents.
@@ -102,9 +102,9 @@ class View implements DynamicContentAwareInterface
     private string $sourceLanguage = 'en';
 
     /**
-     * @var Locale source locale used to find localized view file.
+     * @var Locale|null source locale used to find localized view file.
      */
-    private $sourceLocale;
+    private ?Locale $sourceLocale = null;
 
     private string $placeholderSignature;
 
@@ -218,7 +218,7 @@ class View implements DynamicContentAwareInterface
      * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash. The actual
      *   view file will be looked for under the [[Module::viewPath|view path]] of the [[Controller::module|current module]].
      * - relative view (e.g. "index"): the view name does not start with `@` or `/`. The corresponding view file will be
-     *   looked for under the {@see ViewContextInterface::getViewPath()|view path} of the view `$context`.
+     *   looked for under the {@see ViewContextInterface::getViewPath()} of the view `$context`.
      *   If `$context` is not given, it will be looked for under the directory containing the view currently
      *   being rendered (i.e., this happens when rendering a view within another view).
      *
@@ -226,12 +226,12 @@ class View implements DynamicContentAwareInterface
      * @param array $parameters the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      * @param ViewContextInterface|null $context the context to be assigned to the view and can later be accessed via
-     * [[context]] in the view. If the context implements {@see ViewContextInterface}, it may also be used to locate
+     * {@see context} in the view. If the context implements {@see ViewContextInterface}, it may also be used to locate
      * the view file corresponding to a relative view name.
      *
      * @return string the rendering result
      *
-     * @throws InvalidCallException  if the view cannot be resolved.
+     * @throws \RuntimeException if the view cannot be resolved.
      * @throws ViewNotFoundException if the view file does not exist.
      * @throws \Throwable
      *
@@ -250,10 +250,10 @@ class View implements DynamicContentAwareInterface
      * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to
      * {@see render()} on how to specify this parameter.
      * @param ViewContextInterface|null $context the context to be assigned to the view and can later be accessed via
-     * [[context]] in the view. If the context implements [[ViewContextInterface]], it may also be used to locate the
+     * {@see context} in the view. If the context implements {@see ViewContextInterface}, it may also be used to locate the
      * view file corresponding to a relative view name.
      *
-     * @throws InvalidCallException if a relative view name is given while there is no active context to determine the
+     * @throws \RuntimeException if a relative view name is given while there is no active context to determine the
      * corresponding view file.
      *
      * @return string the view file path. Note that the file may not exist.
@@ -292,7 +292,7 @@ class View implements DynamicContentAwareInterface
      * If {@see theme} is enabled (not null), it will try to render the themed version of the view file as long as it
      * is available.
      *
-     * If {@see renderers|renderer} is enabled (not null), the method will use it to render the view file. Otherwise,
+     * If {@see renderers} is enabled (not null), the method will use it to render the view file. Otherwise,
      * it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
@@ -300,7 +300,7 @@ class View implements DynamicContentAwareInterface
      * @param array $parameters the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      * @param ViewContextInterface|null $context the context that the view should use for rendering the view. If null,
-     * existing [[context]] will be used.
+     * existing {@see context} will be used.
      *
      * @return string the rendering result
      * @throws \Throwable
@@ -490,7 +490,7 @@ class View implements DynamicContentAwareInterface
     public function getSourceLocale(): Locale
     {
         if ($this->sourceLocale === null) {
-            $this->sourceLocale = Locale::create('en-US');
+            $this->sourceLocale = new Locale('en-US');
         }
 
         return $this->sourceLocale;
@@ -504,7 +504,7 @@ class View implements DynamicContentAwareInterface
      */
     public function setSourceLocale(string $locale): self
     {
-        $this->sourceLocale = Locale::create($locale);
+        $this->sourceLocale = new Locale($locale);
 
         return $this;
     }
