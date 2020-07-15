@@ -74,11 +74,7 @@ class Theme
 
     public function __construct(array $pathMap = [], string $basePath = '', string $baseUrl = '')
     {
-        foreach ($pathMap as $from => $tos) {
-            if (!is_string($from)) {
-                throw new \InvalidArgumentException('Theme::$pathMap should contain strings');
-            }
-        }
+        $this->validatePathMap($pathMap);
         $this->pathMap = $pathMap;
         $this->basePath = $basePath;
 
@@ -168,5 +164,14 @@ class Theme
         }
 
         return $path;
+    }
+
+    private function validatePathMap(array $pathMap): void
+    {
+        foreach ($pathMap as $source => $destinations) {
+            if (!is_string($source)) {
+                throw new \InvalidArgumentException('Theme::$pathMap should contain the mapping between view directories and corresponding theme directories.');
+            }
+        }
     }
 }

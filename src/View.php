@@ -11,7 +11,6 @@ use Yiisoft\View\Event\AfterRender;
 use Yiisoft\View\Event\BeforeRender;
 use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
-use Yiisoft\View\Exception\InvalidCallException;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
 /**
@@ -232,7 +231,7 @@ class View implements DynamicContentAwareInterface
      *
      * @return string the rendering result
      *
-     * @throws InvalidCallException  if the view cannot be resolved.
+     * @throws \RuntimeException if the view cannot be resolved.
      * @throws ViewNotFoundException if the view file does not exist.
      * @throws \Throwable
      *
