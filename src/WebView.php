@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
-use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
+use Yiisoft\Yii\Web\Middleware\Csrf;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -164,11 +165,16 @@ class WebView extends View
 
         $content = ob_get_clean();
 
-        echo strtr($content, [
-            sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
-            sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
-            sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
-        ]);
+        echo strtr(
+            $content,
+            [
+                sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
+                sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
+                sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml(
+                    $ajaxMode
+                ),
+            ]
+        );
 
         $this->clear();
     }
@@ -299,7 +305,7 @@ class WebView extends View
      */
     public function registerCsrfMetaTags(): void
     {
-        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return Yiisoft\Html\Html::csrfMetaTags();');
+        $this->metaTags['csrf_meta_tags'] = $this->csrf();
     }
 
     /**
@@ -421,6 +427,19 @@ class WebView extends View
         $this->registerJs($js, $position, $name);
     }
 
+    public function csrf(): ?string
+    {
+        if (!array_key_exists('urlMatcher', $this->getDefaultParameters())) {
+            return null;
+        }
+
+        $urlMatcher = $this->getDefaultParameters()['urlMatcher'];
+
+        return ($urlMatcher !== null && $urlMatcher->getLastMatchedRequest() !== null)
+            ? $urlMatcher->getLastMatchedRequest()->getAttribute(Csrf::REQUEST_NAME)
+            : null;
+    }
+
     /**
      * Renders the content to be inserted in the head section.
      *
@@ -512,11 +531,17 @@ class WebView extends View
                 $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]));
             }
             if (!empty($this->js[self::POSITION_READY])) {
-                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
+                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode(
+                        "\n",
+                        $this->js[self::POSITION_READY]
+                    ) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
-                $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
+                $js = "window.addEventListener('load', function (event) {\n" . implode(
+                        "\n",
+                        $this->js[self::POSITION_LOAD]
+                    ) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }
