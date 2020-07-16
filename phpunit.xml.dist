@@ -19,9 +19,9 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
-        <include>
-            <directory>./src</directory>
-        </include>
-    </coverage>
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+        </whitelist>
+    </filter>
 </phpunit>
