@@ -17,7 +17,7 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.4",
+        "php": "^7.4|^8.0",
         "psr/container-implementation": "1.0.0",
         "psr/event-dispatcher": "1.0.0",
         "psr/event-dispatcher-implementation": "1.0.0",
@@ -30,8 +30,8 @@
     },
     "require-dev": {
         "infection/infection": "^0.16.3",
-        "phan/phan": "^3.0.2",
-        "phpunit/phpunit": "^9.2",
+        "phan/phan": "^3.0",
+        "phpunit/phpunit": "^9.3",
         "psr/container": "1.0.0",
         "yiisoft/aliases": "^1.0",
         "yiisoft/cache": "^3.0@dev",
@@ -61,5 +61,6 @@
     },
     "config": {
         "sort-packages": true
-    }
+    },
+    "prefer-stable": true
 }
