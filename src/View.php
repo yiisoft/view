@@ -6,6 +6,7 @@ namespace Yiisoft\View;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Yiisoft\I18n\Locale;
 use Yiisoft\View\Event\AfterRender;
 use Yiisoft\View\Event\BeforeRender;
@@ -23,7 +24,7 @@ use Yiisoft\View\Exception\ViewNotFoundException;
 class View implements DynamicContentAwareInterface
 {
     /**
-     * @var string $basePath view path
+     * @var string view path
      */
     private string $basePath;
 
@@ -77,6 +78,11 @@ class View implements DynamicContentAwareInterface
     protected Theme $theme;
 
     /**
+     * @var FragmentCache
+     */
+    private FragmentCacheInterface $fragmentCache;
+
+    /**
      * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      */
     private array $cacheStack = [];
@@ -87,17 +93,17 @@ class View implements DynamicContentAwareInterface
     private array $dynamicPlaceholders = [];
 
     /**
-     * @var string $language
+     * @var string
      */
     private string $language = 'en';
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     private LoggerInterface $logger;
 
     /**
-     * @var string $sourceLanguage
+     * @var string
      */
     private string $sourceLanguage = 'en';
 
@@ -105,6 +111,8 @@ class View implements DynamicContentAwareInterface
      * @var Locale|null source locale used to find localized view file.
      */
     private ?Locale $sourceLocale = null;
+
+    private string $placeholderDynamicSignature;
 
     private string $placeholderSignature;
 
@@ -114,18 +122,35 @@ class View implements DynamicContentAwareInterface
      */
     private array $viewFiles = [];
 
-    public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
+    public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, FragmentCacheInterface $fragmentCache, LoggerInterface $logger)
     {
         $this->basePath = $basePath;
         $this->theme = $theme;
         $this->eventDispatcher = $eventDispatcher;
+        $this->fragmentCache = $fragmentCache;
         $this->logger = $logger;
-        $this->setPlaceholderSalt(__DIR__);
+        $this->generatePlaceholderSignatures();
     }
 
-    public function setPlaceholderSalt(string $salt): void
+    public function generatePlaceholderSignatures(): void
     {
-        $this->placeholderSignature = dechex(crc32($salt));
+        $this->placeholderDynamicSignature = \strtr(\base64_encode(\substr(\pack('Q', \rand(0, PHP_INT_MAX)), 0, 6)), '+/=', '012');
+        $this->placeholderSignature = \dechex(\crc32(__DIR__));
+    }
+
+    public function setPlaceholderDynamicSignature(string $sign): void
+    {
+        $this->placeholderDynamicSignature = $sign;
+    }
+
+    public function setPlaceholderSignature(string $sign): void
+    {
+        $this->placeholderSignature = $sign;
+    }
+
+    public function getPlaceholderDynamicSignature(): string
+    {
+        return $this->placeholderDynamicSignature;
     }
 
     public function getPlaceholderSignature(): string
@@ -260,26 +285,26 @@ class View implements DynamicContentAwareInterface
      */
     protected function findTemplateFile(string $view, ?ViewContextInterface $context = null): string
     {
-        if (strncmp($view, '//', 2) === 0) {
+        if (\strncmp($view, '//', 2) === 0) {
             // path relative to basePath e.g. "//layouts/main"
-            $file = $this->basePath . '/' . ltrim($view, '/');
+            $file = $this->basePath . '/' . \ltrim($view, '/');
         } elseif ($context instanceof ViewContextInterface) {
             // path provided by context
             $file = $context->getViewPath() . '/' . $view;
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
             // path relative to currently rendered view
-            $file = dirname($currentViewFile) . '/' . $view;
+            $file = \dirname($currentViewFile) . '/' . $view;
         } else {
             throw new \RuntimeException("Unable to resolve view file for view '$view': no active view context.");
         }
 
-        if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+        if (\pathinfo($file, PATHINFO_EXTENSION) !== '') {
             return $file;
         }
 
         $path = $file . '.' . $this->defaultExtension;
 
-        if ($this->defaultExtension !== 'php' && !is_file($path)) {
+        if ($this->defaultExtension !== 'php' && !\is_file($path)) {
             $path = $file . '.php';
         }
 
@@ -309,7 +334,7 @@ class View implements DynamicContentAwareInterface
      */
     public function renderFile(string $viewFile, array $parameters = [], ?ViewContextInterface $context = null): string
     {
-        $parameters = array_merge($this->defaultParameters, $parameters);
+        $parameters = \array_merge($this->defaultParameters, $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;
@@ -318,7 +343,7 @@ class View implements DynamicContentAwareInterface
             $viewFile = $this->theme->applyTo($viewFile);
         }
 
-        if (is_file($viewFile)) {
+        if (\is_file($viewFile)) {
             $viewFile = $this->localize($viewFile);
         } else {
             throw new ViewNotFoundException("The view file does not exist: $viewFile");
@@ -336,14 +361,14 @@ class View implements DynamicContentAwareInterface
 
         if ($this->beforeRender($viewFile, $parameters)) {
             $this->logger->debug("Rendering view file: $viewFile");
-            $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
+            $ext = \pathinfo($viewFile, PATHINFO_EXTENSION);
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
             $output = $renderer->render($this, $viewFile, $parameters);
 
             $output = $this->afterRender($viewFile, $parameters, $output);
         }
 
-        array_pop($this->viewFiles);
+        \array_pop($this->viewFiles);
         $this->context = $oldContext;
 
         return $output;
@@ -375,18 +400,18 @@ class View implements DynamicContentAwareInterface
         if ($language === $sourceLanguage) {
             return $file;
         }
-        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
-        if (is_file($desiredFile)) {
+        $desiredFile = \dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . \basename($file);
+        if (\is_file($desiredFile)) {
             return $desiredFile;
         }
 
-        $language = substr($language, 0, 2);
+        $language = \substr($language, 0, 2);
         if ($language === $sourceLanguage) {
             return $file;
         }
-        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
+        $desiredFile = \dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . \basename($file);
 
-        return is_file($desiredFile) ? $desiredFile : $file;
+        return \is_file($desiredFile) ? $desiredFile : $file;
     }
 
     /**
@@ -394,7 +419,7 @@ class View implements DynamicContentAwareInterface
      */
     public function getViewFile()
     {
-        return empty($this->viewFiles) ? false : end($this->viewFiles)['resolved'];
+        return empty($this->viewFiles) ? false : \end($this->viewFiles)['resolved'];
     }
 
     /**
@@ -402,7 +427,7 @@ class View implements DynamicContentAwareInterface
      */
     protected function getRequestedViewFile()
     {
-        return empty($this->viewFiles) ? false : end($this->viewFiles)['requested'];
+        return empty($this->viewFiles) ? false : \end($this->viewFiles)['requested'];
     }
 
     /**
@@ -468,12 +493,12 @@ class View implements DynamicContentAwareInterface
     public function renderDynamic(string $statements, array $parameters = []): string
     {
         if (!empty($parameters)) {
-            $statements = 'extract(unserialize(\'' . str_replace(['\\', '\''], ['\\\\', '\\\''], serialize($parameters)) . '\'));' . $statements;
+            $statements = 'extract(unserialize(\'' . \str_replace(['\\', '\''], ['\\\\', '\\\''], \serialize($parameters)) . '\'));' . $statements;
         }
 
         if (!empty($this->cacheStack)) {
-            $n = count($this->dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n-{$this->getPlaceholderSignature()}]]>";
+            $n = \count($this->dynamicPlaceholders);
+            $placeholder = "<![CDATA[YII-DYNAMIC-$n-{$this->getPlaceholderDynamicSignature()}]]>";
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
@@ -571,9 +596,12 @@ class View implements DynamicContentAwareInterface
      *
      * @return void
      */
-    public function popDynamicContent(): void
+    public function popDynamicContent(DynamicContentAwareInterface $instance = null): void
     {
-        array_pop($this->cacheStack);
+        $popInstance = \array_pop($this->cacheStack);
+        if ($instance !== null && $instance !== $popInstance) {
+            throw new RuntimeException('Poped the element is not an expected element.');
+        }
     }
 
     /**
@@ -583,9 +611,8 @@ class View implements DynamicContentAwareInterface
      */
     public function beginPage(): void
     {
-        ob_start();
-        ob_implicit_flush(0);
-
+        \ob_start();
+        \ob_implicit_flush(0);
         $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
     }
 
@@ -597,6 +624,16 @@ class View implements DynamicContentAwareInterface
     public function endPage(): void
     {
         $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
-        ob_end_flush();
+        \ob_end_flush();
+    }
+
+    public function beginCache(string $id, array $params = [], array $vars = []): ?FragmentCache
+    {
+        $fc = $this->fragmentCache->beginCache($this, $id, $params, $vars);
+        if ($fc->getStatus() === FragmentCacheInterface::STATUS_IN_CACHE) {
+            $fc->endCache();
+            return null;
+        }
+        return $fc;
     }
 }

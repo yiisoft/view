@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
+use RuntimeException;
 use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Json\Json;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
@@ -130,7 +132,7 @@ class WebView extends View
      */
     public function head(): void
     {
-        echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
+        echo \sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
     }
 
     /**
@@ -138,7 +140,7 @@ class WebView extends View
      */
     public function beginBody(): void
     {
-        echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
+        echo \sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
         $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
     }
 
@@ -148,7 +150,7 @@ class WebView extends View
     public function endBody(): void
     {
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
-        echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
+        echo \sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
     }
 
     /**
@@ -160,11 +162,15 @@ class WebView extends View
      */
     public function endPage($ajaxMode = false): void
     {
+        if ($this->getDynamicContents()) {
+            throw new RuntimeException('The endPage method cannot be cached.');
+        }
+
         $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
 
-        $content = ob_get_clean();
+        $content = \ob_get_clean();
 
-        echo strtr($content, [
+        echo \strtr($content, [
             sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
             sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
             sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
@@ -195,8 +201,8 @@ class WebView extends View
     {
         $viewFile = $this->findTemplateFile($view, $context);
 
-        ob_start();
-        ob_implicit_flush(0);
+        \ob_start();
+        \ob_implicit_flush(0);
 
         $this->beginPage();
         $this->head();
@@ -205,7 +211,7 @@ class WebView extends View
         $this->endBody();
         $this->endPage(true);
 
-        return ob_get_clean();
+        return \ob_get_clean();
     }
 
     /**
@@ -246,6 +252,10 @@ class WebView extends View
      */
     public function registerMetaTag(array $options, string $key = null): void
     {
+        if ($this->getDynamicContents()) {
+            $this->renderDynamic('$this->registerMetaTag($options, $key);', ['options' => $options, 'key' => $key]);
+            return;
+        }
         if ($key === null) {
             $this->metaTags[] = Html::tag('meta', '', $options);
         } else {
@@ -273,8 +283,12 @@ class WebView extends View
      * key, the latter will overwrite the former. If this is null, the new link tag will be appended
      * to the existing ones.
      */
-    public function registerLinkTag(array $options, ?string $key = null): void
+    public function registerLinkTag(array $options, string $key = null): void
     {
+        if ($this->getDynamicContents()) {
+            $this->renderDynamic('$this->registerLinkTag($options, $key);', ['options' => $options, 'key' => $key]);
+            return;
+        }
         if ($key === null) {
             $this->linkTags[] = Html::tag('link', '', $options);
         } else {
@@ -312,7 +326,11 @@ class WebView extends View
      */
     public function registerCss(string $css, array $options = [], string $key = null): void
     {
-        $key = $key ?: md5($css);
+        if ($this->getDynamicContents()) {
+            $this->renderDynamic('$this->registerCss($css, $options, $key);', ['css' => $css, 'options' => $options, 'key' => $key]);
+            return;
+        }
+        $key = $key ?: \md5($css);
         $this->css[$key] = Html::style($css, $options);
     }
 
@@ -334,8 +352,11 @@ class WebView extends View
      */
     public function registerCssFile(string $url, array $options = [], string $key = null): void
     {
+        if ($this->getDynamicContents()) {
+            $this->renderDynamic('$this->registerCssFile($url, $options, $key);', ['url' => $url, 'options' => $options, 'key' => $key]);
+            return;
+        }
         $key = $key ?: $url;
-
         $this->cssFiles[$key] = Html::cssFile($url, $options);
     }
 
@@ -360,7 +381,11 @@ class WebView extends View
      */
     public function registerJs(string $js, int $position = self::POSITION_END, string $key = null): void
     {
-        $key = $key ?: md5($js);
+        if ($this->getDynamicContents()) {
+            $this->renderDynamic('$this->registerJs($js, $position, $key);', ['js' => $js, 'position' => $position, 'key' => $key]);
+            return;
+        }
+        $key = $key ?: \md5($js);
         $this->js[$position][$key] = $js;
     }
 
@@ -391,8 +416,11 @@ class WebView extends View
      */
     public function registerJsFile(string $url, array $options = [], string $key = null): void
     {
+        if ($this->getDynamicContents()) {
+            $this->renderDynamic('$this->registerJsFile($url, $options, $key);', ['url' => $url, 'options' => $options, 'key' => $key]);
+            return;
+        }
         $key = $key ?: $url;
-
         $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
         $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
     }
@@ -417,7 +445,7 @@ class WebView extends View
      */
     public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
     {
-        $js = sprintf('var %s = %s;', $name, \Yiisoft\Json\Json::htmlEncode($value));
+        $js = \sprintf('var %s = %s;', $name, Json::htmlEncode($value));
         $this->registerJs($js, $position, $name);
     }
 
@@ -432,26 +460,26 @@ class WebView extends View
     {
         $lines = [];
         if (!empty($this->metaTags)) {
-            $lines[] = implode("\n", $this->metaTags);
+            $lines[] = \implode("\n", $this->metaTags);
         }
 
         if (!empty($this->linkTags)) {
-            $lines[] = implode("\n", $this->linkTags);
+            $lines[] = \implode("\n", $this->linkTags);
         }
         if (!empty($this->cssFiles)) {
-            $lines[] = implode("\n", $this->cssFiles);
+            $lines[] = \implode("\n", $this->cssFiles);
         }
         if (!empty($this->css)) {
-            $lines[] = implode("\n", $this->css);
+            $lines[] = \implode("\n", $this->css);
         }
         if (!empty($this->jsFiles[self::POSITION_HEAD])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
+            $lines[] = \implode("\n", $this->jsFiles[self::POSITION_HEAD]);
         }
         if (!empty($this->js[self::POSITION_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]));
+            $lines[] = Html::script(\implode("\n", $this->js[self::POSITION_HEAD]));
         }
 
-        return empty($lines) ? '' : implode("\n", $lines);
+        return empty($lines) ? '' : \implode("\n", $lines) . "\n";
     }
 
     /**
@@ -465,13 +493,13 @@ class WebView extends View
     {
         $lines = [];
         if (!empty($this->jsFiles[self::POSITION_BEGIN])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
+            $lines[] = \implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
         if (!empty($this->js[self::POSITION_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]));
+            $lines[] = Html::script(\implode("\n", $this->js[self::POSITION_BEGIN]));
         }
 
-        return empty($lines) ? '' : implode("\n", $lines);
+        return empty($lines) ? '' : \implode("\n", $lines) . "\n";
     }
 
     /**
@@ -490,38 +518,38 @@ class WebView extends View
         $lines = [];
 
         if (!empty($this->jsFiles[self::POSITION_END])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POSITION_END]);
+            $lines[] = \implode("\n", $this->jsFiles[self::POSITION_END]);
         }
 
         if ($ajaxMode) {
             $scripts = [];
             if (!empty($this->js[self::POSITION_END])) {
-                $scripts[] = implode("\n", $this->js[self::POSITION_END]);
+                $scripts[] = \implode("\n", $this->js[self::POSITION_END]);
             }
             if (!empty($this->js[self::POSITION_READY])) {
-                $scripts[] = implode("\n", $this->js[self::POSITION_READY]);
+                $scripts[] = \implode("\n", $this->js[self::POSITION_READY]);
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
-                $scripts[] = implode("\n", $this->js[self::POSITION_LOAD]);
+                $scripts[] = \implode("\n", $this->js[self::POSITION_LOAD]);
             }
             if (!empty($scripts)) {
-                $lines[] = Html::script(implode("\n", $scripts));
+                $lines[] = Html::script(\implode("\n", $scripts));
             }
         } else {
             if (!empty($this->js[self::POSITION_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]));
+                $lines[] = Html::script(\implode("\n", $this->js[self::POSITION_END]));
             }
             if (!empty($this->js[self::POSITION_READY])) {
-                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
+                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . \implode("\n", $this->js[self::POSITION_READY]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
-                $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
+                $js = "window.addEventListener('load', function (event) {\n" . \implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }
 
-        return empty($lines) ? '' : implode("\n", $lines);
+        return empty($lines) ? '' : \implode("\n", $lines) . "\n";
     }
 
     /**
@@ -555,6 +583,10 @@ class WebView extends View
      */
     public function setCssFiles(array $cssFiles): void
     {
+        if ($this->getDynamicContents()) {
+            echo $this->renderDynamic('$this->setCssFiles($cssFiles);', ['cssFiles' => $cssFiles]);
+            return;
+        }
         foreach ($cssFiles as $key => $value) {
             $this->registerCssFile(
                 $cssFiles[$key]['url'],
@@ -571,6 +603,10 @@ class WebView extends View
      */
     public function setJsFiles(array $jsFiles): void
     {
+        if ($this->getDynamicContents()) {
+            echo $this->renderDynamic('$this->setJsFiles($jsFiles);', ['jsFiles' => $jsFiles]);
+            return;
+        }
         foreach ($jsFiles as $key => $value) {
             $this->registerJsFile(
                 $jsFiles[$key]['url'],
@@ -587,8 +623,11 @@ class WebView extends View
      * @param string $value
      * @return void
      */
-    public function setTitle($value): void
+    public function setTitle(string $value): void
     {
+        if ($this->getDynamicContents()) {
+            echo $this->renderDynamic('$this->setTitle($value);', ['value' => $value]);
+        }
         $this->title = $value;
     }
 }

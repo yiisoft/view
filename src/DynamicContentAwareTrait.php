@@ -54,7 +54,7 @@ trait DynamicContentAwareTrait
         if (count($this->getView()->getDynamicContents()) === 0) {
             // outermost cache: replace placeholder with dynamic content
             foreach ($placeholders as $name => $statements) {
-                $placeholders[$name] = $this->getView()->evaluateDynamicContent($statements);
+                $placeholders[$name] = (string)$this->getView()->evaluateDynamicContent($statements);
             }
             $content = strtr($content, $placeholders);
         }
