@@ -12,6 +12,13 @@ interface FragmentCacheInterface
     public const STATUS_INIT = 1;
     public const STATUS_NO = 0;
 
+    /**
+     * @param View|null $view
+     * @param string $id
+     * @param array $params
+     * @param string[] $vars
+     * @return $this
+     */
     public function beginCache(?View $view, string $id, array $params = [], array $vars = []): self;
 
     public function endCache(): void;

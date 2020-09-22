@@ -51,9 +51,6 @@ class View implements DynamicContentAwareInterface
      */
     private array $defaultParameters = [];
 
-    /**
-     * @var EventDispatcherInterface $eventDispatcher
-     */
     protected EventDispatcherInterface $eventDispatcher;
 
     /**
@@ -77,9 +74,6 @@ class View implements DynamicContentAwareInterface
      */
     protected Theme $theme;
 
-    /**
-     * @var FragmentCacheInterface
-     */
     private FragmentCacheInterface $fragmentCache;
 
     /**
@@ -88,23 +82,14 @@ class View implements DynamicContentAwareInterface
     private array $cacheStack = [];
 
     /**
-     * @var array a list of placeholders for embedding dynamic contents.
+     * @var string[] a list of placeholders for embedding dynamic contents.
      */
     private array $dynamicPlaceholders = [];
 
-    /**
-     * @var string
-     */
     private string $language = 'en';
 
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
-    /**
-     * @var string
-     */
     private string $sourceLanguage = 'en';
 
     /**
@@ -534,11 +519,17 @@ class View implements DynamicContentAwareInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getDynamicPlaceholders(): array
     {
         return $this->dynamicPlaceholders;
     }
 
+    /**
+     * @param string[] $placeholders
+     */
     public function setDynamicPlaceholders(array $placeholders): void
     {
         $this->dynamicPlaceholders = $placeholders;
@@ -627,6 +618,12 @@ class View implements DynamicContentAwareInterface
         \ob_end_flush();
     }
 
+    /**
+     * @param string $id
+     * @param array $params
+     * @param string[] $vars
+     * @return FragmentCache|null
+     */
     public function beginCache(string $id, array $params = [], array $vars = []): ?FragmentCache
     {
         $fc = $this->fragmentCache->beginCache($this, $id, $params, $vars);

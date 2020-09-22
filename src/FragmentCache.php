@@ -29,34 +29,16 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
      */
     public bool $enabled = true;
 
-    /**
-     * @var CacheInterface|null
-     */
     private ?CacheInterface $cache;
 
-    /**
-     * @var string
-     */
     private string $content = '';
 
-    /**
-     * @var Dependency|null
-     */
     private ?Dependency $dependency = null;
 
-    /**
-     * @var string
-     */
     private string $id;
 
-    /**
-     * @var string
-     */
     private string $key;
 
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
     /**
@@ -64,14 +46,8 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
      */
     private array $renderVars;
 
-    /**
-     * @var int
-     */
     private int $savedObLevel;
 
-    /**
-     * @var int
-     */
     private int $status = self::STATUS_NO;
 
     /**
@@ -79,9 +55,6 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
      */
     private array $vars;
 
-    /**
-     * @var View|null
-     */
     private ?View $view = null;
 
     public function __construct(?CacheInterface $cache, LoggerInterface $logger)
