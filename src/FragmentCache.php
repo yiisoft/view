@@ -50,9 +50,9 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
     private string $id;
 
     /**
-     * @var string|array
+     * @var string
      */
-    private $key;
+    private string $key;
 
     /**
      * @var LoggerInterface
@@ -60,7 +60,7 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
     private LoggerInterface $logger;
 
     /**
-     * @var string[]
+     * @var bool[]
      */
     private array $renderVars;
 
@@ -97,7 +97,7 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
         $this->status = self::STATUS_INIT;
     }
 
-    public function beginCache(?View $view, string $id, array $params = [], array $vars = []): self
+    public function beginCache(?View $view, string $id, array $params = [], array $vars = []): FragmentCacheInterface
     {
         $obj = clone $this;
         $obj->view = $view;
@@ -132,9 +132,6 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
         return $obj;
     }
 
-    /**
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
     public function endCache(): void
     {
         if ($this->status === self::STATUS_IN_CACHE) {
@@ -157,7 +154,7 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
         if ($this->view) {
             $this->view->popDynamicContent($this);
         }
-        if ($this->enabled) {
+        if ($this->enabled && $this->cache) {
             if ($this->cache instanceof YiiCacheInterface) {
                 $this->cache->set($this->key, [$content, $this->renderVars, $this->getDynamicPlaceholders()], $this->duration, $this->dependency);
             } else {
@@ -177,11 +174,9 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
     public function renderVar(string $name): string
     {
         if ($this->savedObLevel === self::NOCACHE) {
-            return \strval($obj->vars[$name] ?? '');
+            return \strval($this->vars[$name] ?? '');
         }
-        if (!\array_key_exists($name, $this->renderVars)) {
-            $this->renderVars[$name] = true;
-        }
+        $this->renderVars[$name] = true;
         return "<![CDATA[YII-VAR-$name]]>";
     }
 
@@ -244,7 +239,7 @@ class FragmentCache implements FragmentCacheInterface, DynamicContentAwareInterf
 
     private function readFromCache(): bool
     {
-        if (!\is_array($value = $this->cache->get($this->key)) || \count($value) !== 3) {
+        if (!$this->cache || !\is_array($value = $this->cache->get($this->key)) || \count($value) !== 3) {
             return false;
         }
         [$content, $renderVars, $placeholders] = $value;

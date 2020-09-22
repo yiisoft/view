@@ -544,13 +544,13 @@ class View implements DynamicContentAwareInterface
         $this->dynamicPlaceholders = $placeholders;
     }
 
-    public function addDynamicPlaceholder(string $placeholder, string $statements): void
+    public function addDynamicPlaceholder(string $name, string $statements): void
     {
         foreach ($this->cacheStack as $cache) {
-            $cache->addDynamicPlaceholder($placeholder, $statements);
+            $cache->addDynamicPlaceholder($name, $statements);
         }
 
-        $this->dynamicPlaceholders[$placeholder] = $statements;
+        $this->dynamicPlaceholders[$name] = $statements;
     }
 
     /**
