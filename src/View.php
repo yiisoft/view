@@ -78,7 +78,7 @@ class View implements DynamicContentAwareInterface
     protected Theme $theme;
 
     /**
-     * @var FragmentCache
+     * @var FragmentCacheInterface
      */
     private FragmentCacheInterface $fragmentCache;
 
