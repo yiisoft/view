@@ -117,6 +117,11 @@ class View implements DynamicContentAwareInterface
         $this->generatePlaceholderSignatures();
     }
 
+    public function __clone()
+    {
+        $this->generatePlaceholderSignatures();
+    }
+
     public function generatePlaceholderSignatures(): void
     {
         $this->placeholderDynamicSignature = \strtr(\base64_encode(\substr(\pack('Q', \rand(0, PHP_INT_MAX)), 0, 6)), '+/=', '012');
