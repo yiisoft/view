@@ -9,6 +9,8 @@ use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Log\Logger;
+use Yiisoft\View\FragmentCache;
+use Yiisoft\View\FragmentCacheInterface;
 use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
@@ -17,10 +19,6 @@ use Yiisoft\View\WebView;
 $tempDir = sys_get_temp_dir();
 
 return [
-    ContainerInterface::class => function (ContainerInterface $container) {
-        return $container;
-    },
-
     Aliases::class => [
         '@root' => dirname(__DIR__, 1),
         '@public' => '@root/tests/public',
@@ -65,12 +63,15 @@ return [
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
 
+    FragmentCacheInterface::class => FragmentCache::class,
+
     WebViewPlaceholderMock::class => function (ContainerInterface $container) {
         $aliases = $container->get(Aliases::class);
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
         $theme = $container->get(Theme::class);
+        $fragmentCache = $container->get(FragmentCacheInterface::class);
         $logger = $container->get(LoggerInterface::class);
 
-        return new WebViewPlaceholderMock($aliases->get('@view'), $theme, $eventDispatcher, $logger);
+        return new WebViewPlaceholderMock($aliases->get('@view'), $theme, $eventDispatcher, $fragmentCache, $logger);
     },
 ];
