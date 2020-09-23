@@ -49,18 +49,20 @@ return [
         $aliases = $container->get(Aliases::class);
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
         $theme = $container->get(Theme::class);
+        $fragmentCache = $container->get(FragmentCacheInterface::class);
         $logger = $container->get(LoggerInterface::class);
 
-        return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $logger);
+        return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $fragmentCache, $logger);
     },
 
     View::class => function (ContainerInterface $container) {
         $aliases = $container->get(Aliases::class);
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
         $theme = $container->get(Theme::class);
+        $fragmentCache = $container->get(FragmentCacheInterface::class);
         $logger = $container->get(LoggerInterface::class);
 
-        return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
+        return new View($aliases->get('@view'), $theme, $eventDispatcher, $fragmentCache, $logger);
     },
 
     FragmentCacheInterface::class => FragmentCache::class,

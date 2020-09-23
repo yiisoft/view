@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use ReflectionClass;
 use Yiisoft\Composer\Config\Builder;
 use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
@@ -18,13 +19,13 @@ final class ViewTest extends \Yiisoft\View\Tests\TestCase
     /**
      * @var string path for the test files.
      */
-    private $testViewPath = '';
+    private string $testViewPath = '';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = \sys_get_temp_dir() . '/' . \str_replace('\\', '_', \get_class($this)) . \uniqid('', false);
 
         FileHelper::createDirectory($this->testViewPath);
     }
@@ -42,23 +43,23 @@ final class ViewTest extends \Yiisoft\View\Tests\TestCase
     {
         $view = $this->createView($this->testViewPath);
 
-        $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
-        file_put_contents(
+        $exceptionViewFile = $this->testViewPath . \DIRECTORY_SEPARATOR . 'exception.php';
+        \file_put_contents(
             $exceptionViewFile,
             <<<'PHP'
 <h1>Exception</h1>
 <?php throw new Exception('Test Exception'); ?>
 PHP
         );
-        $normalViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'no-exception.php';
-        file_put_contents(
+        $normalViewFile = $this->testViewPath . \DIRECTORY_SEPARATOR . 'no-exception.php';
+        \file_put_contents(
             $normalViewFile,
             <<<'PHP'
 <h1>No Exception</h1>
 PHP
         );
 
-        $obInitialLevel = ob_get_level();
+        $obInitialLevel = \ob_get_level();
 
         try {
             $view->renderFile($exceptionViewFile);
@@ -67,7 +68,7 @@ PHP
         }
         $view->renderFile($normalViewFile);
 
-        $this->assertEquals($obInitialLevel, ob_get_level());
+        $this->assertEquals($obInitialLevel, \ob_get_level());
     }
 
     public function testRelativePathInView(): void
@@ -76,7 +77,7 @@ PHP
         FileHelper::createDirectory($themePath);
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
-        file_put_contents(
+        \file_put_contents(
             $baseView,
             <<<'PHP'
 <?= $this->render("sub") ?>
@@ -85,7 +86,7 @@ PHP
 
         $subView = "{$this->testViewPath}/sub.php";
         $subViewContent = 'subviewcontent';
-        file_put_contents($subView, $subViewContent);
+        \file_put_contents($subView, $subViewContent);
 
         $view = $this->createView(
             $this->testViewPath,
@@ -108,7 +109,7 @@ PHP
                 ],
             ],
         ], $this->testViewPath);
-        $viewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'faq.php';
+        $viewFile = $this->testViewPath . \DIRECTORY_SEPARATOR . 'views' . \DIRECTORY_SEPARATOR . 'faq.php';
         $sourceLanguage = 'en-US';
 
         // Source language and target language are same. The view path should be unchanged.
@@ -118,7 +119,7 @@ PHP
         // Source language and target language are different. The view path should be changed.
         $currentLanguage = 'de-DE';
         $this->assertSame(
-            $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
+            $this->testViewPath . \DIRECTORY_SEPARATOR . 'views' . \DIRECTORY_SEPARATOR . $currentLanguage . \DIRECTORY_SEPARATOR . 'faq.php',
             $view->localize($viewFile, $currentLanguage, $sourceLanguage)
         );
     }
@@ -135,15 +136,15 @@ PHP
             $itemName = $baseDirectory . '/' . $name;
             if (\is_array($content)) {
                 if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
-                    symlink($baseDirectory . DIRECTORY_SEPARATOR . $content[1], $itemName);
+                    \symlink($baseDirectory . \DIRECTORY_SEPARATOR . $content[1], $itemName);
                 } else {
-                    if (!mkdir($itemName, 0777, true) && !is_dir($itemName)) {
-                        throw new \RuntimeException(sprintf('Directory "%s" was not created', $itemName));
+                    if (!\mkdir($itemName, 0777, true) && !\is_dir($itemName)) {
+                        throw new \RuntimeException(\sprintf('Directory "%s" was not created', $itemName));
                     }
                     $this->createFileStructure($content, $itemName);
                 }
             } else {
-                file_put_contents($itemName, $content);
+                \file_put_contents($itemName, $content);
             }
         }
     }
@@ -172,13 +173,35 @@ PHP
         $this->assertStringContainsString('local_parameter', $output);
     }
 
-    public function testPlaceholderSalt(): void
+    public function testPlaceholderSignatures(): void
     {
         $config = require Builder::path('tests');
 
         $container = new Container($config);
         $view = $container->get(View::class);
-        $view->setPlaceholderSalt('apple');
-        $this->assertSame(dechex(crc32('apple')), $view->getPlaceholderSignature());
+        $expectedPlaceholderSignature = \dechex(\crc32(\dirname((new ReflectionClass($view))->getFileName())));
+        $placeholderSignature = $view->getPlaceholderSignature();
+        $placeholderDynamicSignature = $view->getPlaceholderDynamicSignature();
+        $view = clone $view;
+        $placeholderSignature2 = $view->getPlaceholderSignature();
+        $placeholderDynamicSignature2 = $view->getPlaceholderDynamicSignature();
+        $this->assertSame($expectedPlaceholderSignature, $placeholderSignature);
+        $this->assertSame($expectedPlaceholderSignature, $placeholderSignature2);
+        $this->assertNotEmpty($placeholderDynamicSignature);
+        $this->assertNotEquals($placeholderDynamicSignature, $placeholderDynamicSignature2);
+
+    }
+
+    public function testFragmentCache(): void
+    {
+        $config = require Builder::path('tests');
+
+        $container = new Container($config);
+        $view = $container->get(View::class);
+        $obInitialLevel = \ob_get_level();
+        $cache = $view->beginCache('test', [], []);
+        $this->assertNotEmpty($cache);
+        $cache->endCache();
+        $this->assertEquals($obInitialLevel, \ob_get_level());
     }
 }

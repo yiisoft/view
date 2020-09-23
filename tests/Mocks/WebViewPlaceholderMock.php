@@ -10,7 +10,7 @@ class WebViewPlaceholderMock extends WebView
 {
     public function endPage($ajaxMode = false): void
     {
-        $this->setPlaceholderSalt((string)time());
+        $this->setPlaceholderSignature((string)time());
         parent::endPage($ajaxMode);
     }
 }

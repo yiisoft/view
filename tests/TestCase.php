@@ -13,46 +13,28 @@ use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\View\FragmentCacheInterface;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * @var Aliases $aliases
-     */
-    protected $aliases;
+    protected Aliases $aliases;
 
-    /**
-     * @var ContainerInterface $container
-     */
-    private $container;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface $eventDispatcher
-     */
-    protected $eventDispatcher;
+    protected FragmentCacheInterface $fragmentCache;
 
-    /**
-     * @var LoggerInterface $logger
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var Theme $theme
-     */
-    protected $theme;
+    protected Theme $theme;
 
-    /**
-     * @var WebView $webView
-     */
-    protected $webView;
+    protected WebView $webView;
 
-    /**
-     * @var ListenerProviderInterface
-     */
-    protected $listenerProvider;
+    protected ListenerProviderInterface $listenerProvider;
+
+    private ContainerInterface $container;
 
     /**
      * setUp
@@ -71,6 +53,7 @@ abstract class TestCase extends BaseTestCase
         $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->listenerProvider = $this->container->get(ListenerProviderInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
+        $this->fragmentCache = $this->container->get(FragmentCacheInterface::class);
         $this->webView = $this->container->get(WebView::class);
     }
 
@@ -86,7 +69,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function tearDown(): void
     {
-        $this->container = null;
+        unset($this->container);
         parent::tearDown();
     }
 
@@ -116,8 +99,8 @@ abstract class TestCase extends BaseTestCase
      */
     protected function assertSameIgnoringSlash(string $expected, string $actual): void
     {
-        $expected = str_replace(['/', '\\'], '/', $expected);
-        $actual = str_replace(['/', '\\'], '/', $actual);
+        $expected = \str_replace(['/', '\\'], '/', $expected);
+        $actual = \str_replace(['/', '\\'], '/', $actual);
         $this->assertSame($expected, $actual);
     }
 
@@ -131,13 +114,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function createView($basePath, Theme $theme = null): View
     {
-        return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->logger);
+        return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->fragmentCache, $this->logger);
     }
 
     protected function touch(string $path): void
     {
         FileHelper::createDirectory(dirname($path));
 
-        touch($path);
+        \touch($path);
     }
 }
