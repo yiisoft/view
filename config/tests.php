@@ -1,6 +1,5 @@
 <?php
 
-use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
@@ -17,10 +16,6 @@ use Yiisoft\View\WebView;
 $tempDir = sys_get_temp_dir();
 
 return [
-    ContainerInterface::class => function (ContainerInterface $container) {
-        return $container;
-    },
-
     Aliases::class => [
         '@root' => dirname(__DIR__, 1),
         '@public' => '@root/tests/public',
@@ -47,30 +42,15 @@ return [
         ],
     ],
 
-    WebView::class => function (ContainerInterface $container) {
-        $aliases = $container->get(Aliases::class);
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $theme = $container->get(Theme::class);
-        $logger = $container->get(LoggerInterface::class);
-
+    WebView::class => function (Aliases $aliases, EventDispatcherInterface $eventDispatcher, Theme $theme, LoggerInterface $logger) {
         return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
 
-    View::class => function (ContainerInterface $container) {
-        $aliases = $container->get(Aliases::class);
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $theme = $container->get(Theme::class);
-        $logger = $container->get(LoggerInterface::class);
-
+    View::class => function (Aliases $aliases, EventDispatcherInterface $eventDispatcher, Theme $theme, LoggerInterface $logger) {
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
 
-    WebViewPlaceholderMock::class => function (ContainerInterface $container) {
-        $aliases = $container->get(Aliases::class);
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $theme = $container->get(Theme::class);
-        $logger = $container->get(LoggerInterface::class);
-
+    WebViewPlaceholderMock::class => function (Aliases $aliases, EventDispatcherInterface $eventDispatcher, Theme $theme, LoggerInterface $logger) {
         return new WebViewPlaceholderMock($aliases->get('@view'), $theme, $eventDispatcher, $logger);
     },
 ];
