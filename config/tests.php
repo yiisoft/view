@@ -1,6 +1,5 @@
 <?php
 
-use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
@@ -10,7 +9,6 @@ use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Log\Logger;
 use Yiisoft\View\FragmentCache;
-use Yiisoft\View\FragmentCacheInterface;
 use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
@@ -45,35 +43,15 @@ return [
         ],
     ],
 
-    WebView::class => function (ContainerInterface $container) {
-        $aliases = $container->get(Aliases::class);
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $theme = $container->get(Theme::class);
-        $fragmentCache = $container->get(FragmentCacheInterface::class);
-        $logger = $container->get(LoggerInterface::class);
-
+    WebView::class => function (Aliases $aliases, EventDispatcherInterface $eventDispatcher, Theme $theme, FragmentCache $fragmentCache, LoggerInterface $logger) {
         return new WebView($aliases->get('@view'), $theme, $eventDispatcher, $fragmentCache, $logger);
     },
 
-    View::class => function (ContainerInterface $container) {
-        $aliases = $container->get(Aliases::class);
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $theme = $container->get(Theme::class);
-        $fragmentCache = $container->get(FragmentCacheInterface::class);
-        $logger = $container->get(LoggerInterface::class);
-
+    View::class => function (Aliases $aliases, EventDispatcherInterface $eventDispatcher, Theme $theme, FragmentCache $fragmentCache, LoggerInterface $logger) {
         return new View($aliases->get('@view'), $theme, $eventDispatcher, $fragmentCache, $logger);
     },
 
-    FragmentCacheInterface::class => FragmentCache::class,
-
-    WebViewPlaceholderMock::class => function (ContainerInterface $container) {
-        $aliases = $container->get(Aliases::class);
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $theme = $container->get(Theme::class);
-        $fragmentCache = $container->get(FragmentCacheInterface::class);
-        $logger = $container->get(LoggerInterface::class);
-
+    WebViewPlaceholderMock::class => function (Aliases $aliases, EventDispatcherInterface $eventDispatcher, Theme $theme, FragmentCache $fragmentCache, LoggerInterface $logger) {
         return new WebViewPlaceholderMock($aliases->get('@view'), $theme, $eventDispatcher, $fragmentCache, $logger);
     },
 ];
