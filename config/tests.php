@@ -21,7 +21,7 @@ return [
         '@public' => '@root/tests/public',
         '@basePath' => '@public/assets',
         '@view' => '@public/view',
-        '@web' => '/baseUrl',
+        '@baseUrl' => '/baseUrl',
     ],
 
     ListenerProviderInterface::class => [
