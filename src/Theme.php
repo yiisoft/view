@@ -48,7 +48,7 @@ use Yiisoft\Files\FileHelper;
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
- *         'baseUrl' => '@web/themes/basic',
+ *         'baseUrl' => '@baseUrl/themes/basic',
  *     ],
  * ],
  * ```
