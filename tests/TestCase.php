@@ -89,6 +89,14 @@ abstract class TestCase extends BaseTestCase
         $this->assertEquals($expected, $actual, $message);
     }
 
+    protected function assertStringContainsStringWithoutLE(string $needle, string $haystack, string $message = ''): void
+    {
+        $needle = str_replace("\r\n", "\n", $needle);
+        $haystack = str_replace("\r\n", "\n", $haystack);
+
+        $this->assertStringContainsString($needle, $haystack, $message);
+    }
+
     /**
      * Asserting same ignoring slash.
      *

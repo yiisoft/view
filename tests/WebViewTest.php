@@ -53,15 +53,15 @@ final class WebViewTest extends \Yiisoft\View\Tests\TestCase
     {
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_HEAD]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString("<script src=\"/baseUrl/js/somefile.js\"></script>\n</head>", $html);
+        $this->assertStringContainsStringWithoutLE("<script src=\"/baseUrl/js/somefile.js\"></script>\n</head>", $html);
 
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_BEGIN]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString("<body>\n<script src=\"/baseUrl/js/somefile.js\"></script>\n", $html);
+        $this->assertStringContainsStringWithoutLE("<body>\n<script src=\"/baseUrl/js/somefile.js\"></script>\n", $html);
 
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_END]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString("<script src=\"/baseUrl/js/somefile.js\"></script>\n</body>", $html);
+        $this->assertStringContainsStringWithoutLE("<script src=\"/baseUrl/js/somefile.js\"></script>\n</body>", $html);
     }
 
     public function testRegisterCssFileWithAlias(): void
