@@ -46,7 +46,10 @@
         },
         "config-plugin": {
             "common": "config/common.php",
-            "tests": "config/tests.php"
+            "tests": [
+                "$common",
+                "config/tests.php"
+            ]
         }
     },
     "autoload": {
