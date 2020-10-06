@@ -10,12 +10,9 @@ use Yiisoft\View\Theme;
 /**
  * ThemeTest.
  */
-final class ThemeTest extends \Yiisoft\View\Tests\TestCase
+final class ThemeTest extends TestCase
 {
-    /**
-     * @var string path for the test files.
-     */
-    protected $testViewPath;
+    protected string $testViewPath;
 
     public function setUp(): void
     {

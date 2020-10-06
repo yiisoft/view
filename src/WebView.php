@@ -81,7 +81,7 @@ class WebView extends View
     /**
      * @var string the page title
      */
-    private string $title;
+    private string $title = '';
 
     /**
      * @var array the registered meta tags.
@@ -542,9 +542,9 @@ class WebView extends View
      *
      * @return string
      */
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
-        return $this->title ?? null;
+        return $this->title;
     }
 
     /**
