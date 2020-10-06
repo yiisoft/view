@@ -584,7 +584,7 @@ class View implements DynamicContentAwareInterface
     public function beginPage(): void
     {
         ob_start();
-        ob_implicit_flush(0);
+        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
         $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
     }
