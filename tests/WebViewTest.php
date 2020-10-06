@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use Yiisoft\Files\FileHelper;
-use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\WebView;
 
-final class WebViewTest extends \Yiisoft\View\Tests\TestCase
+final class WebViewTest extends TestCase
 {
     private string $dataDir;
     private string $layoutPath;
@@ -73,10 +72,9 @@ final class WebViewTest extends \Yiisoft\View\Tests\TestCase
 
     public function testPlaceholders(): void
     {
-        $webView = $this->getContainer()->get(WebViewPlaceholderMock::class);
-        $webView->setPlaceholderSalt('apple');
-        $signature = $webView->getPlaceholderSignature();
-        $html = $webView->renderFile($this->layoutPath, ['content' => 'content']);
+        $this->webViewPlaceholderMock->setPlaceholderSalt('apple');
+        $signature = $this->webViewPlaceholderMock->getPlaceholderSignature();
+        $html = $this->webViewPlaceholderMock->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString($signature, $html);
     }
 }

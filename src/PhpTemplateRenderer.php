@@ -15,7 +15,7 @@ class PhpTemplateRenderer implements TemplateRendererInterface
 
         $obInitialLevel = ob_get_level();
         ob_start();
-        ob_implicit_flush(0);
+        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
         try {
             $renderer->bindTo($view)($template, $params);
             return ob_get_clean();
