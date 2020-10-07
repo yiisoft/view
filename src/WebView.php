@@ -83,7 +83,7 @@ class WebView extends View
     /**
      * @var string the page title
      */
-    private string $title;
+    private string $title = '';
 
     /**
      * @var array the registered meta tags.
@@ -201,8 +201,8 @@ class WebView extends View
     {
         $viewFile = $this->findTemplateFile($view, $context);
 
-        \ob_start();
-        \ob_implicit_flush(0);
+        ob_start();
+        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
         $this->beginPage();
         $this->head();
@@ -570,9 +570,9 @@ class WebView extends View
      *
      * @return string
      */
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
-        return $this->title ?? null;
+        return $this->title;
     }
 
     /**

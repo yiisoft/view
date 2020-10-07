@@ -4,57 +4,48 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
-use Yiisoft\Composer\Config\Builder;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Di\Container;
+use Yiisoft\Factory\Definitions\Reference;
+use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
+use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\View\FragmentCacheInterface;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
+use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
+
+use function str_replace;
 
 abstract class TestCase extends BaseTestCase
 {
+    private ContainerInterface $container;
+    private EventDispatcherInterface $eventDispatcher;
+    private LoggerInterface $logger;
     protected Aliases $aliases;
-
-    protected EventDispatcherInterface $eventDispatcher;
-
+    protected WebView $webView;
+    protected WebViewPlaceholderMock $webViewPlaceholderMock;
     protected FragmentCacheInterface $fragmentCache;
 
-    protected LoggerInterface $logger;
-
-    protected Theme $theme;
-
-    protected WebView $webView;
-
-    protected ListenerProviderInterface $listenerProvider;
-
-    private ContainerInterface $container;
-
-    /**
-     * setUp
-     *
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $config = require Builder::path('tests');
-
-        $this->container = new Container($config);
+        $this->container = new Container($this->config());
 
         $this->aliases = $this->container->get(Aliases::class);
         $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-        $this->listenerProvider = $this->container->get(ListenerProviderInterface::class);
         $this->logger = $this->container->get(LoggerInterface::class);
         $this->fragmentCache = $this->container->get(FragmentCacheInterface::class);
         $this->webView = $this->container->get(WebView::class);
+        $this->webViewPlaceholderMock = $this->container->get(WebViewPlaceholderMock::class);
     }
 
     protected function getContainer(): ContainerInterface
@@ -116,11 +107,11 @@ abstract class TestCase extends BaseTestCase
      * Create view tests.
      *
      * @param string $basePath
-     * @param Theme  $theme
+     * @param Theme|null $theme
      *
      * @return View
      */
-    protected function createView($basePath, Theme $theme = null): View
+    protected function createView(string $basePath, ?Theme $theme = null): View
     {
         return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->fragmentCache, $this->logger);
     }
@@ -130,5 +121,56 @@ abstract class TestCase extends BaseTestCase
         FileHelper::createDirectory(dirname($path));
 
         \touch($path);
+    }
+
+    private function config(): array
+    {
+        return [
+            Aliases::class => [
+                '__class' => Aliases::class,
+                '__construct()' => [
+                    [
+                        '@root' => __DIR__,
+                        '@baseUrl' => '/baseUrl'
+                    ]
+                ]
+            ],
+
+            LoggerInterface::class => NullLogger::class,
+
+            ListenerProviderInterface::class => Provider::class,
+
+            EventDispatcherInterface::class => Dispatcher::class,
+
+            View::class => [
+                '__class' => View::class,
+                '__construct()' => [
+                    __DIR__ . '/public/view',
+                    Reference::to(Theme::class),
+                    Reference::to(EventDispatcherInterface::class),
+                    Reference::to(LoggerInterface::class)
+                ]
+            ],
+
+            WebView::class => [
+                '__class' => WebView::class,
+                '__construct()' => [
+                    __DIR__ . '/public/view',
+                    Reference::to(Theme::class),
+                    Reference::to(EventDispatcherInterface::class),
+                    Reference::to(LoggerInterface::class)
+                ]
+            ],
+
+            WebViewPlaceholderMock::class => [
+                '__class' => WebViewPlaceholderMock::class,
+                '__construct()' => [
+                    __DIR__ . '/public/view',
+                    Reference::to(Theme::class),
+                    Reference::to(EventDispatcherInterface::class),
+                    Reference::to(LoggerInterface::class)
+                ]
+            ]
+        ];
     }
 }
