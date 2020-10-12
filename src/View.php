@@ -35,6 +35,12 @@ class View implements DynamicContentAwareInterface
     private array $blocks;
 
     /**
+     * @var array is a list of named data. Keys are data names and values are corresponding content.
+     * Later, the data can be accessed elsewhere via getData.
+     */
+    private array $data;
+
+    /**
      * @var ViewContextInterface|null the context under which the {@see renderFile()} method is being invoked.
      */
     private ?ViewContextInterface $context = null;
@@ -229,6 +235,59 @@ class View implements DynamicContentAwareInterface
     public function hasBlock(string $id): bool
     {
         return isset($this->blocks[$id]);
+    }
+
+    /**
+     * {@see data}
+     *
+     * @param string $id
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function setData(string $id, $value): void
+    {
+        $this->blocks[$id] = $value;
+    }
+
+    /**
+     * {@see data}
+     *
+     * @param string $id
+     *
+     * @return void
+     */
+    public function unsetData(string $id): void
+    {
+        unset($this->data[$id]);
+    }
+
+    /**
+     * {@see data}
+     *
+     * @param string $id
+     *
+     * @return mixed
+     */
+    public function getData(string $id)
+    {
+        if (isset($this->data[$id])) {
+            return $this->data[$id];
+        }
+
+        throw new \InvalidArgumentException('Data: "' . $id . '" not found.');
+    }
+
+    /**
+     * {@see data}
+     *
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasData(string $id): bool
+    {
+        return isset($this->data[$id]);
     }
 
     /**
