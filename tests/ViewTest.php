@@ -4,21 +4,15 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
-use Yiisoft\Composer\Config\Builder;
-use Yiisoft\Di\Container;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\View\Theme;
-use Yiisoft\View\View;
 
 /**
  * ViewTest.
  */
-final class ViewTest extends \Yiisoft\View\Tests\TestCase
+final class ViewTest extends TestCase
 {
-    /**
-     * @var string path for the test files.
-     */
-    private $testViewPath = '';
+    private string $testViewPath = '';
 
     public function setUp(): void
     {
@@ -150,23 +144,15 @@ PHP
 
     public function testDefaultParameterIsPassedToView(): void
     {
-        $config = require Builder::path('tests');
-
-        $container = new Container($config);
-        $view = $container->get(View::class);
-        $view->setDefaultParameters(['parameter' => 'default_parameter']);
-        $output = $view->render('//parameters');
+        $this->webView->setDefaultParameters(['parameter' => 'default_parameter']);
+        $output = $this->webView->render('//parameters');
         $this->assertStringContainsString('default_parameter', $output);
     }
 
     public function testDefaultParameterIsOverwrittenByLocalParameter(): void
     {
-        $config = require Builder::path('tests');
-
-        $container = new Container($config);
-        $view = $container->get(View::class);
-        $view->setDefaultParameters(['parameter' => 'default_parameter']);
-        $output = $view->render('//parameters', [
+        $this->webView->setDefaultParameters(['parameter' => 'default_parameter']);
+        $output = $this->webView->render('//parameters', [
             'parameter' => 'local_parameter',
         ]);
         $this->assertStringContainsString('local_parameter', $output);
@@ -174,11 +160,7 @@ PHP
 
     public function testPlaceholderSalt(): void
     {
-        $config = require Builder::path('tests');
-
-        $container = new Container($config);
-        $view = $container->get(View::class);
-        $view->setPlaceholderSalt('apple');
-        $this->assertSame(dechex(crc32('apple')), $view->getPlaceholderSignature());
+        $this->webView->setPlaceholderSalt('apple');
+        $this->assertSame(dechex(crc32('apple')), $this->webView->getPlaceholderSignature());
     }
 }
