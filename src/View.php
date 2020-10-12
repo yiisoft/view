@@ -186,7 +186,7 @@ class View implements DynamicContentAwareInterface
      *
      * @return void
      */
-    public function setBlocks(string $id, string $value): void
+    public function setBlock(string $id, string $value): void
     {
         $this->blocks[$id] = $value;
     }
@@ -194,17 +194,41 @@ class View implements DynamicContentAwareInterface
     /**
      * {@see blocks}
      *
-     * @param string $value
+     * @param string $id
+     *
+     * @return void
+     */
+    public function unsetBlock(string $id): void
+    {
+        unset($this->blocks[$id]);
+    }
+
+    /**
+     * {@see blocks}
+     *
+     * @param string $id
      *
      * @return string
      */
-    public function getBlock(string $value): string
+    public function getBlock(string $id): string
     {
-        if (isset($this->blocks[$value])) {
-            return $this->blocks[$value];
+        if (isset($this->blocks[$id])) {
+            return $this->blocks[$id];
         }
 
-        throw new \InvalidArgumentException('Block: ' . $value . ' not found.');
+        throw new \InvalidArgumentException('Block: "' . $id . '" not found.');
+    }
+
+    /**
+     * {@see blocks}
+     *
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasBlock(string $id): bool
+    {
+        return isset($this->blocks[$id]);
     }
 
     /**
