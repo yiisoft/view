@@ -342,11 +342,10 @@ class View implements DynamicContentAwareInterface
             $viewFile = $this->theme->applyTo($viewFile);
         }
 
-        if (is_file($viewFile)) {
-            $viewFile = $this->localize($viewFile);
-        } else {
+        if (!is_file($viewFile)) {
             throw new ViewNotFoundException("The view file does not exist: $viewFile");
         }
+        $viewFile = $this->localize($viewFile, $parameters['translateLanguage'] ?? null, $parameters['sourceLanguage'] ?? null);
 
         $oldContext = $this->context;
         if ($context !== null) {
@@ -362,7 +361,16 @@ class View implements DynamicContentAwareInterface
             $this->logger->debug("Rendering view file: $viewFile");
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
+
+            $saveLanguage = $this->language;
+            $sourceLanguage = $this->sourceLanguage;
+            $this->language = $parameters['translateLanguage'] ?? $this->language;
+            $this->sourceLanguage = $parameters['sourceLanguage'] ?? $this->sourceLanguage;
+
             $output = $renderer->render($this, $viewFile, $parameters);
+
+            $this->language = $saveLanguage;
+            $this->sourceLanguage = $sourceLanguage;
 
             $output = $this->afterRender($viewFile, $parameters, $output);
         }
