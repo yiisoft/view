@@ -345,7 +345,7 @@ class View implements DynamicContentAwareInterface
         if (!is_file($viewFile)) {
             throw new ViewNotFoundException("The view file does not exist: $viewFile");
         }
-        $viewFile = $this->localize($viewFile, $parameters['translateLanguage'] ?? null, $parameters['sourceLanguage'] ?? null);
+        $viewFile = $this->localize($viewFile, $parameters['language'] ?? null, $parameters['sourceLanguage'] ?? null);
 
         $oldContext = $this->context;
         if ($context !== null) {
