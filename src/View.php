@@ -364,7 +364,7 @@ class View implements DynamicContentAwareInterface
 
             $language = $this->language;
             $sourceLanguage = $this->sourceLanguage;
-            $this->language = $parameters['translateLanguage'] ?? $this->language;
+            $this->language = $parameters['language'] ?? $this->language;
             $this->sourceLanguage = $parameters['sourceLanguage'] ?? $this->sourceLanguage;
 
             $output = $renderer->render($this, $viewFile, $parameters);
