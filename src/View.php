@@ -362,7 +362,7 @@ class View implements DynamicContentAwareInterface
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
 
-            $saveLanguage = $this->language;
+            $language = $this->language;
             $sourceLanguage = $this->sourceLanguage;
             $this->language = $parameters['translateLanguage'] ?? $this->language;
             $this->sourceLanguage = $parameters['sourceLanguage'] ?? $this->sourceLanguage;
