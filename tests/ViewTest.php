@@ -171,7 +171,7 @@ PHP
     {
         $view = $this->getContainer()->get(View::class);
         $view->render('//simple');
-        $this->assertTrue($this->getContainer()->get(LoggerInterface::class)->has(
+        $this->assertTrue($this->getLogger()->has(
             LogLevel::DEBUG,
             'Rendering view file: ' . $view->getBasePath() . '/simple.php'
         ));
@@ -180,6 +180,7 @@ PHP
     public function testWithoutLogger(): void
     {
         $view = $this->getContainer()->get('view-without-logger');
-        $this->assertSame('hello', $view->render('//simple'));
+        $view->render('//simple');
+        $this->assertEmpty($this->getLogger()->getAll());
     }
 }

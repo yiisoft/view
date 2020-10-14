@@ -22,4 +22,9 @@ final class LoggerStub implements LoggerInterface
     {
         return array_key_exists($level, $this->logs) && in_array($message, $this->logs[$level]);
     }
+
+    public function getAll(): array
+    {
+        return $this->logs;
+    }
 }

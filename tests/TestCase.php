@@ -184,4 +184,9 @@ abstract class TestCase extends BaseTestCase
             ]
         ];
     }
+
+    protected function getLogger(): LoggerInterface
+    {
+        return $this->getContainer()->get(LoggerInterface::class);
+    }
 }
