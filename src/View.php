@@ -92,9 +92,9 @@ class View implements DynamicContentAwareInterface
     private string $language = 'en';
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface|null $logger
      */
-    private LoggerInterface $logger;
+    private ?LoggerInterface $logger;
 
     /**
      * @var string $sourceLanguage
@@ -114,8 +114,12 @@ class View implements DynamicContentAwareInterface
      */
     private array $viewFiles = [];
 
-    public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
-    {
+    public function __construct(
+        string $basePath,
+        Theme $theme,
+        EventDispatcherInterface $eventDispatcher,
+        ?LoggerInterface $logger = null
+    ) {
         $this->basePath = $basePath;
         $this->theme = $theme;
         $this->eventDispatcher = $eventDispatcher;
@@ -359,7 +363,9 @@ class View implements DynamicContentAwareInterface
         ];
 
         if ($this->beforeRender($viewFile, $parameters)) {
-            $this->logger->debug("Rendering view file: $viewFile");
+            if ($this->logger !== null) {
+                $this->logger->debug("Rendering view file: $viewFile");
+            }
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
             $output = $renderer->render($this, $viewFile, $parameters);

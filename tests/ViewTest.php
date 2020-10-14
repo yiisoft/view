@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\View\Theme;
+use Yiisoft\View\View;
 
 /**
  * ViewTest.
@@ -162,5 +165,21 @@ PHP
     {
         $this->webView->setPlaceholderSalt('apple');
         $this->assertSame(dechex(crc32('apple')), $this->webView->getPlaceholderSignature());
+    }
+
+    public function testLogger(): void
+    {
+        $view = $this->getContainer()->get(View::class);
+        $view->render('//simple');
+        $this->assertTrue($this->getContainer()->get(LoggerInterface::class)->has(
+            LogLevel::DEBUG,
+            'Rendering view file: ' . $view->getBasePath() . '/simple.php'
+        ));
+    }
+
+    public function testWithoutLogger(): void
+    {
+        $view = $this->getContainer()->get('view-without-logger');
+        $this->assertSame('hello', $view->render('//simple'));
     }
 }

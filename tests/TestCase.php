@@ -9,13 +9,13 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Di\Container;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\View\Tests\Stubs\LoggerStub;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
@@ -125,7 +125,7 @@ abstract class TestCase extends BaseTestCase
                 ]
             ],
 
-            LoggerInterface::class => NullLogger::class,
+            LoggerInterface::class => LoggerStub::class,
 
             ListenerProviderInterface::class => Provider::class,
 
@@ -138,6 +138,16 @@ abstract class TestCase extends BaseTestCase
                     Reference::to(Theme::class),
                     Reference::to(EventDispatcherInterface::class),
                     Reference::to(LoggerInterface::class)
+                ]
+            ],
+
+            'view-without-logger' => [
+                '__class' => View::class,
+                '__construct()' => [
+                    __DIR__ . '/public/view',
+                    Reference::to(Theme::class),
+                    Reference::to(EventDispatcherInterface::class),
+                    null
                 ]
             ],
 
