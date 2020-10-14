@@ -266,7 +266,7 @@ class View implements DynamicContentAwareInterface
         } elseif ($context instanceof ViewContextInterface) {
             // path provided by context
             $file = $context->getViewPath() . '/' . $view;
-        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
+        } elseif (is_string($currentViewFile = $this->getRequestedViewFile())) {
             // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;
         } else {
@@ -369,8 +369,8 @@ class View implements DynamicContentAwareInterface
      */
     public function localize(string $file, ?string $language = null, ?string $sourceLanguage = null): string
     {
-        $language = $language ?? $this->language;
-        $sourceLanguage = $sourceLanguage ?? $this->sourceLanguage;
+        $language ??= $this->language;
+        $sourceLanguage ??= $this->sourceLanguage;
 
         if ($language === $sourceLanguage) {
             return $file;
@@ -434,8 +434,9 @@ class View implements DynamicContentAwareInterface
      * @param array $parameters the parameter array passed to the {@see render()} method.
      * @param string $output the rendering result of the view file. Updates to this parameter
      * will be passed back and returned by {@see renderFile()}.
+     * @return string
      */
-    public function afterRender(string $viewFile, array $parameters, &$output): string
+    public function afterRender(string $viewFile, array $parameters, string &$output): string
     {
         $event = new AfterRender($viewFile, $parameters, $output);
         $event = $this->eventDispatcher->dispatch($event);
@@ -586,7 +587,9 @@ class View implements DynamicContentAwareInterface
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
-        $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
+        if (is_string($viewFile = $this->getViewFile())) {
+            $this->eventDispatcher->dispatch(new PageBegin($viewFile));
+        }
     }
 
     /**
@@ -596,7 +599,9 @@ class View implements DynamicContentAwareInterface
      */
     public function endPage(): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
+        if (is_string($viewFile = $this->getViewFile())) {
+            $this->eventDispatcher->dispatch(new PageEnd($viewFile));
+        }
         ob_end_flush();
     }
 }

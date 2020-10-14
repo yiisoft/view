@@ -119,9 +119,9 @@ PHP
 
     /**
      * Creates test files structure.
-     * @param string $baseDirectory base directory path.
      * @param array $items file system objects to be created in format: objectName => objectContent
      * Arrays specifies directories, other values - files.
+     * @param string|null $baseDirectory base directory path.
      */
     private function createFileStructure(array $items, string $baseDirectory = null): void
     {

@@ -9,6 +9,8 @@ use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
+use Yiisoft\View\Exception\ContentCantBeFetched;
+use Yiisoft\View\Exception\ViewNotFoundException;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -138,8 +140,10 @@ class WebView extends View
      */
     public function beginBody(): void
     {
-        echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
-        $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
+        if (is_string($viewFile = $this->getViewFile())) {
+            echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
+            $this->eventDispatcher->dispatch(new BodyBegin($viewFile));
+        }
     }
 
     /**
@@ -147,8 +151,10 @@ class WebView extends View
      */
     public function endBody(): void
     {
-        $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
-        echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
+        if (is_string($viewFile = $this->getViewFile())) {
+            $this->eventDispatcher->dispatch(new BodyEnd($viewFile));
+            echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
+        }
     }
 
     /**
@@ -160,17 +166,21 @@ class WebView extends View
      */
     public function endPage($ajaxMode = false): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
+        if (is_string($viewFile = $this->getViewFile())) {
+            $this->eventDispatcher->dispatch(new PageEnd($viewFile));
 
-        $content = ob_get_clean();
+            $content = ob_get_clean();
 
-        echo strtr($content, [
-            sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
-            sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
-            sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
-        ]);
+            if (is_string($content)) {
+                echo strtr($content, [
+                    sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature()) => $this->renderHeadHtml(),
+                    sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature()) => $this->renderBodyBeginHtml(),
+                    sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
+                ]);
+            }
 
-        $this->clear();
+            $this->clear();
+        }
     }
 
     /**
@@ -188,6 +198,8 @@ class WebView extends View
      * existing {@see context} will be used.
      *
      * @return string the rendering result
+     * @throws ContentCantBeFetched
+     * @throws ViewNotFoundException|\Throwable
      *
      * {@see render()}
      */
@@ -205,7 +217,11 @@ class WebView extends View
         $this->endBody();
         $this->endPage(true);
 
-        return ob_get_clean();
+        if (is_string($content = ob_get_clean())) {
+            return $content;
+        } else {
+            throw new ContentCantBeFetched();
+        }
     }
 
     /**
@@ -238,11 +254,12 @@ class WebView extends View
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
      * @param array $options the HTML attributes for the meta tag.
-     * @param string $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
+     * @param string|null $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
      * latter will overwrite the former. If this is null, the new meta tag will be appended to the
      * existing ones.
      *
      * @return void
+     * @throws \JsonException
      */
     public function registerMetaTag(array $options, string $key = null): void
     {
@@ -272,6 +289,7 @@ class WebView extends View
      * @param string|null $key the key that identifies the link tag. If two link tags are registered with the same
      * key, the latter will overwrite the former. If this is null, the new link tag will be appended
      * to the existing ones.
+     * @throws \JsonException
      */
     public function registerLinkTag(array $options, ?string $key = null): void
     {
@@ -307,8 +325,9 @@ class WebView extends View
      *
      * @param string $css the content of the CSS code block to be registered
      * @param array $options the HTML attributes for the `<style>`-tag.
-     * @param string $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
+     * @param string|null $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
      * code blocks are registered with the same key, the latter will overwrite the former.
+     * @throws \JsonException
      */
     public function registerCss(string $css, array $options = [], string $key = null): void
     {
@@ -327,10 +346,11 @@ class WebView extends View
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
      * for the supported options.
      *
-     * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
+     * @param string|null $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
      *
      * @return void
+     * @throws \JsonException
      */
     public function registerCssFile(string $url, array $options = [], string $key = null): void
     {
@@ -353,7 +373,7 @@ class WebView extends View
      * - {@see POSITION_LOAD}: executed when HTML page is completely loaded.
      * - {@see POSITION_READY}: executed when HTML document composition is ready.
      *
-     * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
+     * @param string|null $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      *
      * @return void
@@ -382,12 +402,13 @@ class WebView extends View
      *
      * Please refer to {@see \Yiisoft\Html\Html::jsFile()} for other supported options.
      *
-     * @param string $key the key that identifies the JS script file. If null, it will use $url as the key. If two JS
+     * @param string|null $key the key that identifies the JS script file. If null, it will use $url as the key. If two JS
      * files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
      *
      * @return void
+     * @throws \JsonException
      */
     public function registerJsFile(string $url, array $options = [], string $key = null): void
     {
