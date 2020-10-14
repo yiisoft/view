@@ -78,6 +78,18 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    public function assertStringContainsStringWithoutLE(string $expected, string $actual, string $message = ''): void
+    {
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual = str_replace("\r\n", "\n", $actual);
+        $this->assertStringContainsString($expected, $actual, $message);
+    }
+
+    /**
      * Asserting same ignoring slash.
      *
      * @param string $expected
