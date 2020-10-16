@@ -247,7 +247,7 @@ class View implements DynamicContentAwareInterface
      */
     public function setData(string $id, $value): void
     {
-        $this->blocks[$id] = $value;
+        $this->data[$id] = $value;
     }
 
     /**
