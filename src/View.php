@@ -198,7 +198,7 @@ class View implements DynamicContentAwareInterface
      *
      * @return void
      */
-    public function unsetBlock(string $id): void
+    public function removetBlock(string $id): void
     {
         unset($this->blocks[$id]);
     }
