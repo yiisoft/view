@@ -22,6 +22,9 @@ return [
     },
 
     WebView::class => static fn (
-        Aliases $aliases, EventDispatcherInterface $event, LoggerInterface $logger, Theme $theme
+        Aliases $aliases,
+        EventDispatcherInterface $event,
+        LoggerInterface $logger,
+        Theme $theme
     ) => new WebView($aliases->get('@views'), $theme, $event, $logger)
 ];
