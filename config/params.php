@@ -3,7 +3,9 @@
 return [
     'yiisoft/view' => [
         'theme' => [
-            'pathMap' => []
+            'pathMap' => [],
+            'basePath' => '',
+            'baseUrl' => '',
         ]
     ]
 ];

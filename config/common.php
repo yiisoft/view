@@ -9,7 +9,7 @@ use Yiisoft\View\Theme;
 /** @var array $params */
 
 return [
-    Theme::class => static function (Aliases $aliases) {
+    Theme::class => static function (Aliases $aliases) use ($params) {
         $pathMap = [];
 
         foreach ($params['yiisoft/view']['theme']['pathMap'] as $key => $value) {
@@ -18,7 +18,11 @@ return [
             ];
         }
 
-        return new Theme($pathMap);
+        return new Theme(
+            $pathMap,
+            $params['yiisoft/view']['theme']['basePath'],
+            $params['yiisoft/view']['theme']['baseUrl']
+        );
     },
 
     WebView::class => static fn (
