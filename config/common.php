@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Psr\Container\ContainerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\View\Theme;
+use Yiisoft\View\WebView;
 
 /** @var array $params */
 
@@ -25,10 +25,10 @@ return [
         );
     },
 
-    WebView::class => static fn (
-        Aliases $aliases,
-        EventDispatcherInterface $event,
-        LoggerInterface $logger,
-        Theme $theme
-    ) => new WebView($aliases->get('@views'), $theme, $event, $logger)
+    WebView::class => [
+        '__class' => WebView::class,
+        '__construct()' => [
+            'basePath' => static fn (Aliases $aliases) => $aliases->get('@views')
+        ]
+    ]
 ];
