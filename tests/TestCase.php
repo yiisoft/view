@@ -12,7 +12,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Di\Container;
-use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Files\FileHelper;
@@ -134,30 +133,21 @@ abstract class TestCase extends BaseTestCase
             View::class => [
                 '__class' => View::class,
                 '__construct()' => [
-                    __DIR__ . '/public/view',
-                    Reference::to(Theme::class),
-                    Reference::to(EventDispatcherInterface::class),
-                    Reference::to(LoggerInterface::class)
+                    'basePath' => __DIR__ . '/public/view'
                 ]
             ],
 
             WebView::class => [
                 '__class' => WebView::class,
                 '__construct()' => [
-                    __DIR__ . '/public/view',
-                    Reference::to(Theme::class),
-                    Reference::to(EventDispatcherInterface::class),
-                    Reference::to(LoggerInterface::class)
+                    'basePath' => __DIR__ . '/public/view'
                 ]
             ],
 
             WebViewPlaceholderMock::class => [
                 '__class' => WebViewPlaceholderMock::class,
                 '__construct()' => [
-                    __DIR__ . '/public/view',
-                    Reference::to(Theme::class),
-                    Reference::to(EventDispatcherInterface::class),
-                    Reference::to(LoggerInterface::class)
+                    'basePath' => __DIR__ . '/public/view'
                 ]
             ]
         ];

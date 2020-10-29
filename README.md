@@ -20,6 +20,7 @@ For license information check the [LICENSE](LICENSE.md)-file.
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii-web/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii-web/)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Fview%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/view/master)
 [![static analysis](https://github.com/yiisoft/view/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/view/actions?query=workflow%3A%22static+analysis%22)
+[![type-coverage](https://shepherd.dev/github/yiisoft/view/coverage.svg)](https://shepherd.dev/github/yiisoft/view)
 
 
 ## Installation
