@@ -14,7 +14,7 @@ return [
 
         foreach ($params['yiisoft/view']['theme']['pathMap'] as $key => $value) {
             $pathMap = [
-                $aliases->get($key) => $aliases->get($value)
+                $aliases->get($key) => $aliases->get($value),
             ];
         }
 
@@ -28,10 +28,10 @@ return [
     WebView::class => [
         '__class' => WebView::class,
         '__construct()' => [
-            'basePath' => static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
+            'basePath' => static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath']),
         ],
         'setDefaultParameters()' => [
-            $params['yiisoft/view']['defaultParameters']
-        ]
-    ]
+            $params['yiisoft/view']['defaultParameters'],
+        ],
+    ],
 ];
