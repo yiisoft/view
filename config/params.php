@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'yiisoft/view' => [
         'basePath' => '@views',
@@ -8,6 +10,6 @@ return [
             'pathMap' => [],
             'basePath' => '',
             'baseUrl' => '',
-        ]
+        ],
     ],
 ];
