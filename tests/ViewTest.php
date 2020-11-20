@@ -18,7 +18,7 @@ final class ViewTest extends TestCase
     {
         parent::setUp();
 
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
 
         FileHelper::createDirectory($this->testViewPath);
     }
@@ -119,6 +119,7 @@ PHP
 
     /**
      * Creates test files structure.
+     *
      * @param string $baseDirectory base directory path.
      * @param array $items file system objects to be created in format: objectName => objectContent
      * Arrays specifies directories, other values - files.

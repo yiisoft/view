@@ -18,7 +18,7 @@ final class ThemeTest extends TestCase
     {
         parent::setUp();
 
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
     }
 
     public function tearDown(): void
@@ -96,7 +96,7 @@ final class ThemeTest extends TestCase
             $appPath => [
                 $firstThemePath,
                 $secondThemePath,
-            ]
+            ],
         ]);
 
         $path = $theme->applyTo($appPath . '/test.php');
@@ -112,7 +112,7 @@ final class ThemeTest extends TestCase
     public function testApplyToFallback(): void
     {
         $theme = new Theme([
-            '/app/views' => '/app/themes/basic'
+            '/app/views' => '/app/themes/basic',
         ]);
 
         $path = $theme->applyTo('/app/views/non-existing.php');

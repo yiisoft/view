@@ -23,7 +23,7 @@ use Yiisoft\View\Exception\ViewNotFoundException;
 class View implements DynamicContentAwareInterface
 {
     /**
-     * @var string $basePath view path
+     * @var string view path
      */
     private string $basePath;
 
@@ -51,7 +51,7 @@ class View implements DynamicContentAwareInterface
     private array $defaultParameters = [];
 
     /**
-     * @var EventDispatcherInterface $eventDispatcher
+     * @var EventDispatcherInterface
      */
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -87,17 +87,17 @@ class View implements DynamicContentAwareInterface
     private array $dynamicPlaceholders = [];
 
     /**
-     * @var string $language
+     * @var string
      */
     private string $language = 'en';
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     private LoggerInterface $logger;
 
     /**
-     * @var string $sourceLanguage
+     * @var string
      */
     private string $sourceLanguage = 'en';
 
@@ -183,8 +183,6 @@ class View implements DynamicContentAwareInterface
      *
      * @param string $id
      * @param string $value
-     *
-     * @return void
      */
     public function setBlock(string $id, string $value): void
     {
@@ -195,8 +193,6 @@ class View implements DynamicContentAwareInterface
      * {@see blocks}
      *
      * @param string $id
-     *
-     * @return void
      */
     public function removetBlock(string $id): void
     {
@@ -253,13 +249,13 @@ class View implements DynamicContentAwareInterface
      * {@see context} in the view. If the context implements {@see ViewContextInterface}, it may also be used to locate
      * the view file corresponding to a relative view name.
      *
-     * @return string the rendering result
-     *
      * @throws \RuntimeException if the view cannot be resolved.
      * @throws ViewNotFoundException if the view file does not exist.
      * @throws \Throwable
      *
      * {@see renderFile()}
+     *
+     * @return string the rendering result
      */
     public function render(string $view, array $parameters = [], ?ViewContextInterface $context = null): string
     {
@@ -326,10 +322,10 @@ class View implements DynamicContentAwareInterface
      * @param ViewContextInterface|null $context the context that the view should use for rendering the view. If null,
      * existing {@see context} will be used.
      *
-     * @return string the rendering result
      * @throws \Throwable
-     *
      * @throws ViewNotFoundException if the view file does not exist
+     *
+     * @return string the rendering result
      */
     public function renderFile(string $viewFile, array $parameters = [], ?ViewContextInterface $context = null): string
     {
@@ -414,7 +410,7 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * @return string|bool the view file currently being rendered. False if no view file is being rendered.
+     * @return bool|string the view file currently being rendered. False if no view file is being rendered.
      */
     public function getViewFile()
     {
@@ -422,7 +418,7 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
+     * @return bool|string the requested view currently being rendered. False if no view file is being rendered.
      */
     protected function getRequestedViewFile()
     {
@@ -524,6 +520,7 @@ class View implements DynamicContentAwareInterface
      * Set source locale.
      *
      * @param string $locale
+     *
      * @return self
      */
     public function setSourceLocale(string $locale): self
@@ -581,8 +578,6 @@ class View implements DynamicContentAwareInterface
      * instances.
      *
      * @param DynamicContentAwareInterface $instance class instance supporting dynamic contents.
-     *
-     * @return void
      */
     public function pushDynamicContent(DynamicContentAwareInterface $instance): void
     {
@@ -592,8 +587,6 @@ class View implements DynamicContentAwareInterface
     /**
      * Removes a last class instance supporting dynamic contents from a list of currently active dynamic content class
      * instances.
-     *
-     * @return void
      */
     public function popDynamicContent(): void
     {
@@ -602,8 +595,6 @@ class View implements DynamicContentAwareInterface
 
     /**
      * Marks the beginning of a page.
-     *
-     * @return void
      */
     public function beginPage(): void
     {
@@ -615,8 +606,6 @@ class View implements DynamicContentAwareInterface
 
     /**
      * Marks the ending of a page.
-     *
-     * @return void
      */
     public function endPage(): void
     {

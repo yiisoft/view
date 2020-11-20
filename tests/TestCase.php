@@ -10,17 +10,17 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use function str_replace;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Di\Container;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
-use Yiisoft\View\WebView;
-use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 
-use function str_replace;
+use Yiisoft\View\WebView;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -51,8 +51,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * tearDown
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -62,11 +60,10 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Asserting two strings equality ignoring line endings.
+     *
      * @param string $expected
      * @param string $actual
      * @param string $message
-     *
-     * @return void
      */
     protected function assertEqualsWithoutLE(string $expected, string $actual, string $message = ''): void
     {
@@ -81,8 +78,6 @@ abstract class TestCase extends BaseTestCase
      *
      * @param string $expected
      * @param string $actual
-     *
-     * @return void
      */
     protected function assertSameIgnoringSlash(string $expected, string $actual): void
     {
@@ -119,9 +114,9 @@ abstract class TestCase extends BaseTestCase
                 '__construct()' => [
                     [
                         '@root' => __DIR__,
-                        '@baseUrl' => '/baseUrl'
-                    ]
-                ]
+                        '@baseUrl' => '/baseUrl',
+                    ],
+                ],
             ],
 
             LoggerInterface::class => NullLogger::class,
@@ -133,23 +128,23 @@ abstract class TestCase extends BaseTestCase
             View::class => [
                 '__class' => View::class,
                 '__construct()' => [
-                    'basePath' => __DIR__ . '/public/view'
-                ]
+                    'basePath' => __DIR__ . '/public/view',
+                ],
             ],
 
             WebView::class => [
                 '__class' => WebView::class,
                 '__construct()' => [
-                    'basePath' => __DIR__ . '/public/view'
-                ]
+                    'basePath' => __DIR__ . '/public/view',
+                ],
             ],
 
             WebViewPlaceholderMock::class => [
                 '__class' => WebViewPlaceholderMock::class,
                 '__construct()' => [
-                    'basePath' => __DIR__ . '/public/view'
-                ]
-            ]
+                    'basePath' => __DIR__ . '/public/view',
+                ],
+            ],
         ];
     }
 }
