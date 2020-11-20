@@ -32,7 +32,7 @@
         "phpunit/phpunit": "^9.4",
         "psr/container": "1.0.0",
         "roave/infection-static-analysis-plugin": "^1.4",
-        "vimeo/psalm": "^4.1",
+        "vimeo/psalm": "^4.2",
         "yiisoft/aliases": "^1.1",
         "yiisoft/cache": "^3.0@dev",
         "yiisoft/di": "^3.0@dev",
