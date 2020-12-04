@@ -18,7 +18,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.4|^8.0",
-        "psr/container-implementation": "1.0.0",
         "psr/event-dispatcher": "1.0.0",
         "psr/event-dispatcher-implementation": "1.0.0",
         "psr/log": "^1.1",
@@ -30,7 +29,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
-        "psr/container": "1.0.0",
         "roave/infection-static-analysis-plugin": "^1.5",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.2",
