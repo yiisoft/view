@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'yiisoft/view' => [
-        'basePath' => '@views',
+        'basePath' => '',
         'defaultParameters' => [],
         'theme' => [
             'pathMap' => [],
