@@ -24,7 +24,7 @@
         "yiisoft/arrays": "^3.0@dev",
         "yiisoft/files": "^3.0@dev",
         "yiisoft/html": "^3.0@dev",
-        "yiisoft/i18n": "^3.0@dev",
+        "yiisoft/i18n": "^1.0",
         "yiisoft/json": "^1.0"
     },
     "require-dev": {
