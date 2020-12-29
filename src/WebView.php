@@ -370,7 +370,7 @@ class WebView extends View
      *     * {@see POSITION_BEGIN}: at the beginning of the body section
      *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
-     * Please refer to {@see \Yiisoft\Html\Html::jsFile()} for other supported options.
+     * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
      * @param string $key the key that identifies the JS script file. If null, it will use $url as the key. If two JS
      * files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
@@ -381,7 +381,7 @@ class WebView extends View
         $key = $key ?: $url;
 
         $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-        $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options);
     }
 
     /**
