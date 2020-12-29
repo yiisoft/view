@@ -381,7 +381,7 @@ class WebView extends View
         $key = $key ?: $url;
 
         $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-        $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options);
     }
 
     /**
