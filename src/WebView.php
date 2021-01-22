@@ -500,11 +500,11 @@ class WebView extends View
             }
             if (!empty($this->js[self::POSITION_READY])) {
                 $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
-                $lines[] = Html::script($js, ['type' => 'text/javascript']);
+                $lines[] = Html::script($js);
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
                 $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
-                $lines[] = Html::script($js, ['type' => 'text/javascript']);
+                $lines[] = Html::script($js);
             }
         }
 
