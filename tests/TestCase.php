@@ -101,7 +101,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function touch(string $path): void
     {
-        FileHelper::createDirectory(dirname($path));
+        FileHelper::ensureDirectory(dirname($path));
 
         touch($path);
     }
