@@ -22,7 +22,7 @@
         "psr/event-dispatcher-implementation": "1.0.0",
         "psr/log": "^1.1",
         "yiisoft/arrays": "^1.0",
-        "yiisoft/files": "^3.0@dev",
+        "yiisoft/files": "^1.0",
         "yiisoft/html": "^3.0@dev",
         "yiisoft/i18n": "^1.0",
         "yiisoft/json": "^1.0"
