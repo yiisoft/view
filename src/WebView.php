@@ -243,9 +243,9 @@ class WebView extends View
     public function registerMetaTag(array $options, string $key = null): void
     {
         if ($key === null) {
-            $this->metaTags[] = Html::tag('meta', '', $options);
+            $this->metaTags[] = Html::meta()->attributes($options)->render();
         } else {
-            $this->metaTags[$key] = Html::tag('meta', '', $options);
+            $this->metaTags[$key] = Html::meta()->attributes($options)->render();
         }
     }
 
@@ -272,9 +272,9 @@ class WebView extends View
     public function registerLinkTag(array $options, ?string $key = null): void
     {
         if ($key === null) {
-            $this->linkTags[] = Html::tag('link', '', $options);
+            $this->linkTags[] = Html::link()->attributes($options)->render();
         } else {
-            $this->linkTags[$key] = Html::tag('link', '', $options);
+            $this->linkTags[$key] = Html::link()->attributes($options)->render();
         }
     }
 
@@ -309,7 +309,7 @@ class WebView extends View
     public function registerCss(string $css, array $options = [], string $key = null): void
     {
         $key = $key ?: md5($css);
-        $this->css[$key] = Html::style($css, $options);
+        $this->css[$key] = Html::style($css, $options)->render();
     }
 
     /**
@@ -329,7 +329,7 @@ class WebView extends View
     {
         $key = $key ?: $url;
 
-        $this->cssFiles[$key] = Html::cssFile($url, $options);
+        $this->cssFiles[$key] = Html::cssFile($url, $options)->render();
     }
 
     /**
@@ -381,7 +381,7 @@ class WebView extends View
         $key = $key ?: $url;
 
         $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options);
+        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options)->render();
     }
 
     /**
@@ -435,7 +435,7 @@ class WebView extends View
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
         }
         if (!empty($this->js[self::POSITION_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]));
+            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]))->render();
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -455,7 +455,7 @@ class WebView extends View
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
         if (!empty($this->js[self::POSITION_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]));
+            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]))->render();
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -492,19 +492,19 @@ class WebView extends View
                 $scripts[] = implode("\n", $this->js[self::POSITION_LOAD]);
             }
             if (!empty($scripts)) {
-                $lines[] = Html::script(implode("\n", $scripts));
+                $lines[] = Html::script(implode("\n", $scripts))->render();
             }
         } else {
             if (!empty($this->js[self::POSITION_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]));
+                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]))->render();
             }
             if (!empty($this->js[self::POSITION_READY])) {
                 $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
-                $lines[] = Html::script($js);
+                $lines[] = Html::script($js)->render();
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
                 $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
-                $lines[] = Html::script($js);
+                $lines[] = Html::script($js)->render();
             }
         }
 
