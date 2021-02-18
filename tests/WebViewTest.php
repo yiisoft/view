@@ -56,7 +56,7 @@ final class WebViewTest extends TestCase
 
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_BEGIN]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<body>' . "\n" . '<script src="/baseUrl/js/somefile.js"></script>', $html);
+        $this->assertStringContainsString('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_END]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
