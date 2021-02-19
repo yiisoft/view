@@ -279,26 +279,6 @@ class WebView extends View
     }
 
     /**
-     * Registers CSRF meta tags.
-     *
-     * They are rendered dynamically to retrieve a new CSRF token for each request.
-     *
-     * ```php
-     * $view->registerCsrfMetaTags();
-     * ```
-     *
-     * The above code will result in `<meta name="csrf-param" content="[\Yiisoft\Web\Request::$csrfParam]">` and
-     * `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
-     *
-     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
-     * from `yii.js`.
-     */
-    public function registerCsrfMetaTags(): void
-    {
-        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return Yiisoft\Html\Html::csrfMetaTags();');
-    }
-
-    /**
      * Registers a CSS code block.
      *
      * @param string $css the content of the CSS code block to be registered
