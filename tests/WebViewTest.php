@@ -38,7 +38,7 @@ final class WebViewTest extends TestCase
     {
         $this->webView->registerJsVar('username', 'samdark');
         $html = $this->webView->render('//layout.php', ['content' => 'content']);
-        $this-> assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
+        $this->assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
 
         $this->webView->registerJsVar('objectTest', [
             'number' => 42,
@@ -76,5 +76,26 @@ final class WebViewTest extends TestCase
         $signature = $this->webViewPlaceholderMock->getPlaceholderSignature();
         $html = $this->webViewPlaceholderMock->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString($signature, $html);
+    }
+
+    public function testRegisterMetaTag(): void
+    {
+        $this->webView->registerMetaTag(['name' => 'keywords', 'content' => 'yii']);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $this->assertStringContainsString('<meta name="keywords" content="yii"></head>', $html);
+    }
+
+    public function testRegisterLinkTag(): void
+    {
+        $this->webView->registerLinkTag(['href' => '/main.css']);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $this->assertStringContainsString('<link href="/main.css"></head>', $html);
+    }
+
+    public function testRegisterCss(): void
+    {
+        $this->webView->registerCSs('.red{color:red;}', ['id' => 'mainCss']);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $this->assertStringContainsString('<style id="mainCss">.red{color:red;}</style></head>', $html);
     }
 }
