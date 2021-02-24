@@ -453,6 +453,7 @@ class View implements DynamicContentAwareInterface
      * @param string $viewFile the view file being rendered.
      * @param array $parameters the parameter array passed to the {@see render()} method.
      * @param string $output the rendering result of the view file.
+     *
     * @return string Updated output. It will be passed to {@see renderFile()} and returned.
      */
     public function afterRender(string $viewFile, array $parameters, string $output): string
