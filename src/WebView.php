@@ -581,7 +581,7 @@ class WebView extends View
      *
      * @param string $value
      */
-    public function setTitle($value): void
+    public function setTitle(string $value): void
     {
         $this->title = $value;
     }
