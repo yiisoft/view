@@ -455,7 +455,7 @@ class View implements DynamicContentAwareInterface
      * @param string $output the rendering result of the view file. Updates to this parameter
      * will be passed back and returned by {@see renderFile()}.
      */
-    public function afterRender(string $viewFile, array $parameters, &$output): string
+    public function afterRender(string $viewFile, array $parameters, $output): string
     {
         $event = new AfterRender($viewFile, $parameters, $output);
         $event = $this->eventDispatcher->dispatch($event);
