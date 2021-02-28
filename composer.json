@@ -43,7 +43,6 @@
         "config-plugin": {
             "params": "config/params.php",
             "common": "config/common.php",
-            "console": "config/console.php",
             "web": "config/web.php"
         }
     },
