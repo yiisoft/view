@@ -72,9 +72,9 @@ class View implements DynamicContentAwareInterface
     protected array $renderers = [];
 
     /**
-     * @var Theme the theme object.
+     * @var Theme|null The theme object.
      */
-    protected Theme $theme;
+    protected ?Theme $theme = null;
 
     /**
      * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
@@ -114,13 +114,22 @@ class View implements DynamicContentAwareInterface
      */
     private array $viewFiles = [];
 
-    public function __construct(string $basePath, Theme $theme, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
+    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
     {
         $this->basePath = $basePath;
-        $this->theme = $theme;
         $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
         $this->setPlaceholderSalt(__DIR__);
+    }
+
+    /**
+     * @return static
+     */
+    public function withTheme(Theme $theme): self
+    {
+        $new = clone $this;
+        $new->theme = $theme;
+        return $new;
     }
 
     public function setPlaceholderSalt(string $salt): void
@@ -334,7 +343,7 @@ class View implements DynamicContentAwareInterface
         // TODO: these two match now
         $requestedFile = $viewFile;
 
-        if (!empty($this->theme)) {
+        if ($this->theme !== null) {
             $viewFile = $this->theme->applyTo($viewFile);
         }
 
@@ -454,7 +463,7 @@ class View implements DynamicContentAwareInterface
      * @param array $parameters the parameter array passed to the {@see render()} method.
      * @param string $output the rendering result of the view file.
      *
-    * @return string Updated output. It will be passed to {@see renderFile()} and returned.
+     * @return string Updated output. It will be passed to {@see renderFile()} and returned.
      */
     public function afterRender(string $viewFile, array $parameters, string $output): string
     {
