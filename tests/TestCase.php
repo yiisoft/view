@@ -96,7 +96,8 @@ abstract class TestCase extends BaseTestCase
      */
     protected function createView(string $basePath, ?Theme $theme = null): View
     {
-        return new View($basePath, $theme ?: new Theme(), $this->eventDispatcher, $this->logger);
+        $view = new View($basePath, $this->eventDispatcher, $this->logger);
+        return $theme === null ? $view : $view->withTheme($theme);
     }
 
     protected function touch(string $path): void
@@ -146,5 +147,24 @@ abstract class TestCase extends BaseTestCase
                 ],
             ],
         ];
+    }
+
+    public function assertStringContainsStringIgnoringLineEndings(
+        string $needle,
+        string $haystack,
+        string $message = ''
+    ): void {
+        $needle = self::normalizeLineEndings($needle);
+        $haystack = self::normalizeLineEndings($haystack);
+
+        $this->assertStringContainsString($needle, $haystack, $message);
+    }
+
+    private static function normalizeLineEndings(string $value): string
+    {
+        return strtr($value, [
+            "\r\n" => "\n",
+            "\r" => "\n",
+        ]);
     }
 }
