@@ -5,28 +5,19 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\EventDispatcher\ListenerProviderInterface;
-use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use function str_replace;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Di\Container;
-use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
-use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
-
 use Yiisoft\View\WebView;
+
+use function str_replace;
 
 abstract class TestCase extends BaseTestCase
 {
-    private ContainerInterface $container;
-    private EventDispatcherInterface $eventDispatcher;
-    private LoggerInterface $logger;
     protected Aliases $aliases;
     protected WebView $webView;
     protected WebViewPlaceholderMock $webViewPlaceholderMock;
@@ -35,27 +26,22 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->container = new Container($this->config());
+        $this->aliases = new Aliases([
+            '@root' => __DIR__,
+            '@baseUrl' => '/baseUrl',
+        ]);
 
-        $this->aliases = $this->container->get(Aliases::class);
-        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-        $this->logger = $this->container->get(LoggerInterface::class);
-        $this->webView = $this->container->get(WebView::class);
-        $this->webViewPlaceholderMock = $this->container->get(WebViewPlaceholderMock::class);
-    }
+        $this->webView = new WebView(
+            __DIR__ . '/public/view',
+            new SimpleEventDispatcher(),
+            new NullLogger()
+        );
 
-    protected function getContainer(): ContainerInterface
-    {
-        return $this->container;
-    }
-
-    /**
-     * tearDown
-     */
-    protected function tearDown(): void
-    {
-        unset($this->container, );
-        parent::tearDown();
+        $this->webViewPlaceholderMock = new WebViewPlaceholderMock(
+            __DIR__ . '/public/view',
+            new SimpleEventDispatcher(),
+            new NullLogger()
+        );
     }
 
     /**
@@ -96,7 +82,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function createView(string $basePath, ?Theme $theme = null): View
     {
-        $view = new View($basePath, $this->eventDispatcher, $this->logger);
+        $view = new View($basePath, new SimpleEventDispatcher(), new NullLogger());
         return $theme === null ? $view : $view->withTheme($theme);
     }
 
@@ -105,48 +91,6 @@ abstract class TestCase extends BaseTestCase
         FileHelper::ensureDirectory(dirname($path));
 
         touch($path);
-    }
-
-    private function config(): array
-    {
-        return [
-            Aliases::class => [
-                '__class' => Aliases::class,
-                '__construct()' => [
-                    [
-                        '@root' => __DIR__,
-                        '@baseUrl' => '/baseUrl',
-                    ],
-                ],
-            ],
-
-            LoggerInterface::class => NullLogger::class,
-
-            ListenerProviderInterface::class => Provider::class,
-
-            EventDispatcherInterface::class => Dispatcher::class,
-
-            View::class => [
-                '__class' => View::class,
-                '__construct()' => [
-                    'basePath' => __DIR__ . '/public/view',
-                ],
-            ],
-
-            WebView::class => [
-                '__class' => WebView::class,
-                '__construct()' => [
-                    'basePath' => __DIR__ . '/public/view',
-                ],
-            ],
-
-            WebViewPlaceholderMock::class => [
-                '__class' => WebViewPlaceholderMock::class,
-                '__construct()' => [
-                    'basePath' => __DIR__ . '/public/view',
-                ],
-            ],
-        ];
     }
 
     public function assertStringContainsStringIgnoringLineEndings(
