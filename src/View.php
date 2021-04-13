@@ -62,7 +62,7 @@ class View implements DynamicContentAwareInterface
      *
      * ```php
      * [
-     *     'twig' => ['__class' => \Yiisoft\Yii\Twig\ViewRenderer::class],
+     *     'twig' => ['class' => \Yiisoft\Yii\Twig\ViewRenderer::class],
      * ]
      * ```
      *
