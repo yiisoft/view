@@ -18,9 +18,9 @@ final class ViewTest extends TestCase
     {
         parent::setUp();
 
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
 
-        FileHelper::createDirectory($this->testViewPath);
+        FileHelper::ensureDirectory($this->testViewPath);
     }
 
     public function tearDown(): void
@@ -67,7 +67,7 @@ PHP
     public function testRelativePathInView(): void
     {
         $themePath = $this->testViewPath . '/theme1';
-        FileHelper::createDirectory($themePath);
+        FileHelper::ensureDirectory($themePath);
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
         file_put_contents(
@@ -119,6 +119,7 @@ PHP
 
     /**
      * Creates test files structure.
+     *
      * @param string $baseDirectory base directory path.
      * @param array $items file system objects to be created in format: objectName => objectContent
      * Arrays specifies directories, other values - files.

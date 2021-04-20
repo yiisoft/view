@@ -23,9 +23,9 @@ final class WebViewTest extends TestCase
 
         $this->dataDir = dirname(__DIR__) . '/tests/public/view';
         $this->layoutPath = $this->dataDir . '/layout.php';
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', get_class($this)) . uniqid('', false);
+        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
 
-        FileHelper::createDirectory($this->testViewPath);
+        FileHelper::ensureDirectory($this->testViewPath);
     }
 
     protected function tearDown(): void
@@ -38,7 +38,7 @@ final class WebViewTest extends TestCase
     {
         $this->webView->registerJsVar('username', 'samdark');
         $html = $this->webView->render('//layout.php', ['content' => 'content']);
-        $this-> assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
+        $this->assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
 
         $this->webView->registerJsVar('objectTest', [
             'number' => 42,
@@ -56,7 +56,7 @@ final class WebViewTest extends TestCase
 
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_BEGIN]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
+        $this->assertStringContainsStringIgnoringLineEndings('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
         $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_END]);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
@@ -76,5 +76,26 @@ final class WebViewTest extends TestCase
         $signature = $this->webViewPlaceholderMock->getPlaceholderSignature();
         $html = $this->webViewPlaceholderMock->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString($signature, $html);
+    }
+
+    public function testRegisterMetaTag(): void
+    {
+        $this->webView->registerMetaTag(['name' => 'keywords', 'content' => 'yii']);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $this->assertStringContainsString('<meta name="keywords" content="yii"></head>', $html);
+    }
+
+    public function testRegisterLinkTag(): void
+    {
+        $this->webView->registerLinkTag(['href' => '/main.css']);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $this->assertStringContainsString('<link href="/main.css"></head>', $html);
+    }
+
+    public function testRegisterCss(): void
+    {
+        $this->webView->registerCSs('.red{color:red;}', ['id' => 'mainCss']);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $this->assertStringContainsString('<style id="mainCss">.red{color:red;}</style></head>', $html);
     }
 }
