@@ -145,15 +145,15 @@ PHP
 
     public function testDefaultParameterIsPassedToView(): void
     {
-        $this->webView->setDefaultParameters(['parameter' => 'default_parameter']);
-        $output = $this->webView->render('//parameters');
+        $webView = $this->webView->withDefaultParameters(['parameter' => 'default_parameter']);
+        $output = $webView->render('//parameters');
         $this->assertStringContainsString('default_parameter', $output);
     }
 
     public function testDefaultParameterIsOverwrittenByLocalParameter(): void
     {
-        $this->webView->setDefaultParameters(['parameter' => 'default_parameter']);
-        $output = $this->webView->render('//parameters', [
+        $webView = $this->webView->withDefaultParameters(['parameter' => 'default_parameter']);
+        $output = $webView->render('//parameters', [
             'parameter' => 'local_parameter',
         ]);
         $this->assertStringContainsString('local_parameter', $output);
