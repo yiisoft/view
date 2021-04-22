@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
-use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
@@ -210,8 +210,6 @@ class WebView extends View
 
     /**
      * Clears up the registered meta tags, link tags, css/js scripts and files.
-     *
-     * @return void
      */
     public function clear(): void
     {
@@ -241,15 +239,13 @@ class WebView extends View
      * @param string $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
      * latter will overwrite the former. If this is null, the new meta tag will be appended to the
      * existing ones.
-     *
-     * @return void
      */
     public function registerMetaTag(array $options, string $key = null): void
     {
         if ($key === null) {
-            $this->metaTags[] = Html::tag('meta', '', $options);
+            $this->metaTags[] = Html::meta()->attributes($options)->render();
         } else {
-            $this->metaTags[$key] = Html::tag('meta', '', $options);
+            $this->metaTags[$key] = Html::meta()->attributes($options)->render();
         }
     }
 
@@ -276,30 +272,10 @@ class WebView extends View
     public function registerLinkTag(array $options, ?string $key = null): void
     {
         if ($key === null) {
-            $this->linkTags[] = Html::tag('link', '', $options);
+            $this->linkTags[] = Html::link()->attributes($options)->render();
         } else {
-            $this->linkTags[$key] = Html::tag('link', '', $options);
+            $this->linkTags[$key] = Html::link()->attributes($options)->render();
         }
-    }
-
-    /**
-     * Registers CSRF meta tags.
-     *
-     * They are rendered dynamically to retrieve a new CSRF token for each request.
-     *
-     * ```php
-     * $view->registerCsrfMetaTags();
-     * ```
-     *
-     * The above code will result in `<meta name="csrf-param" content="[\Yiisoft\Web\Request::$csrfParam]">` and
-     * `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
-     *
-     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
-     * from `yii.js`.
-     */
-    public function registerCsrfMetaTags(): void
-    {
-        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return Yiisoft\Html\Html::csrfMetaTags();');
     }
 
     /**
@@ -313,7 +289,7 @@ class WebView extends View
     public function registerCss(string $css, array $options = [], string $key = null): void
     {
         $key = $key ?: md5($css);
-        $this->css[$key] = Html::style($css, $options);
+        $this->css[$key] = Html::style($css, $options)->render();
     }
 
     /**
@@ -326,17 +302,14 @@ class WebView extends View
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
      * for the supported options.
-     *
      * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
-     *
-     * @return void
      */
     public function registerCssFile(string $url, array $options = [], string $key = null): void
     {
         $key = $key ?: $url;
 
-        $this->cssFiles[$key] = Html::cssFile($url, $options);
+        $this->cssFiles[$key] = Html::cssFile($url, $options)->render();
     }
 
     /**
@@ -352,11 +325,8 @@ class WebView extends View
      * - {@see POSITION_END}: at the end of the body section. This is the default value.
      * - {@see POSITION_LOAD}: executed when HTML page is completely loaded.
      * - {@see POSITION_READY}: executed when HTML document composition is ready.
-     *
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
-     *
-     * @return void
      */
     public function registerJs(string $js, int $position = self::POSITION_END, string $key = null): void
     {
@@ -380,21 +350,18 @@ class WebView extends View
      *     * {@see POSITION_BEGIN}: at the beginning of the body section
      *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
-     * Please refer to {@see \Yiisoft\Html\Html::jsFile()} for other supported options.
-     *
+     * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
      * @param string $key the key that identifies the JS script file. If null, it will use $url as the key. If two JS
      * files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
-     *
-     * @return void
      */
     public function registerJsFile(string $url, array $options = [], string $key = null): void
     {
         $key = $key ?: $url;
 
         $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-        $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options)->render();
     }
 
     /**
@@ -448,7 +415,7 @@ class WebView extends View
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
         }
         if (!empty($this->js[self::POSITION_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]));
+            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]))->render();
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -468,7 +435,7 @@ class WebView extends View
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
         if (!empty($this->js[self::POSITION_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]));
+            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]))->render();
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -505,19 +472,19 @@ class WebView extends View
                 $scripts[] = implode("\n", $this->js[self::POSITION_LOAD]);
             }
             if (!empty($scripts)) {
-                $lines[] = Html::script(implode("\n", $scripts));
+                $lines[] = Html::script(implode("\n", $scripts))->render();
             }
         } else {
             if (!empty($this->js[self::POSITION_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]));
+                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]))->render();
             }
             if (!empty($this->js[self::POSITION_READY])) {
                 $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
-                $lines[] = Html::script($js, ['type' => 'text/javascript']);
+                $lines[] = Html::script($js)->render();
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
                 $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
-                $lines[] = Html::script($js, ['type' => 'text/javascript']);
+                $lines[] = Html::script($js)->render();
             }
         }
 
@@ -526,7 +493,6 @@ class WebView extends View
 
     /**
      * Get title in views.
-     *
      *
      * in Layout:
      *
@@ -551,7 +517,6 @@ class WebView extends View
      * It processes the CSS configuration generated by the asset manager and converts it into HTML code.
      *
      * @param array $cssFiles
-     * @return void
      */
     public function setCssFiles(array $cssFiles): void
     {
@@ -567,7 +532,6 @@ class WebView extends View
      * It processes the JS configuration generated by the asset manager and converts it into HTML code.
      *
      * @param array $jsFiles
-     * @return void
      */
     public function setJsFiles(array $jsFiles): void
     {
@@ -580,14 +544,44 @@ class WebView extends View
     }
 
     /**
+     * It processes the JS strings generated by the asset manager.
+     *
+     * @param array $jsStrings
+     */
+    public function setJsStrings(array $jsStrings): void
+    {
+        foreach ($jsStrings as $value) {
+            $this->registerJs(
+                $value['string'],
+                $value['attributes']['position']
+            );
+        }
+    }
+
+    /**
+     * It processes the JS variables generated by the asset manager and converts it into JS code.
+     *
+     * @param array $jsVar
+     */
+    public function setJsVar(array $jsVar): void
+    {
+        foreach ($jsVar as $key => $value) {
+            $this->registerJsVar(
+                (string)$key,
+                $value['variables'],
+                $value['attributes']['position']
+            );
+        }
+    }
+
+    /**
      * Set title in views.
      *
      * {@see getTitle()}
      *
      * @param string $value
-     * @return void
      */
-    public function setTitle($value): void
+    public function setTitle(string $value): void
     {
         $this->title = $value;
     }
