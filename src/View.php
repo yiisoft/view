@@ -299,7 +299,6 @@ class View implements DynamicContentAwareInterface
         if (strncmp($view, '//', 2) === 0) {
             // path relative to basePath e.g. "//layouts/main"
             $file = $this->basePath . '/' . ltrim($view, '/');
-
         }  elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
             // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;
