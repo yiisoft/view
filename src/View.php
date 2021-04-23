@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
+use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -233,7 +234,7 @@ class View implements DynamicContentAwareInterface
             return $this->blocks[$id];
         }
 
-        throw new \InvalidArgumentException('Block: "' . $id . '" not found.');
+        throw new InvalidArgumentException('Block: "' . $id . '" not found.');
     }
 
     /**
@@ -249,12 +250,9 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see data}
+     * @see data
      *
-     * @param string $id
      * @param mixed $value
-     *
-     * @return void
      */
     public function setData(string $id, $value): void
     {
@@ -262,11 +260,7 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see data}
-     *
-     * @param string $id
-     *
-     * @return void
+     * @see data
      */
     public function removeData(string $id): void
     {
@@ -274,9 +268,7 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see data}
-     *
-     * @param string $id
+     * @see data
      *
      * @return mixed
      */
@@ -286,7 +278,7 @@ class View implements DynamicContentAwareInterface
             return $this->data[$id];
         }
 
-        throw new \InvalidArgumentException('Data: "' . $id . '" not found.');
+        throw new InvalidArgumentException('Data: "' . $id . '" not found.');
     }
 
     public function hasData(string $id): bool
