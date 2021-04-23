@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use InvalidArgumentException;
+use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Theme;
+use Yiisoft\View\View;
 
-/**
- * ViewTest.
- */
 final class ViewTest extends TestCase
 {
     private string $testViewPath = '';
@@ -163,5 +164,22 @@ PHP
     {
         $this->webView->setPlaceholderSalt('apple');
         $this->assertSame(dechex(crc32('apple')), $this->webView->getPlaceholderSignature());
+    }
+
+    public function testData(): void
+    {
+        $view = new View(__DIR__, new SimpleEventDispatcher(), new NullLogger());
+
+        $this->assertFalse($view->hasData('id'));
+
+        $view->setData('id', 12);
+        $this->assertTrue($view->hasData('id'));
+        $this->assertSame(12, $view->getData('id'));
+
+        $view->removeData('id');
+        $this->assertFalse($view->hasData('id'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $view->getData('non-exists');
     }
 }
