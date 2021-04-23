@@ -115,8 +115,7 @@ abstract class TestCase extends BaseTestCase
         string $needle,
         string $haystack,
         string $message = ''
-    ): void
-    {
+    ): void {
         $needle = self::normalizeLineEndings($needle);
         $haystack = self::normalizeLineEndings($haystack);
 
