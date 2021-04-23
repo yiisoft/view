@@ -12,6 +12,7 @@ use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
+use Yiisoft\View\ViewContextInterface;
 use Yiisoft\View\WebView;
 
 use function str_replace;
@@ -86,6 +87,23 @@ abstract class TestCase extends BaseTestCase
         return $theme === null ? $view : $view->withTheme($theme);
     }
 
+    protected function createContext(string $viewPath): ViewContextInterface
+    {
+        return new class($viewPath) implements ViewContextInterface {
+            private string $viewPath;
+
+            public function __construct(string $viewPath)
+            {
+                $this->viewPath = $viewPath;
+            }
+
+            public function getViewPath(): string
+            {
+                return $this->viewPath;
+            }
+        };
+    }
+
     protected function touch(string $path): void
     {
         FileHelper::ensureDirectory(dirname($path));
@@ -97,7 +115,8 @@ abstract class TestCase extends BaseTestCase
         string $needle,
         string $haystack,
         string $message = ''
-    ): void {
+    ): void
+    {
         $needle = self::normalizeLineEndings($needle);
         $haystack = self::normalizeLineEndings($haystack);
 
