@@ -184,14 +184,12 @@ class WebView extends View
      * @param string $view the view name. Please refer to {@see render()} on how to specify this parameter.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param ViewContextInterface|null $context the context that the view should use for rendering the view. If null,
-     * existing {@see context} will be used.
      *
      * @return string the rendering result
      *
      * {@see render()}
      */
-    public function renderAjax(string $view, array $params = [], ?ViewContextInterface $context = null): string
+    public function renderAjax(string $view, array $params = []): string
     {
         $viewFile = $this->findTemplateFile($view);
 
