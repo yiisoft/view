@@ -193,7 +193,7 @@ class WebView extends View
      */
     public function renderAjax(string $view, array $params = [], ?ViewContextInterface $context = null): string
     {
-        $viewFile = $this->findTemplateFile($view, $context);
+        $viewFile = $this->findTemplateFile($view);
 
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
@@ -201,7 +201,7 @@ class WebView extends View
         $this->beginPage();
         $this->head();
         $this->beginBody();
-        echo $this->renderFile($viewFile, $params, $context);
+        echo $this->renderFile($viewFile, $params);
         $this->endBody();
         $this->endPage(true);
 
