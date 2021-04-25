@@ -26,6 +26,7 @@ final class ViewTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
+
         FileHelper::removeDirectory($this->testViewPath);
     }
 
@@ -89,6 +90,32 @@ PHP
         );
 
         $this->assertSame($subViewContent, $view->render('//base'));
+    }
+
+    public function testRelativePathInViewWithContext(): void
+    {
+        $baseViewPath = $this->testViewPath . '/test';
+        FileHelper::ensureDirectory($baseViewPath);
+
+        $baseView = "{$baseViewPath}/base.php";
+        file_put_contents(
+            $baseView,
+            <<<'PHP'
+<?= $this->render("sub/sub") ?>
+PHP
+        );
+
+        $subViewPath = $baseViewPath . DIRECTORY_SEPARATOR . 'sub';
+        FileHelper::ensureDirectory($subViewPath);
+
+        $subView = "{$subViewPath}/sub.php";
+        $subViewContent = 'subviewcontent';
+        file_put_contents($subView, $subViewContent);
+
+        $view = $this->createView($this->testViewPath)
+            ->withContext($this->createContext($this->testViewPath));
+
+        $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
     public function testLocalizedDirectory(): void
