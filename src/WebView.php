@@ -321,7 +321,7 @@ class WebView extends View
     /**
      * Registers a JS code block.
      *
-     * @param string|Script $js the JS code block to be registered
+     * @param Script|string $js the JS code block to be registered
      * @param int $position the position at which the JS script tag should be inserted in a page.
      *
      * The possible values are:
@@ -601,7 +601,7 @@ class WebView extends View
     }
 
     /**
-     * @param string[]|Script[] $items
+     * @param Script[]|string[] $items
      */
     private function generateJs(array $items): string
     {
@@ -627,7 +627,7 @@ class WebView extends View
     }
 
     /**
-     * @param string[]|Script[] $items
+     * @param Script[]|string[] $items
      */
     private function generateJsWithoutTag(array $items): string
     {
