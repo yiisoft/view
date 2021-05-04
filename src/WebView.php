@@ -6,6 +6,7 @@ namespace Yiisoft\View;
 
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\Html\Tag\Script;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
@@ -113,6 +114,7 @@ class WebView extends View
 
     /**
      * @var array the registered JS code blocks
+     * @psalm-var array<int, string[]|Script[]>
      *
      * {@see registerJs()}
      */
@@ -333,6 +335,17 @@ class WebView extends View
     }
 
     /**
+     * Register a `script` tag
+     *
+     * @see registerJs()
+     */
+    public function registerScriptTag(Script $script, int $position = self::POSITION_END, string $key = null): void
+    {
+        $key = $key ?: md5($script->render());
+        $this->js[$position][$key] = $script;
+    }
+
+    /**
      * Registers a JS file.
      *
      * This method should be used for simple registration of JS files. If you want to use features of
@@ -413,7 +426,7 @@ class WebView extends View
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
         }
         if (!empty($this->js[self::POSITION_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_HEAD]))->render();
+            $lines[] = $this->generateJs($this->js[self::POSITION_HEAD]);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -433,7 +446,7 @@ class WebView extends View
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
         if (!empty($this->js[self::POSITION_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POSITION_BEGIN]))->render();
+            $lines[] = $this->generateJs($this->js[self::POSITION_BEGIN]);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -459,29 +472,28 @@ class WebView extends View
         }
 
         if ($ajaxMode) {
-            $scripts = [];
-            if (!empty($this->js[self::POSITION_END])) {
-                $scripts[] = implode("\n", $this->js[self::POSITION_END]);
-            }
-            if (!empty($this->js[self::POSITION_READY])) {
-                $scripts[] = implode("\n", $this->js[self::POSITION_READY]);
-            }
-            if (!empty($this->js[self::POSITION_LOAD])) {
-                $scripts[] = implode("\n", $this->js[self::POSITION_LOAD]);
-            }
+            $scripts = array_merge(
+                $this->js[self::POSITION_END] ?? [],
+                $this->js[self::POSITION_READY] ?? [],
+                $this->js[self::POSITION_LOAD] ?? [],
+            );
             if (!empty($scripts)) {
-                $lines[] = Html::script(implode("\n", $scripts))->render();
+                $lines[] = $this->generateJs($scripts);
             }
         } else {
             if (!empty($this->js[self::POSITION_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POSITION_END]))->render();
+                $lines[] = $this->generateJs($this->js[self::POSITION_END]);
             }
             if (!empty($this->js[self::POSITION_READY])) {
-                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POSITION_READY]) . "\n});";
+                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" .
+                    $this->generateJsWithoutTag($this->js[self::POSITION_READY]) .
+                    "\n});";
                 $lines[] = Html::script($js)->render();
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
-                $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POSITION_LOAD]) . "\n});";
+                $js = "window.addEventListener('load', function (event) {\n" .
+                    $this->generateJsWithoutTag($this->js[self::POSITION_LOAD]) .
+                    "\n});";
                 $lines[] = Html::script($js)->render();
             }
         }
@@ -582,5 +594,43 @@ class WebView extends View
     public function setTitle(string $value): void
     {
         $this->title = $value;
+    }
+
+    /**
+     * @param Script[]|string[] $items
+     */
+    private function generateJs(array $items): string
+    {
+        $lines = [];
+
+        $js = [];
+        foreach ($items as $item) {
+            if ($item instanceof Script) {
+                if ($js !== []) {
+                    $lines[] = Html::script(implode("\n", $js))->render();
+                    $js = [];
+                }
+                $lines[] = $item->render();
+            } else {
+                $js[] = $item;
+            }
+        }
+        if ($js !== []) {
+            $lines[] = Html::script(implode("\n", $js))->render();
+        }
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * @param Script[]|string[] $items
+     */
+    private function generateJsWithoutTag(array $items): string
+    {
+        $js = [];
+        foreach ($items as $item) {
+            $js[] = $item instanceof Script ? $item->getContent() : $item;
+        }
+        return implode("\n", $js);
     }
 }

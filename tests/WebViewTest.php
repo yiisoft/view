@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Html\Html;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -106,5 +107,83 @@ final class WebViewTest extends TestCase
         $html = $this->webView->renderAjax('//only-content.php', ['content' => $content]);
 
         $this->assertSame($content, $html);
+    }
+
+    public function testRegisterScriptTag(): void
+    {
+        $script = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
+            ->type('application/ld+json');
+
+        $this->webView->registerScriptTag($script);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+
+        $this->assertStringContainsString($script->render(), $html);
+    }
+
+    public function testRegisterJsAndRegisterScriptTag(): void
+    {
+        $js1 = 'alert(1);';
+        $js2 = 'alert(2);';
+        $script3 = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
+            ->type('application/ld+json');
+        $js4 = 'alert(4);';
+        $script5 = Html::script('alert("script5");');
+        $script6 = Html::script('alert("script6");');
+        $js7 = 'alert(7);';
+
+        $this->webView->registerJs($js1);
+        $this->webView->registerJs($js2);
+        $this->webView->registerScriptTag($script3);
+        $this->webView->registerJs($js4);
+        $this->webView->registerScriptTag($script5);
+        $this->webView->registerScriptTag($script6, WebView::POSITION_READY);
+        $this->webView->registerJs($js7, WebView::POSITION_READY);
+        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+
+        $this->assertStringContainsString(
+            "<script>$js1\n$js2</script>\n" .
+            $script3->render() . "\n" .
+            "<script>$js4</script>\n" .
+            $script5->render(),
+            $html
+        );
+        $this->assertStringContainsString(
+            "<script>document.addEventListener('DOMContentLoaded', function(event) {\n" .
+            $script6->getContent() . "\n" .
+            "$js7\n" .
+            '});</script>',
+            $html
+        );
+    }
+
+    public function testRegisterJsAndRegisterScriptTagWithAjax(): void
+    {
+        $js1 = 'alert(1);';
+        $js2 = 'alert(2);';
+        $script3 = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
+            ->type('application/ld+json');
+        $js4 = 'alert(4);';
+        $script5 = Html::script('alert("script5");');
+        $script6 = Html::script('alert("script6");');
+        $js7 = 'alert(7);';
+
+        $this->webView->registerJs($js1);
+        $this->webView->registerJs($js2);
+        $this->webView->registerScriptTag($script3);
+        $this->webView->registerJs($js4);
+        $this->webView->registerScriptTag($script5);
+        $this->webView->registerScriptTag($script6, WebView::POSITION_READY);
+        $this->webView->registerJs($js7, WebView::POSITION_READY);
+        $html = $this->webView->renderAjax('//only-content.php', ['content' => '']);
+
+        $this->assertStringContainsString(
+            "<script>alert(1);\nalert(2);</script>\n" .
+            $script3->render() . "\n" .
+            "<script>alert(4);</script>\n" .
+            $script5->render() . "\n" .
+            $script6->render() . "\n" .
+            '<script>alert(7);</script>',
+            $html
+        );
     }
 }

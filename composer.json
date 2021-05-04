@@ -23,7 +23,7 @@
         "psr/log": "^1.1",
         "yiisoft/arrays": "^1.0",
         "yiisoft/files": "^1.0",
-        "yiisoft/html": "^1.0",
+        "yiisoft/html": "^1.2",
         "yiisoft/i18n": "^1.0",
         "yiisoft/json": "^1.0"
     },
