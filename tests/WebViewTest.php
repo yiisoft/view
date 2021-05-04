@@ -151,7 +151,7 @@ final class WebViewTest extends TestCase
             "<script>document.addEventListener('DOMContentLoaded', function(event) {\n" .
             $script6->getContent() . "\n" .
             "$js7\n" .
-            "});</script>",
+            '});</script>',
             $html
         );
     }
@@ -182,7 +182,7 @@ final class WebViewTest extends TestCase
             "<script>alert(4);</script>\n" .
             $script5->render() . "\n" .
             $script6->render() . "\n" .
-            "<script>alert(7);</script>",
+            '<script>alert(7);</script>',
             $html
         );
     }
