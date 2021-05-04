@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
-use InvalidArgumentException;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
-
-use function get_class;
-use function gettype;
-use function is_object;
-use function is_string;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -321,7 +315,7 @@ class WebView extends View
     /**
      * Registers a JS code block.
      *
-     * @param Script|string $js the JS code block to be registered
+     * @param string $js the JS code block to be registered
      * @param int $position the position at which the JS script tag should be inserted in a page.
      *
      * The possible values are:
@@ -334,19 +328,21 @@ class WebView extends View
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      */
-    public function registerJs($js, int $position = self::POSITION_END, string $key = null): void
+    public function registerJs(string $js, int $position = self::POSITION_END, string $key = null): void
     {
-        if (!is_string($js) && !($js instanceof Script)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'JavaScript should be string or instance of \Yiisoft\Html\Tag\Script. Got %s.',
-                    is_object($js) ? get_class($js) : gettype($js),
-                )
-            );
-        }
-
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
+    }
+
+    /**
+     * Register a `script` tag
+     *
+     * @see registerJs()
+     */
+    public function registerScriptTag(Script $script, int $position = self::POSITION_END, string $key = null): void
+    {
+        $key = $key ?: md5($script->render());
+        $this->js[$position][$key] = $script;
     }
 
     /**
@@ -477,9 +473,9 @@ class WebView extends View
 
         if ($ajaxMode) {
             $scripts = array_merge(
-                $this->js[self::POSITION_END],
-                $this->js[self::POSITION_READY],
-                $this->js[self::POSITION_LOAD],
+                $this->js[self::POSITION_END] ?? [],
+                $this->js[self::POSITION_READY] ?? [],
+                $this->js[self::POSITION_LOAD] ?? [],
             );
             if (!empty($scripts)) {
                 $lines[] = $this->generateJs($scripts);
