@@ -10,21 +10,22 @@ namespace Yiisoft\View\Event;
 abstract class ViewEvent
 {
     /**
-     * @var string the view file being rendered.
+     * @var string|null The view file being rendered. `null` if no view file is being rendered.
      */
-    private string $file;
+    private ?string $file;
+
     /**
      * @var array the parameter array passed to the {@see View::render()} method.
      */
     private array $parameters;
 
-    public function __construct(string $file, array $parameters = [])
+    public function __construct(?string $file, array $parameters = [])
     {
         $this->file = $file;
         $this->parameters = $parameters;
     }
 
-    public function file(): string
+    public function file(): ?string
     {
         return $this->file;
     }

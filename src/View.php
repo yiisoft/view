@@ -299,7 +299,7 @@ class View implements DynamicContentAwareInterface
         if (strncmp($view, '//', 2) === 0) {
             // path relative to basePath e.g. "//layouts/main"
             $file = $this->basePath . '/' . ltrim($view, '/');
-        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
+        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
             // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;
         } elseif ($this->context instanceof ViewContextInterface) {
@@ -419,19 +419,19 @@ class View implements DynamicContentAwareInterface
     }
 
     /**
-     * @return bool|string the view file currently being rendered. False if no view file is being rendered.
+     * @return string|null The view file currently being rendered. `null` if no view file is being rendered.
      */
-    public function getViewFile()
+    public function getViewFile(): ?string
     {
-        return empty($this->viewFiles) ? false : end($this->viewFiles)['resolved'];
+        return empty($this->viewFiles) ? null : end($this->viewFiles)['resolved'];
     }
 
     /**
-     * @return bool|string the requested view currently being rendered. False if no view file is being rendered.
+     * @return string|null The requested view currently being rendered. `null` if no view file is being rendered.
      */
-    protected function getRequestedViewFile()
+    protected function getRequestedViewFile(): ?string
     {
-        return empty($this->viewFiles) ? false : end($this->viewFiles)['requested'];
+        return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
     }
 
     /**
