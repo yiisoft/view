@@ -98,4 +98,13 @@ final class WebViewTest extends TestCase
         $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
         $this->assertStringContainsString('<style id="mainCss">.red{color:red;}</style></head>', $html);
     }
+
+    public function testRenderAjaxWithoutContext(): void
+    {
+        $content = 'Hello!';
+
+        $html = $this->webView->renderAjax('//only-content.php', ['content' => $content]);
+
+        $this->assertSame($content, $html);
+    }
 }
