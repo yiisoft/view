@@ -9,6 +9,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\Test\Support\Log\SimpleLogger;
+use Yiisoft\View\Event\AfterRender;
+use Yiisoft\View\Event\BeforeRender;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 
@@ -199,11 +202,24 @@ PHP
 
     public function testRenderString(): void
     {
-        $view = $this->makeView();
+        $eventDispatcher = new SimpleEventDispatcher();
+        $logger = new SimpleLogger();
+        $view = $this->makeView($eventDispatcher, $logger);
 
         $result = $view->renderString('echo $x+1;', ['x' => 6]);
+        $logs = $logger->getMessages();
 
         $this->assertSame('7', $result);
+        $this->assertSame(
+            [
+                BeforeRender::class,
+                AfterRender::class,
+            ],
+            $eventDispatcher->getEventClasses(),
+        );
+        $this->assertCount(1, $logs);
+        $this->assertSame('debug', $logs[0]['level']);
+        $this->assertSame('Rendering view string.', $logs[0]['message']);
     }
 
     public function testImmutability(): void

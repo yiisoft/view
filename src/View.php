@@ -391,8 +391,14 @@ class View implements DynamicContentAwareInterface
     {
         $parameters = array_merge($this->defaultParameters, $parameters);
 
-        $renderer = $this->stringRenderer ?? new PhpEvalStringRenderer();
-        $output = $renderer->render($this, $viewString, $parameters);
+        $output = '';
+
+        if ($this->beforeRender(null, $parameters)) {
+            $this->logger->debug('Rendering view string.');
+            $renderer = $this->stringRenderer ?? new PhpEvalStringRenderer();
+            $output = $renderer->render($this, $viewString, $parameters);
+            $output = $this->afterRender(null, $parameters, $output);
+        }
 
         return $output;
     }
@@ -459,12 +465,12 @@ class View implements DynamicContentAwareInterface
      * The default implementation will trigger the {@see BeforeRender()} event. If you override this method, make sure
      * you call the parent implementation first.
      *
-     * @param string $viewFile the view file to be rendered.
+     * @param string|null $viewFile the view file to be rendered.
      * @param array $parameters the parameter array passed to the {@see render()} method.
      *
      * @return bool whether to continue rendering the view file.
      */
-    public function beforeRender(string $viewFile, array $parameters): bool
+    public function beforeRender(?string $viewFile, array $parameters): bool
     {
         $event = new BeforeRender($viewFile, $parameters);
         $event = $this->eventDispatcher->dispatch($event);
@@ -484,7 +490,7 @@ class View implements DynamicContentAwareInterface
      *
      * @return string Updated output. It will be passed to {@see renderFile()} and returned.
      */
-    public function afterRender(string $viewFile, array $parameters, string $output): string
+    public function afterRender(?string $viewFile, array $parameters, string $output): string
     {
         $event = new AfterRender($viewFile, $parameters, $output);
         $event = $this->eventDispatcher->dispatch($event);
