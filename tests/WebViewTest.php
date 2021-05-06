@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Event\BodyBegin;
+use Yiisoft\View\Event\BodyEnd;
+use Yiisoft\View\Event\PageBegin;
+use Yiisoft\View\Event\PageEnd;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -109,6 +117,26 @@ final class WebViewTest extends TestCase
         $this->assertSame($content, $html);
     }
 
+    public function testRenderString(): void
+    {
+        $eventDispatcher = new SimpleEventDispatcher();
+        $webView = $this->createWebView($eventDispatcher);
+
+        $string = 'content';
+        $result = $webView->renderString($string);
+
+        $this->assertSame($string, $result);
+        $this->assertSame(
+            [
+                PageBegin::class,
+                BodyBegin::class,
+                BodyEnd::class,
+                PageEnd::class,
+            ],
+            $eventDispatcher->getEventClasses()
+        );
+    }
+
     public function testRegisterScriptTag(): void
     {
         $script = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
@@ -184,6 +212,17 @@ final class WebViewTest extends TestCase
             $script6->render() . "\n" .
             '<script>alert(7);</script>',
             $html
+        );
+    }
+
+    private function createWebView(
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?LoggerInterface $logger = null
+    ): WebView {
+        return new WebView(
+            __DIR__ . '/public/view',
+            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $logger ?? new NullLogger(),
         );
     }
 }

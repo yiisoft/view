@@ -209,6 +209,28 @@ class WebView extends View
     }
 
     /**
+     * Renders a string.
+     *
+     * @param string $string The string.
+     *
+     * @return string The rendering result.
+     */
+    public function renderString(string $string): string
+    {
+        ob_start();
+        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
+
+        $this->beginPage();
+        $this->head();
+        $this->beginBody();
+        echo $string;
+        $this->endBody();
+        $this->endPage(true);
+
+        return ob_get_clean();
+    }
+
+    /**
      * Clears up the registered meta tags, link tags, css/js scripts and files.
      */
     public function clear(): void
