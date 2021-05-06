@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Theme;
+use Yiisoft\View\View;
 
 /**
  * ViewTest.
@@ -190,5 +195,31 @@ PHP
     {
         $this->webView->setPlaceholderSalt('apple');
         $this->assertSame(dechex(crc32('apple')), $this->webView->getPlaceholderSignature());
+    }
+
+    public function testRenderString(): void
+    {
+        $view = $this->makeView();
+
+        $result = $view->renderString('echo $x+1;', ['x' => 6]);
+
+        $this->assertSame('7', $result);
+    }
+
+    public function testImmutability(): void
+    {
+        $view = $this->makeView();
+        $this->assertNotSame($view, $view->withStringRenderer(null));
+    }
+
+    private function makeView(
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?LoggerInterface $logger = null
+    ): View {
+        return new View(
+            __DIR__ . '/public/view',
+            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $logger ?? new NullLogger(),
+        );
     }
 }

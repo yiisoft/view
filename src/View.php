@@ -72,6 +72,8 @@ class View implements DynamicContentAwareInterface
      */
     protected array $renderers = [];
 
+    private ?StringRendererInterface $stringRenderer = null;
+
     /**
      * @var Theme|null The theme object.
      */
@@ -152,6 +154,13 @@ class View implements DynamicContentAwareInterface
     {
         $new = clone $this;
         $new->renderers = $renderers;
+        return $new;
+    }
+
+    public function withStringRenderer(?StringRendererInterface $renderer): self
+    {
+        $new = clone $this;
+        $new->stringRenderer = $renderer;
         return $new;
     }
 
@@ -374,6 +383,16 @@ class View implements DynamicContentAwareInterface
         }
 
         array_pop($this->viewFiles);
+
+        return $output;
+    }
+
+    public function renderString(string $viewString, array $parameters = []): string
+    {
+        $parameters = array_merge($this->defaultParameters, $parameters);
+
+        $renderer = $this->stringRenderer ?? new PhpEvalStringRenderer();
+        $output = $renderer->render($this, $viewString, $parameters);
 
         return $output;
     }
