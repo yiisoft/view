@@ -117,13 +117,13 @@ final class WebViewTest extends TestCase
         $this->assertSame($content, $html);
     }
 
-    public function testRenderString(): void
+    public function testRenderAjaxString(): void
     {
         $eventDispatcher = new SimpleEventDispatcher();
         $webView = $this->createWebView($eventDispatcher);
 
         $string = 'content';
-        $result = $webView->renderString($string);
+        $result = $webView->renderAjaxString($string);
 
         $this->assertSame($string, $result);
         $this->assertSame(

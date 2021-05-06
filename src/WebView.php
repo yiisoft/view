@@ -209,13 +209,13 @@ class WebView extends View
     }
 
     /**
-     * Renders a string.
+     * Renders a string in response to an AJAX request.
      *
      * @param string $string The string.
      *
      * @return string The rendering result.
      */
-    public function renderString(string $string): string
+    public function renderAjaxString(string $string): string
     {
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
