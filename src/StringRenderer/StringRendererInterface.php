@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\View;
+namespace Yiisoft\View\StringRenderer;
+
+use Yiisoft\View\View;
 
 interface StringRendererInterface
 {

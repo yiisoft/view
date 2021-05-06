@@ -13,6 +13,8 @@ use Yiisoft\View\Event\BeforeRender;
 use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
+use Yiisoft\View\StringRenderer\PhpEvalStringRenderer;
+use Yiisoft\View\StringRenderer\StringRendererInterface;
 
 /**
  * View represents a view object in the MVC pattern.
