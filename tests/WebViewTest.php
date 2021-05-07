@@ -79,7 +79,7 @@ final class WebViewTest extends TestCase
     public function testPlaceholders(): void
     {
         $webView = null;
-        $eventDispatcher = new SimpleEventDispatcher(static function($event) use (&$webView) {
+        $eventDispatcher = new SimpleEventDispatcher(static function ($event) use (&$webView) {
             if ($event instanceof PageEnd) {
                 $webView->setPlaceholderSalt((string)time());
             }
