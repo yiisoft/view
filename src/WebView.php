@@ -9,6 +9,7 @@ use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
+use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
 
 /**
@@ -31,7 +32,7 @@ use Yiisoft\View\Event\PageEnd;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  */
-class WebView extends View
+final class WebView extends BaseView
 {
     /**
      * The location of registered JavaScript code block or files.
@@ -151,6 +152,17 @@ class WebView extends View
     {
         $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
         echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
+    }
+
+    /**
+     * Marks the beginning of a page.
+     */
+    public function beginPage(): void
+    {
+        ob_start();
+        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
+
+        $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
     }
 
     /**

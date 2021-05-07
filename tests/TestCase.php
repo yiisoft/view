@@ -9,7 +9,6 @@ use Psr\Log\NullLogger;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
-use Yiisoft\View\Tests\Mocks\WebViewPlaceholderMock;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
@@ -21,7 +20,6 @@ abstract class TestCase extends BaseTestCase
 {
     protected Aliases $aliases;
     protected WebView $webView;
-    protected WebViewPlaceholderMock $webViewPlaceholderMock;
 
     protected function setUp(): void
     {
@@ -33,12 +31,6 @@ abstract class TestCase extends BaseTestCase
         ]);
 
         $this->webView = new WebView(
-            __DIR__ . '/public/view',
-            new SimpleEventDispatcher(),
-            new NullLogger()
-        );
-
-        $this->webViewPlaceholderMock = new WebViewPlaceholderMock(
             __DIR__ . '/public/view',
             new SimpleEventDispatcher(),
             new NullLogger()

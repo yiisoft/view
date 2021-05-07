@@ -6,7 +6,7 @@ namespace Yiisoft\View;
 
 class PhpTemplateRenderer implements TemplateRendererInterface
 {
-    public function render(View $view, string $template, array $params): string
+    public function render($view, string $template, array $params): string
     {
         $renderer = function () {
             extract(func_get_arg(1), EXTR_OVERWRITE);

@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Event\PageEnd;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -73,9 +78,16 @@ final class WebViewTest extends TestCase
 
     public function testPlaceholders(): void
     {
-        $this->webViewPlaceholderMock->setPlaceholderSalt('apple');
-        $signature = $this->webViewPlaceholderMock->getPlaceholderSignature();
-        $html = $this->webViewPlaceholderMock->renderFile($this->layoutPath, ['content' => 'content']);
+        $webView = null;
+        $eventDispatcher = new SimpleEventDispatcher(static function($event) use (&$webView) {
+            if ($event instanceof PageEnd) {
+                $webView->setPlaceholderSalt((string)time());
+            }
+        });
+        $webView = $this->createWebView($eventDispatcher);
+        $webView->setPlaceholderSalt('apple');
+        $signature = $webView->getPlaceholderSignature();
+        $html = $webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString($signature, $html);
     }
 
@@ -184,6 +196,17 @@ final class WebViewTest extends TestCase
             $script6->render() . "\n" .
             '<script>alert(7);</script>',
             $html
+        );
+    }
+
+    private function createWebView(
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?LoggerInterface $logger = null
+    ): WebView {
+        return new WebView(
+            __DIR__ . '/public/view',
+            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $logger ?? new NullLogger(),
         );
     }
 }
