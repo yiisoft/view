@@ -631,7 +631,7 @@ class WebView extends View
         /** @var mixed */
         $value = $config[1];
 
-        $position = $config['position'] ?? self::DEFAULT_POSITION_JS_VARIABLE;
+        $position = $config[2] ?? self::DEFAULT_POSITION_JS_VARIABLE;
         if (!$this->isValidPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS variable.');
         }

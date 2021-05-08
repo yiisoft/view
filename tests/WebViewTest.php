@@ -193,7 +193,7 @@ final class WebViewTest extends TestCase
         $this->webView->setJsVars([
             'var1' => 'value1',
             'var2' => [1, 2],
-            ['var3', 'value3', 'position' => 3],
+            ['var3', 'value3', WebView::POSITION_END],
         ]);
 
         $html = $this->webView->render('//rawlayout.php', ['content' => '']);
@@ -210,7 +210,7 @@ final class WebViewTest extends TestCase
             ['Do not set JS variable name.', [[]]],
             ['JS variable name should be string. Got integer.', [[42]]],
             ['Do not set JS variable value.', [['var']]],
-            ['Invalid position of JS variable.', [['var', 42, 'position' => 99]]],
+            ['Invalid position of JS variable.', [['title', 'hello', 99]]],
         ];
     }
 
