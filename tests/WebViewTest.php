@@ -7,6 +7,7 @@ namespace Yiisoft\View\Tests;
 use InvalidArgumentException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\Html\Tag\Script;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -195,12 +196,14 @@ final class WebViewTest extends TestCase
             'app2.start();',
             'uniqueName2' => ['app3.start();', WebView::POSITION_BEGIN],
             ['app4.start();', WebView::POSITION_HEAD],
+            Html::script('{"@type":"Article"}')->type('application/ld+json'),
         ]);
 
         $html = $this->webView->render('//rawlayout.php', ['content' => '']);
 
         $expected = '1<script>app4.start();</script>2<script>app3.start();</script>3<script>app1.start();' . "\n" .
-            'app2.start();</script>4';
+            'app2.start();</script>' . "\n" .
+            '<script type="application/ld+json">{"@type":"Article"}</script>4';
 
         $this->assertEqualsWithoutLE($expected, $html);
     }
@@ -210,8 +213,8 @@ final class WebViewTest extends TestCase
         return [
             ['Do not set JS string.', [[]]],
             ['Do not set JS string.', ['key' => []]],
-            ['JS string should be string. Got integer.', [[42]]],
-            ['JS string should be string. Got integer.', ['key' => [42]]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', [[42]]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', ['key' => [42]]],
             ['Invalid position of JS strings.', [['alert(1);', 99]]],
             ['Invalid position of JS strings.', ['key' => ['alert(1);', 99]]],
         ];

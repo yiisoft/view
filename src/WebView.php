@@ -576,14 +576,10 @@ class WebView extends View
     {
         /** @var mixed $value */
         foreach ($jsStrings as $key => $value) {
-            $key = is_string($key) ? $key : null;
-            if (is_array($value)) {
-                $this->registerJsStringByConfig($key, $value);
-            } elseif (is_string($value)) {
-                $this->registerJs($value, self::DEFAULT_POSITION_JS_STRING, $key);
-            } else {
-                throw new InvalidArgumentException('Invalid JS string value.');
-            }
+            $this->registerJsStringByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value, self::DEFAULT_POSITION_JS_STRING]
+            );
         }
     }
 
@@ -625,13 +621,13 @@ class WebView extends View
         if (!array_key_exists(0, $config)) {
             throw new InvalidArgumentException('Do not set JS string.');
         }
-        $string = $config[0];
+        $js = $config[0];
 
-        if (!is_string($string)) {
+        if (!is_string($js) && !($js instanceof Script)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'JS string should be string. Got %s.',
-                    $this->getType($string),
+                    'JS string should be string or instance of \\' . Script::class . '. Got %s.',
+                    $this->getType($js),
                 )
             );
         }
@@ -641,7 +637,9 @@ class WebView extends View
             throw new InvalidArgumentException('Invalid position of JS strings.');
         }
 
-        $this->registerJs($string, $position, $key);
+        is_string($js)
+            ? $this->registerJs($js, $position, $key)
+            : $this->registerScriptTag($js, $position, $key);
     }
 
     /**
