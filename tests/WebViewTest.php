@@ -7,7 +7,6 @@ namespace Yiisoft\View\Tests;
 use InvalidArgumentException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
-use Yiisoft\Html\Tag\Script;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
