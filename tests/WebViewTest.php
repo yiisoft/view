@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use InvalidArgumentException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\View\WebView;
@@ -185,5 +186,41 @@ final class WebViewTest extends TestCase
             '<script>alert(7);</script>',
             $html
         );
+    }
+
+    public function testSetJsVars(): void
+    {
+        $this->webView->setJsVars([
+            'var1' => 'value1',
+            'var2' => [1, 2],
+            ['var3', 'value3', 'position' => 3],
+        ]);
+
+        $html = $this->webView->render('//rawlayout.php', ['content' => '']);
+
+        $expected = '1<script>var var1 = "value1";' . "\n" .
+            'var var2 = [1,2];</script>23<script>var var3 = "value3";</script>4';
+
+        $this->assertEqualsWithoutLE($expected, $html);
+    }
+
+    public function dataFailSetJsVars(): array
+    {
+        return [
+            ['Do not set JS variable name.', [[]]],
+            ['JS variable name should be string. Got integer.', [[42]]],
+            ['Do not set JS variable value.', [['var']]],
+            ['Invalid position of JS variable.', [['var', 42, 'position' => 99]]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataFailSetJsVars
+     */
+    public function testFailSetJsVars(string $message, array $jsVars): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+        $this->webView->setJsVars($jsVars);
     }
 }
