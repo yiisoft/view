@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use InvalidArgumentException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\View\WebView;
@@ -185,5 +186,82 @@ final class WebViewTest extends TestCase
             '<script>alert(7);</script>',
             $html
         );
+    }
+
+    public function testSetJsStrings(): void
+    {
+        $this->webView->setJsStrings([
+            'uniqueName' => 'app1.start();',
+            'app2.start();',
+            'uniqueName2' => ['app3.start();', WebView::POSITION_BEGIN],
+            ['app4.start();', WebView::POSITION_HEAD],
+            Html::script('{"@type":"Article"}')->type('application/ld+json'),
+        ]);
+
+        $html = $this->webView->render('//rawlayout.php', ['content' => '']);
+
+        $expected = '1<script>app4.start();</script>2<script>app3.start();</script>3<script>app1.start();' . "\n" .
+            'app2.start();</script>' . "\n" .
+            '<script type="application/ld+json">{"@type":"Article"}</script>4';
+
+        $this->assertEqualsWithoutLE($expected, $html);
+    }
+
+    public function dataFailSetJsStrings(): array
+    {
+        return [
+            ['Do not set JS string.', [[]]],
+            ['Do not set JS string.', ['key' => []]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', [[42]]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', ['key' => [42]]],
+            ['Invalid position of JS strings.', [['alert(1);', 99]]],
+            ['Invalid position of JS strings.', ['key' => ['alert(1);', 99]]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataFailSetJsStrings
+     */
+    public function testFailSetJsStrings(string $message, array $jsStrings): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+        $this->webView->setJsStrings($jsStrings);
+    }
+
+    public function testSetJsVars(): void
+    {
+        $this->webView->setJsVars([
+            'var1' => 'value1',
+            'var2' => [1, 2],
+            ['var3', 'value3', WebView::POSITION_END],
+        ]);
+
+        $html = $this->webView->render('//rawlayout.php', ['content' => '']);
+
+        $expected = '1<script>var var1 = "value1";' . "\n" .
+            'var var2 = [1,2];</script>23<script>var var3 = "value3";</script>4';
+
+        $this->assertEqualsWithoutLE($expected, $html);
+    }
+
+    public function dataFailSetJsVars(): array
+    {
+        return [
+            ['Do not set JS variable name.', [[]]],
+            ['JS variable name should be string. Got integer.', [[42]]],
+            ['Do not set JS variable value.', [['var']]],
+            ['Invalid position of JS variable.', [['title', 'hello', 99]]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataFailSetJsVars
+     */
+    public function testFailSetJsVars(string $message, array $jsVars): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+        $this->webView->setJsVars($jsVars);
     }
 }
