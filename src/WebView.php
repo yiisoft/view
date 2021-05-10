@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 use InvalidArgumentException;
-use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\View\Event\BodyBegin;
