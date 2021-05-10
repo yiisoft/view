@@ -72,6 +72,7 @@ class WebView extends View
      */
     public const POSITION_LOAD = 5;
 
+    private const DEFAULT_POSITION_JS_FILE = self::POSITION_END;
     private const DEFAULT_POSITION_JS_VARIABLE = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_STRING = self::POSITION_END;
 
@@ -379,12 +380,13 @@ class WebView extends View
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
      */
-    public function registerJsFile(string $url, array $options = [], string $key = null): void
+    public function registerJsFile(string $url, int $position = self::DEFAULT_POSITION_JS_FILE, array $options = [], string $key = null): void
     {
-        $key = $key ?: $url;
+        if (!$this->isValidPosition($position)) {
+            throw new InvalidArgumentException('Invalid position of JS file.');
+        }
 
-        $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options)->render();
+        $this->jsFiles[$position][$key ?: $url] = Html::javaScriptFile($url, $options)->render();
     }
 
     /**
@@ -558,9 +560,9 @@ class WebView extends View
     public function setJsFiles(array $jsFiles): void
     {
         foreach ($jsFiles as $key => $value) {
-            $this->registerJsFile(
-                $jsFiles[$key]['url'],
-                $jsFiles[$key]['attributes']
+            $this->registerJsFileByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value],
             );
         }
     }
@@ -611,6 +613,54 @@ class WebView extends View
     public function setTitle(string $value): void
     {
         $this->title = $value;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function registerCssFileByConfig(?string $key, array $config): void
+    {
+        if (!array_key_exists(0, $config)) {
+            throw new InvalidArgumentException('Do not set CSS file.');
+        }
+        $file = $config[0];
+
+        if (!is_string($file)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'CSS file should be string. Got %s.',
+                    $this->getType($file),
+                )
+            );
+        }
+
+        unset($config[0]);
+        $this->registerCssFile($file, $config, $key);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function registerJsFileByConfig(?string $key, array $config): void
+    {
+        if (!array_key_exists(0, $config)) {
+            throw new InvalidArgumentException('Do not set JS file.');
+        }
+        $file = $config[0];
+
+        if (!is_string($file)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'JS file should be string. Got %s.',
+                    $this->getType($file),
+                )
+            );
+        }
+
+        $position = $config[1] ?? self::DEFAULT_POSITION_JS_FILE;
+
+        unset($config[0], $config[1]);
+        $this->registerJsFile($file, $position, $config, $key);
     }
 
     /**
@@ -716,7 +766,7 @@ class WebView extends View
     /**
      * @param mixed $position
      *
-     * @psalm-assert int $position
+     * @psalm-assert =int $position
      */
     private function isValidPosition($position): bool
     {

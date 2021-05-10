@@ -52,15 +52,15 @@ final class WebViewTest extends TestCase
 
     public function testRegisterJsFileWithAlias(): void
     {
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_HEAD]);
+        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_HEAD);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
 
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_BEGIN]);
+        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_BEGIN);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsStringIgnoringLineEndings('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_END]);
+        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_END);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
