@@ -7,6 +7,7 @@ namespace Yiisoft\View;
 use InvalidArgumentException;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
+use Yiisoft\Json\Json;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
@@ -71,6 +72,7 @@ class WebView extends View
      */
     public const POSITION_LOAD = 5;
 
+    private const DEFAULT_POSITION_CSS_FILE = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_FILE = self::POSITION_END;
     private const DEFAULT_POSITION_JS_VARIABLE = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_STRING = self::POSITION_END;
@@ -317,11 +319,13 @@ class WebView extends View
      * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
      */
-    public function registerCssFile(string $url, array $options = [], string $key = null): void
+    public function registerCssFile(string $url, int $position = self::DEFAULT_POSITION_CSS_FILE, array $options = [], string $key = null): void
     {
-        $key = $key ?: $url;
+        if (!$this->isValidCssPosition($position)) {
+            throw new InvalidArgumentException('Invalid position of CSS file.');
+        }
 
-        $this->cssFiles[$key] = Html::cssFile($url, $options)->render();
+        $this->cssFiles[$position][$key ?: $url] = Html::cssFile($url, $options)->render();
     }
 
     /**
@@ -340,7 +344,7 @@ class WebView extends View
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      */
-    public function registerJs(string $js, int $position = self::POSITION_END, ?string $key = null): void
+    public function registerJs(string $js, int $position = self::DEFAULT_POSITION_JS_FILE, ?string $key = null): void
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
@@ -351,7 +355,7 @@ class WebView extends View
      *
      * @see registerJs()
      */
-    public function registerScriptTag(Script $script, int $position = self::POSITION_END, string $key = null): void
+    public function registerScriptTag(Script $script, int $position = self::DEFAULT_POSITION_JS_STRING, string $key = null): void
     {
         $key = $key ?: md5($script->render());
         $this->js[$position][$key] = $script;
@@ -381,7 +385,7 @@ class WebView extends View
      */
     public function registerJsFile(string $url, int $position = self::DEFAULT_POSITION_JS_FILE, array $options = [], string $key = null): void
     {
-        if (!$this->isValidPosition($position)) {
+        if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS file.');
         }
 
@@ -406,9 +410,9 @@ class WebView extends View
      * - {@see POSITION_READY}: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      */
-    public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
+    public function registerJsVar(string $name, $value, int $position = self::DEFAULT_POSITION_JS_VARIABLE): void
     {
-        $js = sprintf('var %s = %s;', $name, \Yiisoft\Json\Json::htmlEncode($value));
+        $js = sprintf('var %s = %s;', $name, Json::htmlEncode($value));
         $this->registerJs($js, $position, $name);
     }
 
@@ -429,8 +433,8 @@ class WebView extends View
         if (!empty($this->linkTags)) {
             $lines[] = implode("\n", $this->linkTags);
         }
-        if (!empty($this->cssFiles)) {
-            $lines[] = implode("\n", $this->cssFiles);
+        if (!empty($this->cssFiles[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->cssFiles[self::POSITION_HEAD]);
         }
         if (!empty($this->css)) {
             $lines[] = implode("\n", $this->css);
@@ -455,6 +459,9 @@ class WebView extends View
     protected function renderBodyBeginHtml(): string
     {
         $lines = [];
+        if (!empty($this->cssFiles[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->cssFiles[self::POSITION_BEGIN]);
+        }
         if (!empty($this->jsFiles[self::POSITION_BEGIN])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
@@ -480,6 +487,9 @@ class WebView extends View
     {
         $lines = [];
 
+        if (!empty($this->cssFiles[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->cssFiles[self::POSITION_END]);
+        }
         if (!empty($this->jsFiles[self::POSITION_END])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_END]);
         }
@@ -633,8 +643,10 @@ class WebView extends View
             );
         }
 
-        unset($config[0]);
-        $this->registerCssFile($file, $config, $key);
+        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_FILE;
+
+        unset($config[0], $config[1]);
+        $this->registerCssFile($file, $position, $config, $key);
     }
 
     /**
@@ -682,7 +694,7 @@ class WebView extends View
         }
 
         $position = $config[1] ?? self::DEFAULT_POSITION_JS_STRING;
-        if (!$this->isValidPosition($position)) {
+        if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS strings.');
         }
 
@@ -717,7 +729,7 @@ class WebView extends View
         $value = $config[1];
 
         $position = $config[2] ?? self::DEFAULT_POSITION_JS_VARIABLE;
-        if (!$this->isValidPosition($position)) {
+        if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS variable.');
         }
 
@@ -767,7 +779,25 @@ class WebView extends View
      *
      * @psalm-assert =int $position
      */
-    private function isValidPosition($position): bool
+    private function isValidCssPosition($position): bool
+    {
+        return in_array(
+            $position,
+            [
+                self::POSITION_HEAD,
+                self::POSITION_BEGIN,
+                self::POSITION_END,
+            ],
+            true,
+        );
+    }
+
+    /**
+     * @param mixed $position
+     *
+     * @psalm-assert =int $position
+     */
+    private function isValidJsPosition($position): bool
     {
         return in_array(
             $position,
