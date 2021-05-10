@@ -545,9 +545,9 @@ class WebView extends View
     public function setCssFiles(array $cssFiles): void
     {
         foreach ($cssFiles as $key => $value) {
-            $this->registerCssFile(
-                $cssFiles[$key]['url'],
-                $cssFiles[$key]['attributes']
+            $this->registerCssFileByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value],
             );
         }
     }
