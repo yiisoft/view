@@ -7,6 +7,7 @@ namespace Yiisoft\View;
 use InvalidArgumentException;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
+use Yiisoft\Html\Tag\Style;
 use Yiisoft\Json\Json;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
@@ -73,6 +74,7 @@ class WebView extends View
     public const POSITION_LOAD = 5;
 
     private const DEFAULT_POSITION_CSS_FILE = self::POSITION_HEAD;
+    private const DEFAULT_POSITION_CSS_STRING = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_FILE = self::POSITION_END;
     private const DEFAULT_POSITION_JS_VARIABLE = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_STRING = self::POSITION_END;
@@ -296,14 +298,24 @@ class WebView extends View
      * Registers a CSS code block.
      *
      * @param string $css the content of the CSS code block to be registered
-     * @param array $options the HTML attributes for the `<style>`-tag.
-     * @param string $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
+     * @param string|null $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
      * code blocks are registered with the same key, the latter will overwrite the former.
      */
-    public function registerCss(string $css, array $options = [], string $key = null): void
+    public function registerCss(string $css, int $position = self::DEFAULT_POSITION_CSS_STRING, ?string $key = null): void
     {
         $key = $key ?: md5($css);
-        $this->css[$key] = Html::style($css, $options)->render();
+        $this->css[$position][$key] = $css;
+    }
+
+    /**
+     * Register a `style` tag
+     *
+     * @see registerJs()
+     */
+    public function registerStyleTag(Style $style, int $position = self::DEFAULT_POSITION_CSS_STRING, ?string $key = null): void
+    {
+        $key = $key ?: md5($style->render());
+        $this->css[$position][$key] = $style;
     }
 
     /**
@@ -355,7 +367,7 @@ class WebView extends View
      *
      * @see registerJs()
      */
-    public function registerScriptTag(Script $script, int $position = self::DEFAULT_POSITION_JS_STRING, string $key = null): void
+    public function registerScriptTag(Script $script, int $position = self::DEFAULT_POSITION_JS_STRING, ?string $key = null): void
     {
         $key = $key ?: md5($script->render());
         $this->js[$position][$key] = $script;
@@ -436,8 +448,8 @@ class WebView extends View
         if (!empty($this->cssFiles[self::POSITION_HEAD])) {
             $lines[] = implode("\n", $this->cssFiles[self::POSITION_HEAD]);
         }
-        if (!empty($this->css)) {
-            $lines[] = implode("\n", $this->css);
+        if (!empty($this->css[self::POSITION_HEAD])) {
+            $lines[] = $this->generateCss($this->css[self::POSITION_HEAD]);
         }
         if (!empty($this->jsFiles[self::POSITION_HEAD])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
@@ -461,6 +473,9 @@ class WebView extends View
         $lines = [];
         if (!empty($this->cssFiles[self::POSITION_BEGIN])) {
             $lines[] = implode("\n", $this->cssFiles[self::POSITION_BEGIN]);
+        }
+        if (!empty($this->css[self::POSITION_BEGIN])) {
+            $lines[] = $this->generateCss($this->css[self::POSITION_BEGIN]);
         }
         if (!empty($this->jsFiles[self::POSITION_BEGIN])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
@@ -489,6 +504,9 @@ class WebView extends View
 
         if (!empty($this->cssFiles[self::POSITION_END])) {
             $lines[] = implode("\n", $this->cssFiles[self::POSITION_END]);
+        }
+        if (!empty($this->css[self::POSITION_END])) {
+            $lines[] = $this->generateCss($this->css[self::POSITION_END]);
         }
         if (!empty($this->jsFiles[self::POSITION_END])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_END]);
@@ -557,6 +575,17 @@ class WebView extends View
             $this->registerCssFileByConfig(
                 is_string($key) ? $key : null,
                 is_array($value) ? $value : [$value],
+            );
+        }
+    }
+
+    public function setCssStrings(array $cssStrings): void
+    {
+        /** @var mixed $value */
+        foreach ($cssStrings as $key => $value) {
+            $this->registerCssStringByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value, self::DEFAULT_POSITION_CSS_STRING]
             );
         }
     }
@@ -652,6 +681,40 @@ class WebView extends View
     /**
      * @throws InvalidArgumentException
      */
+    private function registerCssStringByConfig(?string $key, array $config): void
+    {
+        if (!array_key_exists(0, $config)) {
+            throw new InvalidArgumentException('Do not set CSS string.');
+        }
+        $css = $config[0];
+
+        if (!is_string($css) && !($css instanceof Style)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'CSS string should be string or instance of \\' . Style::class . '. Got %s.',
+                    $this->getType($css),
+                )
+            );
+        }
+
+        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_STRING;
+        if (!$this->isValidCssPosition($position)) {
+            throw new InvalidArgumentException('Invalid position of CSS strings.');
+        }
+
+        unset($config[0], $config[1]);
+        if ($config !== []) {
+            $css = Html::style($css)->replaceAttributes($config);
+        }
+
+        is_string($css)
+            ? $this->registerCss($css, $position, $key)
+            : $this->registerStyleTag($css, $position, $key);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
     private function registerJsFileByConfig(?string $key, array $config): void
     {
         if (!array_key_exists(0, $config)) {
@@ -734,6 +797,32 @@ class WebView extends View
         }
 
         $this->registerJsVar($key, $value, $position);
+    }
+
+    /**
+     * @param Style[]|string[] $items
+     */
+    private function generateCss(array $items): string
+    {
+        $lines = [];
+
+        $css = [];
+        foreach ($items as $item) {
+            if ($item instanceof Style) {
+                if ($css !== []) {
+                    $lines[] = Html::style(implode("\n", $css))->render();
+                    $css = [];
+                }
+                $lines[] = $item->render();
+            } else {
+                $css[] = $item;
+            }
+        }
+        if ($css !== []) {
+            $lines[] = Html::style(implode("\n", $css))->render();
+        }
+
+        return implode("\n", $lines);
     }
 
     /**
