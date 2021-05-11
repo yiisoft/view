@@ -704,7 +704,7 @@ class WebView extends View
 
         unset($config[0], $config[1]);
         if ($config !== []) {
-            $css = Html::style($css)->replaceAttributes($config);
+            $css = ($css instanceof Style ? $css : Html::style($css))->attributes($config);
         }
 
         is_string($css)
@@ -759,6 +759,11 @@ class WebView extends View
         $position = $config[1] ?? self::DEFAULT_POSITION_JS_STRING;
         if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS strings.');
+        }
+
+        unset($config[0], $config[1]);
+        if ($config !== []) {
+            $js = ($js instanceof Script ? $js : Html::script($js))->attributes($config);
         }
 
         is_string($js)

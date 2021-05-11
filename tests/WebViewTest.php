@@ -225,6 +225,7 @@ final class WebViewTest extends TestCase
             'key4' => ['.a8 { color: red; }', WebView::POSITION_END, 'crossorigin' => 'any'],
             Html::style('.a9 { color: red; }')->id('main'),
             [Html::style('.a10 { color: red; }')],
+            [Html::style('.a11 { color: red; }'), 'id' => 'second'],
         ]);
 
         $html = $webView->render('//positions.php');
@@ -235,7 +236,8 @@ final class WebViewTest extends TestCase
             '.a5 { color: red; }' . "\n" .
             '.a6 { color: red; }</style>' . "\n" .
             '<style id="main">.a9 { color: red; }</style>' . "\n" .
-            '<style>.a10 { color: red; }</style>[/HEAD]' . "\n" .
+            '<style>.a10 { color: red; }</style>' . "\n" .
+            '<style id="second">.a11 { color: red; }</style>[/HEAD]' . "\n" .
             '[BEGINBODY]<style>.a3 { color: red; }</style>[/BEGINBODY]' . "\n" .
             '[ENDBODY]<style crossorigin="any">.a4 { color: red; }</style>' . "\n" .
             '<style>.a7 { color: red; }</style>' . "\n" .
