@@ -805,7 +805,7 @@ class WebView extends View
     }
 
     /**
-     * @param Style[]|string[] $items
+     * @param string[]|Style[] $items
      */
     private function generateCss(array $items): string
     {
