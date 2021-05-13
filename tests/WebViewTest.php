@@ -11,6 +11,7 @@ use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Event\PageEnd;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -78,9 +79,16 @@ final class WebViewTest extends TestCase
 
     public function testPlaceholders(): void
     {
-        $this->webViewPlaceholderMock->setPlaceholderSalt('apple');
-        $signature = $this->webViewPlaceholderMock->getPlaceholderSignature();
-        $html = $this->webViewPlaceholderMock->renderFile($this->layoutPath, ['content' => 'content']);
+        $webView = null;
+        $eventDispatcher = new SimpleEventDispatcher(static function ($event) use (&$webView) {
+            if ($event instanceof PageEnd) {
+                $webView->setPlaceholderSalt((string)time());
+            }
+        });
+        $webView = $this->createWebView($eventDispatcher);
+        $webView->setPlaceholderSalt('apple');
+        $signature = $webView->getPlaceholderSignature();
+        $html = $webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString($signature, $html);
     }
 
