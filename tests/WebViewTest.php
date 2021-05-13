@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -52,15 +56,15 @@ final class WebViewTest extends TestCase
 
     public function testRegisterJsFileWithAlias(): void
     {
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_HEAD]);
+        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_HEAD);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
 
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_BEGIN]);
+        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_BEGIN);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsStringIgnoringLineEndings('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), ['position' => WebView::POSITION_END]);
+        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_END);
         $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
         $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
@@ -94,11 +98,29 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString('<link href="/main.css"></head>', $html);
     }
 
-    public function testRegisterCss(): void
+    public function dataRegisterCss(): array
     {
-        $this->webView->registerCSs('.red{color:red;}', ['id' => 'mainCss']);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
-        $this->assertStringContainsString('<style id="mainCss">.red{color:red;}</style></head>', $html);
+        return [
+            ['[HEAD]<style>.red{color:red;}</style>[/HEAD]', WebView::POSITION_HEAD],
+            ['[BEGINBODY]<style>.red{color:red;}</style>[/BEGINBODY]', WebView::POSITION_BEGIN],
+            ['[ENDBODY]<style>.red{color:red;}</style>[/ENDBODY]', WebView::POSITION_END],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRegisterCss
+     */
+    public function testRegisterCss(string $expected, ?int $position): void
+    {
+        $webView = $this->createWebView();
+
+        $position === null
+            ? $webView->registerCss('.red{color:red;}')
+            : $webView->registerCss('.red{color:red;}', $position);
+
+        $html = $webView->render('//positions.php');
+
+        $this->assertStringContainsString($expected, $html);
     }
 
     public function testRenderAjaxWithoutContext(): void
@@ -188,6 +210,65 @@ final class WebViewTest extends TestCase
         );
     }
 
+    public function testSetCssStrings(): void
+    {
+        $webView = $this->createWebView();
+
+        $webView->setCssStrings([
+            '.a1 { color: red; }',
+            ['.a2 { color: red; }', WebView::POSITION_HEAD],
+            ['.a3 { color: red; }', WebView::POSITION_BEGIN],
+            ['.a4 { color: red; }', WebView::POSITION_END, 'crossorigin' => 'any'],
+            'key1' => '.a5 { color: red; }',
+            'key2' => ['.a6 { color: red; }'],
+            'key3' => ['.a7 { color: red; }', WebView::POSITION_END],
+            'key4' => ['.a8 { color: red; }', WebView::POSITION_END, 'crossorigin' => 'any'],
+            Html::style('.a9 { color: red; }')->id('main'),
+            [Html::style('.a10 { color: red; }')],
+            [Html::style('.a11 { color: red; }'), 'id' => 'second'],
+        ]);
+
+        $html = $webView->render('//positions.php');
+
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD]<style>.a1 { color: red; }' . "\n" .
+            '.a2 { color: red; }' . "\n" .
+            '.a5 { color: red; }' . "\n" .
+            '.a6 { color: red; }</style>' . "\n" .
+            '<style id="main">.a9 { color: red; }</style>' . "\n" .
+            '<style>.a10 { color: red; }</style>' . "\n" .
+            '<style id="second">.a11 { color: red; }</style>[/HEAD]' . "\n" .
+            '[BEGINBODY]<style>.a3 { color: red; }</style>[/BEGINBODY]' . "\n" .
+            '[ENDBODY]<style crossorigin="any">.a4 { color: red; }</style>' . "\n" .
+            '<style>.a7 { color: red; }</style>' . "\n" .
+            '<style crossorigin="any">.a8 { color: red; }</style>[/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]';
+
+        $this->assertEqualsWithoutLE($expected, $html);
+    }
+
+    public function d1ataFailSetJsStrings(): array
+    {
+        return [
+            ['Do not set JS string.', [[]]],
+            ['Do not set JS string.', ['key' => []]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', [[42]]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', ['key' => [42]]],
+            ['Invalid position of JS strings.', [['alert(1);', 99]]],
+            ['Invalid position of JS strings.', ['key' => ['alert(1);', 99]]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataFailSetJsStrings
+     */
+    public function t1estFailSetJsStrings(string $message, array $jsStrings): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+        $this->webView->setJsStrings($jsStrings);
+    }
+
     public function testSetJsStrings(): void
     {
         $this->webView->setJsStrings([
@@ -263,5 +344,16 @@ final class WebViewTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
         $this->webView->setJsVars($jsVars);
+    }
+
+    private function createWebView(
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?LoggerInterface $logger = null
+    ): WebView {
+        return new WebView(
+            __DIR__ . '/public/view',
+            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $logger ?? new NullLogger(),
+        );
     }
 }
