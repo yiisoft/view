@@ -1,6 +1,8 @@
 <?php
-/* @var $this \Yiisoft\Yii-Web\WebView */
-/* @var $content string */
+/**
+ * @var $this \Yiisoft\View\WebView
+ * @var $content string
+ */
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
