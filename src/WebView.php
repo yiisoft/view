@@ -308,7 +308,7 @@ class WebView extends View
     }
 
     /**
-     * Register a `style` tag
+     * Register a `style` tag.
      *
      * @see registerJs()
      */
@@ -579,6 +579,9 @@ class WebView extends View
         }
     }
 
+    /**
+     * @param array $cssStrings
+     */
     public function setCssStrings(array $cssStrings): void
     {
         /** @var mixed $value */
