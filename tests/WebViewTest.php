@@ -11,6 +11,9 @@ use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Event\BodyBegin;
+use Yiisoft\View\Event\BodyEnd;
+use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
 use Yiisoft\View\WebView;
 
@@ -138,6 +141,26 @@ final class WebViewTest extends TestCase
         $html = $this->webView->renderAjax('//only-content.php', ['content' => $content]);
 
         $this->assertSame($content, $html);
+    }
+
+    public function testRenderAjaxString(): void
+    {
+        $eventDispatcher = new SimpleEventDispatcher();
+        $webView = $this->createWebView($eventDispatcher);
+
+        $string = 'content';
+        $result = $webView->renderAjaxString($string);
+
+        $this->assertSame($string, $result);
+        $this->assertSame(
+            [
+                PageBegin::class,
+                BodyBegin::class,
+                BodyEnd::class,
+                PageEnd::class,
+            ],
+            $eventDispatcher->getEventClasses()
+        );
     }
 
     public function testRegisterScriptTag(): void
