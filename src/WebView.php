@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 use InvalidArgumentException;
-use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
+use Yiisoft\Html\Tag\Style;
+use Yiisoft\Json\Json;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageEnd;
@@ -72,6 +73,9 @@ class WebView extends View
      */
     public const POSITION_LOAD = 5;
 
+    private const DEFAULT_POSITION_CSS_FILE = self::POSITION_HEAD;
+    private const DEFAULT_POSITION_CSS_STRING = self::POSITION_HEAD;
+    private const DEFAULT_POSITION_JS_FILE = self::POSITION_END;
     private const DEFAULT_POSITION_JS_VARIABLE = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_STRING = self::POSITION_END;
 
@@ -294,14 +298,24 @@ class WebView extends View
      * Registers a CSS code block.
      *
      * @param string $css the content of the CSS code block to be registered
-     * @param array $options the HTML attributes for the `<style>`-tag.
-     * @param string $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
+     * @param string|null $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
      * code blocks are registered with the same key, the latter will overwrite the former.
      */
-    public function registerCss(string $css, array $options = [], string $key = null): void
+    public function registerCss(string $css, int $position = self::DEFAULT_POSITION_CSS_STRING, ?string $key = null): void
     {
         $key = $key ?: md5($css);
-        $this->css[$key] = Html::style($css, $options)->render();
+        $this->css[$position][$key] = $css;
+    }
+
+    /**
+     * Register a `style` tag.
+     *
+     * @see registerJs()
+     */
+    public function registerStyleTag(Style $style, int $position = self::DEFAULT_POSITION_CSS_STRING, ?string $key = null): void
+    {
+        $key = $key ?: md5($style->render());
+        $this->css[$position][$key] = $style;
     }
 
     /**
@@ -317,11 +331,13 @@ class WebView extends View
      * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
      */
-    public function registerCssFile(string $url, array $options = [], string $key = null): void
+    public function registerCssFile(string $url, int $position = self::DEFAULT_POSITION_CSS_FILE, array $options = [], string $key = null): void
     {
-        $key = $key ?: $url;
+        if (!$this->isValidCssPosition($position)) {
+            throw new InvalidArgumentException('Invalid position of CSS file.');
+        }
 
-        $this->cssFiles[$key] = Html::cssFile($url, $options)->render();
+        $this->cssFiles[$position][$key ?: $url] = Html::cssFile($url, $options)->render();
     }
 
     /**
@@ -340,7 +356,7 @@ class WebView extends View
      * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      */
-    public function registerJs(string $js, int $position = self::POSITION_END, ?string $key = null): void
+    public function registerJs(string $js, int $position = self::DEFAULT_POSITION_JS_FILE, ?string $key = null): void
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
@@ -351,7 +367,7 @@ class WebView extends View
      *
      * @see registerJs()
      */
-    public function registerScriptTag(Script $script, int $position = self::POSITION_END, string $key = null): void
+    public function registerScriptTag(Script $script, int $position = self::DEFAULT_POSITION_JS_STRING, ?string $key = null): void
     {
         $key = $key ?: md5($script->render());
         $this->js[$position][$key] = $script;
@@ -379,12 +395,13 @@ class WebView extends View
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
      */
-    public function registerJsFile(string $url, array $options = [], string $key = null): void
+    public function registerJsFile(string $url, int $position = self::DEFAULT_POSITION_JS_FILE, array $options = [], string $key = null): void
     {
-        $key = $key ?: $url;
+        if (!$this->isValidJsPosition($position)) {
+            throw new InvalidArgumentException('Invalid position of JS file.');
+        }
 
-        $position = ArrayHelper::remove($options, 'position', self::POSITION_END);
-        $this->jsFiles[$position][$key] = Html::javaScriptFile($url, $options)->render();
+        $this->jsFiles[$position][$key ?: $url] = Html::javaScriptFile($url, $options)->render();
     }
 
     /**
@@ -405,9 +422,9 @@ class WebView extends View
      * - {@see POSITION_READY}: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      */
-    public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
+    public function registerJsVar(string $name, $value, int $position = self::DEFAULT_POSITION_JS_VARIABLE): void
     {
-        $js = sprintf('var %s = %s;', $name, \Yiisoft\Json\Json::htmlEncode($value));
+        $js = sprintf('var %s = %s;', $name, Json::htmlEncode($value));
         $this->registerJs($js, $position, $name);
     }
 
@@ -428,11 +445,11 @@ class WebView extends View
         if (!empty($this->linkTags)) {
             $lines[] = implode("\n", $this->linkTags);
         }
-        if (!empty($this->cssFiles)) {
-            $lines[] = implode("\n", $this->cssFiles);
+        if (!empty($this->cssFiles[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->cssFiles[self::POSITION_HEAD]);
         }
-        if (!empty($this->css)) {
-            $lines[] = implode("\n", $this->css);
+        if (!empty($this->css[self::POSITION_HEAD])) {
+            $lines[] = $this->generateCss($this->css[self::POSITION_HEAD]);
         }
         if (!empty($this->jsFiles[self::POSITION_HEAD])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
@@ -454,6 +471,12 @@ class WebView extends View
     protected function renderBodyBeginHtml(): string
     {
         $lines = [];
+        if (!empty($this->cssFiles[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->cssFiles[self::POSITION_BEGIN]);
+        }
+        if (!empty($this->css[self::POSITION_BEGIN])) {
+            $lines[] = $this->generateCss($this->css[self::POSITION_BEGIN]);
+        }
         if (!empty($this->jsFiles[self::POSITION_BEGIN])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
         }
@@ -479,6 +502,12 @@ class WebView extends View
     {
         $lines = [];
 
+        if (!empty($this->cssFiles[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->cssFiles[self::POSITION_END]);
+        }
+        if (!empty($this->css[self::POSITION_END])) {
+            $lines[] = $this->generateCss($this->css[self::POSITION_END]);
+        }
         if (!empty($this->jsFiles[self::POSITION_END])) {
             $lines[] = implode("\n", $this->jsFiles[self::POSITION_END]);
         }
@@ -543,9 +572,23 @@ class WebView extends View
     public function setCssFiles(array $cssFiles): void
     {
         foreach ($cssFiles as $key => $value) {
-            $this->registerCssFile(
-                $cssFiles[$key]['url'],
-                $cssFiles[$key]['attributes']
+            $this->registerCssFileByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value],
+            );
+        }
+    }
+
+    /**
+     * @param array $cssStrings
+     */
+    public function setCssStrings(array $cssStrings): void
+    {
+        /** @var mixed $value */
+        foreach ($cssStrings as $key => $value) {
+            $this->registerCssStringByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value, self::DEFAULT_POSITION_CSS_STRING]
             );
         }
     }
@@ -558,9 +601,9 @@ class WebView extends View
     public function setJsFiles(array $jsFiles): void
     {
         foreach ($jsFiles as $key => $value) {
-            $this->registerJsFile(
-                $jsFiles[$key]['url'],
-                $jsFiles[$key]['attributes']
+            $this->registerJsFileByConfig(
+                is_string($key) ? $key : null,
+                is_array($value) ? $value : [$value],
             );
         }
     }
@@ -616,6 +659,90 @@ class WebView extends View
     /**
      * @throws InvalidArgumentException
      */
+    private function registerCssFileByConfig(?string $key, array $config): void
+    {
+        if (!array_key_exists(0, $config)) {
+            throw new InvalidArgumentException('Do not set CSS file.');
+        }
+        $file = $config[0];
+
+        if (!is_string($file)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'CSS file should be string. Got %s.',
+                    $this->getType($file),
+                )
+            );
+        }
+
+        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_FILE;
+
+        unset($config[0], $config[1]);
+        $this->registerCssFile($file, $position, $config, $key);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function registerCssStringByConfig(?string $key, array $config): void
+    {
+        if (!array_key_exists(0, $config)) {
+            throw new InvalidArgumentException('Do not set CSS string.');
+        }
+        $css = $config[0];
+
+        if (!is_string($css) && !($css instanceof Style)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'CSS string should be string or instance of \\' . Style::class . '. Got %s.',
+                    $this->getType($css),
+                )
+            );
+        }
+
+        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_STRING;
+        if (!$this->isValidCssPosition($position)) {
+            throw new InvalidArgumentException('Invalid position of CSS strings.');
+        }
+
+        unset($config[0], $config[1]);
+        if ($config !== []) {
+            $css = ($css instanceof Style ? $css : Html::style($css))->attributes($config);
+        }
+
+        is_string($css)
+            ? $this->registerCss($css, $position, $key)
+            : $this->registerStyleTag($css, $position, $key);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function registerJsFileByConfig(?string $key, array $config): void
+    {
+        if (!array_key_exists(0, $config)) {
+            throw new InvalidArgumentException('Do not set JS file.');
+        }
+        $file = $config[0];
+
+        if (!is_string($file)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'JS file should be string. Got %s.',
+                    $this->getType($file),
+                )
+            );
+        }
+
+        $position = $config[1] ?? self::DEFAULT_POSITION_JS_FILE;
+
+        unset($config[0], $config[1]);
+        $this->registerJsFile($file, $position, $config, $key);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
     private function registerJsStringByConfig(?string $key, array $config): void
     {
         if (!array_key_exists(0, $config)) {
@@ -633,8 +760,13 @@ class WebView extends View
         }
 
         $position = $config[1] ?? self::DEFAULT_POSITION_JS_STRING;
-        if (!$this->isValidPosition($position)) {
+        if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS strings.');
+        }
+
+        unset($config[0], $config[1]);
+        if ($config !== []) {
+            $js = ($js instanceof Script ? $js : Html::script($js))->attributes($config);
         }
 
         is_string($js)
@@ -668,11 +800,37 @@ class WebView extends View
         $value = $config[1];
 
         $position = $config[2] ?? self::DEFAULT_POSITION_JS_VARIABLE;
-        if (!$this->isValidPosition($position)) {
+        if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS variable.');
         }
 
         $this->registerJsVar($key, $value, $position);
+    }
+
+    /**
+     * @param string[]|Style[] $items
+     */
+    private function generateCss(array $items): string
+    {
+        $lines = [];
+
+        $css = [];
+        foreach ($items as $item) {
+            if ($item instanceof Style) {
+                if ($css !== []) {
+                    $lines[] = Html::style(implode("\n", $css))->render();
+                    $css = [];
+                }
+                $lines[] = $item->render();
+            } else {
+                $css[] = $item;
+            }
+        }
+        if ($css !== []) {
+            $lines[] = Html::style(implode("\n", $css))->render();
+        }
+
+        return implode("\n", $lines);
     }
 
     /**
@@ -716,9 +874,27 @@ class WebView extends View
     /**
      * @param mixed $position
      *
-     * @psalm-assert int $position
+     * @psalm-assert =int $position
      */
-    private function isValidPosition($position): bool
+    private function isValidCssPosition($position): bool
+    {
+        return in_array(
+            $position,
+            [
+                self::POSITION_HEAD,
+                self::POSITION_BEGIN,
+                self::POSITION_END,
+            ],
+            true,
+        );
+    }
+
+    /**
+     * @param mixed $position
+     *
+     * @psalm-assert =int $position
+     */
+    private function isValidJsPosition($position): bool
     {
         return in_array(
             $position,
