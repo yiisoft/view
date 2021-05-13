@@ -17,7 +17,7 @@ use function count;
 use function dirname;
 
 /**
- * @internal Base class for {@see View} and {@see WebView}
+ * @internal Base class for {@see View} and {@see WebView}.
  */
 abstract class BaseView implements DynamicContentAwareInterface
 {
