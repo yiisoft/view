@@ -81,6 +81,37 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
+    public function dataRegisterCssFileWithPosition(): array
+    {
+        return [
+            [
+                '[HEAD]<link href="/somefile.css" rel="stylesheet">[/HEAD]',
+                WebView::POSITION_HEAD,
+            ],
+            [
+                '[BEGINBODY]<link href="/somefile.css" rel="stylesheet">[/BEGINBODY]',
+                WebView::POSITION_BEGIN,
+            ],
+            [
+                '[ENDBODY]<link href="/somefile.css" rel="stylesheet">[/ENDBODY]',
+                WebView::POSITION_END,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRegisterCssFileWithPosition
+     */
+    public function testRegisterCssFileWithPosition(string $expected, int $position): void
+    {
+        $webView = $this->createWebView();
+
+        $webView->registerCssFile('/somefile.css', $position);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString($expected, $html);
+    }
+
     public function testPlaceholders(): void
     {
         $webView = null;
