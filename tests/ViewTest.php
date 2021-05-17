@@ -4,30 +4,31 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Theme;
+use Yiisoft\View\View;
+use Yiisoft\View\ViewContextInterface;
 
-/**
- * ViewTest.
- */
 final class ViewTest extends TestCase
 {
-    private string $testViewPath = '';
+    protected string $tempDirectory;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
-
-        FileHelper::ensureDirectory($this->testViewPath);
+        $this->tempDirectory = __DIR__ . '/public/tmp/View';
+        FileHelper::ensureDirectory($this->tempDirectory);
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
-
-        FileHelper::removeDirectory($this->testViewPath);
+        FileHelper::removeDirectory($this->tempDirectory);
     }
 
     /**
@@ -35,9 +36,9 @@ final class ViewTest extends TestCase
      */
     public function testExceptionOnRenderFile(): void
     {
-        $view = $this->createView($this->testViewPath);
+        $view = $this->createViewWithBasePath($this->tempDirectory);
 
-        $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
+        $exceptionViewFile = $this->tempDirectory . DIRECTORY_SEPARATOR . 'exception.php';
         file_put_contents(
             $exceptionViewFile,
             <<<'PHP'
@@ -45,7 +46,7 @@ final class ViewTest extends TestCase
 <?php throw new Exception('Test Exception'); ?>
 PHP
         );
-        $normalViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'no-exception.php';
+        $normalViewFile = $this->tempDirectory . DIRECTORY_SEPARATOR . 'no-exception.php';
         file_put_contents(
             $normalViewFile,
             <<<'PHP'
@@ -67,10 +68,10 @@ PHP
 
     public function testRelativePathInView(): void
     {
-        $themePath = $this->testViewPath . '/theme1';
+        $themePath = $this->tempDirectory . '/theme1';
         FileHelper::ensureDirectory($themePath);
 
-        $baseView = "{$this->testViewPath}/theme1/base.php";
+        $baseView = "{$this->tempDirectory}/theme1/base.php";
         file_put_contents(
             $baseView,
             <<<'PHP'
@@ -78,23 +79,23 @@ PHP
 PHP
         );
 
-        $subView = "{$this->testViewPath}/sub.php";
+        $subView = "{$this->tempDirectory}/sub.php";
         $subViewContent = 'subviewcontent';
         file_put_contents($subView, $subViewContent);
 
-        $view = $this->createView(
-            $this->testViewPath,
-            new Theme([
-                $this->testViewPath => $themePath,
-            ])
-        );
+        $view = $this->createViewWithBasePath($this->tempDirectory)
+            ->withTheme(
+                new Theme([
+                    $this->tempDirectory => $themePath,
+                ])
+            );
 
         $this->assertSame($subViewContent, $view->render('//base'));
     }
 
     public function testRelativePathInViewWithContext(): void
     {
-        $baseViewPath = $this->testViewPath . '/test';
+        $baseViewPath = $this->tempDirectory . '/test';
         FileHelper::ensureDirectory($baseViewPath);
 
         $baseView = "{$baseViewPath}/base.php";
@@ -112,15 +113,15 @@ PHP
         $subViewContent = 'subviewcontent';
         file_put_contents($subView, $subViewContent);
 
-        $view = $this->createView($this->testViewPath)
-            ->withContext($this->createContext($this->testViewPath));
+        $view = $this->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory));
 
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
     public function testLocalizedDirectory(): void
     {
-        $view = $this->createView($this->testViewPath);
+        $view = $this->createViewWithBasePath($this->tempDirectory);
         $this->createFileStructure([
             'views' => [
                 'faq.php' => 'English FAQ',
@@ -128,8 +129,8 @@ PHP
                     'faq.php' => 'German FAQ',
                 ],
             ],
-        ], $this->testViewPath);
-        $viewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'faq.php';
+        ], $this->tempDirectory);
+        $viewFile = $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'faq.php';
         $sourceLanguage = 'en-US';
 
         // Source language and target language are same. The view path should be unchanged.
@@ -139,7 +140,7 @@ PHP
         // Source language and target language are different. The view path should be changed.
         $currentLanguage = 'de-DE';
         $this->assertSame(
-            $this->testViewPath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
+            $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
             $view->localize($viewFile, $currentLanguage, $sourceLanguage)
         );
     }
@@ -172,23 +173,72 @@ PHP
 
     public function testDefaultParameterIsPassedToView(): void
     {
-        $webView = $this->webView->withDefaultParameters(['parameter' => 'default_parameter']);
-        $output = $webView->render('//parameters');
-        $this->assertStringContainsString('default_parameter', $output);
+        $view = $this->createView()
+            ->withDefaultParameters(['parameter' => 'default_parameter']);
+
+        $output = $view->render('//parameters');
+
+        $this->assertSame('default_parameter', $output);
     }
 
     public function testDefaultParameterIsOverwrittenByLocalParameter(): void
     {
-        $webView = $this->webView->withDefaultParameters(['parameter' => 'default_parameter']);
-        $output = $webView->render('//parameters', [
+        $view = $this->createView()
+            ->withDefaultParameters(['parameter' => 'default_parameter']);
+
+        $output = $view->render('//parameters', [
             'parameter' => 'local_parameter',
         ]);
-        $this->assertStringContainsString('local_parameter', $output);
+
+        $this->assertSame('local_parameter', $output);
     }
 
     public function testPlaceholderSalt(): void
     {
-        $this->webView->setPlaceholderSalt('apple');
-        $this->assertSame(dechex(crc32('apple')), $this->webView->getPlaceholderSignature());
+        $view = $this->createView();
+
+        $view->setPlaceholderSalt('apple');
+
+        $this->assertSame(
+            dechex(crc32('apple')),
+            $view->getPlaceholderSignature()
+        );
+    }
+
+    private function createView(
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?LoggerInterface $logger = null
+    ): View {
+        return new View(
+            __DIR__ . '/public/view',
+            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $logger ?? new NullLogger(),
+        );
+    }
+
+    private function createViewWithBasePath(string $basePath): View
+    {
+        return new View(
+            $basePath,
+            new SimpleEventDispatcher(),
+            new NullLogger(),
+        );
+    }
+
+    private function createContext(string $viewPath): ViewContextInterface
+    {
+        return new class($viewPath) implements ViewContextInterface {
+            private string $viewPath;
+
+            public function __construct(string $viewPath)
+            {
+                $this->viewPath = $viewPath;
+            }
+
+            public function getViewPath(): string
+            {
+                return $this->viewPath;
+            }
+        };
     }
 }
