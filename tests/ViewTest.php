@@ -8,11 +8,14 @@ use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use RuntimeException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
+
+use function is_array;
 
 final class ViewTest extends TestCase
 {
@@ -32,7 +35,7 @@ final class ViewTest extends TestCase
     }
 
     /**
-     * @see https://github.com/yiisoft/yii2/issues/13058
+     * @link https://github.com/yiisoft/yii2/issues/13058
      */
     public function testExceptionOnRenderFile(): void
     {
@@ -156,12 +159,12 @@ PHP
     {
         foreach ($items as $name => $content) {
             $itemName = $baseDirectory . '/' . $name;
-            if (\is_array($content)) {
+            if (is_array($content)) {
                 if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
                     symlink($baseDirectory . DIRECTORY_SEPARATOR . $content[1], $itemName);
                 } else {
                     if (!mkdir($itemName, 0777, true) && !is_dir($itemName)) {
-                        throw new \RuntimeException(sprintf('Directory "%s" was not created', $itemName));
+                        throw new RuntimeException(sprintf('Directory "%s" was not created', $itemName));
                     }
                     $this->createFileStructure($content, $itemName);
                 }
