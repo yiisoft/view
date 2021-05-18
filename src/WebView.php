@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 use InvalidArgumentException;
+use Psr\EventDispatcher\StoppableEventInterface;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\Html\Tag\Style;
 use Yiisoft\Json\Json;
-use Yiisoft\View\Event\BodyBegin;
-use Yiisoft\View\Event\BodyEnd;
-use Yiisoft\View\Event\PageBegin;
-use Yiisoft\View\Event\PageEnd;
+use Yiisoft\View\Event\AfterRenderEventInterface;
+use Yiisoft\View\Event\WebView\AfterRender;
+use Yiisoft\View\Event\WebView\BeforeRender;
+use Yiisoft\View\Event\WebView\BodyBegin;
+use Yiisoft\View\Event\WebView\BodyEnd;
+use Yiisoft\View\Event\WebView\Head;
+use Yiisoft\View\Event\WebView\PageBegin;
+use Yiisoft\View\Event\WebView\PageEnd;
 
 use function array_key_exists;
 use function get_class;
@@ -147,38 +152,39 @@ final class WebView extends BaseView
     /**
      * Marks the position of an HTML head section.
      */
-    public function head(): void
+    public function head(array $parameters = []): void
     {
         echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
+        $this->eventDispatcher->dispatch(new Head($this, $parameters));
     }
 
     /**
      * Marks the beginning of an HTML body section.
      */
-    public function beginBody(): void
+    public function beginBody(array $parameters = []): void
     {
         echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
-        $this->eventDispatcher->dispatch(new BodyBegin($this->getViewFile()));
+        $this->eventDispatcher->dispatch(new BodyBegin($this, $parameters));
     }
 
     /**
      * Marks the ending of an HTML body section.
      */
-    public function endBody(): void
+    public function endBody(array $parameters = []): void
     {
-        $this->eventDispatcher->dispatch(new BodyEnd($this->getViewFile()));
+        $this->eventDispatcher->dispatch(new BodyEnd($this, $parameters));
         echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
     }
 
     /**
-     * Marks the beginning of a page.
+     * Marks the beginning of a HTML page.
      */
-    public function beginPage(): void
+    public function beginPage(array $parameters = []): void
     {
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
-        $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
+        $this->eventDispatcher->dispatch(new PageBegin($this, $parameters));
     }
 
     /**
@@ -188,9 +194,9 @@ final class WebView extends BaseView
      * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like
      * normal scripts.
      */
-    public function endPage($ajaxMode = false): void
+    public function endPage(array $parameters = [], bool $ajaxMode = false): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
+        $this->eventDispatcher->dispatch(new PageEnd($this, $parameters));
 
         $content = ob_get_clean();
 
@@ -231,7 +237,7 @@ final class WebView extends BaseView
         $this->beginBody();
         echo $this->renderFile($viewFile, $params);
         $this->endBody();
-        $this->endPage(true);
+        $this->endPage([], true);
 
         return ob_get_clean();
     }
@@ -253,7 +259,7 @@ final class WebView extends BaseView
         $this->beginBody();
         echo $string;
         $this->endBody();
-        $this->endPage(true);
+        $this->endPage([], true);
 
         return ob_get_clean();
     }
@@ -688,6 +694,19 @@ final class WebView extends BaseView
     public function setTitle(string $value): void
     {
         $this->title = $value;
+    }
+
+    protected function createBeforeRenderEvent(string $viewFile, array $parameters): StoppableEventInterface
+    {
+        return new BeforeRender($this, $viewFile, $parameters);
+    }
+
+    protected function createAfterRenderEvent(
+        string $viewFile,
+        array $parameters,
+        string $result
+    ): AfterRenderEventInterface {
+        return new AfterRender($this, $viewFile, $parameters, $result);
     }
 
     /**

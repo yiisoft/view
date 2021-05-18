@@ -11,6 +11,7 @@ use Psr\Log\NullLogger;
 use RuntimeException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
@@ -176,7 +177,7 @@ PHP
 
     public function testDefaultParameterIsPassedToView(): void
     {
-        $view = $this->createView()
+        $view = TestHelper::createView()
             ->withDefaultParameters(['parameter' => 'default_parameter']);
 
         $output = $view->render('//parameters');
@@ -186,7 +187,7 @@ PHP
 
     public function testDefaultParameterIsOverwrittenByLocalParameter(): void
     {
-        $view = $this->createView()
+        $view = TestHelper::createView()
             ->withDefaultParameters(['parameter' => 'default_parameter']);
 
         $output = $view->render('//parameters', [
@@ -198,24 +199,13 @@ PHP
 
     public function testPlaceholderSalt(): void
     {
-        $view = $this->createView();
+        $view = TestHelper::createView();
 
         $view->setPlaceholderSalt('apple');
 
         $this->assertSame(
             dechex(crc32('apple')),
             $view->getPlaceholderSignature()
-        );
-    }
-
-    private function createView(
-        ?EventDispatcherInterface $eventDispatcher = null,
-        ?LoggerInterface $logger = null
-    ): View {
-        return new View(
-            __DIR__ . '/public/view',
-            $eventDispatcher ?? new SimpleEventDispatcher(),
-            $logger ?? new NullLogger(),
         );
     }
 

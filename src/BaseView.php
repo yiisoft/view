@@ -6,11 +6,11 @@ namespace Yiisoft\View;
 
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
-use Yiisoft\View\Event\AfterRender;
-use Yiisoft\View\Event\BeforeRender;
+use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
 use function count;
@@ -473,11 +473,13 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     public function beforeRender(string $viewFile, array $parameters): bool
     {
-        $event = new BeforeRender($viewFile, $parameters);
+        $event = $this->createBeforeRenderEvent($viewFile, $parameters);
         $event = $this->eventDispatcher->dispatch($event);
 
         return !$event->isPropagationStopped();
     }
+
+    abstract protected function createBeforeRenderEvent(string $viewFile, array $parameters): StoppableEventInterface;
 
     /**
      * This method is invoked right after {@see renderFile()} renders a view file.
@@ -493,11 +495,19 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     public function afterRender(string $viewFile, array $parameters, string $output): string
     {
-        $event = new AfterRender($viewFile, $parameters, $output);
+        $event = $this->createAfterRenderEvent($viewFile, $parameters, $output);
+
+        /** @var AfterRenderEventInterface $event */
         $event = $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
     }
+
+    abstract protected function createAfterRenderEvent(
+        string $viewFile,
+        array $parameters,
+        string $result
+    ): AfterRenderEventInterface;
 
     /**
      * Finds the view file based on the given view name.

@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
-use Yiisoft\View\Event\PageBegin;
-use Yiisoft\View\Event\PageEnd;
+use Psr\EventDispatcher\StoppableEventInterface;
+use Yiisoft\View\Event\AfterRenderEventInterface;
+use Yiisoft\View\Event\View\AfterRender;
+use Yiisoft\View\Event\View\BeforeRender;
+use Yiisoft\View\Event\View\PageBegin;
+use Yiisoft\View\Event\View\PageEnd;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -17,22 +21,36 @@ use Yiisoft\View\Event\PageEnd;
 final class View extends BaseView
 {
     /**
-     * Marks the beginning of a page.
+     * Marks the beginning of a view.
      */
-    public function beginPage(): void
+    public function beginPage(array $parameters = []): void
     {
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
-        $this->eventDispatcher->dispatch(new PageBegin($this->getViewFile()));
+        $this->eventDispatcher->dispatch(new PageBegin($this, $parameters));
     }
 
     /**
-     * Marks the ending of a page.
+     * Marks the ending of a view.
      */
-    public function endPage(): void
+    public function endPage(array $parameters = []): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this->getViewFile()));
+        $this->eventDispatcher->dispatch(new PageEnd($this, $parameters));
+
         ob_end_flush();
+    }
+
+    protected function createBeforeRenderEvent(string $viewFile, array $parameters): StoppableEventInterface
+    {
+        return new BeforeRender($this, $viewFile, $parameters);
+    }
+
+    protected function createAfterRenderEvent(
+        string $viewFile,
+        array $parameters,
+        string $result
+    ): AfterRenderEventInterface {
+        return new AfterRender($this, $viewFile, $parameters, $result);
     }
 }
