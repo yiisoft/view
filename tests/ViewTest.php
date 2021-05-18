@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use RuntimeException;
 use Yiisoft\Files\FileHelper;

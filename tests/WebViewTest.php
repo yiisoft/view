@@ -6,9 +6,6 @@ namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Yiisoft\Html\Html;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\WebView\BodyBegin;
