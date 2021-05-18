@@ -5,79 +5,111 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Yiisoft\Files\FileHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\BodyBegin;
 use Yiisoft\View\Event\BodyEnd;
 use Yiisoft\View\Event\PageBegin;
 use Yiisoft\View\Event\PageEnd;
+use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
 {
-    private string $dataDir;
-    private string $layoutPath;
+    use TestTrait;
+
+    public function dataRegisterJsVar(): array
+    {
+        return [
+            [
+                '<script>var username = "samdark";</script></head>',
+                'username',
+                'samdark',
+            ],
+            [
+                '<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>',
+                'objectTest',
+                ['number' => 42, 'question' => 'Unknown'],
+            ],
+        ];
+    }
 
     /**
-     * @var string path for the test files.
+     * @dataProvider dataRegisterJsVar
      */
-    private string $testViewPath = '';
-
-    protected function setUp(): void
+    public function testRegisterJsVar(string $expected, string $name, $value): void
     {
-        parent::setUp();
+        $webView = $this->createWebView();
+        $webView->registerJsVar($name, $value);
 
-        $this->dataDir = dirname(__DIR__) . '/tests/public/view';
-        $this->layoutPath = $this->dataDir . '/layout.php';
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
-
-        FileHelper::ensureDirectory($this->testViewPath);
+        $html = $webView->render('//layout.php', ['content' => 'content']);
+        $this->assertStringContainsString($expected, $html);
     }
 
-    protected function tearDown(): void
+    public function dataRegisterJsFileWithPosition(): array
     {
-        parent::tearDown();
-        FileHelper::removeDirectory($this->testViewPath);
+        return [
+            [
+                '[HEAD]<script src="/somefile.js"></script>[/HEAD]',
+                WebView::POSITION_HEAD,
+            ],
+            [
+                '[BEGINBODY]<script src="/somefile.js"></script>[/BEGINBODY]',
+                WebView::POSITION_BEGIN,
+            ],
+            [
+                '[ENDBODY]<script src="/somefile.js"></script>[/ENDBODY]',
+                WebView::POSITION_END,
+            ],
+        ];
     }
 
-    public function testRegisterJsVar(): void
+    /**
+     * @dataProvider dataRegisterJsFileWithPosition
+     */
+    public function testRegisterJsFileWithPosition(string $expected, int $position): void
     {
-        $this->webView->registerJsVar('username', 'samdark');
-        $html = $this->webView->render('//layout.php', ['content' => 'content']);
-        $this->assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
+        $webView = $this->createWebView();
 
-        $this->webView->registerJsVar('objectTest', [
-            'number' => 42,
-            'question' => 'Unknown',
-        ]);
-        $html = $this->webView->render('//layout.php', ['content' => 'content']);
-        $this->assertStringContainsString('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
+        $webView->registerJsFile('/somefile.js', $position);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString($expected, $html);
     }
 
-    public function testRegisterJsFileWithAlias(): void
+    public function dataRegisterCssFileWithPosition(): array
     {
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_HEAD);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
-
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_BEGIN);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsStringIgnoringLineEndings('<body>' . PHP_EOL . '<script src="/baseUrl/js/somefile.js"></script>', $html);
-
-        $this->webView->registerJsFile($this->aliases->get('@baseUrl/js/somefile.js'), WebView::POSITION_END);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
+        return [
+            [
+                '[HEAD]<link href="/somefile.css" rel="stylesheet">[/HEAD]',
+                WebView::POSITION_HEAD,
+            ],
+            [
+                '[BEGINBODY]<link href="/somefile.css" rel="stylesheet">[/BEGINBODY]',
+                WebView::POSITION_BEGIN,
+            ],
+            [
+                '[ENDBODY]<link href="/somefile.css" rel="stylesheet">[/ENDBODY]',
+                WebView::POSITION_END,
+            ],
+        ];
     }
 
-    public function testRegisterCssFileWithAlias(): void
+    /**
+     * @dataProvider dataRegisterCssFileWithPosition
+     */
+    public function testRegisterCssFileWithPosition(string $expected, int $position): void
     {
-        $this->webView->registerCssFile($this->aliases->get('@baseUrl/css/somefile.css'));
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => 'content']);
-        $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
+        $webView = $this->createWebView();
+
+        $webView->registerCssFile('/somefile.css', $position);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString($expected, $html);
     }
 
     public function testPlaceholders(): void
@@ -91,22 +123,31 @@ final class WebViewTest extends TestCase
         $webView = $this->createWebView($eventDispatcher);
         $webView->setPlaceholderSalt('apple');
         $signature = $webView->getPlaceholderSignature();
-        $html = $webView->renderFile($this->layoutPath, ['content' => 'content']);
+        $html = $webView->render('//layout.php', ['content' => 'content']);
         $this->assertStringContainsString($signature, $html);
     }
 
     public function testRegisterMetaTag(): void
     {
-        $this->webView->registerMetaTag(['name' => 'keywords', 'content' => 'yii']);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
-        $this->assertStringContainsString('<meta name="keywords" content="yii"></head>', $html);
+        $webView = $this->createWebView();
+
+        $webView->registerMetaTag([
+            'name' => 'keywords',
+            'content' => 'yii',
+        ]);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
     }
 
     public function testRegisterLinkTag(): void
     {
-        $this->webView->registerLinkTag(['href' => '/main.css']);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
-        $this->assertStringContainsString('<link href="/main.css"></head>', $html);
+        $webView = $this->createWebView();
+
+        $webView->registerLinkTag(['href' => '/main.css']);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString('[HEAD]<link href="/main.css">[/HEAD]', $html);
     }
 
     public function dataRegisterCss(): array
@@ -138,7 +179,7 @@ final class WebViewTest extends TestCase
     {
         $content = 'Hello!';
 
-        $html = $this->webView->renderAjax('//only-content.php', ['content' => $content]);
+        $html = $this->createWebView()->renderAjax('//only-content.php', ['content' => $content]);
 
         $this->assertSame($content, $html);
     }
@@ -165,17 +206,27 @@ final class WebViewTest extends TestCase
 
     public function testRegisterScriptTag(): void
     {
+        $webView = $this->createWebView();
+
         $script = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
             ->type('application/ld+json');
 
-        $this->webView->registerScriptTag($script);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $webView->registerScriptTag($script);
+        $html = $webView->render('//positions.php');
 
-        $this->assertStringContainsString($script->render(), $html);
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD][/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY]' . $script->render() . '[/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]';
+
+        $this->assertSame($expected, $html);
     }
 
     public function testRegisterJsAndRegisterScriptTag(): void
     {
+        $webView = $this->createWebView();
+
         $js1 = 'alert(1);';
         $js2 = 'alert(2);';
         $script3 = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
@@ -185,14 +236,14 @@ final class WebViewTest extends TestCase
         $script6 = Html::script('alert("script6");');
         $js7 = 'alert(7);';
 
-        $this->webView->registerJs($js1);
-        $this->webView->registerJs($js2);
-        $this->webView->registerScriptTag($script3);
-        $this->webView->registerJs($js4);
-        $this->webView->registerScriptTag($script5);
-        $this->webView->registerScriptTag($script6, WebView::POSITION_READY);
-        $this->webView->registerJs($js7, WebView::POSITION_READY);
-        $html = $this->webView->renderFile($this->layoutPath, ['content' => '']);
+        $webView->registerJs($js1);
+        $webView->registerJs($js2);
+        $webView->registerScriptTag($script3);
+        $webView->registerJs($js4);
+        $webView->registerScriptTag($script5);
+        $webView->registerScriptTag($script6, WebView::POSITION_READY);
+        $webView->registerJs($js7, WebView::POSITION_READY);
+        $html = $webView->render('//layout.php', ['content' => '']);
 
         $this->assertStringContainsString(
             "<script>$js1\n$js2</script>\n" .
@@ -212,6 +263,8 @@ final class WebViewTest extends TestCase
 
     public function testRegisterJsAndRegisterScriptTagWithAjax(): void
     {
+        $webView = $this->createWebView();
+
         $js1 = 'alert(1);';
         $js2 = 'alert(2);';
         $script3 = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
@@ -221,24 +274,23 @@ final class WebViewTest extends TestCase
         $script6 = Html::script('alert("script6");');
         $js7 = 'alert(7);';
 
-        $this->webView->registerJs($js1);
-        $this->webView->registerJs($js2);
-        $this->webView->registerScriptTag($script3);
-        $this->webView->registerJs($js4);
-        $this->webView->registerScriptTag($script5);
-        $this->webView->registerScriptTag($script6, WebView::POSITION_READY);
-        $this->webView->registerJs($js7, WebView::POSITION_READY);
-        $html = $this->webView->renderAjax('//only-content.php', ['content' => '']);
+        $webView->registerJs($js1);
+        $webView->registerJs($js2);
+        $webView->registerScriptTag($script3);
+        $webView->registerJs($js4);
+        $webView->registerScriptTag($script5);
+        $webView->registerScriptTag($script6, WebView::POSITION_READY);
+        $webView->registerJs($js7, WebView::POSITION_READY);
+        $html = $webView->renderAjax('//only-content.php', ['content' => '']);
 
-        $this->assertStringContainsString(
-            "<script>alert(1);\nalert(2);</script>\n" .
+        $expected = "<script>$js1\n$js2</script>\n" .
             $script3->render() . "\n" .
-            "<script>alert(4);</script>\n" .
+            "<script>$js4</script>\n" .
             $script5->render() . "\n" .
             $script6->render() . "\n" .
-            '<script>alert(7);</script>',
-            $html
-        );
+            "<script>$js7</script>";
+
+        $this->assertSame($expected, $html);
     }
 
     public function testSetCssStrings(): void
@@ -275,7 +327,7 @@ final class WebViewTest extends TestCase
             '<style crossorigin="any">.a8 { color: red; }</style>[/ENDBODY]' . "\n" .
             '[ENDPAGE][/ENDPAGE]';
 
-        $this->assertEqualsWithoutLE($expected, $html);
+        $this->assertEqualStringsIgnoringLineEndings($expected, $html);
     }
 
     public function d1ataFailSetJsStrings(): array
@@ -297,12 +349,14 @@ final class WebViewTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $this->webView->setJsStrings($jsStrings);
+        $this->createWebView()->setJsStrings($jsStrings);
     }
 
     public function testSetJsStrings(): void
     {
-        $this->webView->setJsStrings([
+        $webView = $this->createWebView();
+
+        $webView->setJsStrings([
             'uniqueName' => 'app1.start();',
             'app2.start();',
             'uniqueName2' => ['app3.start();', WebView::POSITION_BEGIN],
@@ -310,13 +364,16 @@ final class WebViewTest extends TestCase
             Html::script('{"@type":"Article"}')->type('application/ld+json'),
         ]);
 
-        $html = $this->webView->render('//rawlayout.php', ['content' => '']);
+        $html = $webView->render('//positions.php');
 
-        $expected = '1<script>app4.start();</script>2<script>app3.start();</script>3<script>app1.start();' . "\n" .
-            'app2.start();</script>' . "\n" .
-            '<script type="application/ld+json">{"@type":"Article"}</script>4';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD]<script>app4.start();</script>[/HEAD]' . "\n" .
+            '[BEGINBODY]<script>app3.start();</script>[/BEGINBODY]' . "\n" .
+            "[ENDBODY]<script>app1.start();\napp2.start();</script>\n" .
+            '<script type="application/ld+json">{"@type":"Article"}</script>[/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]';
 
-        $this->assertEqualsWithoutLE($expected, $html);
+        $this->assertSame($expected, $html);
     }
 
     public function dataFailSetJsStrings(): array
@@ -338,23 +395,29 @@ final class WebViewTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $this->webView->setJsStrings($jsStrings);
+        $this->createWebView()->setJsStrings($jsStrings);
     }
 
     public function testSetJsVars(): void
     {
-        $this->webView->setJsVars([
+        $webView = $this->createWebView();
+
+        $webView->setJsVars([
             'var1' => 'value1',
             'var2' => [1, 2],
             ['var3', 'value3', WebView::POSITION_END],
         ]);
 
-        $html = $this->webView->render('//rawlayout.php', ['content' => '']);
+        $html = $webView->render('//positions.php');
 
-        $expected = '1<script>var var1 = "value1";' . "\n" .
-            'var var2 = [1,2];</script>23<script>var var3 = "value3";</script>4';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD]<script>var var1 = "value1";' . "\n" .
+            'var var2 = [1,2];</script>[/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY]<script>var var3 = "value3";</script>[/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]';
 
-        $this->assertEqualsWithoutLE($expected, $html);
+        $this->assertSame($expected, $html);
     }
 
     public function dataFailSetJsVars(): array
@@ -374,7 +437,7 @@ final class WebViewTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $this->webView->setJsVars($jsVars);
+        $this->createWebView()->setJsVars($jsVars);
     }
 
     private function createWebView(

@@ -4,27 +4,28 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\View\Tests\TestSupport\TestHelper;
+use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
 
-/**
- * ThemeTest.
- */
 final class ThemeTest extends TestCase
 {
-    protected string $testViewPath;
+    use TestTrait;
+
+    protected string $tempDirectory;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->testViewPath = sys_get_temp_dir() . '/' . str_replace('\\', '_', self::class) . uniqid('', false);
+        $this->tempDirectory = __DIR__ . '/public/tmp/Theme';
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
-        FileHelper::removeDirectory($this->testViewPath);
+        FileHelper::removeDirectory($this->tempDirectory);
     }
 
     public function testGetUrlWithoutBaseUrl(): void
@@ -70,7 +71,7 @@ final class ThemeTest extends TestCase
         $appPath = $this->getPath('/app/views');
         $themePath = $this->getPath('/app/themes/basic');
 
-        $this->touch($themePath . '/test.php');
+        TestHelper::touch($themePath . '/test.php');
 
         $theme = new Theme([
             $appPath => $themePath,
@@ -89,8 +90,8 @@ final class ThemeTest extends TestCase
         $firstThemePath = $this->getPath('/app/themes/christmas');
         $secondThemePath = $this->getPath('/app/themes/basic');
 
-        $this->touch($firstThemePath . '/banner.php');
-        $this->touch($secondThemePath . '/test.php');
+        TestHelper::touch($firstThemePath . '/banner.php');
+        TestHelper::touch($secondThemePath . '/test.php');
 
         $theme = new Theme([
             $appPath => [
@@ -121,6 +122,6 @@ final class ThemeTest extends TestCase
 
     private function getPath(string $path): string
     {
-        return $this->testViewPath . $path;
+        return $this->tempDirectory . $path;
     }
 }
