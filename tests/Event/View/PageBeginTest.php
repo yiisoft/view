@@ -10,8 +10,8 @@ use Yiisoft\View\View;
 
 final class PageBeginTest extends ViewEventTest
 {
-    protected function createEvent(View $view, array $parameters): ViewEvent
+    protected function createEvent(View $view): ViewEvent
     {
-        return new PageBegin($view, $parameters);
+        return new PageBegin($view);
     }
 }

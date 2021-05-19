@@ -14,13 +14,11 @@ abstract class WebViewEventTest extends TestCase
     public function testBase(): void
     {
         $view = TestHelper::createWebView();
-        $parameters = ['planet' => 'Earth'];
 
-        $event = $this->createEvent($view, $parameters);
+        $event = $this->createEvent($view);
 
         $this->assertSame($view, $event->getView());
-        $this->assertSame($parameters, $event->getParameters());
     }
 
-    abstract protected function createEvent(WebView $view, array $parameters): WebViewEvent;
+    abstract protected function createEvent(WebView $view): WebViewEvent;
 }

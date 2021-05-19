@@ -152,39 +152,39 @@ final class WebView extends BaseView
     /**
      * Marks the position of an HTML head section.
      */
-    public function head(array $parameters = []): void
+    public function head(): void
     {
         echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
-        $this->eventDispatcher->dispatch(new Head($this, $parameters));
+        $this->eventDispatcher->dispatch(new Head($this));
     }
 
     /**
      * Marks the beginning of an HTML body section.
      */
-    public function beginBody(array $parameters = []): void
+    public function beginBody(): void
     {
         echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
-        $this->eventDispatcher->dispatch(new BodyBegin($this, $parameters));
+        $this->eventDispatcher->dispatch(new BodyBegin($this));
     }
 
     /**
      * Marks the ending of an HTML body section.
      */
-    public function endBody(array $parameters = []): void
+    public function endBody(): void
     {
-        $this->eventDispatcher->dispatch(new BodyEnd($this, $parameters));
+        $this->eventDispatcher->dispatch(new BodyEnd($this));
         echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
     }
 
     /**
      * Marks the beginning of a HTML page.
      */
-    public function beginPage(array $parameters = []): void
+    public function beginPage(): void
     {
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
-        $this->eventDispatcher->dispatch(new PageBegin($this, $parameters));
+        $this->eventDispatcher->dispatch(new PageBegin($this));
     }
 
     /**
@@ -194,9 +194,9 @@ final class WebView extends BaseView
      * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like
      * normal scripts.
      */
-    public function endPage(array $parameters = [], bool $ajaxMode = false): void
+    public function endPage(bool $ajaxMode = false): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this, $parameters));
+        $this->eventDispatcher->dispatch(new PageEnd($this));
 
         $content = ob_get_clean();
 
@@ -237,7 +237,7 @@ final class WebView extends BaseView
         $this->beginBody();
         echo $this->renderFile($viewFile, $params);
         $this->endBody();
-        $this->endPage([], true);
+        $this->endPage(true);
 
         return ob_get_clean();
     }
@@ -259,7 +259,7 @@ final class WebView extends BaseView
         $this->beginBody();
         echo $string;
         $this->endBody();
-        $this->endPage([], true);
+        $this->endPage(true);
 
         return ob_get_clean();
     }

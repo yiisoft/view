@@ -23,20 +23,20 @@ final class View extends BaseView
     /**
      * Marks the beginning of a view.
      */
-    public function beginPage(array $parameters = []): void
+    public function beginPage(): void
     {
         ob_start();
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
-        $this->eventDispatcher->dispatch(new PageBegin($this, $parameters));
+        $this->eventDispatcher->dispatch(new PageBegin($this));
     }
 
     /**
      * Marks the ending of a view.
      */
-    public function endPage(array $parameters = []): void
+    public function endPage(): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this, $parameters));
+        $this->eventDispatcher->dispatch(new PageEnd($this));
 
         ob_end_flush();
     }

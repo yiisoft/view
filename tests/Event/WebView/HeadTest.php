@@ -10,8 +10,8 @@ use Yiisoft\View\WebView;
 
 final class HeadTest extends WebViewEventTest
 {
-    protected function createEvent(WebView $view, array $parameters): WebViewEvent
+    protected function createEvent(WebView $view): WebViewEvent
     {
-        return new Head($view, $parameters);
+        return new Head($view);
     }
 }

@@ -10,8 +10,8 @@ use Yiisoft\View\WebView;
 
 final class PageEndTest extends WebViewEventTest
 {
-    protected function createEvent(WebView $view, array $parameters): WebViewEvent
+    protected function createEvent(WebView $view): WebViewEvent
     {
-        return new PageEnd($view, $parameters);
+        return new PageEnd($view);
     }
 }
