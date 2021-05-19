@@ -10,7 +10,7 @@ use Yiisoft\View\WebView;
 
 final class BodyBeginTest extends WebViewEventTest
 {
-    protected function createEvent(WebView $view, ): WebViewEvent
+    protected function createEvent(WebView $view): WebViewEvent
     {
         return new BodyBegin($view);
     }
