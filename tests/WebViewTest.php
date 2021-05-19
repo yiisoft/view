@@ -6,15 +6,14 @@ namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Yiisoft\Html\Html;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
-use Yiisoft\View\Event\BodyBegin;
-use Yiisoft\View\Event\BodyEnd;
-use Yiisoft\View\Event\PageBegin;
-use Yiisoft\View\Event\PageEnd;
+use Yiisoft\View\Event\WebView\BodyBegin;
+use Yiisoft\View\Event\WebView\BodyEnd;
+use Yiisoft\View\Event\WebView\Head;
+use Yiisoft\View\Event\WebView\PageBegin;
+use Yiisoft\View\Event\WebView\PageEnd;
+use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\WebView;
 
@@ -43,7 +42,7 @@ final class WebViewTest extends TestCase
      */
     public function testRegisterJsVar(string $expected, string $name, $value): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
         $webView->registerJsVar($name, $value);
 
         $html = $webView->render('//layout.php', ['content' => 'content']);
@@ -73,7 +72,7 @@ final class WebViewTest extends TestCase
      */
     public function testRegisterJsFileWithPosition(string $expected, int $position): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->registerJsFile('/somefile.js', $position);
 
@@ -104,7 +103,7 @@ final class WebViewTest extends TestCase
      */
     public function testRegisterCssFileWithPosition(string $expected, int $position): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->registerCssFile('/somefile.css', $position);
 
@@ -120,7 +119,7 @@ final class WebViewTest extends TestCase
                 $webView->setPlaceholderSalt((string)time());
             }
         });
-        $webView = $this->createWebView($eventDispatcher);
+        $webView = TestHelper::createWebView($eventDispatcher);
         $webView->setPlaceholderSalt('apple');
         $signature = $webView->getPlaceholderSignature();
         $html = $webView->render('//layout.php', ['content' => 'content']);
@@ -129,7 +128,7 @@ final class WebViewTest extends TestCase
 
     public function testRegisterMetaTag(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->registerMetaTag([
             'name' => 'keywords',
@@ -142,7 +141,7 @@ final class WebViewTest extends TestCase
 
     public function testRegisterLinkTag(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->registerLinkTag(['href' => '/main.css']);
 
@@ -164,7 +163,7 @@ final class WebViewTest extends TestCase
      */
     public function testRegisterCss(string $expected, ?int $position): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $position === null
             ? $webView->registerCss('.red{color:red;}')
@@ -179,7 +178,7 @@ final class WebViewTest extends TestCase
     {
         $content = 'Hello!';
 
-        $html = $this->createWebView()->renderAjax('//only-content.php', ['content' => $content]);
+        $html = TestHelper::createWebView()->renderAjax('//only-content.php', ['content' => $content]);
 
         $this->assertSame($content, $html);
     }
@@ -187,7 +186,7 @@ final class WebViewTest extends TestCase
     public function testRenderAjaxString(): void
     {
         $eventDispatcher = new SimpleEventDispatcher();
-        $webView = $this->createWebView($eventDispatcher);
+        $webView = TestHelper::createWebView($eventDispatcher);
 
         $string = 'content';
         $result = $webView->renderAjaxString($string);
@@ -196,6 +195,7 @@ final class WebViewTest extends TestCase
         $this->assertSame(
             [
                 PageBegin::class,
+                Head::class,
                 BodyBegin::class,
                 BodyEnd::class,
                 PageEnd::class,
@@ -206,7 +206,7 @@ final class WebViewTest extends TestCase
 
     public function testRegisterScriptTag(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $script = Html::script('{"@context": "http://schema.org/","@type": "Article","name": "Yii 3"}')
             ->type('application/ld+json');
@@ -225,7 +225,7 @@ final class WebViewTest extends TestCase
 
     public function testRegisterJsAndRegisterScriptTag(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $js1 = 'alert(1);';
         $js2 = 'alert(2);';
@@ -263,7 +263,7 @@ final class WebViewTest extends TestCase
 
     public function testRegisterJsAndRegisterScriptTagWithAjax(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $js1 = 'alert(1);';
         $js2 = 'alert(2);';
@@ -295,7 +295,7 @@ final class WebViewTest extends TestCase
 
     public function testSetCssStrings(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->setCssStrings([
             '.a1 { color: red; }',
@@ -354,7 +354,7 @@ final class WebViewTest extends TestCase
 
     public function testSetJsStrings(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->setJsStrings([
             'uniqueName' => 'app1.start();',
@@ -395,12 +395,12 @@ final class WebViewTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $this->createWebView()->setJsStrings($jsStrings);
+        TestHelper::createWebView()->setJsStrings($jsStrings);
     }
 
     public function testSetJsVars(): void
     {
-        $webView = $this->createWebView();
+        $webView = TestHelper::createWebView();
 
         $webView->setJsVars([
             'var1' => 'value1',
@@ -437,17 +437,6 @@ final class WebViewTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        $this->createWebView()->setJsVars($jsVars);
-    }
-
-    private function createWebView(
-        ?EventDispatcherInterface $eventDispatcher = null,
-        ?LoggerInterface $logger = null
-    ): WebView {
-        return new WebView(
-            __DIR__ . '/public/view',
-            $eventDispatcher ?? new SimpleEventDispatcher(),
-            $logger ?? new NullLogger(),
-        );
+        TestHelper::createWebView()->setJsVars($jsVars);
     }
 }
