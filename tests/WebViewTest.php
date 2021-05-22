@@ -330,28 +330,6 @@ final class WebViewTest extends TestCase
         $this->assertEqualStringsIgnoringLineEndings($expected, $html);
     }
 
-    public function d1ataFailSetJsStrings(): array
-    {
-        return [
-            ['Do not set JS string.', [[]]],
-            ['Do not set JS string.', ['key' => []]],
-            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', [[42]]],
-            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', ['key' => [42]]],
-            ['Invalid position of JS strings.', [['alert(1);', 99]]],
-            ['Invalid position of JS strings.', ['key' => ['alert(1);', 99]]],
-        ];
-    }
-
-    /**
-     * @dataProvider dataFailSetJsStrings
-     */
-    public function t1estFailSetJsStrings(string $message, array $jsStrings): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage($message);
-        $this->createWebView()->setJsStrings($jsStrings);
-    }
-
     public function testSetJsStrings(): void
     {
         $webView = TestHelper::createWebView();
