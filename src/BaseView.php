@@ -40,9 +40,6 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     private ?ViewContextInterface $context = null;
 
-    /**
-     * @psalm-suppress PropertyNotSetInConstructor (Remove after fix https://github.com/vimeo/psalm/issues/5812)
-     */
     private string $placeholderSignature;
 
     /**
@@ -149,12 +146,12 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $this->basePath;
     }
 
-    public function getPlaceholderSignature(): string
+    final public function getPlaceholderSignature(): string
     {
         return $this->placeholderSignature;
     }
 
-    public function setPlaceholderSalt(string $salt): void
+    final public function setPlaceholderSalt(string $salt): void
     {
         $this->placeholderSignature = dechex(crc32($salt));
     }
