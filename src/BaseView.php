@@ -77,7 +77,7 @@ abstract class BaseView implements DynamicContentAwareInterface
      * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
      * They can be later accessed somewhere else through this property.
      */
-    private array $blocks;
+    private array $blocks = [];
 
     /**
      * @var array The view files currently being rendered. There may be multiple view files being
@@ -146,12 +146,12 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $this->basePath;
     }
 
-    public function getPlaceholderSignature(): string
+    final public function getPlaceholderSignature(): string
     {
         return $this->placeholderSignature;
     }
 
-    public function setPlaceholderSalt(string $salt): void
+    final public function setPlaceholderSalt(string $salt): void
     {
         $this->placeholderSignature = dechex(crc32($salt));
     }
