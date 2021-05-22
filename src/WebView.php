@@ -182,6 +182,7 @@ final class WebView extends BaseView
     public function beginPage(): void
     {
         ob_start();
+        /** @psalm-suppress PossiblyFalseArgument */
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
         $this->eventDispatcher->dispatch(new PageBegin($this));
@@ -230,6 +231,7 @@ final class WebView extends BaseView
         $viewFile = $this->findTemplateFile($view);
 
         ob_start();
+        /** @psalm-suppress PossiblyFalseArgument */
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
         $this->beginPage();
@@ -252,6 +254,7 @@ final class WebView extends BaseView
     public function renderAjaxString(string $string): string
     {
         ob_start();
+        /** @psalm-suppress PossiblyFalseArgument */
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
         $this->beginPage();
