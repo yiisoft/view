@@ -49,6 +49,31 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
+    public function dataRegisterJsFile(): array
+    {
+        return [
+            ['http://example.com/main.js'],
+            ['https://example.com/main.js'],
+            ['//example.com/main.js'],
+            ['main.js'],
+            ['../../main.js'],
+            ['/main.js'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRegisterJsFile
+     */
+    public function testRegisterJsFile(string $url): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $webView->registerJsFile($url);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString('[ENDBODY]<script src="' . $url . '"></script>[/ENDBODY]', $html);
+    }
+
     public function dataRegisterJsFileWithPosition(): array
     {
         return [
@@ -78,6 +103,31 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('//positions.php');
         $this->assertStringContainsString($expected, $html);
+    }
+
+    public function dataRegisterCssFile(): array
+    {
+        return [
+            ['http://example.com/main.css'],
+            ['https://example.com/main.css'],
+            ['//example.com/main.css'],
+            ['main.css'],
+            ['../../main.css'],
+            ['/main.css'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRegisterCssFile
+     */
+    public function testRegisterCssFile(string $url): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $webView->registerCssFile($url);
+
+        $html = $webView->render('//positions.php');
+        $this->assertStringContainsString('[HEAD]<link href="' . $url . '" rel="stylesheet">[/HEAD]', $html);
     }
 
     public function dataRegisterCssFileWithPosition(): array
