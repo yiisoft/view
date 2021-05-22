@@ -40,6 +40,9 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     private ?ViewContextInterface $context = null;
 
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor (Remove after fix https://github.com/vimeo/psalm/issues/5812)
+     */
     private string $placeholderSignature;
 
     /**
@@ -77,7 +80,7 @@ abstract class BaseView implements DynamicContentAwareInterface
      * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
      * They can be later accessed somewhere else through this property.
      */
-    private array $blocks;
+    private array $blocks = [];
 
     /**
      * @var array The view files currently being rendered. There may be multiple view files being
