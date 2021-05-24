@@ -343,11 +343,11 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function testSetCssStrings(): void
+    public function testAddCssStrings(): void
     {
         $webView = TestHelper::createWebView();
 
-        $webView->setCssStrings([
+        $webView->addCssStrings([
             '.a1 { color: red; }',
             ['.a2 { color: red; }', WebView::POSITION_HEAD],
             ['.a3 { color: red; }', WebView::POSITION_BEGIN],
@@ -380,11 +380,11 @@ final class WebViewTest extends TestCase
         $this->assertEqualStringsIgnoringLineEndings($expected, $html);
     }
 
-    public function testSetJsStrings(): void
+    public function testAddJsStrings(): void
     {
         $webView = TestHelper::createWebView();
 
-        $webView->setJsStrings([
+        $webView->addJsStrings([
             'uniqueName' => 'app1.start();',
             'app2.start();',
             'uniqueName2' => ['app3.start();', WebView::POSITION_BEGIN],
@@ -404,7 +404,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataFailSetJsStrings(): array
+    public function dataFailAddJsStrings(): array
     {
         return [
             ['Do not set JS string.', [[]]],
@@ -417,20 +417,20 @@ final class WebViewTest extends TestCase
     }
 
     /**
-     * @dataProvider dataFailSetJsStrings
+     * @dataProvider dataFailAddJsStrings
      */
-    public function testFailSetJsStrings(string $message, array $jsStrings): void
+    public function testFailAddJsStrings(string $message, array $jsStrings): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        TestHelper::createWebView()->setJsStrings($jsStrings);
+        TestHelper::createWebView()->addJsStrings($jsStrings);
     }
 
-    public function testSetJsVars(): void
+    public function testAddJsVars(): void
     {
         $webView = TestHelper::createWebView();
 
-        $webView->setJsVars([
+        $webView->addJsVars([
             'var1' => 'value1',
             'var2' => [1, 2],
             ['var3', 'value3', WebView::POSITION_END],
@@ -448,7 +448,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataFailSetJsVars(): array
+    public function dataFailAddJsVars(): array
     {
         return [
             ['Do not set JS variable name.', [[]]],
@@ -459,12 +459,12 @@ final class WebViewTest extends TestCase
     }
 
     /**
-     * @dataProvider dataFailSetJsVars
+     * @dataProvider dataFailAddJsVars
      */
-    public function testFailSetJsVars(string $message, array $jsVars): void
+    public function testFailAddJsVars(string $message, array $jsVars): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
-        TestHelper::createWebView()->setJsVars($jsVars);
+        TestHelper::createWebView()->addJsVars($jsVars);
     }
 }
