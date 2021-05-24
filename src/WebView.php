@@ -612,7 +612,7 @@ final class WebView extends BaseView
      *
      * @param array $cssFiles
      */
-    public function setCssFiles(array $cssFiles): void
+    public function addCssFiles(array $cssFiles): void
     {
         foreach ($cssFiles as $key => $value) {
             $this->registerCssFileByConfig(
@@ -625,7 +625,7 @@ final class WebView extends BaseView
     /**
      * @param array $cssStrings
      */
-    public function setCssStrings(array $cssStrings): void
+    public function addCssStrings(array $cssStrings): void
     {
         /** @var mixed $value */
         foreach ($cssStrings as $key => $value) {
@@ -641,7 +641,7 @@ final class WebView extends BaseView
      *
      * @param array $jsFiles
      */
-    public function setJsFiles(array $jsFiles): void
+    public function addJsFiles(array $jsFiles): void
     {
         foreach ($jsFiles as $key => $value) {
             $this->registerJsFileByConfig(
@@ -658,7 +658,7 @@ final class WebView extends BaseView
      *
      * @throws InvalidArgumentException
      */
-    public function setJsStrings(array $jsStrings): void
+    public function addJsStrings(array $jsStrings): void
     {
         /** @var mixed $value */
         foreach ($jsStrings as $key => $value) {
@@ -676,7 +676,7 @@ final class WebView extends BaseView
      *
      * @throws InvalidArgumentException
      */
-    public function setJsVars(array $jsVars): void
+    public function addJsVars(array $jsVars): void
     {
         foreach ($jsVars as $key => $value) {
             if (is_string($key)) {
