@@ -176,16 +176,31 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($signature, $html);
     }
 
-    public function testRegisterMetaTag(): void
+    public function testRegisterMeta(): void
     {
         $webView = TestHelper::createWebView();
 
-        $webView->registerMetaTag([
+        $webView->registerMeta([
             'name' => 'keywords',
             'content' => 'yii',
         ]);
 
         $html = $webView->render('//positions.php');
+
+        $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
+    }
+
+    public function testRegisterMetaTag(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $webView->registerMetaTag(Html::meta([
+            'name' => 'keywords',
+            'content' => 'yii',
+        ]));
+
+        $html = $webView->render('//positions.php');
+
         $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
     }
 

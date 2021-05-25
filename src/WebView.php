@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Psr\EventDispatcher\StoppableEventInterface;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
+use Yiisoft\Html\Tag\Meta;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\Html\Tag\Style;
 use Yiisoft\Json\Json;
@@ -109,9 +110,10 @@ final class WebView extends BaseView
     private string $title = '';
 
     /**
-     * @var array the registered meta tags.
+     * @var Meta[] The registered meta tags.
      *
-     * {@see registerMetaTag()}
+     * @see registerMeta()
+     * @see registerMetaTag()
      */
     private array $metaTags = [];
 
@@ -291,7 +293,7 @@ final class WebView extends BaseView
      * For example, a description meta tag can be added like the following:
      *
      * ```php
-     * $view->registerMetaTag([
+     * $view->registerMeta([
      *     'name' => 'description',
      *     'content' => 'This website is about funny raccoons.'
      * ]);
@@ -299,18 +301,24 @@ final class WebView extends BaseView
      *
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
-     * @param array $options the HTML attributes for the meta tag.
+     * @param array $attributes the HTML attributes for the meta tag.
      * @param string $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
      * latter will overwrite the former. If this is null, the new meta tag will be appended to the
      * existing ones.
      */
-    public function registerMetaTag(array $options, string $key = null): void
+    public function registerMeta(array $attributes, ?string $key = null): void
     {
-        if ($key === null) {
-            $this->metaTags[] = Html::meta()->attributes($options)->render();
-        } else {
-            $this->metaTags[$key] = Html::meta()->attributes($options)->render();
-        }
+        $this->registerMetaTag(Html::meta($attributes), $key);
+    }
+
+    /**
+     * Registers a {@see Meta} tag.
+     */
+    public function registerMetaTag(Meta $meta, ?string $key = null): void
+    {
+        $key === null
+            ? $this->metaTags[] = $meta
+            : $this->metaTags[$key] = $meta;
     }
 
     /**
