@@ -113,6 +113,9 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $new;
     }
 
+    /**
+     * @return static
+     */
     public function withRenderers(array $renderers): self
     {
         $new = clone $this;
@@ -120,6 +123,9 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $new;
     }
 
+    /**
+     * @return static
+     */
     public function withLanguage(string $language): self
     {
         $new = clone $this;
@@ -127,6 +133,9 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $new;
     }
 
+    /**
+     * @return static
+     */
     public function withSourceLanguage(string $language): self
     {
         $new = clone $this;
@@ -134,6 +143,9 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $new;
     }
 
+    /**
+     * @return static
+     */
     public function withContext(ViewContextInterface $context): self
     {
         $new = clone $this;
@@ -161,6 +173,9 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $this->defaultExtension;
     }
 
+    /**
+     * @return static
+     */
     public function withDefaultExtension(string $defaultExtension): self
     {
         $new = clone $this;
@@ -173,6 +188,9 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $this->defaultParameters;
     }
 
+    /**
+     * @return static
+     */
     public function withDefaultParameters(array $defaultParameters): self
     {
         $new = clone $this;
