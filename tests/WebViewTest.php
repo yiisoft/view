@@ -189,14 +189,47 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
     }
 
-    public function testRegisterLinkTag(): void
+    public function dataRegisterLink(): array
+    {
+        return [
+            ['[HEAD]<link href="/main.css">[/HEAD]', WebView::POSITION_HEAD],
+            ['[BEGINBODY]<link href="/main.css">[/BEGINBODY]', WebView::POSITION_BEGIN],
+            ['[ENDBODY]<link href="/main.css">[/ENDBODY]', WebView::POSITION_END],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRegisterLink
+     */
+    public function testRegisterLink(string $expected, ?int $position): void
     {
         $webView = TestHelper::createWebView();
 
-        $webView->registerLinkTag(['href' => '/main.css']);
+        $position === null
+            ? $webView->registerLink(['href' => '/main.css'])
+            : $webView->registerLink(['href' => '/main.css'], $position);
 
         $html = $webView->render('//positions.php');
-        $this->assertStringContainsString('[HEAD]<link href="/main.css">[/HEAD]', $html);
+
+        $this->assertStringContainsString($expected, $html);
+    }
+
+    /**
+     * @dataProvider dataRegisterLink
+     */
+    public function testRegisterLinkTag(string $expected, ?int $position): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $link = Html::link()->href('/main.css');
+
+        $position === null
+            ? $webView->registerLinkTag($link)
+            : $webView->registerLinkTag($link, $position);
+
+        $html = $webView->render('//positions.php');
+
+        $this->assertStringContainsString($expected, $html);
     }
 
     public function dataRegisterCss(): array
