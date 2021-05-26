@@ -68,14 +68,12 @@ abstract class BaseView implements DynamicContentAwareInterface
     private string $defaultExtension = 'php';
 
     /**
-     * @var array Custom parameters that are shared among view templates.
+     * @var array<string, mixed> Custom parameters that is global for all view templates.
      */
-    private array $defaultParameters = [];
+    private array $globalParameters = [];
 
     /**
-     * @var array A list of named output blocks. The keys are the block names and the values are the corresponding block
-     * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
-     * They can be later accessed somewhere else through this property.
+     * @var array<string, string> List of named output content blocks that is global for all view templates.
      */
     private array $blocks = [];
 
@@ -168,28 +166,70 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $new;
     }
 
-    public function getDefaultParameters(): array
-    {
-        return $this->defaultParameters;
-    }
-
-    public function withDefaultParameters(array $defaultParameters): self
-    {
-        $new = clone $this;
-        $new->defaultParameters = $defaultParameters;
-        return $new;
-    }
-
     /**
-     * {@see blocks}
+     * Sets a global parameter.
+     *
+     * @param string $id The unique identifier of the parameter.
+     * @param mixed $value The value of the parameter.
      */
-    public function setBlock(string $id, string $value): void
+    public function setGlobalParameter(string $id, $value): void
     {
-        $this->blocks[$id] = $value;
+        $this->globalParameters[$id] = $value;
     }
 
     /**
-     * {@see blocks}
+     * Removes a global parameter.
+     *
+     * @param string $id The unique identifier of the parameter.
+     */
+    public function removeGlobalParameter(string $id): void
+    {
+        unset($this->globalParameters[$id]);
+    }
+
+    /**
+     * Gets a global parameter value by ID.
+     *
+     * @param string $id The unique identifier of the parameter.
+     *
+     * @return mixed The value of the parameter.
+     */
+    public function getGlobalParameter(string $id)
+    {
+        if (isset($this->globalParameters[$id])) {
+            return $this->globalParameters[$id];
+        }
+
+        throw new InvalidArgumentException('Global parameter: "' . $id . '" not found.');
+    }
+
+    /**
+     * Checks the existence of a global parameter by ID.
+     *
+     * @param string $id The unique identifier of the parameter.
+     *
+     * @return bool Whether a custom parameter that is global for all view templates exists.
+     */
+    public function hasGlobalParameter(string $id): bool
+    {
+        return isset($this->globalParameters[$id]);
+    }
+
+    /**
+     * Sets a content block.
+     *
+     * @param string $id The unique identifier of the block.
+     * @param mixed $content The content of the block.
+     */
+    public function setBlock(string $id, string $content): void
+    {
+        $this->blocks[$id] = $content;
+    }
+
+    /**
+     * Removes a content block.
+     *
+     * @param string $id The unique identifier of the block.
      */
     public function removeBlock(string $id): void
     {
@@ -197,7 +237,11 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see blocks}
+     * Gets content of the block by ID.
+     *
+     * @param string $id The unique identifier of the block.
+     *
+     * @return string The content of the block.
      */
     public function getBlock(string $id): string
     {
@@ -209,7 +253,11 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see blocks}
+     * Checks the existence of a content block by ID.
+     *
+     * @param string $id The unique identifier of the block.
+     *
+     * @return bool Whether a content block exists.
      */
     public function hasBlock(string $id): bool
     {
@@ -280,7 +328,7 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     public function renderFile(string $viewFile, array $parameters = []): string
     {
-        $parameters = array_merge($this->defaultParameters, $parameters);
+        $parameters = array_merge($this->globalParameters, $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;
