@@ -68,14 +68,12 @@ abstract class BaseView implements DynamicContentAwareInterface
     private string $defaultExtension = 'php';
 
     /**
-     * @var array Custom parameters that are shared among view templates.
+     * @var array<string, mixed> Parameters that are common for all view templates.
      */
-    private array $defaultParameters = [];
+    private array $commonParameters = [];
 
     /**
-     * @var array A list of named output blocks. The keys are the block names and the values are the corresponding block
-     * content. You can call {@see beginBlock()} and {@see endBlock()} to capture small fragments of a view.
-     * They can be later accessed somewhere else through this property.
+     * @var array<string, string> Named content blocks that are common for all view templates.
      */
     private array $blocks = [];
 
@@ -168,28 +166,70 @@ abstract class BaseView implements DynamicContentAwareInterface
         return $new;
     }
 
-    public function getDefaultParameters(): array
-    {
-        return $this->defaultParameters;
-    }
-
-    public function withDefaultParameters(array $defaultParameters): self
-    {
-        $new = clone $this;
-        $new->defaultParameters = $defaultParameters;
-        return $new;
-    }
-
     /**
-     * {@see blocks}
+     * Sets a common parameter that is accessible in all view templates.
+     *
+     * @param string $id The unique identifier of the parameter.
+     * @param mixed $value The value of the parameter.
      */
-    public function setBlock(string $id, string $value): void
+    public function setCommonParameter(string $id, $value): void
     {
-        $this->blocks[$id] = $value;
+        $this->commonParameters[$id] = $value;
     }
 
     /**
-     * {@see blocks}
+     * Removes a common parameter.
+     *
+     * @param string $id The unique identifier of the parameter.
+     */
+    public function removeCommonParameter(string $id): void
+    {
+        unset($this->commonParameters[$id]);
+    }
+
+    /**
+     * Gets a common parameter value by ID.
+     *
+     * @param string $id The unique identifier of the parameter.
+     *
+     * @return mixed The value of the parameter.
+     */
+    public function getCommonParameter(string $id)
+    {
+        if (isset($this->commonParameters[$id])) {
+            return $this->commonParameters[$id];
+        }
+
+        throw new InvalidArgumentException('Common parameter: "' . $id . '" not found.');
+    }
+
+    /**
+     * Checks the existence of a common parameter by ID.
+     *
+     * @param string $id The unique identifier of the parameter.
+     *
+     * @return bool Whether a custom parameter that is common for all view templates exists.
+     */
+    public function hasCommonParameter(string $id): bool
+    {
+        return isset($this->commonParameters[$id]);
+    }
+
+    /**
+     * Sets a content block.
+     *
+     * @param string $id The unique identifier of the block.
+     * @param mixed $content The content of the block.
+     */
+    public function setBlock(string $id, string $content): void
+    {
+        $this->blocks[$id] = $content;
+    }
+
+    /**
+     * Removes a content block.
+     *
+     * @param string $id The unique identifier of the block.
      */
     public function removeBlock(string $id): void
     {
@@ -197,7 +237,11 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see blocks}
+     * Gets content of the block by ID.
+     *
+     * @param string $id The unique identifier of the block.
+     *
+     * @return string The content of the block.
      */
     public function getBlock(string $id): string
     {
@@ -209,7 +253,11 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
-     * {@see blocks}
+     * Checks the existence of a content block by ID.
+     *
+     * @param string $id The unique identifier of the block.
+     *
+     * @return bool Whether a content block exists.
      */
     public function hasBlock(string $id): bool
     {
@@ -280,7 +328,7 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     public function renderFile(string $viewFile, array $parameters = []): string
     {
-        $parameters = array_merge($this->defaultParameters, $parameters);
+        $parameters = array_merge($this->commonParameters, $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;
