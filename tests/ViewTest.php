@@ -174,35 +174,35 @@ PHP
         }
     }
 
-    public function testGlobalParameter(): void
+    public function testCommonParameter(): void
     {
         $view = TestHelper::createView();
-        $this->assertFalse($view->hasGlobalParameter('id'));
+        $this->assertFalse($view->hasCommonParameter('id'));
 
-        $view->setGlobalParameter('id', 42);
-        $this->assertTrue($view->hasGlobalParameter('id'));
-        $this->assertSame(42, $view->getGlobalParameter('id'));
+        $view->setCommonParameter('id', 42);
+        $this->assertTrue($view->hasCommonParameter('id'));
+        $this->assertSame(42, $view->getCommonParameter('id'));
 
-        $view->removeGlobalParameter('id');
-        $this->assertFalse($view->hasGlobalParameter('id'));
+        $view->removeCommonParameter('id');
+        $this->assertFalse($view->hasCommonParameter('id'));
 
         $this->expectException(InvalidArgumentException::class);
-        $view->getGlobalParameter('id');
+        $view->getCommonParameter('id');
     }
 
-    public function testGlobalParameterIsPassedToView(): void
+    public function testCommonParameterIsPassedToView(): void
     {
         $view = TestHelper::createView();
-        $view->setGlobalParameter('parameter', 'global-parameter');
+        $view->setCommonParameter('parameter', 'global-parameter');
         $output = $view->render('//parameters');
 
         $this->assertSame('global-parameter', $output);
     }
 
-    public function testDefaultParameterIsOverwrittenByLocalParameter(): void
+    public function testCommonParameterIsOverwrittenByLocalParameter(): void
     {
         $view = TestHelper::createView();
-        $view->setGlobalParameter('parameter', 'global-parameter');
+        $view->setCommonParameter('parameter', 'global-parameter');
 
         $output = $view->render('//parameters', [
             'parameter' => 'local-parameter',

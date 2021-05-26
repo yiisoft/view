@@ -68,12 +68,12 @@ abstract class BaseView implements DynamicContentAwareInterface
     private string $defaultExtension = 'php';
 
     /**
-     * @var array<string, mixed> Custom parameters that is global for all view templates.
+     * @var array<string, mixed> Custom parameters that is common for all view templates.
      */
-    private array $globalParameters = [];
+    private array $commonParameters = [];
 
     /**
-     * @var array<string, string> List of named output content blocks that is global for all view templates.
+     * @var array<string, string> List of named output content blocks that is common for all view templates.
      */
     private array $blocks = [];
 
@@ -167,52 +167,52 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
-     * Sets a global parameter.
+     * Sets a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
      */
-    public function setGlobalParameter(string $id, $value): void
+    public function setCommonParameter(string $id, $value): void
     {
-        $this->globalParameters[$id] = $value;
+        $this->commonParameters[$id] = $value;
     }
 
     /**
-     * Removes a global parameter.
+     * Removes a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
      */
-    public function removeGlobalParameter(string $id): void
+    public function removeCommonParameter(string $id): void
     {
-        unset($this->globalParameters[$id]);
+        unset($this->commonParameters[$id]);
     }
 
     /**
-     * Gets a global parameter value by ID.
+     * Gets a common parameter value by ID.
      *
      * @param string $id The unique identifier of the parameter.
      *
      * @return mixed The value of the parameter.
      */
-    public function getGlobalParameter(string $id)
+    public function getCommonParameter(string $id)
     {
-        if (isset($this->globalParameters[$id])) {
-            return $this->globalParameters[$id];
+        if (isset($this->commonParameters[$id])) {
+            return $this->commonParameters[$id];
         }
 
-        throw new InvalidArgumentException('Global parameter: "' . $id . '" not found.');
+        throw new InvalidArgumentException('Common parameter: "' . $id . '" not found.');
     }
 
     /**
-     * Checks the existence of a global parameter by ID.
+     * Checks the existence of a common parameter by ID.
      *
      * @param string $id The unique identifier of the parameter.
      *
-     * @return bool Whether a custom parameter that is global for all view templates exists.
+     * @return bool Whether a custom parameter that is common for all view templates exists.
      */
-    public function hasGlobalParameter(string $id): bool
+    public function hasCommonParameter(string $id): bool
     {
-        return isset($this->globalParameters[$id]);
+        return isset($this->commonParameters[$id]);
     }
 
     /**
@@ -328,7 +328,7 @@ abstract class BaseView implements DynamicContentAwareInterface
      */
     public function renderFile(string $viewFile, array $parameters = []): string
     {
-        $parameters = array_merge($this->globalParameters, $parameters);
+        $parameters = array_merge($this->commonParameters, $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;
