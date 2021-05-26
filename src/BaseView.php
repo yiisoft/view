@@ -68,12 +68,12 @@ abstract class BaseView implements DynamicContentAwareInterface
     private string $defaultExtension = 'php';
 
     /**
-     * @var array<string, mixed> Custom parameters that is common for all view templates.
+     * @var array<string, mixed> Parameters that are common for all view templates.
      */
     private array $commonParameters = [];
 
     /**
-     * @var array<string, string> List of named output content blocks that is common for all view templates.
+     * @var array<string, string> Named content blocks that are common for all view templates.
      */
     private array $blocks = [];
 
@@ -167,7 +167,7 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
-     * Sets a common parameter.
+     * Sets a common parameter that is accessible in all view templates.
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
