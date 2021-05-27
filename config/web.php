@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Factory\Definition\DynamicReference;
 use Yiisoft\View\Theme;
