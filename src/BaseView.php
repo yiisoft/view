@@ -167,6 +167,20 @@ abstract class BaseView implements DynamicContentAwareInterface
     }
 
     /**
+     * Sets a common parameters that is accessible in all view templates.
+     *
+     * @param array<string, mixed> $commonParameters Parameters that are common for all view templates.
+     *
+     * @see setCommonParameter()
+     */
+    public function setCommonParameters(array $commonParameters): void
+    {
+        foreach ($commonParameters as $id => $value) {
+            $this->setCommonParameter($id, $value);
+        }
+    }
+
+    /**
      * Sets a common parameter that is accessible in all view templates.
      *
      * @param string $id The unique identifier of the parameter.
