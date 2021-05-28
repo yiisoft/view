@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use RuntimeException;
@@ -173,26 +174,57 @@ PHP
         }
     }
 
-    public function testDefaultParameterIsPassedToView(): void
+    public function testCommonParameter(): void
     {
-        $view = TestHelper::createView()
-            ->withDefaultParameters(['parameter' => 'default_parameter']);
+        $view = TestHelper::createView();
+        $this->assertFalse($view->hasCommonParameter('id'));
 
-        $output = $view->render('//parameters');
+        $view->setCommonParameter('id', 42);
+        $this->assertTrue($view->hasCommonParameter('id'));
+        $this->assertSame(42, $view->getCommonParameter('id'));
 
-        $this->assertSame('default_parameter', $output);
+        $view->removeCommonParameter('id');
+        $this->assertFalse($view->hasCommonParameter('id'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $view->getCommonParameter('id');
     }
 
-    public function testDefaultParameterIsOverwrittenByLocalParameter(): void
+    public function testCommonParameterIsPassedToView(): void
     {
-        $view = TestHelper::createView()
-            ->withDefaultParameters(['parameter' => 'default_parameter']);
+        $view = TestHelper::createView();
+        $view->setCommonParameter('parameter', 'global-parameter');
+        $output = $view->render('//parameters');
+
+        $this->assertSame('global-parameter', $output);
+    }
+
+    public function testCommonParameterIsOverwrittenByLocalParameter(): void
+    {
+        $view = TestHelper::createView();
+        $view->setCommonParameter('parameter', 'global-parameter');
 
         $output = $view->render('//parameters', [
-            'parameter' => 'local_parameter',
+            'parameter' => 'local-parameter',
         ]);
 
-        $this->assertSame('local_parameter', $output);
+        $this->assertSame('local-parameter', $output);
+    }
+
+    public function testBlock(): void
+    {
+        $view = TestHelper::createView();
+        $this->assertFalse($view->hasBlock('id'));
+
+        $view->setBlock('id', 'content');
+        $this->assertTrue($view->hasBlock('id'));
+        $this->assertSame('content', $view->getBlock('id'));
+
+        $view->removeBlock('id');
+        $this->assertFalse($view->hasBlock('id'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $view->getBlock('id');
     }
 
     public function testPlaceholderSalt(): void
