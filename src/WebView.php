@@ -7,6 +7,8 @@ namespace Yiisoft\View;
 use InvalidArgumentException;
 use Psr\EventDispatcher\StoppableEventInterface;
 use Yiisoft\Html\Html;
+use Yiisoft\Html\Tag\Link;
+use Yiisoft\Html\Tag\Meta;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\Html\Tag\Style;
 use Yiisoft\Json\Json;
@@ -84,6 +86,7 @@ final class WebView extends BaseView
     private const DEFAULT_POSITION_JS_FILE = self::POSITION_END;
     private const DEFAULT_POSITION_JS_VARIABLE = self::POSITION_HEAD;
     private const DEFAULT_POSITION_JS_STRING = self::POSITION_END;
+    private const DEFAULT_POSITION_LINK = self::POSITION_HEAD;
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the head section.
@@ -107,16 +110,20 @@ final class WebView extends BaseView
     private string $title = '';
 
     /**
-     * @var array the registered meta tags.
+     * @var Meta[] The registered meta tags.
      *
-     * {@see registerMetaTag()}
+     * @see registerMeta()
+     * @see registerMetaTag()
      */
     private array $metaTags = [];
 
     /**
-     * @var array the registered link tags.
+     * @var array The registered link tags.
      *
-     * {@see registerLinkTag()}
+     * @psalm-var array<int, Link[]>
+     *
+     * @see registerLink()
+     * @see registerLinkTag()
      */
     private array $linkTags = [];
 
@@ -286,7 +293,7 @@ final class WebView extends BaseView
      * For example, a description meta tag can be added like the following:
      *
      * ```php
-     * $view->registerMetaTag([
+     * $view->registerMeta([
      *     'name' => 'description',
      *     'content' => 'This website is about funny raccoons.'
      * ]);
@@ -294,18 +301,24 @@ final class WebView extends BaseView
      *
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
-     * @param array $options the HTML attributes for the meta tag.
+     * @param array $attributes the HTML attributes for the meta tag.
      * @param string $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
      * latter will overwrite the former. If this is null, the new meta tag will be appended to the
      * existing ones.
      */
-    public function registerMetaTag(array $options, string $key = null): void
+    public function registerMeta(array $attributes, ?string $key = null): void
     {
-        if ($key === null) {
-            $this->metaTags[] = Html::meta()->attributes($options)->render();
-        } else {
-            $this->metaTags[$key] = Html::meta()->attributes($options)->render();
-        }
+        $this->registerMetaTag(Html::meta($attributes), $key);
+    }
+
+    /**
+     * Registers a {@see Meta} tag.
+     */
+    public function registerMetaTag(Meta $meta, ?string $key = null): void
+    {
+        $key === null
+            ? $this->metaTags[] = $meta
+            : $this->metaTags[$key] = $meta;
     }
 
     /**
@@ -315,7 +328,7 @@ final class WebView extends BaseView
      * following:
      *
      * ```php
-     * $view->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => '/myicon.png']);
+     * $view->registerLink(['rel' => 'icon', 'type' => 'image/png', 'href' => '/myicon.png']);
      * ```
      *
      * which will result in the following HTML: `<link rel="icon" type="image/png" href="/myicon.png">`.
@@ -323,18 +336,28 @@ final class WebView extends BaseView
      * **Note:** To register link tags for CSS stylesheets, use {@see registerCssFile()]} instead, which has more
      * options for this kind of link tag.
      *
-     * @param array $options the HTML attributes for the link tag.
+     * @param array $attributes The HTML attributes for the link tag.
+     * @param int $position The position at which the link tag should be inserted in a page.
      * @param string|null $key the key that identifies the link tag. If two link tags are registered with the same
      * key, the latter will overwrite the former. If this is null, the new link tag will be appended
      * to the existing ones.
      */
-    public function registerLinkTag(array $options, ?string $key = null): void
+    public function registerLink(
+        array $attributes,
+        int $position = self::DEFAULT_POSITION_LINK,
+        ?string $key = null
+    ): void {
+        $this->registerLinkTag(Html::link()->attributes($attributes), $position, $key);
+    }
+
+    /**
+     * Registers a {@see Link} tag.
+     */
+    public function registerLinkTag(Link $link, int $position = self::DEFAULT_POSITION_LINK, ?string $key = null): void
     {
-        if ($key === null) {
-            $this->linkTags[] = Html::link()->attributes($options)->render();
-        } else {
-            $this->linkTags[$key] = Html::link()->attributes($options)->render();
-        }
+        $key === null
+            ? $this->linkTags[$position][] = $link
+            : $this->linkTags[$position][$key] = $link;
     }
 
     /**
@@ -485,8 +508,8 @@ final class WebView extends BaseView
             $lines[] = implode("\n", $this->metaTags);
         }
 
-        if (!empty($this->linkTags)) {
-            $lines[] = implode("\n", $this->linkTags);
+        if (!empty($this->linkTags[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->linkTags[self::POSITION_HEAD]);
         }
         if (!empty($this->cssFiles[self::POSITION_HEAD])) {
             $lines[] = implode("\n", $this->cssFiles[self::POSITION_HEAD]);
@@ -514,6 +537,9 @@ final class WebView extends BaseView
     protected function renderBodyBeginHtml(): string
     {
         $lines = [];
+        if (!empty($this->linkTags[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->linkTags[self::POSITION_BEGIN]);
+        }
         if (!empty($this->cssFiles[self::POSITION_BEGIN])) {
             $lines[] = implode("\n", $this->cssFiles[self::POSITION_BEGIN]);
         }
@@ -545,6 +571,9 @@ final class WebView extends BaseView
     {
         $lines = [];
 
+        if (!empty($this->linkTags[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->linkTags[self::POSITION_END]);
+        }
         if (!empty($this->cssFiles[self::POSITION_END])) {
             $lines[] = implode("\n", $this->cssFiles[self::POSITION_END]);
         }
