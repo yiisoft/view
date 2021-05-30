@@ -17,9 +17,9 @@ trait DynamicContentAwareTrait
     /**
      * Returns the view object that can be used to render views or view files using dynamic contents.
      *
-     * @return View the view object that can be used to render views or view files.
+     * @return BaseView the view object that can be used to render views or view files.
      */
-    abstract protected function getView(): View;
+    abstract protected function getView(): BaseView;
 
     public function getDynamicPlaceholders(): array
     {
