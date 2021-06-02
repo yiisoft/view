@@ -13,13 +13,12 @@ use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
-use function count;
 use function dirname;
 
 /**
  * @internal Base class for {@see View} and {@see WebView}.
  */
-abstract class BaseView implements DynamicContentAwareInterface
+abstract class BaseView
 {
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -82,16 +81,6 @@ abstract class BaseView implements DynamicContentAwareInterface
      * rendered at a moment because one view may be rendered within another.
      */
     private array $viewFiles = [];
-
-    /**
-     * @var DynamicContentAwareInterface[] A list of currently active dynamic content class instances.
-     */
-    private array $cacheStack = [];
-
-    /**
-     * @var array A list of placeholders for embedding dynamic contents.
-     */
-    private array $dynamicPlaceholders = [];
 
     public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
     {
@@ -431,110 +420,6 @@ abstract class BaseView implements DynamicContentAwareInterface
         $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
 
         return is_file($desiredFile) ? $desiredFile : $file;
-    }
-
-    /**
-     * Renders dynamic content returned by the given PHP statements.
-     *
-     * This method is mainly used together with content caching (fragment caching and page caching) when some portions
-     * of the content (called *dynamic content*) should not be cached. The dynamic content must be returned by some PHP
-     * statements. You can optionally pass additional parameters that will be available as variables in the PHP
-     * statement:.
-     *
-     * ```php
-     * <?= $this->renderDynamic('return foo($myVar);', [
-     *     'myVar' => $model->getMyComplexVar(),
-     * ]) ?>
-     * ```
-     *
-     * @param string $statements the PHP statements for generating the dynamic content.
-     * @param array $parameters the parameters (name-value pairs) that will be extracted and made
-     * available in the $statement context. The parameters will be stored in the cache and be reused
-     * each time $statement is executed. You should make sure, that these are safely serializable.
-     *
-     * @return string the placeholder of the dynamic content, or the dynamic content if there is no active content
-     *                cache currently.
-     */
-    public function renderDynamic(string $statements, array $parameters = []): string
-    {
-        if (!empty($parameters)) {
-            $statements = 'extract(unserialize(\'' .
-                str_replace(['\\', '\''], ['\\\\', '\\\''], serialize($parameters)) .
-                '\'));' . $statements;
-        }
-
-        if (!empty($this->cacheStack)) {
-            $n = count($this->dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n-{$this->getPlaceholderSignature()}]]>";
-            $this->addDynamicPlaceholder($placeholder, $statements);
-
-            return $placeholder;
-        }
-
-        return $this->evaluateDynamicContent($statements);
-    }
-
-    /**
-     * Evaluates the given PHP statements.
-     *
-     * This method is mainly used internally to implement dynamic content feature.
-     *
-     * @param string $statements The PHP statements to be evaluated.
-     *
-     * @return mixed The return value of the PHP statements.
-     */
-    public function evaluateDynamicContent(string $statements)
-    {
-        return eval($statements);
-    }
-
-    /**
-     * Returns a list of currently active dynamic content class instances.
-     *
-     * @return DynamicContentAwareInterface[] Class instances supporting dynamic contents.
-     */
-    public function getDynamicContents(): array
-    {
-        return $this->cacheStack;
-    }
-
-    /**
-     * Adds a class instance supporting dynamic contents to the end of a list of currently active dynamic content class
-     * instances.
-     *
-     * @param DynamicContentAwareInterface $instance Class instance supporting dynamic contents.
-     */
-    public function pushDynamicContent(DynamicContentAwareInterface $instance): void
-    {
-        $this->cacheStack[] = $instance;
-    }
-
-    /**
-     * Removes a last class instance supporting dynamic contents from a list of currently active dynamic content class
-     * instances.
-     */
-    public function popDynamicContent(): void
-    {
-        array_pop($this->cacheStack);
-    }
-
-    public function getDynamicPlaceholders(): array
-    {
-        return $this->dynamicPlaceholders;
-    }
-
-    public function setDynamicPlaceholders(array $placeholders): void
-    {
-        $this->dynamicPlaceholders = $placeholders;
-    }
-
-    public function addDynamicPlaceholder(string $name, string $statements): void
-    {
-        foreach ($this->cacheStack as $cache) {
-            $cache->addDynamicPlaceholder($name, $statements);
-        }
-
-        $this->dynamicPlaceholders[$name] = $statements;
     }
 
     /**
