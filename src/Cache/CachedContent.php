@@ -21,7 +21,7 @@ use function strtr;
 /**
  * CacheContent caches content, supports the use of dynamic content {@see DynamicContent} inside cached content.
  */
-final class CacheContent
+final class CachedContent
 {
     private string $id;
     private CacheInterface $cache;
@@ -40,8 +40,8 @@ final class CacheContent
     /**
      * @param string $id The unique identifier of the cached content.
      * @param CacheInterface $cache The cache instance.
-     * @param array $dynamicContents The dynamic content instances.
-     * @param array $variations List of string factors that would cause the variation of the content being cached.
+     * @param DynamicContent[] $dynamicContents The dynamic content instances.
+     * @param string[] $variations List of string factors that would cause the variation of the content being cached.
      */
     public function __construct(string $id, CacheInterface $cache, array $dynamicContents = [], array $variations = [])
     {
@@ -76,7 +76,7 @@ final class CacheContent
      *
      * @return string|null The cached content. Null is returned if valid content is not found in the cache.
      */
-    public function cachedContent(): ?string
+    public function get(): ?string
     {
         $content = $this->cache->psr()->get($this->cacheKey());
 

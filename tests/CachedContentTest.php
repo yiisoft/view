@@ -9,10 +9,10 @@ use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
 use Yiisoft\Cache\Dependency\Dependency;
 use Yiisoft\Cache\Dependency\ValueDependency;
-use Yiisoft\View\Cache\CacheContent;
+use Yiisoft\View\Cache\CachedContent;
 use Yiisoft\View\Cache\DynamicContent;
 
-final class CacheContentTest extends TestCase
+final class CachedContentTest extends TestCase
 {
     private Cache $cache;
 
@@ -39,8 +39,8 @@ final class CacheContentTest extends TestCase
      */
     public function testCache(?int $ttl, ?Dependency $dependency): void
     {
-        $cacheContent = new CacheContent('test', $this->cache);
-        $this->assertNull($cacheContent->cachedContent());
+        $cacheContent = new CachedContent('test', $this->cache);
+        $this->assertNull($cacheContent->get());
 
         for ($counter = 0; $counter < 42; $counter++) {
             $dynamicContent = new DynamicContent(
@@ -49,19 +49,19 @@ final class CacheContentTest extends TestCase
                 ['counter' => $counter],
             );
 
-            $cacheContent = new CacheContent('test', $this->cache, [$dynamicContent]);
+            $cacheContent = new CachedContent('test', $this->cache, [$dynamicContent]);
             $content = "Cached: $counter. Dynamic: {$dynamicContent->placeholder()}";
             $expectedContent = "Cached: 0. Dynamic: $counter";
 
             $this->assertSame($expectedContent, $cacheContent->cache($content, $ttl, $dependency));
-            $this->assertSame($expectedContent, $cacheContent->cachedContent());
+            $this->assertSame($expectedContent, $cacheContent->get());
         }
     }
 
     public function testCacheWithExpiredTtl(): void
     {
-        $cacheContent = new CacheContent('test', $this->cache);
-        $this->assertNull($cacheContent->cachedContent());
+        $cacheContent = new CachedContent('test', $this->cache);
+        $this->assertNull($cacheContent->get());
 
         for ($counter = 0; $counter < 42; $counter++) {
             $dynamicContent = new DynamicContent(
@@ -70,12 +70,12 @@ final class CacheContentTest extends TestCase
                 ['counter' => $counter],
             );
 
-            $cacheContent = new CacheContent('test', $this->cache, [$dynamicContent]);
+            $cacheContent = new CachedContent('test', $this->cache, [$dynamicContent]);
             $content = "Cached: $counter. Dynamic: {$dynamicContent->placeholder()}";
             $expectedContent = "Cached: $counter. Dynamic: $counter";
 
             $this->assertSame($expectedContent, $cacheContent->cache($content, -1));
-            $this->assertNull($cacheContent->cachedContent());
+            $this->assertNull($cacheContent->get());
         }
     }
 
@@ -88,15 +88,15 @@ final class CacheContentTest extends TestCase
                 ['counter' => $counter],
             );
 
-            $cacheContent = new CacheContent('test', $this->cache, [$dynamicContent], ['en']);
+            $cacheContent = new CachedContent('test', $this->cache, [$dynamicContent], ['en']);
             $content = "Cached: $counter. Dynamic: {$dynamicContent->placeholder()}";
             $expectedContent = "Cached: 0. Dynamic: $counter";
 
             $this->assertSame($expectedContent, $cacheContent->cache($content));
-            $this->assertSame($expectedContent, $cacheContent->cachedContent());
+            $this->assertSame($expectedContent, $cacheContent->get());
 
-            $cacheContent = new CacheContent('test', $this->cache, [$dynamicContent], ['ru']);
-            $this->assertNull($cacheContent->cachedContent());
+            $cacheContent = new CachedContent('test', $this->cache, [$dynamicContent], ['ru']);
+            $this->assertNull($cacheContent->get());
         }
     }
 }
