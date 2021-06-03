@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\View;
+namespace Yiisoft\View\Cache;
 
 use DateInterval;
 use InvalidArgumentException;

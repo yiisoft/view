@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\View;
+namespace Yiisoft\View\Cache;
 
 /**
  * DynamicContent generates data for dynamic content that is used for cached content {@see CacheContentTest}.

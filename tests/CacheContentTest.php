@@ -9,8 +9,8 @@ use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
 use Yiisoft\Cache\Dependency\Dependency;
 use Yiisoft\Cache\Dependency\ValueDependency;
-use Yiisoft\View\CacheContent;
-use Yiisoft\View\DynamicContent;
+use Yiisoft\View\Cache\CacheContent;
+use Yiisoft\View\Cache\DynamicContent;
 
 final class CacheContentTest extends TestCase
 {
