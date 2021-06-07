@@ -472,6 +472,14 @@ abstract class BaseView
     ): AfterRenderEventInterface;
 
     /**
+     * Clears the data for working with the event loop.
+     */
+    public function clear(): void
+    {
+        $this->viewFiles = [];
+    }
+
+    /**
      * Finds the view file based on the given view name.
      *
      * @param string $view The view name or the [path alias](guide:concept-aliases) of the view file. Please refer to
