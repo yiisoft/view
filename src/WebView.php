@@ -285,6 +285,7 @@ final class WebView extends BaseView
         $this->cssFiles = [];
         $this->js = [];
         $this->jsFiles = [];
+        parent::clear();
     }
 
     /**
