@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests\TestSupport;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\View;
@@ -22,25 +20,19 @@ final class TestHelper
         touch($path);
     }
 
-    public static function createView(
-        ?EventDispatcherInterface $eventDispatcher = null,
-        ?LoggerInterface $logger = null
-    ): View {
+    public static function createView(?EventDispatcherInterface $eventDispatcher = null): View
+    {
         return new View(
             dirname(__DIR__) . '/public/view',
             $eventDispatcher ?? new SimpleEventDispatcher(),
-            $logger ?? new NullLogger(),
         );
     }
 
-    public static function createWebView(
-        ?EventDispatcherInterface $eventDispatcher = null,
-        ?LoggerInterface $logger = null
-    ): WebView {
+    public static function createWebView(?EventDispatcherInterface $eventDispatcher = null): WebView
+    {
         return new WebView(
             dirname(__DIR__) . '/public/view',
             $eventDispatcher ?? new SimpleEventDispatcher(),
-            $logger ?? new NullLogger(),
         );
     }
 }

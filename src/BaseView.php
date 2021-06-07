@@ -7,7 +7,6 @@ namespace Yiisoft\View;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
-use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
@@ -21,8 +20,6 @@ use function dirname;
 abstract class BaseView
 {
     protected EventDispatcherInterface $eventDispatcher;
-
-    private LoggerInterface $logger;
 
     /**
      * @var string Base view path.
@@ -82,11 +79,10 @@ abstract class BaseView
      */
     private array $viewFiles = [];
 
-    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
+    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher)
     {
         $this->basePath = $basePath;
         $this->eventDispatcher = $eventDispatcher;
-        $this->logger = $logger;
         $this->setPlaceholderSalt(__DIR__);
     }
 
@@ -368,11 +364,9 @@ abstract class BaseView
         ];
 
         if ($this->beforeRender($viewFile, $parameters)) {
-            $this->logger->debug("Rendering view file: $viewFile");
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
             $output = $renderer->render($this, $viewFile, $parameters);
-
             $output = $this->afterRender($viewFile, $parameters, $output);
         }
 
