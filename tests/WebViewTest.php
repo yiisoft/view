@@ -272,6 +272,21 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
+    public function testRegisterCssWithAttributes(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $webView->registerCss(
+            '.red{color:red;}',
+            WebView::POSITION_HEAD,
+            ['id' => 'main'],
+        );
+
+        $html = $webView->render('//positions.php');
+
+        $this->assertStringContainsString('[HEAD]<style id="main">.red{color:red;}</style>[/HEAD]', $html);
+    }
+
     public function testRenderAjaxWithoutContext(): void
     {
         $content = 'Hello!';
