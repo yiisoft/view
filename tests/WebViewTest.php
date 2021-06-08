@@ -296,7 +296,7 @@ final class WebViewTest extends TestCase
         $html = $webView->render('//positions.php');
 
         $this->assertStringContainsString(
-            '[HEAD]<style id="main">A { color: blue; }' . "\n" . '</style>[/HEAD]',
+            '[HEAD]<style id="main">A { color: blue; }</style>[/HEAD]',
             $html
         );
     }
