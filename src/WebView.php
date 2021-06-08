@@ -6,6 +6,7 @@ namespace Yiisoft\View;
 
 use InvalidArgumentException;
 use Psr\EventDispatcher\StoppableEventInterface;
+use RuntimeException;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
 use Yiisoft\Html\Tag\Meta;
@@ -377,6 +378,23 @@ final class WebView extends BaseView
     ): void {
         $key = $key ?: md5($css);
         $this->css[$position][$key] = $attributes === [] ? $css : Html::style($css, $attributes);
+    }
+
+    /**
+     * Registers a CSS code block from file.
+     */
+    public function registerCssFromFile(
+        string $path,
+        int $position = self::DEFAULT_POSITION_CSS_STRING,
+        array $attributes = [],
+        ?string $key = null
+    ): void {
+        $css = file_get_contents($path);
+        if ($css === false) {
+            throw new RuntimeException(sprintf('File %s could not be read.', $path));
+        }
+
+        $this->registerCss($css, $position, $attributes, $key);
     }
 
     /**
