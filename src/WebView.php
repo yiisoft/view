@@ -6,6 +6,7 @@ namespace Yiisoft\View;
 
 use InvalidArgumentException;
 use Psr\EventDispatcher\StoppableEventInterface;
+use RuntimeException;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
 use Yiisoft\Html\Tag\Meta;
@@ -364,14 +365,36 @@ final class WebView extends BaseView
     /**
      * Registers a CSS code block.
      *
-     * @param string $css the content of the CSS code block to be registered
-     * @param string|null $key the key that identifies the CSS code block. If null, it will use $css as the key. If two CSS
-     * code blocks are registered with the same key, the latter will overwrite the former.
+     * @param string $css The content of the CSS code block to be registered.
+     * @param string|null $key The key that identifies the CSS code block. If null, it will use $css as the key.
+     * If two CSS code blocks are registered with the same key, the latter will overwrite the former.
+     * @param array $attributes The HTML attributes for the {@see Style} tag.
      */
-    public function registerCss(string $css, int $position = self::DEFAULT_POSITION_CSS_STRING, ?string $key = null): void
-    {
+    public function registerCss(
+        string $css,
+        int $position = self::DEFAULT_POSITION_CSS_STRING,
+        array $attributes = [],
+        ?string $key = null
+    ): void {
         $key = $key ?: md5($css);
-        $this->css[$position][$key] = $css;
+        $this->css[$position][$key] = $attributes === [] ? $css : Html::style($css, $attributes);
+    }
+
+    /**
+     * Registers a CSS code block from file.
+     */
+    public function registerCssFromFile(
+        string $path,
+        int $position = self::DEFAULT_POSITION_CSS_STRING,
+        array $attributes = [],
+        ?string $key = null
+    ): void {
+        $css = file_get_contents($path);
+        if ($css === false) {
+            throw new RuntimeException(sprintf('File %s could not be read.', $path));
+        }
+
+        $this->registerCss($css, $position, $attributes, $key);
     }
 
     /**
@@ -797,7 +820,7 @@ final class WebView extends BaseView
         }
 
         is_string($css)
-            ? $this->registerCss($css, $position, $key)
+            ? $this->registerCss($css, $position, [], $key)
             : $this->registerStyleTag($css, $position, $key);
     }
 
