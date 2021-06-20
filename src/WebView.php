@@ -628,7 +628,7 @@ final class WebView extends BaseView
                 $lines[] = Html::script($js)->render();
             }
             if (!empty($this->js[self::POSITION_LOAD])) {
-                $js = "window.addEventListener('load', function (event) {\n" .
+                $js = "window.addEventListener('load', function(event) {\n" .
                     $this->generateJsWithoutTag($this->js[self::POSITION_LOAD]) .
                     "\n});";
                 $lines[] = Html::script($js)->render();
