@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
@@ -98,5 +99,17 @@ final class CachedContentTest extends TestCase
             $cacheContent = new CachedContent('test', $this->cache, [$dynamicContent], ['ru']);
             $this->assertNull($cacheContent->get());
         }
+    }
+
+    public function testSettingInvalidDynamicContents(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new CachedContent('test', $this->cache, ['test']);
+    }
+
+    public function testSettingInvalidVariations(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new CachedContent('test', $this->cache, [], [42]);
     }
 }

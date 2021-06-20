@@ -74,6 +74,15 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString('[ENDBODY]<script src="' . $url . '"></script>[/ENDBODY]', $html);
     }
 
+    public function testRegisterJsFileWithInvalidPosition(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid position of JS file.');
+        $webView->registerJsFile('/somefile.js', 42);
+    }
+
     public function dataRegisterJsFileWithPosition(): array
     {
         return [
@@ -128,6 +137,15 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('//positions.php');
         $this->assertStringContainsString('[HEAD]<link href="' . $url . '" rel="stylesheet">[/HEAD]', $html);
+    }
+
+    public function testRegisterCssFileWithInvalidPosition(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid position of CSS file.');
+        $webView->registerCssFile('/somefile.css', 42);
     }
 
     public function dataRegisterCssFileWithPosition(): array
@@ -190,7 +208,7 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
     }
 
-    public function testRegisterMetaTag(): void
+    public function testRegisterMetaTagAppend(): void
     {
         $webView = TestHelper::createWebView();
 
@@ -199,9 +217,35 @@ final class WebViewTest extends TestCase
             'content' => 'yii',
         ]));
 
+        $webView->registerMetaTag(Html::meta([
+            'name' => 'keywords',
+            'content' => 'yii3',
+        ]));
+
         $html = $webView->render('//positions.php');
 
-        $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
+        $this->assertStringContainsString('<meta name="keywords" content="yii">', $html);
+        $this->assertStringContainsString('<meta name="keywords" content="yii3">', $html);
+    }
+
+    public function testRegisterMetaTagOverride(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $webView->registerMetaTag(Html::meta([
+            'name' => 'keywords',
+            'content' => 'yii',
+        ]), 'keywords');
+
+        $webView->registerMetaTag(Html::meta([
+            'name' => 'keywords',
+            'content' => 'yii3',
+        ]), 'keywords');
+
+        $html = $webView->render('//positions.php');
+
+        $this->assertStringContainsString('<meta name="keywords" content="yii3">', $html);
+        $this->assertStringNotContainsString('<meta name="keywords" content="yii">', $html);
     }
 
     public function dataRegisterLink(): array
@@ -245,6 +289,22 @@ final class WebViewTest extends TestCase
         $html = $webView->render('//positions.php');
 
         $this->assertStringContainsString($expected, $html);
+    }
+
+    public function testRegisterLinkTagOverride(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $link1 = Html::link()->href('/main1.css');
+        $link2 = Html::link()->href('/main2.css');
+
+        $webView->registerLinkTag($link1, WebView::POSITION_HEAD, 'unique');
+        $webView->registerLinkTag($link2, WebView::POSITION_HEAD, 'unique');
+
+        $html = $webView->render('//positions.php');
+
+        $this->assertStringContainsString('<link href="/main2.css">', $html);
+        $this->assertStringNotContainsString('<link href="/main1.css">', $html);
     }
 
     public function dataRegisterCss(): array
@@ -362,6 +422,7 @@ final class WebViewTest extends TestCase
         $script5 = Html::script('alert("script5");');
         $script6 = Html::script('alert("script6");');
         $js7 = 'alert(7);';
+        $js8 = 'alert(8);';
 
         $webView->registerJs($js1);
         $webView->registerJs($js2);
@@ -370,6 +431,7 @@ final class WebViewTest extends TestCase
         $webView->registerScriptTag($script5);
         $webView->registerScriptTag($script6, WebView::POSITION_READY);
         $webView->registerJs($js7, WebView::POSITION_READY);
+        $webView->registerJs($js8, WebView::POSITION_LOAD);
         $html = $webView->render('//layout.php', ['content' => '']);
 
         $this->assertStringContainsString(
@@ -383,6 +445,12 @@ final class WebViewTest extends TestCase
             "<script>document.addEventListener('DOMContentLoaded', function(event) {\n" .
             $script6->getContent() . "\n" .
             "$js7\n" .
+            '});</script>',
+            $html
+        );
+        $this->assertStringContainsString(
+            "<script>window.addEventListener('load', function(event) {\n" .
+            "$js8\n" .
             '});</script>',
             $html
         );
@@ -543,5 +611,12 @@ final class WebViewTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
         TestHelper::createWebView()->addJsVars($jsVars);
+    }
+
+    public function testTitle(): void
+    {
+        $view = TestHelper::createWebView();
+        $view->setTitle('test');
+        $this->assertSame('test', $view->getTitle());
     }
 }

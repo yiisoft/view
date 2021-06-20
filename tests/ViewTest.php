@@ -10,6 +10,8 @@ use Psr\Log\NullLogger;
 use RuntimeException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Event\View\PageBegin;
+use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
@@ -263,5 +265,19 @@ PHP
                 return $this->viewPath;
             }
         };
+    }
+
+    public function testPageEvents(): void
+    {
+        $eventDispatcher = new SimpleEventDispatcher();
+        $view = TestHelper::createView($eventDispatcher);
+
+        $view->beginPage();
+        $view->endPage();
+
+        $this->assertSame([
+            PageBegin::class,
+            PageEnd::class,
+        ], $eventDispatcher->getEventClasses());
     }
 }
