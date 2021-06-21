@@ -354,7 +354,7 @@ abstract class BaseView
         if (is_file($viewFile)) {
             $viewFile = $this->localize($viewFile);
         } else {
-            throw new ViewNotFoundException("The view file does not exist: $viewFile");
+            throw new ViewNotFoundException("The view file \"$viewFile\" does not exist.");
         }
 
         $output = '';
@@ -496,7 +496,7 @@ abstract class BaseView
             // path provided by context
             $file = $this->context->getViewPath() . '/' . $view;
         } else {
-            throw new RuntimeException("Unable to resolve view file for view '$view': no active view context.");
+            throw new RuntimeException("Unable to resolve view file for view \"$view\": no active view context.");
         }
 
         if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
