@@ -17,9 +17,11 @@ final class BeforeRenderTest extends TestCase
         $parameters = ['planet' => 'Earth'];
 
         $event = new BeforeRender($view, $file, $parameters);
+        $event->stopPropagation();
 
         $this->assertSame($view, $event->getView());
         $this->assertSame($file, $event->getFile());
         $this->assertSame($parameters, $event->getParameters());
+        $this->assertTrue($event->isPropagationStopped());
     }
 }

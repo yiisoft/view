@@ -4,20 +4,30 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use RuntimeException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
+use Yiisoft\View\Exception\ViewNotFoundException;
+use Yiisoft\View\PhpTemplateRenderer;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
 
+use function crc32;
+use function dechex;
+use function file_put_contents;
 use function is_array;
+use function is_dir;
+use function mkdir;
+use function ob_get_level;
+use function sprintf;
+use function symlink;
 
 final class ViewTest extends TestCase
 {
@@ -63,12 +73,33 @@ PHP
 
         try {
             $view->renderFile($exceptionViewFile);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // shutdown exception
         }
         $view->renderFile($normalViewFile);
 
         $this->assertEquals($obInitialLevel, ob_get_level());
+    }
+
+    public function testExceptionWhenRenderIfFileNotExists(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+
+        $this->expectException(ViewNotFoundException::class);
+        $this->expectExceptionMessage('The view file "not-exist.php" does not exist.');
+
+        $view->renderFile('not-exist.php');
+    }
+
+    public function testExceptionWhenRenderIfNoActiveViewContext(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        file_put_contents("$this->tempDirectory/file.php", 'Test');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to resolve view file for view "file.php": no active view context.');
+
+        $this->assertSame('Test', $view->render('file.php'));
     }
 
     public function testRelativePathInView(): void
@@ -89,12 +120,12 @@ PHP
         file_put_contents($subView, $subViewContent);
 
         $view = $this->createViewWithBasePath($this->tempDirectory)
-            ->withTheme(
-                new Theme([
-                    $this->tempDirectory => $themePath,
-                ])
-            );
+            ->withTheme(new Theme([$this->tempDirectory => $themePath]))
+        ;
 
+        $this->assertSame($this->tempDirectory, $view->getBasePath());
+        $this->assertSame('php', $view->getDefaultExtension());
+        $this->assertSame(null, $view->getViewFile());
         $this->assertSame($subViewContent, $view->render('//base'));
     }
 
@@ -124,6 +155,56 @@ PHP
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
+    public function testRenderWithoutFileExtension(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+        ;
+        file_put_contents("$this->tempDirectory/file.php", 'Test');
+        file_put_contents("$this->tempDirectory/file.tpl", 'Test');
+        file_put_contents("$this->tempDirectory/file.txt.php", 'Test');
+
+        $this->assertSame('Test', $view->render('file'));
+        $this->assertSame('Test', $view->withDefaultExtension('tpl')->render('file'));
+        $this->assertSame('Test', $view->withDefaultExtension('txt')->render('file'));
+    }
+
+    public function testLocalize(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/es/file.php", 'Prueba');
+
+        FileHelper::ensureDirectory("$this->tempDirectory/ru-RU");
+        file_put_contents("$this->tempDirectory/ru-RU/file.php", 'Тест');
+
+        $this->assertSame(
+            "$this->tempDirectory/file.php",
+            $view->localize("$this->tempDirectory/file.php"),
+        );
+
+        $this->assertSame(
+            "$this->tempDirectory/es/file.php",
+            $view->localize("$this->tempDirectory/file.php", 'es'),
+        );
+
+        $this->assertSame(
+            "$this->tempDirectory/es/file.php",
+            $view->localize("$this->tempDirectory/file.php", 'es-ES', 'ru-RU'),
+        );
+
+        $this->assertSame(
+            "$this->tempDirectory/file.php",
+            $view->localize("$this->tempDirectory/file.php", 'es-ES', 'es'),
+        );
+
+        $this->assertSame(
+            "$this->tempDirectory/file.php",
+            $view->localize("$this->tempDirectory/file.php", 'ru'),
+        );
+    }
+
     public function testLocalizedDirectory(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory);
@@ -150,36 +231,14 @@ PHP
         );
     }
 
-    /**
-     * Creates test files structure.
-     *
-     * @param string $baseDirectory base directory path.
-     * @param array $items file system objects to be created in format: objectName => objectContent
-     * Arrays specifies directories, other values - files.
-     */
-    private function createFileStructure(array $items, string $baseDirectory = null): void
-    {
-        foreach ($items as $name => $content) {
-            $itemName = $baseDirectory . '/' . $name;
-            if (is_array($content)) {
-                if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
-                    symlink($baseDirectory . DIRECTORY_SEPARATOR . $content[1], $itemName);
-                } else {
-                    if (!mkdir($itemName, 0777, true) && !is_dir($itemName)) {
-                        throw new RuntimeException(sprintf('Directory "%s" was not created', $itemName));
-                    }
-                    $this->createFileStructure($content, $itemName);
-                }
-            } else {
-                file_put_contents($itemName, $content);
-            }
-        }
-    }
-
     public function testCommonParameter(): void
     {
         $view = TestHelper::createView();
         $this->assertFalse($view->hasCommonParameter('id'));
+
+        $view->setCommonParameters(['id' => 0]);
+        $this->assertTrue($view->hasCommonParameter('id'));
+        $this->assertSame(0, $view->getCommonParameter('id'));
 
         $view->setCommonParameter('id', 42);
         $this->assertTrue($view->hasCommonParameter('id'));
@@ -241,13 +300,35 @@ PHP
         );
     }
 
+    public function testPageEvents(): void
+    {
+        $eventDispatcher = new SimpleEventDispatcher();
+        $view = TestHelper::createView($eventDispatcher);
+
+        $view->beginPage();
+        $view->endPage();
+
+        $this->assertSame([
+            PageBegin::class,
+            PageEnd::class,
+        ], $eventDispatcher->getEventClasses());
+    }
+
+    public function testImmutability(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->assertNotSame($view, $view->withTheme(new Theme([$this->tempDirectory => $this->tempDirectory])));
+        $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
+        $this->assertNotSame($view, $view->withLanguage('en'));
+        $this->assertNotSame($view, $view->withSourceLanguage('en'));
+        $this->assertNotSame($view, $view->withDefaultExtension('php'));
+        $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
+    }
+
     private function createViewWithBasePath(string $basePath): View
     {
-        return new View(
-            $basePath,
-            new SimpleEventDispatcher(),
-            new NullLogger(),
-        );
+        return new View($basePath, new SimpleEventDispatcher());
     }
 
     private function createContext(string $viewPath): ViewContextInterface
@@ -267,17 +348,29 @@ PHP
         };
     }
 
-    public function testPageEvents(): void
+    /**
+     * Creates test files structure.
+     *
+     * @param string|null $baseDirectory base directory path.
+     * @param array $items file system objects to be created in format: objectName => objectContent
+     * Arrays specifies directories, other values - files.
+     */
+    private function createFileStructure(array $items, string $baseDirectory = null): void
     {
-        $eventDispatcher = new SimpleEventDispatcher();
-        $view = TestHelper::createView($eventDispatcher);
-
-        $view->beginPage();
-        $view->endPage();
-
-        $this->assertSame([
-            PageBegin::class,
-            PageEnd::class,
-        ], $eventDispatcher->getEventClasses());
+        foreach ($items as $name => $content) {
+            $itemName = $baseDirectory . '/' . $name;
+            if (is_array($content)) {
+                if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
+                    symlink($baseDirectory . DIRECTORY_SEPARATOR . $content[1], $itemName);
+                } else {
+                    if (!mkdir($itemName, 0777, true) && !is_dir($itemName)) {
+                        throw new RuntimeException(sprintf('Directory "%s" was not created', $itemName));
+                    }
+                    $this->createFileStructure($content, $itemName);
+                }
+            } else {
+                file_put_contents($itemName, $content);
+            }
+        }
     }
 }
