@@ -15,6 +15,7 @@ use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\PhpTemplateRenderer;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
+use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
@@ -31,6 +32,8 @@ use function symlink;
 
 final class ViewTest extends TestCase
 {
+    use TestTrait;
+
     protected string $tempDirectory;
 
     public function setUp(): void
@@ -179,27 +182,27 @@ PHP
         FileHelper::ensureDirectory("$this->tempDirectory/ru-RU");
         file_put_contents("$this->tempDirectory/ru-RU/file.php", 'Тест');
 
-        $this->assertSame(
+        $this->assertSameIgnoringSlash(
             "$this->tempDirectory/file.php",
             $view->localize("$this->tempDirectory/file.php"),
         );
 
-        $this->assertSame(
+        $this->assertSameIgnoringSlash(
             "$this->tempDirectory/es/file.php",
             $view->localize("$this->tempDirectory/file.php", 'es'),
         );
 
-        $this->assertSame(
+        $this->assertSameIgnoringSlash(
             "$this->tempDirectory/es/file.php",
             $view->localize("$this->tempDirectory/file.php", 'es-ES', 'ru-RU'),
         );
 
-        $this->assertSame(
+        $this->assertSameIgnoringSlash(
             "$this->tempDirectory/file.php",
             $view->localize("$this->tempDirectory/file.php", 'es-ES', 'es'),
         );
 
-        $this->assertSame(
+        $this->assertSameIgnoringSlash(
             "$this->tempDirectory/file.php",
             $view->localize("$this->tempDirectory/file.php", 'ru'),
         );

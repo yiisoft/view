@@ -605,6 +605,28 @@ final class WebViewTest extends TestCase
         $this->assertEqualStringsIgnoringLineEndings($expected, $html);
     }
 
+    public function dataFailAddCssStrings(): array
+    {
+        return [
+            ['Do not set CSS string.', [[]]],
+            ['Do not set CSS string.', ['key' => []]],
+            ['CSS string should be string or instance of \Yiisoft\Html\Tag\Style. Got integer.', [[42]]],
+            ['CSS string should be string or instance of \Yiisoft\Html\Tag\Style. Got integer.', ['key' => [42]]],
+            ['Invalid position of CSS strings.', [['.a1 { color: red; }', 99]]],
+            ['Invalid position of CSS strings.', ['key' => ['.a1 { color: red; }', 99]]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataFailAddCssStrings
+     */
+    public function testFailAddCssStrings(string $message, array $cssStrings): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+        TestHelper::createWebView()->addCssStrings($cssStrings);
+    }
+
     public function testAddJsStrings(): void
     {
         $webView = TestHelper::createWebView();
@@ -613,14 +635,14 @@ final class WebViewTest extends TestCase
             'uniqueName' => 'app1.start();',
             'app2.start();',
             'uniqueName2' => ['app3.start();', WebView::POSITION_BEGIN],
-            ['app4.start();', WebView::POSITION_HEAD],
+            ['app4.start();', WebView::POSITION_HEAD, 'async' => true],
             Html::script('{"@type":"Article"}')->type('application/ld+json'),
         ]);
 
         $html = $webView->render('//positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD]<script>app4.start();</script>[/HEAD]' . "\n" .
+            '[HEAD]<script async>app4.start();</script>[/HEAD]' . "\n" .
             '[BEGINBODY]<script>app3.start();</script>[/BEGINBODY]' . "\n" .
             "[ENDBODY]<script>app1.start();\napp2.start();</script>\n" .
             '<script type="application/ld+json">{"@type":"Article"}</script>[/ENDBODY]' . "\n" .
