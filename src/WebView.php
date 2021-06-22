@@ -23,12 +23,21 @@ use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
 
 use function array_key_exists;
+use function array_merge;
 use function get_class;
 use function gettype;
+use function file_get_contents;
+use function implode;
 use function in_array;
 use function is_array;
 use function is_object;
 use function is_string;
+use function md5;
+use function ob_get_clean;
+use function ob_implicit_flush;
+use function ob_start;
+use function sprintf;
+use function strtr;
 
 /**
  * WebView represents an instance of a view for use in a WEB environment.
@@ -213,8 +222,8 @@ final class WebView extends BaseView
      * method is able to inject into the rendering result with JS/CSS scripts and files that are registered with the
      * view.
      *
-     * @param string $view the view name. Please refer to {@see render()} on how to specify this parameter.
-     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view
+     * @param string $view The view name. Please refer to {@see render()} on how to specify this parameter.
+     * @param array $params The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
      * @return string The rendering result
@@ -393,7 +402,7 @@ final class WebView extends BaseView
     }
 
     /**
-     * Register a `style` tag.
+     * Register a {@see Style} tag.
      *
      * @see registerJs()
      */
@@ -523,10 +532,10 @@ final class WebView extends BaseView
     protected function renderHeadHtml(): string
     {
         $lines = [];
+
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
         }
-
         if (!empty($this->linkTags[self::POSITION_HEAD])) {
             $lines[] = implode("\n", $this->linkTags[self::POSITION_HEAD]);
         }
@@ -581,7 +590,7 @@ final class WebView extends BaseView
      *
      * The content is rendered using the registered JS code blocks and files.
      *
-     * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
+     * @param bool $ajaxMode Whether the view is rendering in AJAX mode. If true, the JS scripts registered at
      * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like normal
      * scripts.
      *

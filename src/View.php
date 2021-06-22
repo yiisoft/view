@@ -11,6 +11,10 @@ use Yiisoft\View\Event\View\BeforeRender;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 
+use function ob_end_flush;
+use function ob_implicit_flush;
+use function ob_start;
+
 /**
  * View represents an instance of a view for use in an any environment.
  *

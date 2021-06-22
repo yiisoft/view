@@ -6,6 +6,15 @@ namespace Yiisoft\View;
 
 use Throwable;
 
+use function extract;
+use function func_get_arg;
+use function ob_clean;
+use function ob_end_clean;
+use function ob_get_clean;
+use function ob_get_level;
+use function ob_implicit_flush;
+use function ob_start;
+
 /**
  * PhpTemplateRenderer renders the PHP views.
  */

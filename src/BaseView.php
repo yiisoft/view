@@ -12,7 +12,16 @@ use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
+use function array_merge;
+use function array_pop;
+use function basename;
+use function crc32;
+use function dechex;
 use function dirname;
+use function end;
+use function is_file;
+use function pathinfo;
+use function substr;
 
 /**
  * @internal Base class for {@see View} and {@see WebView}.
