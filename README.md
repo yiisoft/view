@@ -15,8 +15,9 @@
 [![static analysis](https://github.com/yiisoft/view/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/view/actions?query=workflow%3A%22static+analysis%22)
 [![type-coverage](https://shepherd.dev/github/yiisoft/view/coverage.svg)](https://shepherd.dev/github/yiisoft/view)
 
-This library provides PHP-based templates rendering.
-It is used in [Yii Framework](https://www.yiiframework.com/) but is supposed to be usable separately.
+This library provides templates rendering abstraction supporting layout-view-subview hierarchy, custom renderers with
+PHP-based as default and more. It is used in [Yii Framework](https://www.yiiframework.com/) but is supposed
+to be usable separately.
 
 ## Installation
 
