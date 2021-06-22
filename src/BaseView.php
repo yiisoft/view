@@ -36,24 +36,13 @@ abstract class BaseView
     private string $placeholderSignature;
     private string $language = 'en';
     private string $sourceLanguage = 'en';
+    private string $defaultExtension = 'php';
 
     /**
      * @var array<string, TemplateRendererInterface> A list of available renderers indexed by their corresponding
-     * supported file extensions. Each renderer may be a view renderer object or the configuration for creating
-     * the renderer object. For example, the following configuration enables the Twig view renderer:
-     *
-     * ```php
-     * [
-     *     'twig' => ['class' => \Yiisoft\Yii\Twig\ViewRenderer::class],
-     * ]
-     * ```
-     *
-     * If no renderer is available for the given view file, the view file will be treated as a normal PHP and rendered
-     * via PhpTemplateRenderer.
+     * supported file extensions.
      */
     private array $renderers = [];
-
-    private string $defaultExtension = 'php';
 
     /**
      * @var array<string, mixed> Parameters that are common for all view templates.
@@ -97,7 +86,15 @@ abstract class BaseView
     /**
      * Returns a new instance with the specified renderers.
      *
-     * @param array<string, TemplateRendererInterface> $renderers
+     * @param array<string, TemplateRendererInterface> $renderers A list of available renderers indexed by their
+     * corresponding supported file extensions.
+     *
+     * ```php
+     * $view = $view->withRenderers(['twig' => new \Yiisoft\Yii\Twig\ViewRenderer($environment)]);
+     * ```
+     *
+     * If no renderer is available for the given view file, the view file will be treated as a normal PHP
+     * and rendered via {@see PhpTemplateRenderer}.
      *
      * @return static
      */
