@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
@@ -118,6 +119,20 @@ final class ThemeTest extends TestCase
 
         $path = $theme->applyTo('/app/views/non-existing.php');
         $this->assertSameIgnoringSlash('/app/views/non-existing.php', $path);
+    }
+
+    public function testInvalidPathMapKey(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Theme([0 => '/app/themes/basic']);
+    }
+
+    public function testInvalidPathMapValue(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Theme(['/app/views' => 0]);
     }
 
     private function getPath(string $path): string
