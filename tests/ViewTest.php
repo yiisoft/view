@@ -129,6 +129,7 @@ PHP
         $this->assertSame($this->tempDirectory, $view->getBasePath());
         $this->assertSame('php', $view->getDefaultExtension());
         $this->assertSame(null, $view->getViewFile());
+        $this->assertSame($subViewContent, $view->render('/base'));
         $this->assertSame($subViewContent, $view->render('//base'));
     }
 
