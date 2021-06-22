@@ -6,6 +6,9 @@ namespace Yiisoft\View;
 
 use Throwable;
 
+/**
+ * PhpTemplateRenderer renders the PHP views.
+ */
 final class PhpTemplateRenderer implements TemplateRendererInterface
 {
     public function render(BaseView $view, string $template, array $params): string
