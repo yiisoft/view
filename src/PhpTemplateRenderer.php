@@ -6,11 +6,12 @@ namespace Yiisoft\View;
 
 use Throwable;
 
-class PhpTemplateRenderer implements TemplateRendererInterface
+final class PhpTemplateRenderer implements TemplateRendererInterface
 {
     public function render(BaseView $view, string $template, array $params): string
     {
         $renderer = function (): void {
+            /** @psalm-suppress MixedArgument */
             extract(func_get_arg(1), EXTR_OVERWRITE);
             /** @psalm-suppress UnresolvableInclude */
             require func_get_arg(0);

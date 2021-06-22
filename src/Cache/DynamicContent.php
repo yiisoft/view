@@ -43,6 +43,8 @@ final class DynamicContent
      * Generates the dynamic content.
      *
      * @return string The generated dynamic content.
+     *
+     * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
      */
     public function content(): string
     {

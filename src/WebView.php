@@ -130,6 +130,7 @@ final class WebView extends BaseView
 
     /**
      * @var array the registered CSS code blocks.
+     * @psalm-var array<int, string[]|Style[]>
      *
      * {@see registerCss()}
      */
@@ -137,6 +138,7 @@ final class WebView extends BaseView
 
     /**
      * @var array the registered CSS files.
+     * @psalm-var array<int, string[]>
      *
      * {@see registerCssFile()}
      */
@@ -152,6 +154,7 @@ final class WebView extends BaseView
 
     /**
      * @var array the registered JS files.
+     * @psalm-var array<int, string[]>
      *
      * {@see registerJsFile()}
      */
@@ -499,7 +502,7 @@ final class WebView extends BaseView
      * variable names.
      *
      * @param string $name Name of the variable
-     * @param array|string $value Value of the variable
+     * @param mixed $value Value of the variable
      * @param int $position the position in a page at which the JavaScript variable should be inserted.
      *
      * The possible values are:
@@ -667,6 +670,7 @@ final class WebView extends BaseView
      */
     public function addCssFiles(array $cssFiles): void
     {
+        /** @var mixed $value */
         foreach ($cssFiles as $key => $value) {
             $this->registerCssFileByConfig(
                 is_string($key) ? $key : null,
@@ -696,6 +700,7 @@ final class WebView extends BaseView
      */
     public function addJsFiles(array $jsFiles): void
     {
+        /** @var mixed $value */
         foreach ($jsFiles as $key => $value) {
             $this->registerJsFileByConfig(
                 is_string($key) ? $key : null,
@@ -731,11 +736,12 @@ final class WebView extends BaseView
      */
     public function addJsVars(array $jsVars): void
     {
+        /** @var mixed $value */
         foreach ($jsVars as $key => $value) {
             if (is_string($key)) {
                 $this->registerJsVar($key, $value, self::DEFAULT_POSITION_JS_VARIABLE);
             } else {
-                $this->registerJsVarByConfig($value);
+                $this->registerJsVarByConfig((array) $value);
             }
         }
     }
@@ -784,7 +790,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_FILE;
+        $position = (int) ($config[1] ?? self::DEFAULT_POSITION_CSS_FILE);
 
         unset($config[0], $config[1]);
         $this->registerCssFile($file, $position, $config, $key);
@@ -843,7 +849,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = $config[1] ?? self::DEFAULT_POSITION_JS_FILE;
+        $position = (int) ($config[1] ?? self::DEFAULT_POSITION_JS_FILE);
 
         unset($config[0], $config[1]);
         $this->registerJsFile($file, $position, $config, $key);

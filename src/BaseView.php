@@ -39,9 +39,9 @@ abstract class BaseView
     private string $placeholderSignature;
 
     /**
-     * @var array A list of available renderers indexed by their corresponding supported file extensions. Each renderer
-     * may be a view renderer object or the configuration for creating the renderer object. For example, the
-     * following configuration enables the Twig view renderer:
+     * @var array<string, TemplateRendererInterface> A list of available renderers indexed by their corresponding
+     * supported file extensions. Each renderer may be a view renderer object or the configuration for creating
+     * the renderer object. For example, the following configuration enables the Twig view renderer:
      *
      * ```php
      * [
@@ -76,6 +76,8 @@ abstract class BaseView
     /**
      * @var array The view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
+     *
+     * @psalm-var array<array-key, array<string, string>>
      */
     private array $viewFiles = [];
 
@@ -97,6 +99,8 @@ abstract class BaseView
     }
 
     /**
+     * @param array<string, TemplateRendererInterface> $renderers
+     *
      * @return static
      */
     public function withRenderers(array $renderers): self
@@ -175,6 +179,7 @@ abstract class BaseView
      */
     public function setCommonParameters(array $commonParameters): void
     {
+        /** @var mixed $value */
         foreach ($commonParameters as $id => $value) {
             $this->setCommonParameter($id, $value);
         }
@@ -233,7 +238,7 @@ abstract class BaseView
      * Sets a content block.
      *
      * @param string $id The unique identifier of the block.
-     * @param mixed $content The content of the block.
+     * @param string $content The content of the block.
      */
     public function setBlock(string $id, string $content): void
     {
@@ -283,6 +288,7 @@ abstract class BaseView
      */
     public function getViewFile(): ?string
     {
+        /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['resolved'];
     }
 
@@ -431,7 +437,7 @@ abstract class BaseView
     {
         $event = $this->createBeforeRenderEvent($viewFile, $parameters);
         $event = $this->eventDispatcher->dispatch($event);
-
+        /** @var StoppableEventInterface $event */
         return !$event->isPropagationStopped();
     }
 
@@ -517,6 +523,7 @@ abstract class BaseView
      */
     private function getRequestedViewFile(): ?string
     {
+        /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
     }
 }

@@ -6,8 +6,10 @@ namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
+use Yiisoft\Cache\CacheKeyNormalizer;
 use Yiisoft\Cache\Dependency\Dependency;
 use Yiisoft\Cache\Dependency\ValueDependency;
 use Yiisoft\View\Cache\CachedContent;
