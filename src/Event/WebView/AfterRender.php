@@ -8,7 +8,7 @@ use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\WebView;
 
 /**
- * `AfterRender` event is triggered by {@see View::renderFile()} right after it renders a view file.
+ * `AfterRender` event is triggered by {@see WebView::renderFile()} right after it renders a view file.
  */
 final class AfterRender implements AfterRenderEventInterface
 {
@@ -20,7 +20,7 @@ final class AfterRender implements AfterRenderEventInterface
     private string $file;
 
     /**
-     * @var array The parameters array passed to the {@see View::render()} or {@see View::renderFile()} method.
+     * @var array The parameters array passed to the {@see WebView::render()} or {@see WebView::renderFile()} method.
      */
     private array $parameters;
 

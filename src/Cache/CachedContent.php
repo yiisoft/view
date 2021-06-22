@@ -66,6 +66,7 @@ final class CachedContent
      */
     public function cache(string $content, $ttl = 60, Dependency $dependency = null, float $beta = 1.0): string
     {
+        /** @psalm-suppress MixedArgument */
         return $this->replaceDynamicPlaceholders(
             $this->cache->getOrSet($this->cacheKey(), static fn (): string => $content, $ttl, $dependency, $beta),
         );
@@ -78,6 +79,7 @@ final class CachedContent
      */
     public function get(): ?string
     {
+        /** @var string|null $content */
         $content = $this->cache->psr()->get($this->cacheKey());
 
         if ($content === null) {

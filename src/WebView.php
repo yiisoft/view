@@ -23,32 +23,26 @@ use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
 
 use function array_key_exists;
+use function array_merge;
 use function get_class;
 use function gettype;
+use function file_get_contents;
+use function implode;
 use function in_array;
 use function is_array;
 use function is_object;
 use function is_string;
+use function md5;
+use function ob_get_clean;
+use function ob_implicit_flush;
+use function ob_start;
+use function sprintf;
+use function strtr;
 
 /**
- * View represents a view object in the MVC pattern.
+ * WebView represents an instance of a view for use in a WEB environment.
  *
- * View provides a set of methods (e.g. {@see render()} for rendering purpose.
- *
- * You can modify its configuration by adding an array to your application config under `components` as it is shown in
- * the following example:
- *
- * ```php
- * 'view' => [
- *     'theme' => 'app\themes\MyTheme',
- *     'renderers' => [
- *         // you may add Smarty or Twig renderer here
- *     ]
- *     // ...
- * ]
- * ```
- *
- * For more details and usage information on View, see the [guide article on views](guide:structure-views).
+ * WebView provides a set of methods (e.g. {@see WebView::render()} for rendering purpose.
  */
 final class WebView extends BaseView
 {
@@ -106,7 +100,7 @@ final class WebView extends BaseView
     private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END-%s]]>';
 
     /**
-     * @var string the page title
+     * @var string The page title
      */
     private string $title = '';
 
@@ -120,7 +114,6 @@ final class WebView extends BaseView
 
     /**
      * @var array The registered link tags.
-     *
      * @psalm-var array<int, Link[]>
      *
      * @see registerLink()
@@ -129,21 +122,23 @@ final class WebView extends BaseView
     private array $linkTags = [];
 
     /**
-     * @var array the registered CSS code blocks.
+     * @var array The registered CSS code blocks.
+     * @psalm-var array<int, string[]|Style[]>
      *
      * {@see registerCss()}
      */
     private array $css = [];
 
     /**
-     * @var array the registered CSS files.
+     * @var array The registered CSS files.
+     * @psalm-var array<int, string[]>
      *
      * {@see registerCssFile()}
      */
     private array $cssFiles = [];
 
     /**
-     * @var array the registered JS code blocks
+     * @var array The registered JS code blocks
      * @psalm-var array<int, string[]|Script[]>
      *
      * {@see registerJs()}
@@ -151,7 +146,8 @@ final class WebView extends BaseView
     private array $js = [];
 
     /**
-     * @var array the registered JS files.
+     * @var array The registered JS files.
+     * @psalm-var array<int, string[]>
      *
      * {@see registerJsFile()}
      */
@@ -199,7 +195,7 @@ final class WebView extends BaseView
     /**
      * Marks the ending of an HTML page.
      *
-     * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
+     * @param bool $ajaxMode Whether the view is rendering in AJAX mode. If true, the JS scripts registered at
      * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like
      * normal scripts.
      */
@@ -226,11 +222,11 @@ final class WebView extends BaseView
      * method is able to inject into the rendering result with JS/CSS scripts and files that are registered with the
      * view.
      *
-     * @param string $view the view name. Please refer to {@see render()} on how to specify this parameter.
-     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view
+     * @param string $view The view name. Please refer to {@see render()} on how to specify this parameter.
+     * @param array $params The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
-     * @return string the rendering result
+     * @return string The rendering result
      *
      * {@see render()}
      */
@@ -303,8 +299,8 @@ final class WebView extends BaseView
      *
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
-     * @param array $attributes the HTML attributes for the meta tag.
-     * @param string $key the key that identifies the meta tag. If two meta tags are registered with the same key, the
+     * @param array $attributes The HTML attributes for the meta tag.
+     * @param string $key The key that identifies the meta tag. If two meta tags are registered with the same key, the
      * latter will overwrite the former. If this is null, the new meta tag will be appended to the
      * existing ones.
      */
@@ -315,6 +311,8 @@ final class WebView extends BaseView
 
     /**
      * Registers a {@see Meta} tag.
+     *
+     * @see registerMeta()
      */
     public function registerMetaTag(Meta $meta, ?string $key = null): void
     {
@@ -340,7 +338,7 @@ final class WebView extends BaseView
      *
      * @param array $attributes The HTML attributes for the link tag.
      * @param int $position The position at which the link tag should be inserted in a page.
-     * @param string|null $key the key that identifies the link tag. If two link tags are registered with the same
+     * @param string|null $key The key that identifies the link tag. If two link tags are registered with the same
      * key, the latter will overwrite the former. If this is null, the new link tag will be appended
      * to the existing ones.
      */
@@ -354,6 +352,8 @@ final class WebView extends BaseView
 
     /**
      * Registers a {@see Link} tag.
+     *
+     * @see registerLink()
      */
     public function registerLinkTag(Link $link, int $position = self::DEFAULT_POSITION_LINK, ?string $key = null): void
     {
@@ -382,6 +382,10 @@ final class WebView extends BaseView
 
     /**
      * Registers a CSS code block from file.
+     *
+     * @param string $path The path or URL to CSS file.
+     *
+     * @see registerCss()
      */
     public function registerCssFromFile(
         string $path,
@@ -398,7 +402,7 @@ final class WebView extends BaseView
     }
 
     /**
-     * Register a `style` tag.
+     * Register a {@see Style} tag.
      *
      * @see registerJs()
      */
@@ -415,10 +419,10 @@ final class WebView extends BaseView
      * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
      * {@see \Yiisoft\Assets\AssetBundle}.
      *
-     * @param string $url the CSS file to be registered.
+     * @param string $url The CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
      * for the supported options.
-     * @param string $key the key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
+     * @param string $key The key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
      */
     public function registerCssFile(string $url, int $position = self::DEFAULT_POSITION_CSS_FILE, array $options = [], string $key = null): void
@@ -443,7 +447,7 @@ final class WebView extends BaseView
      * - {@see POSITION_END}: at the end of the body section. This is the default value.
      * - {@see POSITION_LOAD}: executed when HTML page is completely loaded.
      * - {@see POSITION_READY}: executed when HTML document composition is ready.
-     * @param string $key the key that identifies the JS code block. If null, it will use $js as the key. If two JS code
+     * @param string $key The key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerJs(string $js, int $position = self::DEFAULT_POSITION_JS_FILE, ?string $key = null): void
@@ -470,8 +474,8 @@ final class WebView extends BaseView
      * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
      * {@see \Yiisoft\Assets\AssetBundle}.
      *
-     * @param string $url the JS file to be registered.
-     * @param array $options the HTML attributes for the script tag. The following options are specially handled and
+     * @param string $url The JS file to be registered.
+     * @param array $options The HTML attributes for the script tag. The following options are specially handled and
      * are not treated as HTML attributes:
      *
      * - `position`: specifies where the JS script tag should be inserted in a page. The possible values are:
@@ -480,7 +484,7 @@ final class WebView extends BaseView
      *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
      * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
-     * @param string $key the key that identifies the JS script file. If null, it will use $url as the key. If two JS
+     * @param string $key The key that identifies the JS script file. If null, it will use $url as the key. If two JS
      * files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
@@ -499,8 +503,8 @@ final class WebView extends BaseView
      * variable names.
      *
      * @param string $name Name of the variable
-     * @param array|string $value Value of the variable
-     * @param int $position the position in a page at which the JavaScript variable should be inserted.
+     * @param mixed $value Value of the variable
+     * @param int $position The position in a page at which the JavaScript variable should be inserted.
      *
      * The possible values are:
      *
@@ -523,15 +527,15 @@ final class WebView extends BaseView
      *
      * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
      *
-     * @return string the rendered content
+     * @return string The rendered content
      */
     protected function renderHeadHtml(): string
     {
         $lines = [];
+
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
         }
-
         if (!empty($this->linkTags[self::POSITION_HEAD])) {
             $lines[] = implode("\n", $this->linkTags[self::POSITION_HEAD]);
         }
@@ -556,11 +560,12 @@ final class WebView extends BaseView
      *
      * The content is rendered using the registered JS code blocks and files.
      *
-     * @return string the rendered content
+     * @return string The rendered content.
      */
     protected function renderBodyBeginHtml(): string
     {
         $lines = [];
+
         if (!empty($this->linkTags[self::POSITION_BEGIN])) {
             $lines[] = implode("\n", $this->linkTags[self::POSITION_BEGIN]);
         }
@@ -585,11 +590,11 @@ final class WebView extends BaseView
      *
      * The content is rendered using the registered JS code blocks and files.
      *
-     * @param bool $ajaxMode whether the view is rendering in AJAX mode. If true, the JS scripts registered at
+     * @param bool $ajaxMode Whether the view is rendering in AJAX mode. If true, the JS scripts registered at
      * {@see POSITION_READY} and {@see POSITION_LOAD} positions will be rendered at the end of the view like normal
      * scripts.
      *
-     * @return string the rendered content
+     * @return string The rendered content.
      */
     protected function renderBodyEndHtml(bool $ajaxMode): string
     {
@@ -667,6 +672,7 @@ final class WebView extends BaseView
      */
     public function addCssFiles(array $cssFiles): void
     {
+        /** @var mixed $value */
         foreach ($cssFiles as $key => $value) {
             $this->registerCssFileByConfig(
                 is_string($key) ? $key : null,
@@ -676,6 +682,8 @@ final class WebView extends BaseView
     }
 
     /**
+     * It processes the CSS strings generated by the asset manager.
+     *
      * @param array $cssStrings
      */
     public function addCssStrings(array $cssStrings): void
@@ -696,6 +704,7 @@ final class WebView extends BaseView
      */
     public function addJsFiles(array $jsFiles): void
     {
+        /** @var mixed $value */
         foreach ($jsFiles as $key => $value) {
             $this->registerJsFileByConfig(
                 is_string($key) ? $key : null,
@@ -731,11 +740,12 @@ final class WebView extends BaseView
      */
     public function addJsVars(array $jsVars): void
     {
+        /** @var mixed $value */
         foreach ($jsVars as $key => $value) {
             if (is_string($key)) {
                 $this->registerJsVar($key, $value, self::DEFAULT_POSITION_JS_VARIABLE);
             } else {
-                $this->registerJsVarByConfig($value);
+                $this->registerJsVarByConfig((array) $value);
             }
         }
     }
@@ -784,7 +794,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_FILE;
+        $position = (int) ($config[1] ?? self::DEFAULT_POSITION_CSS_FILE);
 
         unset($config[0], $config[1]);
         $this->registerCssFile($file, $position, $config, $key);
@@ -843,7 +853,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = $config[1] ?? self::DEFAULT_POSITION_JS_FILE;
+        $position = (int) ($config[1] ?? self::DEFAULT_POSITION_JS_FILE);
 
         unset($config[0], $config[1]);
         $this->registerJsFile($file, $position, $config, $key);

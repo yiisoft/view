@@ -12,7 +12,16 @@ use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
+use function array_merge;
+use function array_pop;
+use function basename;
+use function crc32;
+use function dechex;
 use function dirname;
+use function end;
+use function is_file;
+use function pathinfo;
+use function substr;
 
 /**
  * @internal Base class for {@see View} and {@see WebView}.
@@ -21,47 +30,19 @@ abstract class BaseView
 {
     protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var string Base view path.
-     */
     private string $basePath;
-
-    /**
-     * @var Theme|null The theme object.
-     */
     private ?Theme $theme = null;
-
-    /**
-     * @var ViewContextInterface|null The context under which the {@see renderFile()} method is being invoked.
-     */
     private ?ViewContextInterface $context = null;
-
     private string $placeholderSignature;
-
-    /**
-     * @var array A list of available renderers indexed by their corresponding supported file extensions. Each renderer
-     * may be a view renderer object or the configuration for creating the renderer object. For example, the
-     * following configuration enables the Twig view renderer:
-     *
-     * ```php
-     * [
-     *     'twig' => ['class' => \Yiisoft\Yii\Twig\ViewRenderer::class],
-     * ]
-     * ```
-     *
-     * If no renderer is available for the given view file, the view file will be treated as a normal PHP and rendered
-     * via PhpTemplateRenderer.
-     */
-    private array $renderers = [];
-
     private string $language = 'en';
     private string $sourceLanguage = 'en';
+    private string $defaultExtension = 'php';
 
     /**
-     * @var string The default view file extension. This will be appended to view file names if they don't have file
-     * extensions.
+     * @var array<string, TemplateRendererInterface> A list of available renderers indexed by their corresponding
+     * supported file extensions.
      */
-    private string $defaultExtension = 'php';
+    private array $renderers = [];
 
     /**
      * @var array<string, mixed> Parameters that are common for all view templates.
@@ -76,6 +57,8 @@ abstract class BaseView
     /**
      * @var array The view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
+     *
+     * @psalm-var array<array-key, array<string, string>>
      */
     private array $viewFiles = [];
 
@@ -87,6 +70,10 @@ abstract class BaseView
     }
 
     /**
+     * Returns a new instance with the specified theme instance.
+     *
+     * @param Theme $theme The theme instance.
+     *
      * @return static
      */
     public function withTheme(Theme $theme): self
@@ -97,6 +84,18 @@ abstract class BaseView
     }
 
     /**
+     * Returns a new instance with the specified renderers.
+     *
+     * @param array<string, TemplateRendererInterface> $renderers A list of available renderers indexed by their
+     * corresponding supported file extensions.
+     *
+     * ```php
+     * $view = $view->withRenderers(['twig' => new \Yiisoft\Yii\Twig\ViewRenderer($environment)]);
+     * ```
+     *
+     * If no renderer is available for the given view file, the view file will be treated as a normal PHP
+     * and rendered via {@see PhpTemplateRenderer}.
+     *
      * @return static
      */
     public function withRenderers(array $renderers): self
@@ -107,6 +106,10 @@ abstract class BaseView
     }
 
     /**
+     * Returns a new instance with the specified language.
+     *
+     * @param string $language The language.
+     *
      * @return static
      */
     public function withLanguage(string $language): self
@@ -117,6 +120,10 @@ abstract class BaseView
     }
 
     /**
+     * Returns a new instance with the specified source language.
+     *
+     * @param string $language The source language.
+     *
      * @return static
      */
     public function withSourceLanguage(string $language): self
@@ -127,6 +134,25 @@ abstract class BaseView
     }
 
     /**
+     * Returns a new instance with the specified default view file extension.
+     *
+     * @param string $defaultExtension The default view file extension. Default is "php".
+     * This will be appended to view file names if they don't have file extensions.
+     *
+     * @return static
+     */
+    public function withDefaultExtension(string $defaultExtension): self
+    {
+        $new = clone $this;
+        $new->defaultExtension = $defaultExtension;
+        return $new;
+    }
+
+    /**
+     * Returns a new instance with the specified view context instance.
+     *
+     * @param ViewContextInterface $context The context under which the {@see renderFile()} method is being invoked.
+     *
      * @return static
      */
     public function withContext(ViewContextInterface $context): self
@@ -136,34 +162,24 @@ abstract class BaseView
         return $new;
     }
 
+    /**
+     * Gets the base path to the view directory.
+     *
+     * @return string The base view path.
+     */
     public function getBasePath(): string
     {
         return $this->basePath;
     }
 
-    final public function getPlaceholderSignature(): string
-    {
-        return $this->placeholderSignature;
-    }
-
-    final public function setPlaceholderSalt(string $salt): void
-    {
-        $this->placeholderSignature = dechex(crc32($salt));
-    }
-
+    /**
+     * Gets the default view file extension.
+     *
+     * @return string The default view file extension.
+     */
     public function getDefaultExtension(): string
     {
         return $this->defaultExtension;
-    }
-
-    /**
-     * @return static
-     */
-    public function withDefaultExtension(string $defaultExtension): self
-    {
-        $new = clone $this;
-        $new->defaultExtension = $defaultExtension;
-        return $new;
     }
 
     /**
@@ -175,6 +191,7 @@ abstract class BaseView
      */
     public function setCommonParameters(array $commonParameters): void
     {
+        /** @var mixed $value */
         foreach ($commonParameters as $id => $value) {
             $this->setCommonParameter($id, $value);
         }
@@ -233,7 +250,7 @@ abstract class BaseView
      * Sets a content block.
      *
      * @param string $id The unique identifier of the block.
-     * @param mixed $content The content of the block.
+     * @param string $content The content of the block.
      */
     public function setBlock(string $id, string $content): void
     {
@@ -279,11 +296,34 @@ abstract class BaseView
     }
 
     /**
+     * Gets the view file currently being rendered.
+     *
      * @return string|null The view file currently being rendered. `null` if no view file is being rendered.
      */
     public function getViewFile(): ?string
     {
+        /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['resolved'];
+    }
+
+    /**
+     * Gets the placeholder signature.
+     *
+     * @return string The placeholder signature.
+     */
+    final public function getPlaceholderSignature(): string
+    {
+        return $this->placeholderSignature;
+    }
+
+    /**
+     * Sets a salt for the placeholder signature {@see getPlaceholderSignature()}.
+     *
+     * @param string $salt The placeholder salt.
+     */
+    final public function setPlaceholderSalt(string $salt): void
+    {
+        $this->placeholderSignature = dechex(crc32($salt));
     }
 
     /**
@@ -291,19 +331,14 @@ abstract class BaseView
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
-     * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes. The actual
-     *   view file will be looked for under the [[Application::viewPath|view path]] of the application.
-     * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash. The actual
-     *   view file will be looked for under the [[Module::viewPath|view path]]
-     *   of the [[Controller::module|current module]].
-     * - relative view (e.g. "index"): the view name does not start with `@` or `/`. The corresponding view file will be
-     *   looked for under the {@see ViewContextInterface::getViewPath()} of the {@see View::$context}.
-     *   If {@see View::$context} is not set, it will be looked for under the directory containing the view currently
-     *   being rendered (i.e., this happens when rendering a view within another view).
+     * - the name of the view starting with a slash. to join the base path {@see getBasePath()} (e.g. "/site/index").
+     * - the name of the view without the starting slash (e.g. "site/index"). The corresponding view file will be
+     *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
+     *   If the context instance was not set {@see withContext()}, it will be looked for under the directory containing
+     *   the view currently being rendered (i.e., this happens when rendering a view within another view).
      *
-     * @param string $view the view name.
-     * @param array $parameters the parameters (name-value pairs) that will be extracted and made available in the view
+     * @param string $view The view name.
+     * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
      * @throws RuntimeException If the view cannot be resolved.
@@ -324,12 +359,11 @@ abstract class BaseView
     /**
      * Renders a view file.
      *
-     * If {@see theme} is enabled (not null), it will try to render the themed version of the view file as long as it
-     * is available.
+     * If the theme was not set {@see withTheme()}, it will try to render the themed version of the view file
+     * as long as it is available.
      *
-     * If {@see renderers} is enabled (not null), the method will use it to render the view file. Otherwise,
-     * it will simply include the view file as a normal PHP file, capture its output and
-     * return it as a string.
+     * If the theme was not set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
+     * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
      *
      * @param string $viewFile The view file. This can be either an absolute file path or an alias of it.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
@@ -387,11 +421,11 @@ abstract class BaseView
      *
      * If the target and the source language codes are the same, the original file will be returned.
      *
-     * @param string $file the original file
-     * @param string|null $language the target language that the file should be localized to.
-     * @param string|null $sourceLanguage the language that the original file is in.
+     * @param string $file The original file
+     * @param string|null $language The target language that the file should be localized to.
+     * @param string|null $sourceLanguage The language that the original file is in.
      *
-     * @return string the matching localized file, or the original file if the localized version is not found.
+     * @return string The matching localized file, or the original file if the localized version is not found.
      * If the target and the source language codes are the same, the original file will be returned.
      */
     public function localize(string $file, ?string $language = null, ?string $sourceLanguage = null): string
@@ -402,17 +436,20 @@ abstract class BaseView
         if ($language === $sourceLanguage) {
             return $file;
         }
+
         $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
+
         if (is_file($desiredFile)) {
             return $desiredFile;
         }
 
         $language = substr($language, 0, 2);
+
         if ($language === $sourceLanguage) {
             return $file;
         }
-        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
 
+        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
         return is_file($desiredFile) ? $desiredFile : $file;
     }
 
@@ -422,16 +459,16 @@ abstract class BaseView
      * The default implementation will trigger the {@see BeforeRender()} event. If you override this method, make sure
      * you call the parent implementation first.
      *
-     * @param string $viewFile the view file to be rendered.
-     * @param array $parameters the parameter array passed to the {@see render()} method.
+     * @param string $viewFile The view file to be rendered.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      *
-     * @return bool whether to continue rendering the view file.
+     * @return bool Whether to continue rendering the view file.
      */
     public function beforeRender(string $viewFile, array $parameters): bool
     {
         $event = $this->createBeforeRenderEvent($viewFile, $parameters);
         $event = $this->eventDispatcher->dispatch($event);
-
+        /** @var StoppableEventInterface $event */
         return !$event->isPropagationStopped();
     }
 
@@ -443,9 +480,9 @@ abstract class BaseView
      * The default implementation will trigger the {@see AfterRender} event. If you override this method, make sure you
      * call the parent implementation first.
      *
-     * @param string $viewFile the view file being rendered.
-     * @param array $parameters the parameter array passed to the {@see render()} method.
-     * @param string $output the rendering result of the view file.
+     * @param string $viewFile The view file being rendered.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
+     * @param string $output The rendering result of the view file.
      *
      * @return string Updated output. It will be passed to {@see renderFile()} and returned.
      */
@@ -476,7 +513,7 @@ abstract class BaseView
     /**
      * Finds the view file based on the given view name.
      *
-     * @param string $view The view name or the [path alias](guide:concept-aliases) of the view file. Please refer to
+     * @param string $view The view name of the view file. Please refer to
      * {@see render()} on how to specify this parameter.
      *
      * @throws RuntimeException If a relative view name is given while there is no active context to determine the
@@ -486,7 +523,7 @@ abstract class BaseView
      */
     protected function findTemplateFile(string $view): string
     {
-        if (strncmp($view, '//', 2) === 0) {
+        if ($view !== '' && $view[0] === '/') {
             // path relative to basePath e.g. "//layouts/main"
             $file = $this->basePath . '/' . ltrim($view, '/');
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
@@ -517,6 +554,7 @@ abstract class BaseView
      */
     private function getRequestedViewFile(): ?string
     {
+        /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
     }
 }

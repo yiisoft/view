@@ -6,11 +6,24 @@ namespace Yiisoft\View;
 
 use Throwable;
 
-class PhpTemplateRenderer implements TemplateRendererInterface
+use function extract;
+use function func_get_arg;
+use function ob_clean;
+use function ob_end_clean;
+use function ob_get_clean;
+use function ob_get_level;
+use function ob_implicit_flush;
+use function ob_start;
+
+/**
+ * PhpTemplateRenderer renders the PHP views.
+ */
+final class PhpTemplateRenderer implements TemplateRendererInterface
 {
     public function render(BaseView $view, string $template, array $params): string
     {
         $renderer = function (): void {
+            /** @psalm-suppress MixedArgument */
             extract(func_get_arg(1), EXTR_OVERWRITE);
             /** @psalm-suppress UnresolvableInclude */
             require func_get_arg(0);

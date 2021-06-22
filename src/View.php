@@ -11,12 +11,14 @@ use Yiisoft\View\Event\View\BeforeRender;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 
+use function ob_end_flush;
+use function ob_implicit_flush;
+use function ob_start;
+
 /**
- * View represents a view object in the MVC pattern.
+ * View represents an instance of a view for use in an any environment.
  *
  * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
- *
- * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  */
 final class View extends BaseView
 {

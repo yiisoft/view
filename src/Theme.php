@@ -4,7 +4,16 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
+use InvalidArgumentException;
 use Yiisoft\Files\FileHelper;
+
+use function is_file;
+use function is_string;
+use function ltrim;
+use function rtrim;
+use function strlen;
+use function strpos;
+use function substr;
 
 /**
  * Theme represents an application theme.
@@ -23,55 +32,54 @@ use Yiisoft\Files\FileHelper;
  *    to replace the original view file.
  * 4. If Step 2 or 3 fails, the original view file will be used.
  *
- * For example, if {@see pathMap} is `['@app/views' => '@app/themes/basic']`,
- * then the themed version for a view file `@app/views/site/index.php` will be
- * `@app/themes/basic/site/index.php`.
+ * For example, if {@see pathMap} is `['/app/views' => '/app/themes/basic']`, then the themed version for
+ * a view file `/app/views/site/index.php` will be `/app/themes/basic/site/index.php`.
  *
- * It is possible to map a single path to multiple paths. For example,
- *
- * ```php
- * 'pathMap' => [
- *     '@app/views' => [
- *         '@app/themes/christmas',
- *         '@app/themes/basic',
- *     ],
- * ]
- * ```
- *
- * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
- * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
- *
- * To use a theme, you should configure the {@see View::theme} property of the "view" application
- * component like the following:
+ * It is possible to map a single path to multiple paths. For example:
  *
  * ```php
- * 'view' => [
+ * 'yiisoft/view' => [
  *     'theme' => [
- *         'basePath' => '@app/themes/basic',
- *         'baseUrl' => '@baseUrl/themes/basic',
+ *         'pathMap' => [
+ *             '/app/views' => [
+ *                 '/app/themes/christmas',
+ *                 '/app/themes/basic',
+ *             ],
+ *         ],
+ *         'basePath' => '',
+ *         'baseUrl' => '',
  *     ],
  * ],
  * ```
  *
- * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder that contains
- * the entry script of the application. If your theme is designed to handle modules, you may configure the
- * {@see Theme::pathMap} property like described above.
+ * In this case, the themed version could be either `/app/themes/christmas/site/index.php` or
+ * `/app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
  *
- * For more details and usage information on Theme, see the [guide article on theming](guide:output-theming).
+ * To use the theme directly without configurations, you should set it using the {@see View::withTheme()} as follows:
+ *
+ * ```php
+ * $pathMap = [...];
+ * $basePath = '/path/to/private/themes/basic';
+ * $baseUrl = '/path/to/public/themes/basic';
+ *
+ * $view = $view->withTheme(new Theme([...], $basePath, $baseUrl));
+ * ```
  */
-class Theme
+final class Theme
 {
     /**
-     * @var array the mapping between view directories and their corresponding themed versions.
-     *
-     * This property is used by {@see applyTo()} when a view is trying to apply the theme.
-     * [Path aliases](guide:concept-aliases) can be used when specifying directories.
-     * If this property is empty or not set, a mapping {@see Application::basePath} to {@see basePath} will be used.
+     * @var array<string, string|string[]>
      */
     private array $pathMap;
     private string $basePath;
     private string $baseUrl = '';
 
+    /**
+     * @param array<string, string|string[]> $pathMap The mapping between view directories and their corresponding
+     * themed versions. The path map is used by {@see applyTo()} when a view is trying to apply the theme.
+     * @param string $basePath The base path to the theme directory.
+     * @param string $baseUrl The base URL for this theme.
+     */
     public function __construct(array $pathMap = [], string $basePath = '', string $baseUrl = '')
     {
         $this->validatePathMap($pathMap);
@@ -84,7 +92,9 @@ class Theme
     }
 
     /**
-     * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
+     * Returns the URL path for this theme.
+     *
+     * @return string The base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function getBaseUrl(): string
@@ -93,7 +103,9 @@ class Theme
     }
 
     /**
-     * @return string the root path of this theme. All resources of this theme are located under this directory.
+     * Returns the base path to the theme directory.
+     *
+     * @return string The root path of this theme. All resources of this theme are located under this directory.
      *
      * @see pathMap
      */
@@ -107,23 +119,28 @@ class Theme
      *
      * If there is no corresponding themed file, the original file will be returned.
      *
-     * @param string $path the file to be themed
+     * @param string $path The file to be themed
      *
-     * @return string the themed file, or the original file if the themed version is not available.
+     * @return string The themed file, or the original file if the themed version is not available.
      */
     public function applyTo(string $path): string
     {
         if ($this->pathMap === []) {
             return $path;
         }
+
         $path = FileHelper::normalizePath($path);
+
         foreach ($this->pathMap as $from => $tos) {
             $from = FileHelper::normalizePath($from) . '/';
+
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);
-                foreach ((array)$tos as $to) {
+
+                foreach ((array) $tos as $to) {
                     $to = FileHelper::normalizePath($to) . '/';
                     $file = $to . substr($path, $n);
+
                     if (is_file($file)) {
                         return $file;
                     }
@@ -135,11 +152,11 @@ class Theme
     }
 
     /**
-     * Converts a relative URL into an absolute URL using {@see baseUrl}.
+     * Converts and returns a relative URL into an absolute URL using {@see getbaseUrl()}.
      *
-     * @param string $url the relative URL to be converted.
+     * @param string $url The relative URL to be converted.
      *
-     * @return string the absolute URL
+     * @return string The absolute URL
      */
     public function getUrl(string $url): string
     {
@@ -151,11 +168,11 @@ class Theme
     }
 
     /**
-     * Converts a relative file path into an absolute one using {@see basePath}.
+     * Converts and returns a relative file path into an absolute one using {@see getBasePath()}.
      *
-     * @param string $path the relative file path to be converted.
+     * @param string $path The relative file path to be converted.
      *
-     * @return string the absolute file path
+     * @return string The absolute file path.
      */
     public function getPath(string $path): string
     {
@@ -166,11 +183,27 @@ class Theme
         return $path;
     }
 
+    /**
+     * Validates the path map.
+     *
+     * @param array $pathMap The path map for validation.
+     */
     private function validatePathMap(array $pathMap): void
     {
+        $errorMessage = 'The path map should contain the mapping between'
+            . ' view directories and corresponding theme directories.';
+
+        /** @var mixed $destinations */
         foreach ($pathMap as $source => $destinations) {
             if (!is_string($source)) {
-                throw new \InvalidArgumentException('Theme::$pathMap should contain the mapping between view directories and corresponding theme directories.');
+                throw new InvalidArgumentException($errorMessage);
+            }
+
+            /** @var mixed $destination */
+            foreach ((array) $destinations as $destination) {
+                if (!is_string($destination)) {
+                    throw new InvalidArgumentException($errorMessage);
+                }
             }
         }
     }
