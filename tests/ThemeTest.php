@@ -57,6 +57,13 @@ final class ThemeTest extends TestCase
         $this->assertSame('/var/www/yiiframework.com/test', $result);
     }
 
+    public function testGetPathWithBasePathAndSlashPrefix(): void
+    {
+        $theme = new Theme([], '/var/www/yiiframework.com', '');
+        $result = $theme->getPath('/test');
+        $this->assertSame('/var/www/yiiframework.com/test', $result);
+    }
+
     /**
      * If there is no map, return path passed
      */
