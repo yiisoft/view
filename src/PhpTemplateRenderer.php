@@ -8,7 +8,6 @@ use Throwable;
 
 use function extract;
 use function func_get_arg;
-use function ob_clean;
 use function ob_end_clean;
 use function ob_get_clean;
 use function ob_get_level;
@@ -39,9 +38,7 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
             return ob_get_clean();
         } catch (Throwable $e) {
             while (ob_get_level() > $obInitialLevel) {
-                if (!@ob_end_clean()) {
-                    ob_clean();
-                }
+                ob_end_clean();
             }
             throw $e;
         }

@@ -57,6 +57,41 @@ final class ThemeTest extends TestCase
         $this->assertSame('/var/www/yiiframework.com/test', $result);
     }
 
+    public function testGetPathWithBasePathAndSlashPrefix(): void
+    {
+        $theme = new Theme([], '/var/www/yiiframework.com', '');
+        $result = $theme->getPath('/test');
+        $this->assertSame('/var/www/yiiframework.com/test', $result);
+    }
+
+    public function testGetBaseUrl(): void
+    {
+        $theme = new Theme([], '', 'https://example.com');
+        $result = $theme->getBaseUrl();
+        $this->assertSame('https://example.com', $result);
+    }
+
+    public function testGetBaseUrlWithSuffixSlash(): void
+    {
+        $theme = new Theme([], '', 'https://example.com/');
+        $result = $theme->getBaseUrl();
+        $this->assertSame('https://example.com', $result);
+    }
+
+    public function testGetBasePath(): void
+    {
+        $theme = new Theme([], '/theme', '');
+        $result = $theme->getBasePath();
+        $this->assertSame('/theme', $result);
+    }
+
+    public function testGetBasePathWithSuffixSlash(): void
+    {
+        $theme = new Theme([], '/theme/', '');
+        $result = $theme->getBasePath();
+        $this->assertSame('/theme', $result);
+    }
+
     /**
      * If there is no map, return path passed
      */
@@ -130,6 +165,9 @@ final class ThemeTest extends TestCase
 
     public function testInvalidPathMapValue(): void
     {
+        $this->expectExceptionMessage(
+            'The path map should contain the mapping between view directories and corresponding theme directories.'
+        );
         $this->expectException(InvalidArgumentException::class);
 
         new Theme(['/app/views' => 0]);
