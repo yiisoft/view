@@ -6,6 +6,8 @@ namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Throwable;
 use Yiisoft\Html\Html;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\WebView\BodyBegin;
@@ -361,6 +363,25 @@ final class WebViewTest extends TestCase
             '[HEAD]<style id="main">A { color: blue; }</style>[/HEAD]',
             $html
         );
+    }
+
+    public function testRegisterCssFromNonExistsFile(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $exception = null;
+
+        set_error_handler(static fn() => null);
+        try {
+            $webView->registerCssFromFile('/non-exists-file.css');
+        } catch (Throwable $e) {
+            $exception = $e;
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertInstanceOf(RuntimeException::class, $exception);
+        $this->assertSameIgnoringSlash('File /non-exists-file.css could not be read.', $exception->getMessage());
     }
 
     public function testRenderAjaxWithoutContext(): void
