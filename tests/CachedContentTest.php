@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
+use Yiisoft\Cache\CacheKeyNormalizer;
 use Yiisoft\Cache\Dependency\Dependency;
 use Yiisoft\Cache\Dependency\ValueDependency;
 use Yiisoft\View\Cache\CachedContent;
@@ -99,6 +100,28 @@ final class CachedContentTest extends TestCase
             $cacheContent = new CachedContent('test', $this->cache, [$dynamicContent], ['ru']);
             $this->assertNull($cacheContent->get());
         }
+    }
+
+    public function testTwoCache(): void
+    {
+        $cacheContent1 = new CachedContent('test1', $this->cache);
+        $cacheContent1->cache('content1');
+
+        $cacheContent2 = new CachedContent('test2', $this->cache);
+        $cacheContent2->cache('content2');
+
+        $this->assertSame('content1', $cacheContent1->get());
+        $this->assertSame('content2', $cacheContent2->get());
+    }
+
+    public function testCacheWithSimilarKey(): void
+    {
+        $this->cache->getOrSet((new CacheKeyNormalizer())->normalize(['test']), static fn() => 'hello');
+
+        $cacheContent = new CachedContent('test', $this->cache);
+        $cacheContent->cache('content');
+
+        $this->assertSame('content', $cacheContent->get());
     }
 
     public function testSettingInvalidDynamicContents(): void
