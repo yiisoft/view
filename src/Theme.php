@@ -190,21 +190,25 @@ final class Theme
      */
     private function validatePathMap(array $pathMap): void
     {
-        $errorMessage = 'The path map should contain the mapping between'
-            . ' view directories and corresponding theme directories.';
-
         /** @var mixed $destinations */
         foreach ($pathMap as $source => $destinations) {
             if (!is_string($source)) {
-                throw new InvalidArgumentException($errorMessage);
+                $this->throwInvalidPathMapException();
             }
 
             /** @var mixed $destination */
-            foreach ((array) $destinations as $destination) {
+            foreach ((array)$destinations as $destination) {
                 if (!is_string($destination)) {
-                    throw new InvalidArgumentException($errorMessage);
+                    $this->throwInvalidPathMapException();
                 }
             }
         }
+    }
+
+    private function throwInvalidPathMapException(): void
+    {
+        throw new InvalidArgumentException(
+            'The path map should contain the mapping between view directories and corresponding theme directories.'
+        );
     }
 }
