@@ -64,6 +64,19 @@ final class ThemeTest extends TestCase
         $this->assertSame('/var/www/yiiframework.com/test', $result);
     }
 
+    public function testGetBaseUrl(): void
+    {
+        $theme = new Theme([], '', 'https://example.com');
+        $result = $theme->getBaseUrl();
+        $this->assertSame('https://example.com', $result);
+    }
+
+    public function testGetBaseUrlWithSuffixSlash(): void
+    {
+        $theme = new Theme([], '', 'https://example.com/');
+        $result = $theme->getBaseUrl();
+        $this->assertSame('https://example.com', $result);
+    }
 
     public function testGetBasePath(): void
     {
