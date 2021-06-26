@@ -84,7 +84,7 @@ final class Theme
     {
         $this->validatePathMap($pathMap);
         $this->pathMap = $pathMap;
-        $this->basePath = $basePath;
+        $this->basePath = rtrim($basePath, '/');
 
         if ($baseUrl !== '') {
             $this->baseUrl = rtrim($baseUrl, '/');
