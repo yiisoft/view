@@ -20,7 +20,7 @@ final class PhpTemplateRendererTest extends TestCase
         $obInitialLevel = ob_get_level();
 
         try {
-           $renderer->render($view, __DIR__ . '/public/view/error.php', []);
+            $renderer->render($view, __DIR__ . '/public/view/error.php', []);
         } catch (LogicException $e) {
         }
 

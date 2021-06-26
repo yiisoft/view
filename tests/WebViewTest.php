@@ -371,7 +371,7 @@ final class WebViewTest extends TestCase
 
         $exception = null;
 
-        set_error_handler(static fn() => null);
+        set_error_handler(static fn () => null);
         try {
             $webView->registerCssFromFile('/non-exists-file.css');
         } catch (Throwable $e) {
