@@ -39,9 +39,7 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
             return ob_get_clean();
         } catch (Throwable $e) {
             while (ob_get_level() > $obInitialLevel) {
-                if (!@ob_end_clean()) {
-                    ob_clean();
-                }
+                ob_end_clean();
             }
             throw $e;
         }
