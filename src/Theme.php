@@ -71,7 +71,7 @@ final class Theme
      * @var array<string, string|string[]>
      */
     private array $pathMap;
-    private string $basePath;
+    private string $basePath = '';
     private string $baseUrl = '';
 
     /**
@@ -84,7 +84,10 @@ final class Theme
     {
         $this->validatePathMap($pathMap);
         $this->pathMap = $pathMap;
-        $this->basePath = rtrim($basePath, '/');
+
+        if ($basePath !== '') {
+            $this->basePath = rtrim($basePath, '/');
+        }
 
         if ($baseUrl !== '') {
             $this->baseUrl = rtrim($baseUrl, '/');
