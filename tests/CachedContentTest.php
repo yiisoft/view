@@ -116,7 +116,7 @@ final class CachedContentTest extends TestCase
 
     public function testCacheWithSimilarKey(): void
     {
-        $this->cache->getOrSet((new CacheKeyNormalizer())->normalize(['test']), static fn() => 'hello');
+        $this->cache->getOrSet((new CacheKeyNormalizer())->normalize(['test']), static fn () => 'hello');
 
         $cacheContent = new CachedContent('test', $this->cache);
         $cacheContent->cache('content');
