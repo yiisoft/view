@@ -524,7 +524,7 @@ abstract class BaseView
     protected function findTemplateFile(string $view): string
     {
         if ($view !== '' && $view[0] === '/') {
-            // path relative to basePath e.g. "//layouts/main"
+            // path relative to basePath e.g. "/layouts/main"
             $file = $this->basePath . '/' . ltrim($view, '/');
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
             // path relative to currently rendered view
