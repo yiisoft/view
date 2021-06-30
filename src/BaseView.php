@@ -362,7 +362,7 @@ abstract class BaseView
      * If the theme was not set {@see withTheme()}, it will try to render the themed version of the view file
      * as long as it is available.
      *
-     * If the theme was not set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
+     * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
      * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
      *
      * @param string $viewFile The view file. This can be either an absolute file path or an alias of it.
