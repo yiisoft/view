@@ -18,21 +18,21 @@ use function substr;
 /**
  * Theme represents an application theme.
  *
- * When {@see View} renders a view file, it will check the {@see View::theme} to see if there is a themed
+ * When {@see View} renders a view file, it will check the {@see View::$theme} to see if there is a themed
  * version of the view file exists. If so, the themed version will be rendered instead.
  *
  * A theme is a directory consisting of view files which are meant to replace their non-themed counterparts.
  *
- * Theme uses {@see pathMap} to achieve the view file replacement:
+ * Theme uses {@see Theme::$pathMap} to achieve the view file replacement:
  *
- * 1. It first looks for a key in {@see pathMap} that is a substring of the given view file path;
+ * 1. It first looks for a key in {@see Theme::$pathMap} that is a substring of the given view file path;
  * 2. If such a key exists, the corresponding value will be used to replace the corresponding part
  *    in the view file path;
  * 3. It will then check if the updated view file exists or not. If so, that file will be used
  *    to replace the original view file.
  * 4. If Step 2 or 3 fails, the original view file will be used.
  *
- * For example, if {@see pathMap} is `['/app/views' => '/app/themes/basic']`, then the themed version for
+ * For example, if {@see Theme::$pathMap} is `['/app/views' => '/app/themes/basic']`, then the themed version for
  * a view file `/app/views/site/index.php` will be `/app/themes/basic/site/index.php`.
  *
  * It is possible to map a single path to multiple paths. For example:
