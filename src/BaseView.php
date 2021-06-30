@@ -183,6 +183,16 @@ abstract class BaseView
     }
 
     /**
+     * Gets the theme instance, or null if no theme has been set.
+     *
+     * @return Theme The theme instance, or null if no theme has been set.
+     */
+    public function getTheme(): ?Theme
+    {
+        return $this->theme;
+    }
+
+    /**
      * Sets a common parameters that is accessible in all view templates.
      *
      * @param array<string, mixed> $commonParameters Parameters that are common for all view templates.
