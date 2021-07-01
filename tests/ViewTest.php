@@ -122,13 +122,13 @@ PHP
         $subViewContent = 'subviewcontent';
         file_put_contents($subView, $subViewContent);
 
-        $view = $this->createViewWithBasePath($this->tempDirectory)
-            ->withTheme(new Theme([$this->tempDirectory => $themePath]))
-        ;
+        $theme = new Theme([$this->tempDirectory => $themePath]);
+        $view = $this->createViewWithBasePath($this->tempDirectory)->withTheme($theme);
 
         $this->assertSame($this->tempDirectory, $view->getBasePath());
         $this->assertSame('php', $view->getDefaultExtension());
         $this->assertSame(null, $view->getViewFile());
+        $this->assertSame($theme, $view->getTheme());
         $this->assertSame($subViewContent, $view->render('/base'));
         $this->assertSame($subViewContent, $view->render('//base'));
     }
@@ -156,6 +156,7 @@ PHP
         $view = $this->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory));
 
+        $this->assertSame(null, $view->getTheme());
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 

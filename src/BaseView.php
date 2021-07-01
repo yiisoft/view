@@ -183,6 +183,16 @@ abstract class BaseView
     }
 
     /**
+     * Gets the theme instance, or null if no theme has been set.
+     *
+     * @return Theme The theme instance, or null if no theme has been set.
+     */
+    public function getTheme(): ?Theme
+    {
+        return $this->theme;
+    }
+
+    /**
      * Sets a common parameters that is accessible in all view templates.
      *
      * @param array<string, mixed> $commonParameters Parameters that are common for all view templates.
@@ -331,8 +341,8 @@ abstract class BaseView
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - the name of the view starting with a slash. to join the base path {@see getBasePath()} (e.g. "/site/index").
-     * - the name of the view without the starting slash (e.g. "site/index"). The corresponding view file will be
+     * - The name of the view starting with a slash to join the base path {@see getBasePath()} (e.g. "/site/index").
+     * - The name of the view without the starting slash (e.g. "site/index"). The corresponding view file will be
      *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
      *   If the context instance was not set {@see withContext()}, it will be looked for under the directory containing
      *   the view currently being rendered (i.e., this happens when rendering a view within another view).
@@ -362,10 +372,10 @@ abstract class BaseView
      * If the theme was not set {@see withTheme()}, it will try to render the themed version of the view file
      * as long as it is available.
      *
-     * If the theme was not set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
+     * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
      * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
      *
-     * @param string $viewFile The view file. This can be either an absolute file path or an alias of it.
+     * @param string $viewFile The full absolute path of the view file.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
@@ -524,7 +534,7 @@ abstract class BaseView
     protected function findTemplateFile(string $view): string
     {
         if ($view !== '' && $view[0] === '/') {
-            // path relative to basePath e.g. "//layouts/main"
+            // path relative to basePath e.g. "/layouts/main"
             $file = $this->basePath . '/' . ltrim($view, '/');
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
             // path relative to currently rendered view
