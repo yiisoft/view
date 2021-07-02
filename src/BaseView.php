@@ -62,6 +62,10 @@ abstract class BaseView
      */
     private array $viewFiles = [];
 
+    /**
+     * @param string $basePath The full path to the base directory of views.
+     * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
+     */
     public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher)
     {
         $this->basePath = $basePath;
