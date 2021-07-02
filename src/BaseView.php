@@ -369,7 +369,7 @@ abstract class BaseView
     /**
      * Renders a view file.
      *
-     * If the theme was not set {@see withTheme()}, it will try to render the themed version of the view file
+     * If the theme was set {@see withTheme()}, it will try to render the themed version of the view file
      * as long as it is available.
      *
      * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
@@ -464,48 +464,32 @@ abstract class BaseView
     }
 
     /**
-     * This method is invoked right before {@see renderFile()} renders a view file.
-     *
-     * The default implementation will trigger the {@see BeforeRender()} event. If you override this method, make sure
-     * you call the parent implementation first.
-     *
-     * @param string $viewFile The view file to be rendered.
-     * @param array $parameters The parameter array passed to the {@see render()} method.
-     *
-     * @return bool Whether to continue rendering the view file.
+     * Clears the data for working with the event loop.
      */
-    public function beforeRender(string $viewFile, array $parameters): bool
+    public function clear(): void
     {
-        $event = $this->createBeforeRenderEvent($viewFile, $parameters);
-        $event = $this->eventDispatcher->dispatch($event);
-        /** @var StoppableEventInterface $event */
-        return !$event->isPropagationStopped();
+        $this->viewFiles = [];
     }
 
+    /**
+     * Creates an event that occurs before rendering.
+     *
+     * @param string $viewFile The view file to be rendered.
+     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     *
+     * @return StoppableEventInterface The stoppable event instance.
+     */
     abstract protected function createBeforeRenderEvent(string $viewFile, array $parameters): StoppableEventInterface;
 
     /**
-     * This method is invoked right after {@see renderFile()} renders a view file.
-     *
-     * The default implementation will trigger the {@see AfterRender} event. If you override this method, make sure you
-     * call the parent implementation first.
+     * Creates an event that occurs after rendering.
      *
      * @param string $viewFile The view file being rendered.
-     * @param array $parameters The parameter array passed to the {@see render()} method.
-     * @param string $output The rendering result of the view file.
+     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param string $result The rendering result of the view file.
      *
-     * @return string Updated output. It will be passed to {@see renderFile()} and returned.
+     * @return AfterRenderEventInterface The event instance.
      */
-    public function afterRender(string $viewFile, array $parameters, string $output): string
-    {
-        $event = $this->createAfterRenderEvent($viewFile, $parameters, $output);
-
-        /** @var AfterRenderEventInterface $event */
-        $event = $this->eventDispatcher->dispatch($event);
-
-        return $event->getResult();
-    }
-
     abstract protected function createAfterRenderEvent(
         string $viewFile,
         array $parameters,
@@ -513,11 +497,46 @@ abstract class BaseView
     ): AfterRenderEventInterface;
 
     /**
-     * Clears the data for working with the event loop.
+     * This method is invoked right before {@see renderFile()} renders a view file.
+     *
+     * The default implementations will trigger the {@see \Yiisoft\View\Event\View\BeforeRender}
+     * or {@see \Yiisoft\View\Event\WebView\BeforeRender} event. If you override this method,
+     * make sure you call the parent implementation first.
+     *
+     * @param string $viewFile The view file to be rendered.
+     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     *
+     * @return bool Whether to continue rendering the view file.
      */
-    public function clear(): void
+    protected function beforeRender(string $viewFile, array $parameters): bool
     {
-        $this->viewFiles = [];
+        $event = $this->createBeforeRenderEvent($viewFile, $parameters);
+        $event = $this->eventDispatcher->dispatch($event);
+        /** @var StoppableEventInterface $event */
+        return !$event->isPropagationStopped();
+    }
+
+    /**
+     * This method is invoked right after {@see renderFile()} renders a view file.
+     *
+     * The default implementations will trigger the {@see \Yiisoft\View\Event\View\AfterRender}
+     * or {@see \Yiisoft\View\Event\WebView\AfterRender} event. If you override this method,
+     * make sure you call the parent implementation first.
+     *
+     * @param string $viewFile The view file being rendered.
+     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param string $result The rendering result of the view file.
+     *
+     * @return string Updated output. It will be passed to {@see renderFile()} and returned.
+     */
+    protected function afterRender(string $viewFile, array $parameters, string $result): string
+    {
+        $event = $this->createAfterRenderEvent($viewFile, $parameters, $result);
+
+        /** @var AfterRenderEventInterface $event */
+        $event = $this->eventDispatcher->dispatch($event);
+
+        return $event->getResult();
     }
 
     /**
