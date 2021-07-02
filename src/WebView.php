@@ -47,41 +47,29 @@ use function strtr;
 final class WebView extends BaseView
 {
     /**
-     * The location of registered JavaScript code block or files.
      * This means the location is in the head section.
      */
     public const POSITION_HEAD = 1;
 
     /**
-     * The location of registered JavaScript code block or files.
      * This means the location is at the beginning of the body section.
      */
     public const POSITION_BEGIN = 2;
 
     /**
-     * The location of registered JavaScript code block or files.
      * This means the location is at the end of the body section.
      */
     public const POSITION_END = 3;
 
     /**
-     * The location of registered JavaScript code block.
      * This means the JavaScript code block will be executed when HTML document composition is ready.
      */
     public const POSITION_READY = 4;
 
     /**
-     * The location of registered JavaScript code block.
      * This means the JavaScript code block will be executed when HTML page is completely loaded.
      */
     public const POSITION_LOAD = 5;
-
-    private const DEFAULT_POSITION_CSS_FILE = self::POSITION_HEAD;
-    private const DEFAULT_POSITION_CSS_STRING = self::POSITION_HEAD;
-    private const DEFAULT_POSITION_JS_FILE = self::POSITION_END;
-    private const DEFAULT_POSITION_JS_VARIABLE = self::POSITION_HEAD;
-    private const DEFAULT_POSITION_JS_STRING = self::POSITION_END;
-    private const DEFAULT_POSITION_LINK = self::POSITION_HEAD;
 
     /**
      * This is internally used as the placeholder for receiving the content registered for the head section.
@@ -343,11 +331,8 @@ final class WebView extends BaseView
      * key, the latter will overwrite the former. If this is null, the new link tag will be appended
      * to the existing ones.
      */
-    public function registerLink(
-        array $attributes,
-        int $position = self::DEFAULT_POSITION_LINK,
-        ?string $key = null
-    ): void {
+    public function registerLink(array $attributes, int $position = self::POSITION_HEAD, ?string $key = null): void
+    {
         $this->registerLinkTag(Html::link()->attributes($attributes), $position, $key);
     }
 
@@ -356,7 +341,7 @@ final class WebView extends BaseView
      *
      * @see registerLink()
      */
-    public function registerLinkTag(Link $link, int $position = self::DEFAULT_POSITION_LINK, ?string $key = null): void
+    public function registerLinkTag(Link $link, int $position = self::POSITION_HEAD, ?string $key = null): void
     {
         $key === null
             ? $this->linkTags[$position][] = $link
@@ -373,7 +358,7 @@ final class WebView extends BaseView
      */
     public function registerCss(
         string $css,
-        int $position = self::DEFAULT_POSITION_CSS_STRING,
+        int $position = self::POSITION_HEAD,
         array $attributes = [],
         ?string $key = null
     ): void {
@@ -390,7 +375,7 @@ final class WebView extends BaseView
      */
     public function registerCssFromFile(
         string $path,
-        int $position = self::DEFAULT_POSITION_CSS_STRING,
+        int $position = self::POSITION_HEAD,
         array $attributes = [],
         ?string $key = null
     ): void {
@@ -407,7 +392,7 @@ final class WebView extends BaseView
      *
      * @see registerJs()
      */
-    public function registerStyleTag(Style $style, int $position = self::DEFAULT_POSITION_CSS_STRING, ?string $key = null): void
+    public function registerStyleTag(Style $style, int $position = self::POSITION_HEAD, ?string $key = null): void
     {
         $key = $key ?: md5($style->render());
         $this->css[$position][$key] = $style;
@@ -426,8 +411,12 @@ final class WebView extends BaseView
      * @param string $key The key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
      */
-    public function registerCssFile(string $url, int $position = self::DEFAULT_POSITION_CSS_FILE, array $options = [], string $key = null): void
-    {
+    public function registerCssFile(
+        string $url,
+        int $position = self::POSITION_HEAD,
+        array $options = [],
+        string $key = null
+    ): void {
         if (!$this->isValidCssPosition($position)) {
             throw new InvalidArgumentException('Invalid position of CSS file.');
         }
@@ -451,7 +440,7 @@ final class WebView extends BaseView
      * @param string $key The key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      */
-    public function registerJs(string $js, int $position = self::DEFAULT_POSITION_JS_FILE, ?string $key = null): void
+    public function registerJs(string $js, int $position = self::POSITION_END, ?string $key = null): void
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
@@ -462,7 +451,7 @@ final class WebView extends BaseView
      *
      * @see registerJs()
      */
-    public function registerScriptTag(Script $script, int $position = self::DEFAULT_POSITION_JS_STRING, ?string $key = null): void
+    public function registerScriptTag(Script $script, int $position = self::POSITION_END, ?string $key = null): void
     {
         $key = $key ?: md5($script->render());
         $this->js[$position][$key] = $script;
@@ -490,8 +479,12 @@ final class WebView extends BaseView
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
      */
-    public function registerJsFile(string $url, int $position = self::DEFAULT_POSITION_JS_FILE, array $options = [], string $key = null): void
-    {
+    public function registerJsFile(
+        string $url,
+        int $position = self::POSITION_END,
+        array $options = [],
+        string $key = null
+    ): void {
         if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS file.');
         }
@@ -517,7 +510,7 @@ final class WebView extends BaseView
      * - {@see POSITION_READY}: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      */
-    public function registerJsVar(string $name, $value, int $position = self::DEFAULT_POSITION_JS_VARIABLE): void
+    public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
     {
         $js = sprintf('var %s = %s;', $name, Json::htmlEncode($value));
         $this->registerJs($js, $position, $name);
@@ -550,7 +543,7 @@ final class WebView extends BaseView
         foreach ($cssStrings as $key => $value) {
             $this->registerCssStringByConfig(
                 is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value, self::DEFAULT_POSITION_CSS_STRING]
+                is_array($value) ? $value : [$value, self::POSITION_HEAD],
             );
         }
     }
@@ -584,7 +577,7 @@ final class WebView extends BaseView
         foreach ($jsStrings as $key => $value) {
             $this->registerJsStringByConfig(
                 is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value, self::DEFAULT_POSITION_JS_STRING]
+                is_array($value) ? $value : [$value, self::POSITION_END]
             );
         }
     }
@@ -601,7 +594,7 @@ final class WebView extends BaseView
         /** @var mixed $value */
         foreach ($jsVars as $key => $value) {
             if (is_string($key)) {
-                $this->registerJsVar($key, $value, self::DEFAULT_POSITION_JS_VARIABLE);
+                $this->registerJsVar($key, $value, self::POSITION_HEAD);
             } else {
                 $this->registerJsVarByConfig((array) $value);
             }
@@ -795,7 +788,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = (int) ($config[1] ?? self::DEFAULT_POSITION_CSS_FILE);
+        $position = (int) ($config[1] ?? self::POSITION_HEAD);
 
         unset($config[0], $config[1]);
         $this->registerCssFile($file, $position, $config, $key);
@@ -820,7 +813,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = $config[1] ?? self::DEFAULT_POSITION_CSS_STRING;
+        $position = $config[1] ?? self::POSITION_HEAD;
         if (!$this->isValidCssPosition($position)) {
             throw new InvalidArgumentException('Invalid position of CSS strings.');
         }
@@ -854,7 +847,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = (int) ($config[1] ?? self::DEFAULT_POSITION_JS_FILE);
+        $position = (int) ($config[1] ?? self::POSITION_END);
 
         unset($config[0], $config[1]);
         $this->registerJsFile($file, $position, $config, $key);
@@ -879,7 +872,7 @@ final class WebView extends BaseView
             );
         }
 
-        $position = $config[1] ?? self::DEFAULT_POSITION_JS_STRING;
+        $position = $config[1] ?? self::POSITION_END;
         if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS strings.');
         }
@@ -919,7 +912,7 @@ final class WebView extends BaseView
         /** @var mixed */
         $value = $config[1];
 
-        $position = $config[2] ?? self::DEFAULT_POSITION_JS_VARIABLE;
+        $position = $config[2] ?? self::POSITION_HEAD;
         if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS variable.');
         }
