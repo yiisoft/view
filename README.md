@@ -19,6 +19,10 @@ This library provides templates rendering abstraction supporting layout-view-sub
 PHP-based as default and more. It is used in [Yii Framework](https://www.yiiframework.com/) but is supposed
 to be usable separately.
 
+## Requirements
+
+- PHP 7.4 or higher.
+
 ## Installation
 
 The package could be installed via composer:
@@ -26,6 +30,21 @@ The package could be installed via composer:
 ```shell
 composer require yiisoft/view --prefer-dist
 ```
+
+## General usage
+
+The package provides two use cases for managing views:
+
+- [Basic functionality](docs/basic-functionality.md) for use in any environment.
+- Advanced functionality for [use in a WEB environment](docs/use-in-web-environment.md).
+
+## Extensions
+
+- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - the wrapper that is used in
+  [Yii Framework]((https://www.yiiframework.com/)). Adds additional functionality for the WEB
+  environment and compatibility of use with [PSR-7](https://www.php-fig.org/psr/psr-7) interfaces.
+- [yiisoft/yii-twig](https://github.com/yiisoft/yii-twig) - the extension that provides a view renderer that will
+  allow you to use the [Twig](https://twig.symfony.com) view template engine, instead of the default PHP renderer.
 
 ## Testing
 
