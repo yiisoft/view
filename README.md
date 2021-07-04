@@ -33,17 +33,17 @@ composer require yiisoft/view --prefer-dist
 
 ## General usage
 
-The package provides two use cases for managing views:
+The package provides two use cases for managing view templates:
 
 - [Basic functionality](docs/basic-functionality.md) for use in any environment.
 - Advanced functionality for [use in a WEB environment](docs/use-in-web-environment.md).
 
 ## Extensions
-
-- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - the wrapper that is used in
-  [Yii Framework]((https://www.yiiframework.com/)). Adds additional functionality for the WEB
-  environment and compatibility of use with [PSR-7](https://www.php-fig.org/psr/psr-7) interfaces.
-- [yiisoft/yii-twig](https://github.com/yiisoft/yii-twig) - the extension that provides a view renderer that will
+  
+- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - a wrapper that is used in
+  [Yii Framework]((https://www.yiiframework.com/)). Adds additional functionality for a WEB
+  environment and compatibility with [PSR-7](https://www.php-fig.org/psr/psr-7) interfaces.
+- [yiisoft/yii-twig](https://github.com/yiisoft/yii-twig) - an extension that provides a view renderer that will
   allow you to use the [Twig](https://twig.symfony.com) view template engine, instead of the default PHP renderer.
 
 ## Testing

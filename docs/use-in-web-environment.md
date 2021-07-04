@@ -1,9 +1,9 @@
 # Use in the WEB environment
 
-This guide describes only the additional functionality of the `Yiisoft\View\WebView` class for use in a WEB environment.
-Please read the "[Basic Functionality](basic-functionality.md)" guide before reading it.
+This guide describes additional functionality of the `Yiisoft\View\WebView` class intended for use in a WEB environment.
+Please read the "[Basic Functionality](basic-functionality.md)" guide first.
 
-For creating a `Yiisoft\View\WebView` class, you must specify two mandatory parameters:
+To create `Yiisoft\View\WebView` class, you must specify two mandatory parameters:
 
 ```php
 /**
@@ -18,9 +18,9 @@ $view = new \Yiisoft\View\WebView(
 
 ## Creating view templates
 
-In the example below, the view is a simple PHP script that outputs information about posts in a loop. Note that for
-illustrative purpose, we have greatly simplified the code in the view template. In practice, you may want to add
-more content to it, such as `<head>` tags, main menu, etc.
+In an example below, a view is a simple PHP script that outputs information about posts in a loop.
+Note that for example purpose, we have greatly simplified the template code. In practice, you may
+want to add more content to it, such as `<head>` tags, main menu, etc.
 
 ```php
 <?php
@@ -53,8 +53,7 @@ use Yiisoft\Html\Html;
 <?php $this->endPage() ?>
 ```
 
-In order for scripts and tags registered in other places of the application to be correctly displayed
-in the call locations, special methods are called in the example above:
+In order to have scripts and tags registered and rendered correctly, special methods are called in the example above:
 
 - `beginPage()` - This method should be called at the very beginning of the view template.
 - `beginPage()` - This method should be called at the very end of the view template.
@@ -93,7 +92,7 @@ methods have been added for the WEB environment to render AJAX requests.
 
 The `renderAjax()` method is similar to `render()` except that it will surround the view being rendered with
 the calls of `beginPage()`, `head()`, `beginBody()`, `endBody()` and `endPage()`. By doing so, the method is
-able to inject into the rendering result with `JS/CSS` scripts and files that are registered with the view.
+able to inject JavaScript, CSS, and files, registered in the view template, into the rendering result.
 
 ```php
 $view->renderAjax('blog/posts', [
@@ -109,8 +108,8 @@ $view->renderAjaxString('content');
 
 ## Registering meta tags
 
-Web pages usually need to generate various meta tags needed by different parties. Like page title, meta tags appear
-in the `<head>` section. In order to specify which meta tags to generate in the views, two methods are provided:
+Web pages usually need to generate various meta tags. Similar to page title, meta tags appear
+in the `<head>` section. In order to specify which meta tags to add, two methods are provided:
 
 ```php
 // Creates a meta tag from an array of attributes:
@@ -120,8 +119,8 @@ $view->registerMeta(['name' => 'keywords', 'content' => 'yii, framework, php']);
 $view->registerMetaTag(\Yiisoft\Html\Html::meta()->name('robots')->content('noindex'));
 ```
 
-The above code will register a meta tags in the `Yiisoft\View\WebView` instance. The registered meta tag is rendered
-after the view template finishes rendering. The following HTML code will be generated and inserted at the place
+The above code will register meta tags in a `Yiisoft\View\WebView` instance. The tags are added after the
+view template finishes rendering. The following HTML code will be generated and inserted at the place
 where you call `Yiisoft\View\WebView::head()` in the view template:
 
 ```html
@@ -130,9 +129,9 @@ where you call `Yiisoft\View\WebView::head()` in the view template:
 ```
 
 Note that if you call `registerMeta()` or `registerMetaTag()` multiple times, it will register multiple meta tags,
-regardless whether the meta tags are the same or not. To make sure there is only a single instance of a meta tag type,
-you can specify a key as a second parameter when calling the methods. For example, the following code registers two
-`description` meta tags. However, only the second one will be rendered.
+regardless whether the meta tags are the same or not. To make sure there is only a single instance of a meta tag of
+the same type, you can specify a key as a second parameter when calling the methods. For example, the following code
+registers two `description` meta tags. However, only the second one will be rendered.
 
 ```php
 $view->registerMeta(
@@ -149,7 +148,7 @@ $view->registerMetaTag(
 ## Registering link tags
 
 Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
-RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags by using
+RSS feed or delegating OpenID to another server. You can work with link tags in a similar way as meta tags by using
 `registerLink()` or `registerLinkTag()`. For example, in a content view, you can register a link tag like follows:
 
 ```php
@@ -175,10 +174,10 @@ The code above will result in:
 <link rel="icon" type="image/png">
 ```
 
-You can use the second parameter to pass the position at which the link tag should be inserted in a page,
-default by `Yiisoft\View\WebView::POSITION_HEAD`. Similar to registering meta tags, you can specify
-a key to avoid creating duplicate link tags. Only in the `registerLink()` and `registerLinkTag()`
-methods the key is specified by the third parameter.
+You can use second parameter to specify position at which the link tag should be inserted in a page.
+Default is `Yiisoft\View\WebView::POSITION_HEAD`. Similar to registering meta tags, you can specify
+a key to avoid creating duplicate link tags. In the `registerLink()` and `registerLinkTag()`
+the key is specified as a third parameter.
 
 ## Registering CSS
 
@@ -362,7 +361,7 @@ These methods process the CSS and JavaScript configuration created by the asset 
 
 ## WebView Events
 
-The `Yiisoft\View\WebView` class trigger several events during the view rendering process. Events are classes:
+The `Yiisoft\View\WebView` class triggers several events during the view rendering process. Events are classes:
 
 - `Yiisoft\View\Event\WebView\BeforeRender` - triggered at the beginning of rendering a view template.
   Listeners of this event may set `$event->stopPropagation()` to be false to cancel the rendering process.
@@ -379,8 +378,8 @@ which is specified in the constructor when the `Yiisoft\View\WebView` instance i
 
 ## Security
 
-When creating views that generate HTML pages, it is important that you encode and/or filter the data
-coming from end users before presenting them. Otherwise, your application may be subject to
+When creating views that generate HTML pages, it is important that you properly encode and/or
+filter all the data when outputted. Otherwise, your application may be subject to
 [cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
 
 To display a plain text, encode it first by calling `Yiisoft\Html\Html::encode()`.
@@ -402,7 +401,6 @@ use Yiisoft\Html\Html;
 </div>
 ```
 
-For more security, to display HTML content, you can use content filtering tools such as
-[HTML Purifier](https://github.com/ezyang/htmlpurifier). Filtering tools do an excellent
-job of ensuring the security of the output, but they do not work quickly. You should
-consider caching the filtering result if your application requires high performance.
+If you need to securely display HTML content, you can use content filtering tools such as
+[HTML Purifier](https://github.com/ezyang/htmlpurifier). A drawback is that it is not very
+performant so consider caching the result.

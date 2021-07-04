@@ -2,10 +2,10 @@
 
 The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and a
 `Yiisoft\View\WebView` class with advanced functionality for use in a WEB environment. This guide applies to both
-classes, but examples will be provided using the `Yiisoft\View\View` class. For examples with advanced
+classes, but examples will be provided using the `Yiisoft\View\View` class. For advanced examples with
 `Yiisoft\View\WebView` functionality, see the "[Use in the WEB environment](use-in-web-environment.md)" guide.
 
-For creating a `Yiisoft\View\View` class, you must specify two mandatory parameters:
+To create an `Yiisoft\View\View` class, you must specify two mandatory parameters:
 
 ```php
 /**
@@ -41,7 +41,8 @@ Posts:
 
 Within a view, you can access `$this` which refers to the `Yiisoft\View\View` managing and rendering this view template.
 Besides `$this`, there may be other predefined variables in a view, such as `$posts` in the above example.
-These variables represent the data that is passed by the parameters when rendering the view.
+These variables represent the data that is passed as parameters when rendering the view. Note that `<?=`
+does not automatically encode variables for safe use with HTML and you should take care of it.
 
 > Tip: The predefined variables are listed in a comment block at beginning of a view so that they
 > can be recognized by IDEs. It is also a good way of documenting your views.
@@ -50,8 +51,8 @@ These variables represent the data that is passed by the parameters when renderi
 
 To render the file shown above, two methods are provided: `render()` and `renderFile()`.
 
-The `renderFile()` method accepts the full absolute path of the view file to be rendered,
-and an array of parameters (name-value pairs) that will be retrieved and made available in the view file:
+The `renderFile()` method accepts a full absolute path of the view file to be rendered,
+and an array of parameters (name-value pairs) that will be available in the view template:
 
 ```php
 $view->renderFile('/path/to/views/blog/posts.php', [
@@ -67,17 +68,17 @@ $view->render('blog/posts', [
 ]);
 ```
 
-Instead of an absolute file path, accepts the name of a view in the following formats:
+Instead of an absolute file path, it accepts a name of a view in one of the following formats:
 
-- The name of the view starting with a slash (for example, `/blog/posts`) to join the base path
-  that was passed to the constructor when creating the instance of `Yiisoft\View\View`.
-  For example, `/blog/posts` will be resolved into `/path/to/views/blog/posts.php`.
-- The name of the view without the starting slash (e.g. `blog/posts`). The corresponding view file will be looked for
-  under the of the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
+- A name of a view starting with a slash (for example, `/blog/posts`) will be prepended with
+  the base path that was passed to `Yiisoft\View\View` constructor. For example, `/blog/posts`
+  will be resolved into `/path/to/views/blog/posts.php`.
+- A name of a view without the starting slash (e.g. `blog/posts`). The corresponding view file will be looked for
+  in the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
   context instance was not set, it will be looked for under the directory containing the view currently being
-  rendered (i.e., this happens when rendering a view within another view).
+  rendered (happens when rendering a view within another view).
 
-The view name may omit the file extension name. In this case, `.php` will be used as the extension.
+The view name may omit a file extension. In this case, `.php` will be used as the extension.
 For example, the view name `blog/posts` corresponds to the file name `blog/posts.php`.
 You can change the default file extension as follows:
 
@@ -89,7 +90,7 @@ $view = $view->withDefaultExtension('tpl');
 $view->getDefaultExtension(); // 'tpl'
 ```
 
-Rendering methods can be called inside views to render nested views:
+Rendering methods could be called inside views to render nested views:
 
 ```php
 <?php
@@ -107,9 +108,9 @@ Title
 <?= $this->renderFile('blog/posts', ['posts' => $posts]) ?>
 ```
 
-By default, rendering simply includes the view file as a regular PHP file, captures its output, and returns it as
-a string. You can override this behavior by implementing an interface of `\Yiisoft\View\TemplateRendererInterface`
-and set that implementation using the `$view->withRenderers()` method.
+By default, rendering simply includes a view file as a regular PHP file, captures its output, and returns
+it as a string. You can override this behavior by implementing `\Yiisoft\View\TemplateRendererInterface`
+and use that implementation with `$view->withRenderers()` method.
 
 ```php
 $view = $view->withRenderers([
@@ -123,10 +124,11 @@ the corresponding renderer will be applied.
 
 ## Theming
 
-Theming is a way to replace a set of views with another without the need of touching the original view rendering code.
-You can use theming to systematically change the look and feel of an application.
+Theming is a way to replace a set of views with another set of views without the need to touch the original
+view rendering code. You can use theming to systematically change the look and feel of an application.
 
-To use theming, you should create and configure a `Yiisoft\View\Theme` instance and set using the `withTheme()` method: 
+To use theming, you should create and configure a `Yiisoft\View\Theme` instance
+and set it using the `withTheme()` method:
 
 ```php
 $theme = new \Yiisoft\View\Theme([
@@ -141,8 +143,8 @@ corresponding theme versions. For example, if you call `$view->render('blog/post
 view file `/path/to/views/blog/posts.php`. However, if you enable theming as shown above, the view file
 `/path/to/views/themes/basic/views/blog/posts.php` will be rendered instead.
 
-In addition to view files, themes can contain images, CSS styles, JS scripts and other assets.
-In order to have access to these assets in the view, two more optional parameters should be
+In addition to view files, themes could contain images, CSS styles, JS scripts and other assets.
+In order to have access to these assets in a view, two more optional parameters should be
 passed when creating an instance of the `Yiisoft\View\Theme`:
 
 ```php
@@ -155,7 +157,7 @@ $theme = new \Yiisoft\View\Theme(
 $view = $view->withTheme($theme);
 ```
 
-In the view, you can access the theme using the `getTheme()` method and get to manage the assets as follows:
+In the view, you can access the theme using the `getTheme()` method and manage assets as follows:
 
 ```php
 <?php
@@ -194,9 +196,9 @@ $view = $view->withLanguage('fr');
 $view = $view->withSourceLanguage('es');
 ```
 
-In order to use multi-language, it is necessary to create subdirectories at the level with the source files of the view.
-For example, if there is a view `/path/to/views/blog/posts.php` and to translate it into Russian, you need a separate
-view. Create a subdirectory `ru-RU` or `ru`. In this subdirectory, create a file for the Russian language:
+In order to use multiple languages it is necessary to create subdirectories at directory level matching template files
+of the view. For example, if there is a view `/path/to/views/blog/posts.php` and we translate it into Russian, create
+a subdirectory `ru-RU` or `ru`. In this subdirectory, create a file for the Russian language:
 `/path/to/views/blog/ru/posts.php`.
 
 To localize the file, use the `localize($file, $language, $sourceLanguage)` method:
@@ -223,11 +225,11 @@ $view->localize($file, 'ru', 'en');
 $view->localize($file, 'ru', 'ru');
 ```
 
-The searching is based on the specified language code. In particular, a file with the same name will be looked for under
-the subdirectory whose name is the same as the language code. For example, given the file `/path/to/views/blog/posts.php`
-and the language code `ru-RU`, the localized file will be looked for as path `/path/to/views/blog/ru-RU/posts.php`.
-If the file is not found, it will try a fallback with just a language code that is `zh` ie
-`/path/to/views/blog/ru/posts.php`.
+File choice is based on the specified language code. In particular, a file with the same name will be looked
+for under the subdirectory whose name is the same as the language code. For example, given the file
+`/path/to/views/blog/posts.php` and the language code `ru-RU`, the localized file will be looked
+for as `/path/to/views/blog/ru-RU/posts.php`. If the file is not found, it will try a fallback
+with just a language code that is `ru` i.e. `/path/to/views/blog/ru/posts.php`.
 
 > If the target file is not found, the original file will be returned.
 > If the target and the source language codes are the same, the original file will be returned.
@@ -277,7 +279,7 @@ declare(strict_types=1);
 ...
 ```
 
-The use of general parameters occurs in the same way, but unlike blocks, the value can be of any type.
+General parameters are used in the same way, but unlike blocks, the value can be of any type.
 This is convenient if you need to set some data that will be available in all views:
 
 ```php
@@ -313,15 +315,15 @@ Posts:
 <?php endforeach; ?>
 ```
 
-To delete data, use the `removeBlock('id')` and `removeCommonParameter('id')` methods.
+To delete data, use `removeBlock('id')` and `removeCommonParameter('id')` methods.
 
 ## Content caching
 
-In some cases, caching content can significantly improve the performance of your application. For example,
-if a page displays a summary of yearly sale in a table, you can store this table in cache to eliminate
+In some cases, caching content can significantly improve performance of your application. For example,
+if a page displays a summary of yearly sales in a table, you can store this table in a cache to eliminate
 the time needed to generate this table for each request.
 
-For caching content, the `Yiisoft\View\Cache\CachedContent` class is provided, which is used in the following way:
+To cache content, the `Yiisoft\View\Cache\CachedContent` class is provided, which is used in the following way:
 
 ```php
 /**
@@ -362,8 +364,8 @@ For more information about caching and cache options, see the documentation of t
 ### Dynamic Content
 
 When caching content, you may encounter the situation where a large fragment of content is relatively
-static except at one or a few places. For example, a page header may display the main menu bar together with
-the name of the current user. Another problem is that the content being cached may contain PHP code that must
+static except one or a few places. For example, a page header may display a main menu bar together with
+a name of the current user. Another problem is that the content being cached may contain PHP code that must
 be executed for every request. Both problems can be solved by using the `Yiisoft\View\Cache\DynamicContent` class.
 
 ```php
@@ -467,7 +469,7 @@ $cachedContent = new \Yiisoft\View\Cache\CachedContent(
 
 ## View Events
 
-The `Yiisoft\View\View` class trigger several events during the view rendering process. Events are classes:
+The `Yiisoft\View\View` class triggers several events during the view rendering process. Events are classes:
 
 - `Yiisoft\View\Event\View\BeforeRender` - triggered at the beginning of rendering a view template.
   Listeners of this event may set `$event->stopPropagation()` to be false to cancel the rendering process.
