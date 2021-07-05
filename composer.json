@@ -15,7 +15,6 @@
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii"
     },
-    "minimum-stability": "dev",
     "require": {
         "php": "^7.4|^8.0",
         "psr/event-dispatcher": "1.0.0",
@@ -61,7 +60,6 @@
     "config": {
         "sort-packages": true
     },
-    "prefer-stable": true,
     "scripts": {
         "test": "phpunit --testdox --no-interaction",
         "test-watch": "phpunit-watcher watch"
