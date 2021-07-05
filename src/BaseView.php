@@ -104,7 +104,7 @@ abstract class BaseView
      * and rendered via {@see PhpTemplateRenderer}.
      *
      * @psalm-param array<string, TemplateRendererInterface> $renderers
-     * 
+     *
      * @return static
      */
     public function withRenderers(array $renderers): self
