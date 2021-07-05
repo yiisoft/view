@@ -27,8 +27,10 @@ In the example below, the view template is a simple PHP script that outputs info
 
 declare(strict_types=1);
 
-/** @var Yiisoft\View\View $this */
-/** @var App\Blog\Post[] $posts */
+/**
+ * @var Yiisoft\View\View $this 
+ * @var App\Blog\Post[] $posts 
+ */
 ?>
 
 Posts:
@@ -97,8 +99,10 @@ Rendering methods could be called inside views to render nested views:
 
 declare(strict_types=1);
 
-/** @var Yiisoft\View\View $this */
-/** @var App\Blog\Post[] $posts */
+/** 
+ * @var Yiisoft\View\View $this
+ * @var App\Blog\Post[] $posts 
+ */
 ?>
 
 Title
@@ -378,9 +382,13 @@ use Yiisoft\View\Cache\CachedContent;
 use Yiisoft\View\Cache\DynamicContent;
 
 // Creating a dynamic content instance
-$dynamicContent = new DynamicContent('dynamic-id', static function (array $parameters): string {
-    return strtoupper("{$parameters['a']} - {$parameters['b']}");
-}, ['a' => 'string-a', 'b' => 'string-b']);
+$dynamicContent = new DynamicContent(
+    'dynamic-id',
+    static function (array $parameters): string {
+        return strtoupper("{$parameters['a']} - {$parameters['b']}");
+    },
+    ['a' => 'string-a', 'b' => 'string-b']
+);
 
 // Creating a cached content instance
 $cachedContent = new CachedContent('cache-id', $cache, [$dynamicContent]);
@@ -410,8 +418,10 @@ of the view, like the following:
 
 declare(strict_types=1);
 
-/** @var Yiisoft\View\View $this */
-/** @var Yiisoft\View\Cache\DynamicContent $dynamicContent  */
+/**
+ * @var Yiisoft\View\View $this
+ * @var Yiisoft\View\Cache\DynamicContent $dynamicContent  
+ */
 ?>
 
 Content to be cached ...
@@ -431,16 +441,20 @@ use Yiisoft\View\Cache\DynamicContent;
 use Yiisoft\Yii\Widgets\FragmentCache;
 
 // Creating a dynamic content instance
-$dynamicContent = new DynamicContent('dynamic-id', static function (array $parameters): string {
-    return strtoupper("{$parameters['a']} - {$parameters['b']}");
-}, ['a' => 'string-a', 'b' => 'string-b']);
+$dynamicContent = new DynamicContent(
+    'dynamic-id',
+    static function (array $parameters): string {
+        return strtoupper("{$parameters['a']} - {$parameters['b']}");
+    },
+    ['a' => 'string-a', 'b' => 'string-b']
+);
 
 // We use the widget as a wrapper over the content that should be cached:
 FragmentCache::widget()->id('cache-id')->dynamicContents($dynamicContent)->begin();
     echo 'Content to be cached ...';
     echo $dynamicContent->placeholder();
     echo 'Content to be cached ...';
-FragmentCache::::end();
+FragmentCache::end();
 ```
 
 ### Variations
@@ -455,8 +469,8 @@ For example, to make the cached content varied by the language, you may use the 
 
 ```php
 /**
- ** @var Yiisoft\Cache\CacheInterface $cache
- ** @var Yiisoft\View\Cache\DynamicContent $dynamicContent
+ * @var Yiisoft\Cache\CacheInterface $cache
+ * @var Yiisoft\View\Cache\DynamicContent $dynamicContent
  */
 
 $cachedContent = new \Yiisoft\View\Cache\CachedContent(
@@ -489,8 +503,10 @@ you must call the corresponding methods in the view template:
 
 declare(strict_types=1);
 
-/** @var Yiisoft\View\View $this */
-/** @var App\Blog\Post[] $posts */
+/**
+ * @var Yiisoft\View\View $this
+ * @var App\Blog\Post[] $posts 
+ */
 ?>
 <?php $this->beginPage() ?>
 
