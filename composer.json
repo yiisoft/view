@@ -46,9 +46,6 @@
         "yiisoft/test-support": "^1.3"
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "3.0.x-dev"
-        },
         "config-plugin-options": {
             "source-directory": "config"
         },
