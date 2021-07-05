@@ -42,7 +42,7 @@ use function strtr;
 /**
  * WebView represents an instance of a view for use in a WEB environment.
  *
- * WebView provides a set of methods (e.g. {@see WebView::render()} for rendering purpose.
+ * WebView provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
  */
 final class WebView extends BaseView
 {
@@ -169,7 +169,7 @@ final class WebView extends BaseView
     }
 
     /**
-     * Marks the beginning of a HTML page.
+     * Marks the beginning of an HTML page.
      */
     public function beginPage(): void
     {
@@ -289,7 +289,7 @@ final class WebView extends BaseView
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
      * @param array $attributes The HTML attributes for the meta tag.
-     * @param string $key The key that identifies the meta tag. If two meta tags are registered with the same key, the
+     * @param string|null $key The key that identifies the meta tag. If two meta tags are registered with the same key, the
      * latter will overwrite the former. If this is null, the new meta tag will be appended to the
      * existing ones.
      */
@@ -408,7 +408,7 @@ final class WebView extends BaseView
      * @param string $url The CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
      * for the supported options.
-     * @param string $key The key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
+     * @param string|null $key The key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
      * files are registered with the same key, the latter will overwrite the former.
      */
     public function registerCssFile(
@@ -437,7 +437,7 @@ final class WebView extends BaseView
      * - {@see POSITION_END}: at the end of the body section. This is the default value.
      * - {@see POSITION_LOAD}: executed when HTML page is completely loaded.
      * - {@see POSITION_READY}: executed when HTML document composition is ready.
-     * @param string $key The key that identifies the JS code block. If null, it will use $js as the key. If two JS code
+     * @param string|null $key The key that identifies the JS code block. If null, it will use $js as the key. If two JS code
      * blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerJs(string $js, int $position = self::POSITION_END, ?string $key = null): void
@@ -474,7 +474,7 @@ final class WebView extends BaseView
      *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
      * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
-     * @param string $key The key that identifies the JS script file. If null, it will use $url as the key. If two JS
+     * @param string|null $key The key that identifies the JS script file. If null, it will use $url as the key. If two JS
      * files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.

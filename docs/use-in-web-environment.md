@@ -170,7 +170,7 @@ $view->registerLinkTag(\Yiisoft\Html\Html::link('/myicon.png', [
 The code above will result in:
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml">
+<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml">
 <link rel="icon" type="image/png">
 ```
 

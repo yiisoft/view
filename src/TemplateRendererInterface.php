@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 /**
- * TemplateRendererInterface is the interface that should implemented by view template renderers.
+ * TemplateRendererInterface is the interface that should be implemented by view template renderers.
  */
 interface TemplateRendererInterface
 {

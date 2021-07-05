@@ -30,7 +30,7 @@ final class DynamicContent
     }
 
     /**
-     * Returns the he unique identifier of the dynamic content.
+     * Returns a unique identifier of the dynamic content.
      *
      * @return string The unique identifier of the dynamic content.
      */
