@@ -41,7 +41,7 @@
         "roave/infection-static-analysis-plugin": "^1.8",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.8",
-        "yiisoft/aliases": "^1.1|^2.0",
+        "yiisoft/aliases": "^2.0",
         "yiisoft/psr-dummy-provider": "^1.0",
         "yiisoft/test-support": "^1.3"
     },
