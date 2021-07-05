@@ -39,18 +39,21 @@ abstract class BaseView
     private string $defaultExtension = 'php';
 
     /**
-     * @var array<string, TemplateRendererInterface> A list of available renderers indexed by their corresponding
+     * @var array A list of available renderers indexed by their corresponding
      * supported file extensions.
+     * @psalm-var array<string, TemplateRendererInterface>
      */
     private array $renderers = [];
 
     /**
-     * @var array<string, mixed> Parameters that are common for all view templates.
+     * @var array Parameters that are common for all view templates.
+     * @psalm-var array<string, mixed>
      */
     private array $commonParameters = [];
 
     /**
-     * @var array<string, string> Named content blocks that are common for all view templates.
+     * @var array Named content blocks that are common for all view templates.
+     * @psalm-var array<string, string>
      */
     private array $blocks = [];
 
@@ -90,7 +93,7 @@ abstract class BaseView
     /**
      * Returns a new instance with the specified renderers.
      *
-     * @param array<string, TemplateRendererInterface> $renderers A list of available renderers indexed by their
+     * @param array $renderers A list of available renderers indexed by their
      * corresponding supported file extensions.
      *
      * ```php
@@ -100,6 +103,8 @@ abstract class BaseView
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
      * and rendered via {@see PhpTemplateRenderer}.
      *
+     * @psalm-param array<string, TemplateRendererInterface> $renderers
+     * 
      * @return static
      */
     public function withRenderers(array $renderers): self
