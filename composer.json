@@ -13,8 +13,19 @@
         "issues": "https://github.com/yiisoft/view/issues",
         "forum": "http://www.yiiframework.com/forum/",
         "wiki": "http://www.yiiframework.com/wiki/",
+        "chat": "https://t.me/yii3en",
         "irc": "irc://irc.freenode.net/yii"
     },
+    "funding": [
+        {
+            "type": "opencollective",
+            "url": "https://opencollective.com/yiisoft"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/yiisoft"
+        }
+    ],
     "require": {
         "php": "^7.4|^8.0",
         "psr/event-dispatcher": "1.0.0",
