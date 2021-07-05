@@ -75,10 +75,12 @@ final class Theme
     private string $baseUrl = '';
 
     /**
-     * @param array<string, string|string[]> $pathMap The mapping between view directories and their corresponding
+     * @param array $pathMap The mapping between view directories and their corresponding
      * themed versions. The path map is used by {@see applyTo()} when a view is trying to apply the theme.
      * @param string $basePath The base path to the theme directory.
      * @param string $baseUrl The base URL for this theme.
+     *
+     * @psalm-param array<string, string|string[]> $pathMap
      */
     public function __construct(array $pathMap = [], string $basePath = '', string $baseUrl = '')
     {

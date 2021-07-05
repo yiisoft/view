@@ -27,8 +27,10 @@ want to add more content to it, such as `<head>` tags, main menu, etc.
 
 declare(strict_types=1);
 
-/** @var Yiisoft\View\WebView $this */
-/** @var App\Blog\Post[] $posts */
+/**
+ * @var Yiisoft\View\WebView $this 
+ * @var App\Blog\Post[] $posts
+ */
 
 use Yiisoft\Html\Html;
 ?>
@@ -390,8 +392,10 @@ For example, the following code encodes the username before displaying it:
 
 declare(strict_types=1);
 
-/** @var Yiisoft\View\WebView $this */
-/** @var App\User\User $user */
+/**
+ * @var Yiisoft\View\WebView $this 
+ * @var App\User\User $user 
+ */
 
 use Yiisoft\Html\Html;
 ?>
