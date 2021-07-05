@@ -1,11 +1,11 @@
 # Basic functionality
 
-The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and a
-`Yiisoft\View\WebView` class with advanced functionality for use in a WEB environment. This guide applies to both
-classes, but examples will be provided using the `Yiisoft\View\View` class. For advanced examples with
+The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and
+a `Yiisoft\View\WebView` class with advanced functionality for use in a WEB environment. This guide applies to both
+classes, but examples will be provided using the `Yiisoft\View\View`. For advanced examples with
 `Yiisoft\View\WebView` functionality, see the "[Use in the WEB environment](use-in-web-environment.md)" guide.
 
-To create an `Yiisoft\View\View` class, you must specify two mandatory parameters:
+To create a `Yiisoft\View\View` class, you must specify two mandatory parameters:
 
 ```php
 /**
@@ -20,7 +20,7 @@ $view = new \Yiisoft\View\View(
 
 ## Creating view templates
 
-In the example below, the view is a simple PHP script that outputs information about posts in a loop.
+In the example below, the view template is a simple PHP script that outputs information about posts in a loop:
 
 ```php
 <?php
@@ -39,8 +39,8 @@ Posts:
 <?php endforeach; ?>
 ```
 
-Within a view, you can access `$this` which refers to the `Yiisoft\View\View` managing and rendering this view template.
-Besides `$this`, there may be other predefined variables in a view, such as `$posts` in the above example.
+Within a view, you can access `$this` which refers to the `Yiisoft\View\View` managing and rendering current view template.
+Besides `$this`, there may be other variables in a view, such as `$posts` in the above example.
 These variables represent the data that is passed as parameters when rendering the view. Note that `<?=`
 does not automatically encode variables for safe use with HTML and you should take care of it.
 
@@ -60,7 +60,7 @@ $view->renderFile('/path/to/views/blog/posts.php', [
 ]);
 ```
 
-The `render()` method is a wrapper over `renderFile()` and has a lot of functionality:
+The `render()` method is a wrapper over `renderFile()` with additional functionality:
 
 ```php
 $view->render('blog/posts', [
@@ -70,16 +70,16 @@ $view->render('blog/posts', [
 
 Instead of an absolute file path, it accepts a name of a view in one of the following formats:
 
-- A name of a view starting with a slash (for example, `/blog/posts`) will be prepended with
+- A name of a view starting with a slash (for example, `/blog/posts`). It will be prepended with
   the base path that was passed to `Yiisoft\View\View` constructor. For example, `/blog/posts`
   will be resolved into `/path/to/views/blog/posts.php`.
 - A name of a view without the starting slash (e.g. `blog/posts`). The corresponding view file will be looked for
   in the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
   context instance was not set, it will be looked for under the directory containing the view currently being
-  rendered (happens when rendering a view within another view).
+  rendered.
 
 The view name may omit a file extension. In this case, `.php` will be used as the extension.
-For example, the view name `blog/posts` corresponds to the file name `blog/posts.php`.
+For example, the view name `blog/posts` correspond to the file name `blog/posts.php`.
 You can change the default file extension as follows:
 
 ```php
@@ -110,7 +110,7 @@ Title
 
 By default, rendering simply includes a view file as a regular PHP file, captures its output, and returns
 it as a string. You can override this behavior by implementing `\Yiisoft\View\TemplateRendererInterface`
-and use that implementation with `$view->withRenderers()` method.
+and use that implementation via `$view->withRenderers()` method.
 
 ```php
 $view = $view->withRenderers([
@@ -137,14 +137,14 @@ $theme = new \Yiisoft\View\Theme([
 
 $view = $view->withTheme($theme);
 ```
-.
-The first parameter of the Theme class accepts an array, which is a path map for mapping view directories to the
+
+The first parameter of the `Theme` class accepts an array, which is a path map for mapping view directories to the
 corresponding theme versions. For example, if you call `$view->render('blog/posts')`, you will be rendering the
 view file `/path/to/views/blog/posts.php`. However, if you enable theming as shown above, the view file
 `/path/to/views/themes/basic/views/blog/posts.php` will be rendered instead.
 
 In addition to view files, themes could contain images, CSS styles, JS scripts and other assets.
-In order to have access to these assets in a view, two more optional parameters should be
+To have access to these assets in a view, two more optional parameters should be
 passed when creating an instance of the `Yiisoft\View\Theme`:
 
 ```php
@@ -157,7 +157,7 @@ $theme = new \Yiisoft\View\Theme(
 $view = $view->withTheme($theme);
 ```
 
-In the view, you can access the theme using the `getTheme()` method and manage assets as follows:
+In a view, you can access the theme using the `getTheme()` method and manage assets as follows:
 
 ```php
 <?php
@@ -188,7 +188,7 @@ Two languages are defined for localization with the default value `en`:
 - `$language` - The target language that the file should be localized to.
 - `$sourceLanguage` - The language that the original file is in.
 
-You can change the default values:
+You can change default values:
 
 ```php
 $view = $view->withLanguage('fr');
@@ -225,7 +225,7 @@ $view->localize($file, 'ru', 'en');
 $view->localize($file, 'ru', 'ru');
 ```
 
-File choice is based on the specified language code. In particular, a file with the same name will be looked
+File choice is based on the specified language code. A file with the same name will be looked
 for under the subdirectory whose name is the same as the language code. For example, given the file
 `/path/to/views/blog/posts.php` and the language code `ru-RU`, the localized file will be looked
 for as `/path/to/views/blog/ru-RU/posts.php`. If the file is not found, it will try a fallback
@@ -445,13 +445,13 @@ FragmentCache::::end();
 
 ### Variations
 
-Content being cached may be variated according to some parameters. For example, for a Web application supporting
+Content being cached may be varied according to some parameters. For example, for a Web application supporting
 multiple languages, the same piece of view code may generate the content in different languages. Therefore, you
-may want to make the cached content variated according to the current application language.
+may want to make the cached content varied according to the current application language.
 
 To specify cache variations, you need to pass the third parameter to the constructor,
 which should be an array of string values, each representing a particular variation factor.
-For example, to make the cached content variated by the language, you may use the following code:
+For example, to make the cached content varied by the language, you may use the following code:
 
 ```php
 /**

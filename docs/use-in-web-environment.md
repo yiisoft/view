@@ -53,7 +53,7 @@ use Yiisoft\Html\Html;
 <?php $this->endPage() ?>
 ```
 
-In order to have scripts and tags registered and rendered correctly, special methods are called in the example above:
+To have scripts and tags registered and rendered correctly, special methods are called in the example above:
 
 - `beginPage()` - This method should be called at the very beginning of the view template.
 - `beginPage()` - This method should be called at the very end of the view template.
@@ -90,9 +90,9 @@ Then in the view, make sure you have the following code in the `<head>` section:
 In addition to the `render()` and `renderFile()` methods, two `renderAjax()` and `renderAjaxString()`
 methods have been added for the WEB environment to render AJAX requests.
 
-The `renderAjax()` method is similar to `render()` except that it will surround the view being rendered with
-the calls of `beginPage()`, `head()`, `beginBody()`, `endBody()` and `endPage()`. By doing so, the method is
-able to inject JavaScript, CSS, and files, registered in the view template, into the rendering result.
+The `renderAjax()` method is like `render()` except that it will surround the view being rendered with
+the calls of `beginPage()`, `head()`, `beginBody()`, `endBody()` and `endPage()`. By doing so, the method can
+inject JavaScript, CSS, and files, registered in the view template, into the rendering result.
 
 ```php
 $view->renderAjax('blog/posts', [
@@ -100,7 +100,7 @@ $view->renderAjax('blog/posts', [
 ]);
 ```
 
-The `renderAjaxString()` method is similar to `renderAjax()`, but only accepts a ready-made string for rendering.
+The `renderAjaxString()` method is like `renderAjax()`, but only accepts a ready-made string for rendering.
 
 ```php
 $view->renderAjaxString('content');
@@ -108,8 +108,8 @@ $view->renderAjaxString('content');
 
 ## Registering meta tags
 
-Web pages usually need to generate various meta tags. Similar to page title, meta tags appear
-in the `<head>` section. In order to specify which meta tags to add, two methods are provided:
+Web pages usually need to generate various meta tags. Like page title, meta tags appear
+in the `<head>` section. To specify which meta tags to add, two methods are provided:
 
 ```php
 // Creates a meta tag from an array of attributes:
@@ -175,7 +175,7 @@ The code above will result in:
 ```
 
 You can use second parameter to specify position at which the link tag should be inserted in a page.
-Default is `Yiisoft\View\WebView::POSITION_HEAD`. Similar to registering meta tags, you can specify
+Default is `Yiisoft\View\WebView::POSITION_HEAD`. Like registering meta tags, you can specify
 a key to avoid creating duplicate link tags. In the `registerLink()` and `registerLinkTag()`
 the key is specified as a third parameter.
 
