@@ -43,7 +43,7 @@ The package provides two use cases for managing view templates:
 - [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - a wrapper that is used in
   [Yii Framework]((https://www.yiiframework.com/)). Adds additional functionality for a WEB
   environment and compatibility with [PSR-7](https://www.php-fig.org/psr/psr-7) interfaces.
-- [yiisoft/yii-twig](https://github.com/yiisoft/yii-twig) - an extension that provides a view renderer that will
+- [yiisoft/view-twig](https://github.com/yiisoft/view-twig) - an extension that provides a view renderer that will
   allow you to use the [Twig](https://twig.symfony.com) view template engine, instead of the default PHP renderer.
 
 ## Testing
