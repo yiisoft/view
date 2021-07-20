@@ -10,7 +10,7 @@ use Yiisoft\View\WebView;
 /**
  * `BeforeRender` event is triggered by {@see WebView::renderFile()} right before it renders a view file.
  */
-class BeforeRender implements StoppableEventInterface
+final class BeforeRender implements StoppableEventInterface
 {
     private WebView $view;
 
