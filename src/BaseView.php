@@ -12,6 +12,7 @@ use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
+use function array_key_exists;
 use function array_merge;
 use function array_pop;
 use function basename;
@@ -19,6 +20,7 @@ use function crc32;
 use function dechex;
 use function dirname;
 use function end;
+use function func_get_args;
 use function is_file;
 use function pathinfo;
 use function substr;
@@ -241,6 +243,9 @@ abstract class BaseView
      * Gets a common parameter value by ID.
      *
      * @param string $id The unique identifier of the parameter.
+     * @param mixed $default The default value to be returned if the specified parameter does not exist.
+     *
+     * @throws InvalidArgumentException If specified parameter does not exist and not passed default value.
      *
      * @return mixed The value of the parameter.
      */
@@ -248,6 +253,11 @@ abstract class BaseView
     {
         if (isset($this->commonParameters[$id])) {
             return $this->commonParameters[$id];
+        }
+
+        $args = func_get_args();
+        if (array_key_exists(1, $args)) {
+            return $args[1];
         }
 
         throw new InvalidArgumentException('Common parameter: "' . $id . '" not found.');

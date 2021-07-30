@@ -256,6 +256,13 @@ PHP
         $view->getCommonParameter('id');
     }
 
+    public function testCommonParameterDefaultValue(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->assertSame(42, $view->getCommonParameter('id', 42));
+    }
+
     public function testCommonParameterIsPassedToView(): void
     {
         $view = TestHelper::createView();
