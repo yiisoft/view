@@ -28,7 +28,7 @@ final class View extends BaseView
     public function beginPage(): void
     {
         ob_start();
-        /** @psalm-suppress PossiblyFalseArgument */
+        /** @psalm-suppress InvalidArgument */
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
 
         $this->eventDispatcher->dispatch(new PageBegin($this));
