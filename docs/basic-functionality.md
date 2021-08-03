@@ -319,6 +319,18 @@ Posts:
 <?php endforeach; ?>
 ```
 
+You can not call the `hasCommonParameter()` method, but pass the default value to the `getCommonParameter()` method.
+At the same time, if the default value is not passed, and the requested parameter does not exist,
+an `InvalidArgumentException` exception will be thrown.
+
+```php
+// return "default-value"
+$view->getCommonParameter('parameter-name', 'default-value');
+
+// throw InvalidArgumentException
+$view->getCommonParameter('parameter-name');
+```
+
 To delete data, use `removeBlock('id')` and `removeCommonParameter('id')` methods.
 
 ## Content caching
