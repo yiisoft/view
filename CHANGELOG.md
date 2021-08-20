@@ -1,5 +1,10 @@
 # Yii View Change Log
 
+
+## 1.0.2 under development
+
+- no changes in this release.
+
 ## 1.0.1 August 20, 2021
 
 - Chg #176: Finalize classes `Yiisoft\View\Event\WebView\BeforeRender`, `Yiisoft\View\Event\WebView\BodyBegin`,
