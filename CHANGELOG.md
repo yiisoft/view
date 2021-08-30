@@ -2,7 +2,7 @@
 
 ## 2.0.1 under development
 
-- no changes in this release.
+- Chg #182: Use definitions from `yiisoft/definitions` in configuration (vjik)
 
 ## 2.0.0 August 24, 2021
 
