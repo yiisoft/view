@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 2.0.1 under development
+## 2.0.1 August 30, 2021
 
 - Chg #182: Use definitions from `yiisoft/definitions` in configuration (vjik)
 
