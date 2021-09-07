@@ -345,7 +345,7 @@ PHP
 
     private function createContext(string $viewPath): ViewContextInterface
     {
-        return new class($viewPath) implements ViewContextInterface {
+        return new class ($viewPath) implements ViewContextInterface {
             private string $viewPath;
 
             public function __construct(string $viewPath)
