@@ -256,6 +256,17 @@ PHP
         $view->getCommonParameter('id');
     }
 
+    public function testWithAddedCommonParameters(): void
+    {
+        $view = TestHelper::createView();
+        $view->setCommonParameters(['a' => 1, 'b' => 2]);
+        $view = $view->withAddedCommonParameters(['b' => 12, 'c' => 13]);
+
+        $this->assertSame(1, $view->getCommonParameter('a'));
+        $this->assertSame(12, $view->getCommonParameter('b'));
+        $this->assertSame(13, $view->getCommonParameter('c'));
+    }
+
     public function testCommonParameterDefaultValue(): void
     {
         $view = TestHelper::createView();
@@ -336,6 +347,7 @@ PHP
         $this->assertNotSame($view, $view->withSourceLanguage('en'));
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
+        $this->assertNotSame($view, $view->withAddedCommonParameters([]));
     }
 
     private function createViewWithBasePath(string $basePath): View
