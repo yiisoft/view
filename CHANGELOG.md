@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 2.0.2 under development
+## 2.1.0 September 14, 2021
 
 - New #183: Add immutable methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik)
 
