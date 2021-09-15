@@ -211,14 +211,14 @@ final class WebView extends BaseView
      * view.
      *
      * @param string $view The view name. Please refer to {@see render()} on how to specify this parameter.
-     * @param array $params The parameters (name-value pairs) that will be extracted and made available in the view
+     * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
      * @return string The rendering result
      *
      * {@see render()}
      */
-    public function renderAjax(string $view, array $params = []): string
+    public function renderAjax(string $view, array $parameters = []): string
     {
         $viewFile = $this->findTemplateFile($view);
 
@@ -229,7 +229,7 @@ final class WebView extends BaseView
         $this->beginPage();
         $this->head();
         $this->beginBody();
-        echo $this->renderFile($viewFile, $params);
+        echo $this->renderFile($viewFile, $parameters);
         $this->endBody();
         $this->endPage(true);
 
