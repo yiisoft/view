@@ -3,7 +3,8 @@
 ## 3.0.0 under development
 
 - Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik)
-- Chg: Into classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`, `setCommonParameter()` to `setParameter()`,
+- Сhg: In configuration `params.php` rename parameter `commonParameters` to `parameters` (vjik)
+- Chg: In classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`, `setCommonParameter()` to `setParameter()`,
   `removeCommonParameter()` to `removeParameter()`, `getCommonParameter()` to `getParameter()`,
   `hasCommonParameter()` to `hasParameter()` (vjik)
 
