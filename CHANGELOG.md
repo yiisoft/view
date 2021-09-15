@@ -1,9 +1,8 @@
 # Yii View Change Log
 
+## 3.0.0 under development
 
-## 2.1.1 under development
-
-- no changes in this release.
+- Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik) 
 
 ## 2.1.0 September 14, 2021
 

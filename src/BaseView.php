@@ -204,22 +204,6 @@ abstract class BaseView
     }
 
     /**
-     * Returns a new instance with the appended a common parameters that is accessible in all view templates.
-     *
-     * @param array $commonParameters Parameters that are common for all view templates.
-     *
-     * @psalm-param array<string, mixed> $commonParameters
-     *
-     * @return static
-     */
-    public function withAddedCommonParameters(array $commonParameters): self
-    {
-        $new = clone $this;
-        $new->setCommonParameters($commonParameters);
-        return $new;
-    }
-
-    /**
      * Sets a common parameters that is accessible in all view templates.
      *
      * @param array<string, mixed> $commonParameters Parameters that are common for all view templates.
