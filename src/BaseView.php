@@ -208,14 +208,17 @@ abstract class BaseView
      *
      * @param array<string, mixed> $parameters Parameters that are common for all view templates.
      *
+     * @return static
+     *
      * @see setParameter()
      */
-    public function setParameters(array $parameters): void
+    public function setParameters(array $parameters): self
     {
         /** @var mixed $value */
         foreach ($parameters as $id => $value) {
             $this->setParameter($id, $value);
         }
+        return $this;
     }
 
     /**
@@ -223,10 +226,13 @@ abstract class BaseView
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
+     *
+     * @return static
      */
-    public function setParameter(string $id, $value): void
+    public function setParameter(string $id, $value): self
     {
         $this->parameters[$id] = $value;
+        return $this;
     }
 
     /**
@@ -280,10 +286,13 @@ abstract class BaseView
      *
      * @param string $id The unique identifier of the block.
      * @param string $content The content of the block.
+     *
+     * @return static
      */
-    public function setBlock(string $id, string $content): void
+    public function setBlock(string $id, string $content): self
     {
         $this->blocks[$id] = $content;
+        return $this;
     }
 
     /**
@@ -349,10 +358,13 @@ abstract class BaseView
      * Sets a salt for the placeholder signature {@see getPlaceholderSignature()}.
      *
      * @param string $salt The placeholder salt.
+     *
+     * @return static
      */
-    final public function setPlaceholderSalt(string $salt): void
+    final public function setPlaceholderSalt(string $salt): self
     {
         $this->placeholderSignature = dechex(crc32($salt));
+        return $this;
     }
 
     /**

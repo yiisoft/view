@@ -629,10 +629,13 @@ final class WebView extends BaseView
      * {@see getTitle()}
      *
      * @param string $value
+     *
+     * @return static
      */
-    public function setTitle(string $value): void
+    public function setTitle(string $value): self
     {
         $this->title = $value;
+        return $this;
     }
 
     protected function createBeforeRenderEvent(string $viewFile, array $parameters): StoppableEventInterface

@@ -163,8 +163,7 @@ PHP
     public function testRenderWithoutFileExtension(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory)
-            ->withContext($this->createContext($this->tempDirectory))
-        ;
+            ->withContext($this->createContext($this->tempDirectory));
         file_put_contents("$this->tempDirectory/file.php", 'Test');
         file_put_contents("$this->tempDirectory/file.tpl", 'Test');
         file_put_contents("$this->tempDirectory/file.txt.php", 'Test');
@@ -324,6 +323,16 @@ PHP
             PageBegin::class,
             PageEnd::class,
         ], $eventDispatcher->getEventClasses());
+    }
+
+    public function testFluentSetters(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->assertSame($view, $view->setBlock('test', ''));
+        $this->assertSame($view, $view->setParameter('test', ''));
+        $this->assertSame($view, $view->setParameters([]));
+        $this->assertSame($view, $view->setPlaceholderSalt(''));
     }
 
     public function testImmutability(): void

@@ -7,7 +7,8 @@
 - Chg: In classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`, `setCommonParameter()` to `setParameter()`,
   `removeCommonParameter()` to `removeParameter()`, `getCommonParameter()` to `getParameter()`,
   `hasCommonParameter()` to `hasParameter()` (vjik)
-
+- Chg: Add fluent interface for setters in `View` and `WebView` classes (vjik)
+  
 ## 2.1.0 September 14, 2021
 
 - New #183: Add immutable methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik)
