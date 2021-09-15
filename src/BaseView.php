@@ -51,7 +51,7 @@ abstract class BaseView
      * @var array Parameters that are common for all view templates.
      * @psalm-var array<string, mixed>
      */
-    private array $commonParameters = [];
+    private array $parameters = [];
 
     /**
      * @var array Named content blocks that are common for all view templates.
@@ -206,15 +206,15 @@ abstract class BaseView
     /**
      * Sets a common parameters that is accessible in all view templates.
      *
-     * @param array<string, mixed> $commonParameters Parameters that are common for all view templates.
+     * @param array<string, mixed> $parameters Parameters that are common for all view templates.
      *
-     * @see setCommonParameter()
+     * @see setParameter()
      */
-    public function setCommonParameters(array $commonParameters): void
+    public function setParameters(array $parameters): void
     {
         /** @var mixed $value */
-        foreach ($commonParameters as $id => $value) {
-            $this->setCommonParameter($id, $value);
+        foreach ($parameters as $id => $value) {
+            $this->setParameter($id, $value);
         }
     }
 
@@ -224,9 +224,9 @@ abstract class BaseView
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
      */
-    public function setCommonParameter(string $id, $value): void
+    public function setParameter(string $id, $value): void
     {
-        $this->commonParameters[$id] = $value;
+        $this->parameters[$id] = $value;
     }
 
     /**
@@ -234,9 +234,9 @@ abstract class BaseView
      *
      * @param string $id The unique identifier of the parameter.
      */
-    public function removeCommonParameter(string $id): void
+    public function removeParameter(string $id): void
     {
-        unset($this->commonParameters[$id]);
+        unset($this->parameters[$id]);
     }
 
     /**
@@ -249,10 +249,10 @@ abstract class BaseView
      *
      * @return mixed The value of the parameter.
      */
-    public function getCommonParameter(string $id)
+    public function getParameter(string $id)
     {
-        if (isset($this->commonParameters[$id])) {
-            return $this->commonParameters[$id];
+        if (isset($this->parameters[$id])) {
+            return $this->parameters[$id];
         }
 
         $args = func_get_args();
@@ -270,9 +270,9 @@ abstract class BaseView
      *
      * @return bool Whether a custom parameter that is common for all view templates exists.
      */
-    public function hasCommonParameter(string $id): bool
+    public function hasParameter(string $id): bool
     {
-        return isset($this->commonParameters[$id]);
+        return isset($this->parameters[$id]);
     }
 
     /**
@@ -405,7 +405,7 @@ abstract class BaseView
      */
     public function renderFile(string $viewFile, array $parameters = []): string
     {
-        $parameters = array_merge($this->commonParameters, $parameters);
+        $parameters = array_merge($this->parameters, $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;

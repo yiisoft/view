@@ -236,46 +236,46 @@ PHP
         );
     }
 
-    public function testCommonParameter(): void
+    public function testParameter(): void
     {
         $view = TestHelper::createView();
-        $this->assertFalse($view->hasCommonParameter('id'));
+        $this->assertFalse($view->hasParameter('id'));
 
-        $view->setCommonParameters(['id' => 0]);
-        $this->assertTrue($view->hasCommonParameter('id'));
-        $this->assertSame(0, $view->getCommonParameter('id'));
+        $view->setParameters(['id' => 0]);
+        $this->assertTrue($view->hasParameter('id'));
+        $this->assertSame(0, $view->getParameter('id'));
 
-        $view->setCommonParameter('id', 42);
-        $this->assertTrue($view->hasCommonParameter('id'));
-        $this->assertSame(42, $view->getCommonParameter('id'));
+        $view->setParameter('id', 42);
+        $this->assertTrue($view->hasParameter('id'));
+        $this->assertSame(42, $view->getParameter('id'));
 
-        $view->removeCommonParameter('id');
-        $this->assertFalse($view->hasCommonParameter('id'));
+        $view->removeParameter('id');
+        $this->assertFalse($view->hasParameter('id'));
 
         $this->expectException(InvalidArgumentException::class);
-        $view->getCommonParameter('id');
+        $view->getParameter('id');
     }
 
-    public function testCommonParameterDefaultValue(): void
+    public function testParameterDefaultValue(): void
     {
         $view = TestHelper::createView();
 
-        $this->assertSame(42, $view->getCommonParameter('id', 42));
+        $this->assertSame(42, $view->getParameter('id', 42));
     }
 
-    public function testCommonParameterIsPassedToView(): void
+    public function testParameterIsPassedToView(): void
     {
         $view = TestHelper::createView();
-        $view->setCommonParameter('parameter', 'global-parameter');
+        $view->setParameter('parameter', 'global-parameter');
         $output = $view->render('//parameters');
 
         $this->assertSame('global-parameter', $output);
     }
 
-    public function testCommonParameterIsOverwrittenByLocalParameter(): void
+    public function testViewParameterIsOverwrittenByRenderParameter(): void
     {
         $view = TestHelper::createView();
-        $view->setCommonParameter('parameter', 'global-parameter');
+        $view->setParameter('parameter', 'global-parameter');
 
         $output = $view->render('//parameters', [
             'parameter' => 'local-parameter',

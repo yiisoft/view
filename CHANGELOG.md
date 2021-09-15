@@ -2,7 +2,10 @@
 
 ## 3.0.0 under development
 
-- Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik) 
+- Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik)
+- Chg: Into classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`, `setCommonParameter()` to `setParameter()`,
+  `removeCommonParameter()` to `removeParameter()`, `getCommonParameter()` to `getParameter()`,
+  `hasCommonParameter()` to `hasParameter()` (vjik)
 
 ## 2.1.0 September 14, 2021
 
