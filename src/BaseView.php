@@ -206,7 +206,9 @@ abstract class BaseView
     /**
      * Sets a common parameters that is accessible in all view templates.
      *
-     * @param array<string, mixed> $parameters Parameters that are common for all view templates.
+     * @param array $parameters Parameters that are common for all view templates.
+     *
+     * @psalm-param array<string, mixed> $parameters
      *
      * @return static
      *
