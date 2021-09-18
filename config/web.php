@@ -27,10 +27,12 @@ return [
     WebView::class => [
         'class' => WebView::class,
         '__construct()' => [
-            'basePath' => DynamicReference::to(static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])),
+            'basePath' => DynamicReference::to(
+                static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
+            ),
         ],
-        'setCommonParameters()' => [
-            $params['yiisoft/view']['commonParameters'],
+        'parameters()' => [
+            $params['yiisoft/view']['parameters'],
         ],
         'reset' => function () {
             $this->clear();

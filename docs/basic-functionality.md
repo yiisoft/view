@@ -287,8 +287,8 @@ General parameters are used in the same way, but unlike blocks, the value can be
 This is convenient if you need to set some data that will be available in all views:
 
 ```php
-$view->setCommonParameter('urlGenerator', new MyUrlGenerator());
-$view->setCommonParameter(SomeObject::class, new SomeObject());
+$view->setParameter('urlGenerator', new MyUrlGenerator());
+$view->setParameter(SomeObject::class, new SomeObject());
 
 $view->render('blog/posts');
 ```
@@ -303,11 +303,11 @@ declare(strict_types=1);
 /** @var Yiisoft\View\View $this */
 /** @var App\Blog\Post[] $posts */
 
-$urlGenerator = $this->getCommonParameter('urlGenerator');
+$urlGenerator = $this->getParameter('urlGenerator');
 ?>
 
-<?php if ($this->hasCommonParameter(SomeObject::class)): ?>
-    <?= $this->getCommonParameter(SomeObject::class)->getContent() ?>
+<?php if ($this->hasParameter(SomeObject::class)): ?>
+    <?= $this->getParameter(SomeObject::class)->getContent() ?>
 <?php endif; ?>
 
 Posts:
@@ -319,19 +319,19 @@ Posts:
 <?php endforeach; ?>
 ```
 
-You can not call the `hasCommonParameter()` method, but pass the default value to the `getCommonParameter()` method.
+You can not call the `hasParameter()` method, but pass the default value to the `getParameter()` method.
 At the same time, if the default value is not passed, and the requested parameter does not exist,
 an `InvalidArgumentException` exception will be thrown.
 
 ```php
 // return "default-value"
-$view->getCommonParameter('parameter-name', 'default-value');
+$view->getParameter('parameter-name', 'default-value');
 
 // throw InvalidArgumentException
-$view->getCommonParameter('parameter-name');
+$view->getParameter('parameter-name');
 ```
 
-To delete data, use `removeBlock('id')` and `removeCommonParameter('id')` methods.
+To delete data, use `removeBlock('id')` and `removeParameter('id')` methods.
 
 ## Content caching
 

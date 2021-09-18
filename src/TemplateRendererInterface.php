@@ -17,9 +17,9 @@ interface TemplateRendererInterface
      *
      * @param BaseView|View|WebView $view The view instance used for rendering the file.
      * @param string $template The template file.
-     * @param array $params The parameters to be passed to the view file.
+     * @param array $parameters The parameters to be passed to the view file.
      *
      * @return string The rendering result.
      */
-    public function render(BaseView $view, string $template, array $params): string;
+    public function render(BaseView $view, string $template, array $parameters): string;
 }

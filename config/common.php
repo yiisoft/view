@@ -12,10 +12,12 @@ return [
     View::class => [
         'class' => View::class,
         '__construct()' => [
-            'basePath' => DynamicReference::to(static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])),
+            'basePath' => DynamicReference::to(
+                static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
+            ),
         ],
-        'setCommonParameters()' => [
-            $params['yiisoft/view']['commonParameters'],
+        'setParameters()' => [
+            $params['yiisoft/view']['parameters'],
         ],
         'reset' => function () {
             $this->clear();

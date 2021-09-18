@@ -19,7 +19,7 @@ use function ob_start;
  */
 final class PhpTemplateRenderer implements TemplateRendererInterface
 {
-    public function render(BaseView $view, string $template, array $params): string
+    public function render(BaseView $view, string $template, array $parameters): string
     {
         $renderer = function (): void {
             /** @psalm-suppress MixedArgument */
@@ -34,7 +34,7 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
         try {
             /** @psalm-suppress PossiblyInvalidFunctionCall */
-            $renderer->bindTo($view)($template, $params);
+            $renderer->bindTo($view)($template, $parameters);
             return ob_get_clean();
         } catch (Throwable $e) {
             while (ob_get_level() > $obInitialLevel) {

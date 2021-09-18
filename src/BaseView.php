@@ -51,7 +51,7 @@ abstract class BaseView
      * @var array Parameters that are common for all view templates.
      * @psalm-var array<string, mixed>
      */
-    private array $commonParameters = [];
+    private array $parameters = [];
 
     /**
      * @var array Named content blocks that are common for all view templates.
@@ -204,34 +204,23 @@ abstract class BaseView
     }
 
     /**
-     * Returns a new instance with the appended a common parameters that is accessible in all view templates.
-     *
-     * @param array $commonParameters Parameters that are common for all view templates.
-     *
-     * @psalm-param array<string, mixed> $commonParameters
-     *
-     * @return static
-     */
-    public function withAddedCommonParameters(array $commonParameters): self
-    {
-        $new = clone $this;
-        $new->setCommonParameters($commonParameters);
-        return $new;
-    }
-
-    /**
      * Sets a common parameters that is accessible in all view templates.
      *
-     * @param array<string, mixed> $commonParameters Parameters that are common for all view templates.
+     * @param array $parameters Parameters that are common for all view templates.
      *
-     * @see setCommonParameter()
+     * @psalm-param array<string, mixed> $parameters
+     *
+     * @return static
+     *
+     * @see setParameter()
      */
-    public function setCommonParameters(array $commonParameters): void
+    public function setParameters(array $parameters): self
     {
         /** @var mixed $value */
-        foreach ($commonParameters as $id => $value) {
-            $this->setCommonParameter($id, $value);
+        foreach ($parameters as $id => $value) {
+            $this->setParameter($id, $value);
         }
+        return $this;
     }
 
     /**
@@ -239,10 +228,13 @@ abstract class BaseView
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
+     *
+     * @return static
      */
-    public function setCommonParameter(string $id, $value): void
+    public function setParameter(string $id, $value): self
     {
-        $this->commonParameters[$id] = $value;
+        $this->parameters[$id] = $value;
+        return $this;
     }
 
     /**
@@ -250,9 +242,9 @@ abstract class BaseView
      *
      * @param string $id The unique identifier of the parameter.
      */
-    public function removeCommonParameter(string $id): void
+    public function removeParameter(string $id): void
     {
-        unset($this->commonParameters[$id]);
+        unset($this->parameters[$id]);
     }
 
     /**
@@ -265,10 +257,10 @@ abstract class BaseView
      *
      * @return mixed The value of the parameter.
      */
-    public function getCommonParameter(string $id)
+    public function getParameter(string $id)
     {
-        if (isset($this->commonParameters[$id])) {
-            return $this->commonParameters[$id];
+        if (isset($this->parameters[$id])) {
+            return $this->parameters[$id];
         }
 
         $args = func_get_args();
@@ -286,9 +278,9 @@ abstract class BaseView
      *
      * @return bool Whether a custom parameter that is common for all view templates exists.
      */
-    public function hasCommonParameter(string $id): bool
+    public function hasParameter(string $id): bool
     {
-        return isset($this->commonParameters[$id]);
+        return isset($this->parameters[$id]);
     }
 
     /**
@@ -296,10 +288,13 @@ abstract class BaseView
      *
      * @param string $id The unique identifier of the block.
      * @param string $content The content of the block.
+     *
+     * @return static
      */
-    public function setBlock(string $id, string $content): void
+    public function setBlock(string $id, string $content): self
     {
         $this->blocks[$id] = $content;
+        return $this;
     }
 
     /**
@@ -365,10 +360,13 @@ abstract class BaseView
      * Sets a salt for the placeholder signature {@see getPlaceholderSignature()}.
      *
      * @param string $salt The placeholder salt.
+     *
+     * @return static
      */
-    final public function setPlaceholderSalt(string $salt): void
+    final public function setPlaceholderSalt(string $salt): self
     {
         $this->placeholderSignature = dechex(crc32($salt));
+        return $this;
     }
 
     /**
@@ -421,7 +419,7 @@ abstract class BaseView
      */
     public function renderFile(string $viewFile, array $parameters = []): string
     {
-        $parameters = array_merge($this->commonParameters, $parameters);
+        $parameters = array_merge($this->parameters, $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;

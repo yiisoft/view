@@ -742,4 +742,15 @@ final class WebViewTest extends TestCase
         $view->setTitle('test');
         $this->assertSame('test', $view->getTitle());
     }
+
+    public function testFluentSetters(): void
+    {
+        $view = TestHelper::createWebView();
+
+        $this->assertSame($view, $view->setTitle(''));
+        $this->assertSame($view, $view->setBlock('test', ''));
+        $this->assertSame($view, $view->setParameter('test', ''));
+        $this->assertSame($view, $view->setParameters([]));
+        $this->assertSame($view, $view->setPlaceholderSalt(''));
+    }
 }
