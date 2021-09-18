@@ -1,5 +1,10 @@
 # Yii View Change Log
 
+
+## 3.0.2 under development
+
+- no changes in this release.
+
 ## 3.0.1 September 18, 2021
 
 - Bug: Fix incorrect method in `web` configuration (vjik)
