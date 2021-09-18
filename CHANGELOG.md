@@ -1,9 +1,9 @@
 # Yii View Change Log
 
-## 3.0.0 under development
+## 3.0.0 September 18, 2021
 
-- Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik)
 - Сhg: In configuration `params.php` rename parameter `commonParameters` to `parameters` (vjik)
+- Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (vjik)
 - Chg: In classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`, `setCommonParameter()` to `setParameter()`,
   `removeCommonParameter()` to `removeParameter()`, `getCommonParameter()` to `getParameter()`,
   `hasCommonParameter()` to `hasParameter()` (vjik)
