@@ -31,7 +31,7 @@ return [
                 static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
             ),
         ],
-        'parameters()' => [
+        'setParameters()' => [
             $params['yiisoft/view']['parameters'],
         ],
         'reset' => function () {
