@@ -1,5 +1,10 @@
 # Yii View Change Log
 
+
+## 3.0.1 under development
+
+- no changes in this release.
+
 ## 3.0.0 September 18, 2021
 
 - Сhg: In configuration `params.php` rename parameter `commonParameters` to `parameters` (vjik)
