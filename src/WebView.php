@@ -43,9 +43,13 @@ use function strtr;
  * WebView represents an instance of a view for use in a WEB environment.
  *
  * WebView provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
-final class WebView extends BaseView
+final class WebView implements ViewInterface
 {
+    use ViewTrait;
+
     /**
      * This means the location is in the head section.
      */
@@ -271,7 +275,7 @@ final class WebView extends BaseView
         $this->cssFiles = [];
         $this->js = [];
         $this->jsFiles = [];
-        parent::clear();
+        $this->viewFiles = [];
     }
 
     /**

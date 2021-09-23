@@ -26,11 +26,13 @@ use function pathinfo;
 use function substr;
 
 /**
- * @internal Base class for {@see View} and {@see WebView}.
+ * ...
+ *
+ * @internal
  */
-abstract class BaseView
+trait ViewTrait
 {
-    protected EventDispatcherInterface $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     private string $basePath;
     private ?Theme $theme = null;
@@ -351,7 +353,7 @@ abstract class BaseView
      *
      * @return string The placeholder signature.
      */
-    final public function getPlaceholderSignature(): string
+    public function getPlaceholderSignature(): string
     {
         return $this->placeholderSignature;
     }
@@ -363,7 +365,7 @@ abstract class BaseView
      *
      * @return static
      */
-    final public function setPlaceholderSalt(string $salt): self
+    public function setPlaceholderSalt(string $salt): self
     {
         $this->placeholderSignature = dechex(crc32($salt));
         return $this;
@@ -497,14 +499,6 @@ abstract class BaseView
     }
 
     /**
-     * Clears the data for working with the event loop.
-     */
-    public function clear(): void
-    {
-        $this->viewFiles = [];
-    }
-
-    /**
      * Creates an event that occurs before rendering.
      *
      * @param string $viewFile The view file to be rendered.
@@ -541,7 +535,7 @@ abstract class BaseView
      *
      * @return bool Whether to continue rendering the view file.
      */
-    protected function beforeRender(string $viewFile, array $parameters): bool
+    private function beforeRender(string $viewFile, array $parameters): bool
     {
         $event = $this->createBeforeRenderEvent($viewFile, $parameters);
         $event = $this->eventDispatcher->dispatch($event);
@@ -562,7 +556,7 @@ abstract class BaseView
      *
      * @return string Updated output. It will be passed to {@see renderFile()} and returned.
      */
-    protected function afterRender(string $viewFile, array $parameters, string $result): string
+    private function afterRender(string $viewFile, array $parameters, string $result): string
     {
         $event = $this->createAfterRenderEvent($viewFile, $parameters, $result);
 
@@ -583,7 +577,7 @@ abstract class BaseView
      *
      * @return string The view file path. Note that the file may not exist.
      */
-    protected function findTemplateFile(string $view): string
+    private function findTemplateFile(string $view): string
     {
         if ($view !== '' && $view[0] === '/') {
             // path relative to basePath e.g. "/layouts/main"
