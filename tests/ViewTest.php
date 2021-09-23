@@ -262,6 +262,15 @@ PHP
         $this->assertSame(42, $view->getParameter('id', 42));
     }
 
+    public function testGetNotExistParameter(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter "id" not found.');
+        $view->getParameter('id');
+    }
+
     public function testParameterIsPassedToView(): void
     {
         $view = TestHelper::createView();

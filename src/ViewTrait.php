@@ -270,7 +270,7 @@ trait ViewTrait
             return $args[1];
         }
 
-        throw new InvalidArgumentException('Common parameter: "' . $id . '" not found.');
+        throw new InvalidArgumentException('Parameter "' . $id . '" not found.');
     }
 
     /**
