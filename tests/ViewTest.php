@@ -308,6 +308,15 @@ PHP
         $view->getBlock('id');
     }
 
+    public function testGetNotExistBlock(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Block "test" not found.');
+        $view->getBlock('test');
+    }
+
     public function testPlaceholderSalt(): void
     {
         $view = TestHelper::createView();

@@ -322,7 +322,7 @@ trait ViewTrait
             return $this->blocks[$id];
         }
 
-        throw new InvalidArgumentException('Block: "' . $id . '" not found.');
+        throw new InvalidArgumentException('Block "' . $id . '" not found.');
     }
 
     /**
