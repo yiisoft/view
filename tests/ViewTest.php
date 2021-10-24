@@ -160,6 +160,13 @@ PHP
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
+    public function testFlushViewFilesOnChangeContext(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->assertSame('42', $view->render('/change-context'));
+    }
+
     public function testRenderWithoutFileExtension(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory)

@@ -172,6 +172,7 @@ trait ViewTrait
     {
         $new = clone $this;
         $new->context = $context;
+        $new->viewFiles = [];
         return $new;
     }
 

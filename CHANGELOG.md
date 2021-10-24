@@ -4,6 +4,8 @@
 
 - Chg #185: Add interface `ViewInterface` that classes `View` and `WebView` implement (vjik)
 - Enh #187: Improve exception message on getting not exist block or parameter in `View` and `WebView` (vjik)
+- Bug #189: Flush currently being rendered view files on change context via `View::withContext()` 
+  or `WebView::withContext()` (vjik)
 
 ## 3.0.1 September 18, 2021
 
