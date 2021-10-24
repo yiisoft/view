@@ -1,8 +1,8 @@
 # Yii View Change Log
 
-## 3.0.2 under development
+## 4.0.0 under development
 
-- Enh #190: Add support for `yiisoft/arrays` version `^2.0` (vjik)
+- Chg #190: In dependency `yiisoft/arrays` changed version to `^2.0` (vjik)
 
 ## 3.0.1 September 18, 2021
 
