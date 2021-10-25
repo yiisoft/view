@@ -1,9 +1,11 @@
 # Yii View Change Log
 
+## 4.0.0 under development
 
-## 3.0.3 under development
-
-- no changes in this release.
+- Chg #185: Add interface `ViewInterface` that classes `View` and `WebView` implement (vjik)
+- Enh #187: Improve exception message on getting not exist block or parameter in `View` and `WebView` (vjik)
+- Bug #189: Flush currently being rendered view files on change context via `View::withContext()` 
+  or `WebView::withContext()` (vjik)
 
 ## 3.0.2 October 25, 2021
 

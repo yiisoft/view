@@ -19,7 +19,7 @@ use function ob_start;
  */
 final class PhpTemplateRenderer implements TemplateRendererInterface
 {
-    public function render(BaseView $view, string $template, array $parameters): string
+    public function render(ViewInterface $view, string $template, array $parameters): string
     {
         $renderer = function (): void {
             /** @psalm-suppress MixedArgument */

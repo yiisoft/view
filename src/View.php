@@ -19,9 +19,21 @@ use function ob_start;
  * View represents an instance of a view for use in an any environment.
  *
  * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
-final class View extends BaseView
+final class View implements ViewInterface
 {
+    use ViewTrait;
+
+    /**
+     * Clears the data for working with the event loop.
+     */
+    public function clear(): void
+    {
+        $this->viewFiles = [];
+    }
+
     /**
      * Marks the beginning of a view.
      */

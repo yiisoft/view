@@ -160,6 +160,13 @@ PHP
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
+    public function testFlushViewFilesOnChangeContext(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->assertSame('42', $view->render('/change-context'));
+    }
+
     public function testRenderWithoutFileExtension(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory)
@@ -262,6 +269,15 @@ PHP
         $this->assertSame(42, $view->getParameter('id', 42));
     }
 
+    public function testGetNotExistParameter(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter "id" not found.');
+        $view->getParameter('id');
+    }
+
     public function testParameterIsPassedToView(): void
     {
         $view = TestHelper::createView();
@@ -297,6 +313,15 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $view->getBlock('id');
+    }
+
+    public function testGetNotExistBlock(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Block "test" not found.');
+        $view->getBlock('test');
     }
 
     public function testPlaceholderSalt(): void
