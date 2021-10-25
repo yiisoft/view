@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 4.0.0 under development
+## 4.0.0 October 25, 2021
 
 - Chg #185: Add interface `ViewInterface` that classes `View` and `WebView` implement (vjik)
 - Enh #187: Improve exception message on getting not exist block or parameter in `View` and `WebView` (vjik)
