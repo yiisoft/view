@@ -1,5 +1,10 @@
 # Yii View Change Log
 
+
+## 3.0.3 under development
+
+- no changes in this release.
+
 ## 3.0.2 October 25, 2021
 
 - Chg #190: Update the `yiisoft/arrays` dependency to `^2.0` (vjik)
