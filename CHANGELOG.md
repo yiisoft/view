@@ -7,6 +7,10 @@
 - Bug #189: Flush currently being rendered view files on change context via `View::withContext()` 
   or `WebView::withContext()` (vjik)
 
+## 3.0.2 October 25, 2021
+
+- Chg #190: Update the `yiisoft/arrays` dependency to `^2.0` (vjik)
+
 ## 3.0.1 September 18, 2021
 
 - Bug: Fix incorrect method in `web` configuration (vjik)
