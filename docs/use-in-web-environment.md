@@ -348,9 +348,7 @@ class provides methods for batch adding CSS and JavaScript data.
  * @var Yiisoft\Assets\AssetManager $assetManager
  */
  
-$assetManager->register([
-    MyAsset::class,
-]);
+$assetManager->register(MyAsset::class);
 
 $this->addCssFiles($assetManager->getCssFiles());
 $this->addCssStrings($assetManager->getCssStrings());
