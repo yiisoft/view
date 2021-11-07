@@ -1,9 +1,8 @@
 # Yii View Change Log
 
+## 4.1.0 under development
 
-## 4.0.1 under development
-
-- no changes in this release.
+- New #193: Add simple view context class `ViewContext` (vjik)
 
 ## 4.0.0 October 25, 2021
 
