@@ -160,6 +160,15 @@ PHP
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
+    public function testWithContextPath(): void
+    {
+        $view = TestHelper::createView()->withContextPath(
+            __DIR__ . '/public/view/custom-context'
+        );
+
+        $this->assertSame('42', $view->render('view'));
+    }
+
     public function testFlushViewFilesOnChangeContext(): void
     {
         $view = TestHelper::createView();
@@ -370,6 +379,7 @@ PHP
         $this->assertNotSame($view, $view->withSourceLanguage('en'));
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
+        $this->assertNotSame($view, $view->withContextPath(__DIR__));
     }
 
     private function createViewWithBasePath(string $basePath): View

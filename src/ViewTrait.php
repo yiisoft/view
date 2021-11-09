@@ -177,6 +177,18 @@ trait ViewTrait
     }
 
     /**
+     * Returns a new instance with the specified view context path.
+     *
+     * @param string $path The context path under which the {@see renderFile()} method is being invoked.
+     *
+     * @return static
+     */
+    public function withContextPath(string $path): self
+    {
+        return $this->withContext(new ViewContext($path));
+    }
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
