@@ -408,6 +408,20 @@ PHP
         $this->assertSame($view, $view->setPlaceholderSalt(''));
     }
 
+    public function testClear(): void
+    {
+        $view = TestHelper::createView();
+
+        try {
+            $view->renderFile(__DIR__ . '/public/view/error.php');
+        } catch (Exception $e) {
+        }
+
+        $view->clear();
+
+        $this->assertNull($view->getViewFile());
+    }
+
     public function testImmutability(): void
     {
         $view = TestHelper::createView();
