@@ -254,8 +254,11 @@ trait ViewTrait
     }
 
     /**
+     * Add values to end of common array parameter. If specified parameter does not exist or him is not array,
+     * then parameter will be added as empty array.
+     *
      * @param string $id The unique identifier of the parameter.
-     * @param mixed ...$value
+     * @param mixed ...$value Value(s) for add to end of array parameter.
      *
      * @return static
      */
