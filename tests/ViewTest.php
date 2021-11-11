@@ -278,6 +278,44 @@ PHP
         $this->assertSame(42, $view->getParameter('id', 42));
     }
 
+    public function testAddToArrayParameter(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->addToArrayParameter('test', 'a');
+
+        $this->assertSame(['a'], $view->getParameter('test'));
+    }
+
+    public function testAddToArrayParameterWithVaridicValues(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->addToArrayParameter('test', 'a', 'b', 'c');
+
+        $this->assertSame(['a', 'b', 'c'], $view->getParameter('test'));
+    }
+
+    public function testAddToArrayParameterSeveral(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->addToArrayParameter('test', 'a');
+        $view->addToArrayParameter('test', 'b', 'c');
+
+        $this->assertSame(['a', 'b', 'c'], $view->getParameter('test'));
+    }
+
+    public function testAddToArrayParameterWithNotArray(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->setParameter('test', 42);
+        $view->addToArrayParameter('test', 'a', 'b');
+
+        $this->assertSame(['a', 'b'], $view->getParameter('test'));
+    }
+
     public function testGetNotExistParameter(): void
     {
         $view = TestHelper::createView();
@@ -366,6 +404,7 @@ PHP
         $this->assertSame($view, $view->setBlock('test', ''));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
+        $this->assertSame($view, $view->addToArrayParameter('test'));
         $this->assertSame($view, $view->setPlaceholderSalt(''));
     }
 

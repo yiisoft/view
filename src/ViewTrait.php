@@ -21,6 +21,7 @@ use function dechex;
 use function dirname;
 use function end;
 use function func_get_args;
+use function is_array;
 use function is_file;
 use function pathinfo;
 use function substr;
@@ -249,6 +250,25 @@ trait ViewTrait
     public function setParameter(string $id, $value): self
     {
         $this->parameters[$id] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $id The unique identifier of the parameter.
+     * @param mixed ...$value
+     *
+     * @return static
+     */
+    public function addToArrayParameter(string $id, ...$value): self
+    {
+        /** @var mixed $array */
+        $array = $this->parameters[$id] ?? [];
+        if (!is_array($array)) {
+            $array = [];
+        }
+
+        $this->setParameter($id, array_merge($array, $value));
+
         return $this;
     }
 
