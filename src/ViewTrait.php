@@ -262,7 +262,7 @@ trait ViewTrait
      *
      * @return static
      */
-    public function addToArrayParameter(string $id, ...$value): self
+    public function addToParameter(string $id, ...$value): self
     {
         /** @var mixed $array */
         $array = $this->parameters[$id] ?? [];
