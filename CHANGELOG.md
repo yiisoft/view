@@ -4,6 +4,8 @@
 
 - New #193: Add simple view context class `ViewContext` (vjik)
 - New #193: Add methods `View::withContextPath()` and `WebView::withContextPath()` that set view context path (vjik)
+- New #194: Add methods `View::addToParameter()` and `WebView::addToParameter()` that add value(s) to end of
+  specified array parameter (vjik)
 
 ## 4.0.0 October 25, 2021
 

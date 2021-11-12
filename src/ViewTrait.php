@@ -21,6 +21,7 @@ use function dechex;
 use function dirname;
 use function end;
 use function func_get_args;
+use function is_array;
 use function is_file;
 use function pathinfo;
 use function substr;
@@ -249,6 +250,32 @@ trait ViewTrait
     public function setParameter(string $id, $value): self
     {
         $this->parameters[$id] = $value;
+        return $this;
+    }
+
+    /**
+     * Add values to end of common array parameter. If specified parameter does not exist or him is not array,
+     * then parameter will be added as empty array.
+     *
+     * @param string $id The unique identifier of the parameter.
+     * @param mixed ...$value Value(s) for add to end of array parameter.
+     *
+     * @throws InvalidArgumentException When specified parameter already exists and is not an array.
+     *
+     * @return static
+     */
+    public function addToParameter(string $id, ...$value): self
+    {
+        /** @var mixed $array */
+        $array = $this->parameters[$id] ?? [];
+        if (!is_array($array)) {
+            throw new InvalidArgumentException(
+                sprintf('The "%s" parameter already exists and is not an array.', $id)
+            );
+        }
+
+        $this->setParameter($id, array_merge($array, $value));
+
         return $this;
     }
 

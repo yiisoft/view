@@ -278,6 +278,45 @@ PHP
         $this->assertSame(42, $view->getParameter('id', 42));
     }
 
+    public function testAddToParameter(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->addToParameter('test', 'a');
+
+        $this->assertSame(['a'], $view->getParameter('test'));
+    }
+
+    public function testAddToParameterWithVaridicValues(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->addToParameter('test', 'a', 'b', 'c');
+
+        $this->assertSame(['a', 'b', 'c'], $view->getParameter('test'));
+    }
+
+    public function testAddToParameterSeveral(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->addToParameter('test', 'a');
+        $view->addToParameter('test', 'b', 'c');
+
+        $this->assertSame(['a', 'b', 'c'], $view->getParameter('test'));
+    }
+
+    public function testAddToParameterWithNotArray(): void
+    {
+        $view = TestHelper::createView();
+
+        $view->setParameter('test', 42);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "test" parameter already exists and is not an array.');
+        $view->addToParameter('test', 'a', 'b');
+    }
+
     public function testGetNotExistParameter(): void
     {
         $view = TestHelper::createView();
@@ -366,7 +405,22 @@ PHP
         $this->assertSame($view, $view->setBlock('test', ''));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
+        $this->assertSame($view, $view->addToParameter('test-array'));
         $this->assertSame($view, $view->setPlaceholderSalt(''));
+    }
+
+    public function testClear(): void
+    {
+        $view = TestHelper::createView();
+
+        try {
+            $view->renderFile(__DIR__ . '/public/view/error.php');
+        } catch (Exception $e) {
+        }
+
+        $view->clear();
+
+        $this->assertNull($view->getViewFile());
     }
 
     public function testImmutability(): void
