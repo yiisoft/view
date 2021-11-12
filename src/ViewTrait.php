@@ -260,6 +260,8 @@ trait ViewTrait
      * @param string $id The unique identifier of the parameter.
      * @param mixed ...$value Value(s) for add to end of array parameter.
      *
+     * @throws InvalidArgumentException When specified parameter already exists and is not an array.
+     *
      * @return static
      */
     public function addToParameter(string $id, ...$value): self
@@ -267,7 +269,9 @@ trait ViewTrait
         /** @var mixed $array */
         $array = $this->parameters[$id] ?? [];
         if (!is_array($array)) {
-            $array = [];
+            throw new InvalidArgumentException(
+                sprintf('The "%s" parameter already exists and is not an array.', $id)
+            );
         }
 
         $this->setParameter($id, array_merge($array, $value));

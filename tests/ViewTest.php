@@ -311,9 +311,10 @@ PHP
         $view = TestHelper::createView();
 
         $view->setParameter('test', 42);
-        $view->addToParameter('test', 'a', 'b');
 
-        $this->assertSame(['a', 'b'], $view->getParameter('test'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "test" parameter already exists and is not an array.');
+        $view->addToParameter('test', 'a', 'b');
     }
 
     public function testGetNotExistParameter(): void
@@ -404,7 +405,7 @@ PHP
         $this->assertSame($view, $view->setBlock('test', ''));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
-        $this->assertSame($view, $view->addToParameter('test'));
+        $this->assertSame($view, $view->addToParameter('test-array'));
         $this->assertSame($view, $view->setPlaceholderSalt(''));
     }
 
