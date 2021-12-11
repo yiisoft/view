@@ -7,13 +7,11 @@ namespace Yiisoft\View;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
-use RuntimeException;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
 use Yiisoft\Html\Tag\Meta;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\Html\Tag\Style;
-use Yiisoft\Json\Json;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Event\WebView\AfterRender;
 use Yiisoft\View\Event\WebView\BeforeRender;
@@ -22,20 +20,10 @@ use Yiisoft\View\Event\WebView\BodyEnd;
 use Yiisoft\View\Event\WebView\Head;
 use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
-
 use Yiisoft\View\State\WebViewState;
 
-use function array_key_exists;
 use function array_merge;
-use function get_class;
-use function gettype;
-use function file_get_contents;
 use function implode;
-use function in_array;
-use function is_array;
-use function is_object;
-use function is_string;
-use function md5;
 use function ob_get_clean;
 use function ob_implicit_flush;
 use function ob_start;
@@ -48,6 +36,8 @@ use function strtr;
  * WebView provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ *
+ * @property WebViewState $state
  */
 final class WebView implements ViewInterface
 {
@@ -95,60 +85,6 @@ final class WebView implements ViewInterface
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
     private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END-%s]]>';
-
-    /**
-     * @var string The page title
-     */
-    private string $title = '';
-
-    /**
-     * @var Meta[] The registered meta tags.
-     *
-     * @see registerMeta()
-     * @see registerMetaTag()
-     */
-    private array $metaTags = [];
-
-    /**
-     * @var array The registered link tags.
-     * @psalm-var array<int, Link[]>
-     *
-     * @see registerLink()
-     * @see registerLinkTag()
-     */
-    private array $linkTags = [];
-
-    /**
-     * @var array The registered CSS code blocks.
-     * @psalm-var array<int, string[]|Style[]>
-     *
-     * {@see registerCss()}
-     */
-    private array $css = [];
-
-    /**
-     * @var array The registered CSS files.
-     * @psalm-var array<int, string[]>
-     *
-     * {@see registerCssFile()}
-     */
-    private array $cssFiles = [];
-
-    /**
-     * @var array The registered JS code blocks
-     * @psalm-var array<int, string[]|Script[]>
-     *
-     * {@see registerJs()}
-     */
-    private array $js = [];
-
-    /**
-     * @var array The registered JS files.
-     * @psalm-var array<int, string[]>
-     *
-     * {@see registerJsFile()}
-     */
-    private array $jsFiles = [];
 
     /**
      * @param string $basePath The full path to the base directory of views.
@@ -282,18 +218,40 @@ final class WebView implements ViewInterface
     }
 
     /**
-     * Clears up the registered meta tags, link tags, css/js scripts, files and title.
+     * Get title in views.
+     *
+     * in Layout:
+     *
+     * ```php
+     * <title><?= Html::encode($this->getTitle()) ?></title>
+     * ```
+     *
+     * in Views:
+     *
+     * ```php
+     * $this->setTitle('Web Application - Yii 3.0.');
+     * ```
+     *
+     * @return string
      */
-    public function clear(): void
+    public function getTitle(): string
     {
-        $this->title = '';
-        $this->metaTags = [];
-        $this->linkTags = [];
-        $this->css = [];
-        $this->cssFiles = [];
-        $this->js = [];
-        $this->jsFiles = [];
-        $this->viewFiles = [];
+        return $this->state->getTitle();
+    }
+
+    /**
+     * Set title in views.
+     *
+     * {@see getTitle()}
+     *
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setTitle(string $value): self
+    {
+        $this->state->setTitle($value);
+        return $this;
     }
 
     /**
@@ -311,13 +269,12 @@ final class WebView implements ViewInterface
      * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
      *
      * @param array $attributes The HTML attributes for the meta tag.
-     * @param string|null $key The key that identifies the meta tag. If two meta tags are registered with the same key, the
-     * latter will overwrite the former. If this is null, the new meta tag will be appended to the
-     * existing ones.
+     * @param string|null $key The key that identifies the meta tag. If two meta tags are registered with the same key,
+     * the latter will overwrite the former. If this is null, the new meta tag will be appended to the existing ones.
      */
     public function registerMeta(array $attributes, ?string $key = null): void
     {
-        $this->registerMetaTag(Html::meta($attributes), $key);
+        $this->state->registerMeta($attributes, $key);
     }
 
     /**
@@ -327,9 +284,7 @@ final class WebView implements ViewInterface
      */
     public function registerMetaTag(Meta $meta, ?string $key = null): void
     {
-        $key === null
-            ? $this->metaTags[] = $meta
-            : $this->metaTags[$key] = $meta;
+        $this->state->registerMetaTag($meta, $key);
     }
 
     /**
@@ -355,7 +310,7 @@ final class WebView implements ViewInterface
      */
     public function registerLink(array $attributes, int $position = self::POSITION_HEAD, ?string $key = null): void
     {
-        $this->registerLinkTag(Html::link()->attributes($attributes), $position, $key);
+        $this->state->registerLink($attributes, $position, $key);
     }
 
     /**
@@ -365,9 +320,7 @@ final class WebView implements ViewInterface
      */
     public function registerLinkTag(Link $link, int $position = self::POSITION_HEAD, ?string $key = null): void
     {
-        $key === null
-            ? $this->linkTags[$position][] = $link
-            : $this->linkTags[$position][$key] = $link;
+        $this->state->registerLinkTag($link, $position, $key);
     }
 
     /**
@@ -384,8 +337,7 @@ final class WebView implements ViewInterface
         array $attributes = [],
         ?string $key = null
     ): void {
-        $key = $key ?: md5($css);
-        $this->css[$position][$key] = $attributes === [] ? $css : Html::style($css, $attributes);
+        $this->state->registerCss($css, $position, $attributes, $key);
     }
 
     /**
@@ -401,12 +353,7 @@ final class WebView implements ViewInterface
         array $attributes = [],
         ?string $key = null
     ): void {
-        $css = file_get_contents($path);
-        if ($css === false) {
-            throw new RuntimeException(sprintf('File %s could not be read.', $path));
-        }
-
-        $this->registerCss($css, $position, $attributes, $key);
+        $this->state->registerCssFromFile($path, $position, $attributes, $key);
     }
 
     /**
@@ -416,8 +363,7 @@ final class WebView implements ViewInterface
      */
     public function registerStyleTag(Style $style, int $position = self::POSITION_HEAD, ?string $key = null): void
     {
-        $key = $key ?: md5($style->render());
-        $this->css[$position][$key] = $style;
+        $this->state->registerStyleTag($style, $position, $key);
     }
 
     /**
@@ -430,8 +376,8 @@ final class WebView implements ViewInterface
      * @param string $url The CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
      * for the supported options.
-     * @param string|null $key The key that identifies the CSS script file. If null, it will use $url as the key. If two CSS
-     * files are registered with the same key, the latter will overwrite the former.
+     * @param string|null $key The key that identifies the CSS script file. If null, it will use $url as the key.
+     * If two CSS files are registered with the same key, the latter will overwrite the former.
      */
     public function registerCssFile(
         string $url,
@@ -439,11 +385,27 @@ final class WebView implements ViewInterface
         array $options = [],
         string $key = null
     ): void {
-        if (!$this->isValidCssPosition($position)) {
-            throw new InvalidArgumentException('Invalid position of CSS file.');
-        }
+        $this->state->registerCssFile($url, $position, $options, $key);
+    }
 
-        $this->cssFiles[$position][$key ?: $url] = Html::cssFile($url, $options)->render();
+    /**
+     * It processes the CSS configuration generated by the asset manager and converts it into HTML code.
+     *
+     * @param array $cssFiles
+     */
+    public function addCssFiles(array $cssFiles): void
+    {
+        $this->state->addCssFiles($cssFiles);
+    }
+
+    /**
+     * It processes the CSS strings generated by the asset manager.
+     *
+     * @param array $cssStrings
+     */
+    public function addCssStrings(array $cssStrings): void
+    {
+        $this->state->addCssStrings($cssStrings);
     }
 
     /**
@@ -459,13 +421,12 @@ final class WebView implements ViewInterface
      * - {@see POSITION_END}: at the end of the body section. This is the default value.
      * - {@see POSITION_LOAD}: executed when HTML page is completely loaded.
      * - {@see POSITION_READY}: executed when HTML document composition is ready.
-     * @param string|null $key The key that identifies the JS code block. If null, it will use $js as the key. If two JS code
-     * blocks are registered with the same key, the latter will overwrite the former.
+     * @param string|null $key The key that identifies the JS code block. If null, it will use $js as the key.
+     * If two JS code blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerJs(string $js, int $position = self::POSITION_END, ?string $key = null): void
     {
-        $key = $key ?: md5($js);
-        $this->js[$position][$key] = $js;
+        $this->state->registerJs($js, $position, $key);
     }
 
     /**
@@ -475,8 +436,7 @@ final class WebView implements ViewInterface
      */
     public function registerScriptTag(Script $script, int $position = self::POSITION_END, ?string $key = null): void
     {
-        $key = $key ?: md5($script->render());
-        $this->js[$position][$key] = $script;
+        $this->state->registerScriptTag($script, $position, $key);
     }
 
     /**
@@ -496,8 +456,8 @@ final class WebView implements ViewInterface
      *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
      * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
-     * @param string|null $key The key that identifies the JS script file. If null, it will use $url as the key. If two JS
-     * files are registered with the same key at the same position, the latter will overwrite the former.
+     * @param string|null $key The key that identifies the JS script file. If null, it will use $url as the key.
+     * If two JS files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
      * position option will not override each other.
      */
@@ -507,11 +467,7 @@ final class WebView implements ViewInterface
         array $options = [],
         string $key = null
     ): void {
-        if (!$this->isValidJsPosition($position)) {
-            throw new InvalidArgumentException('Invalid position of JS file.');
-        }
-
-        $this->jsFiles[$position][$key ?: $url] = Html::javaScriptFile($url, $options)->render();
+        $this->state->registerJsFile($url, $position, $options, $key);
     }
 
     /**
@@ -534,40 +490,7 @@ final class WebView implements ViewInterface
      */
     public function registerJsVar(string $name, $value, int $position = self::POSITION_HEAD): void
     {
-        $js = sprintf('var %s = %s;', $name, Json::htmlEncode($value));
-        $this->registerJs($js, $position, $name);
-    }
-
-    /**
-     * It processes the CSS configuration generated by the asset manager and converts it into HTML code.
-     *
-     * @param array $cssFiles
-     */
-    public function addCssFiles(array $cssFiles): void
-    {
-        /** @var mixed $value */
-        foreach ($cssFiles as $key => $value) {
-            $this->registerCssFileByConfig(
-                is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value],
-            );
-        }
-    }
-
-    /**
-     * It processes the CSS strings generated by the asset manager.
-     *
-     * @param array $cssStrings
-     */
-    public function addCssStrings(array $cssStrings): void
-    {
-        /** @var mixed $value */
-        foreach ($cssStrings as $key => $value) {
-            $this->registerCssStringByConfig(
-                is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value, self::POSITION_HEAD],
-            );
-        }
+        $this->state->registerJsVar($name, $value, $position);
     }
 
     /**
@@ -577,13 +500,7 @@ final class WebView implements ViewInterface
      */
     public function addJsFiles(array $jsFiles): void
     {
-        /** @var mixed $value */
-        foreach ($jsFiles as $key => $value) {
-            $this->registerJsFileByConfig(
-                is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value],
-            );
-        }
+        $this->state->addJsFiles($jsFiles);
     }
 
     /**
@@ -595,13 +512,7 @@ final class WebView implements ViewInterface
      */
     public function addJsStrings(array $jsStrings): void
     {
-        /** @var mixed $value */
-        foreach ($jsStrings as $key => $value) {
-            $this->registerJsStringByConfig(
-                is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value, self::POSITION_END]
-            );
-        }
+        $this->state->addJsStrings($jsStrings);
     }
 
     /**
@@ -613,51 +524,7 @@ final class WebView implements ViewInterface
      */
     public function addJsVars(array $jsVars): void
     {
-        /** @var mixed $value */
-        foreach ($jsVars as $key => $value) {
-            if (is_string($key)) {
-                $this->registerJsVar($key, $value, self::POSITION_HEAD);
-            } else {
-                $this->registerJsVarByConfig((array) $value);
-            }
-        }
-    }
-
-    /**
-     * Get title in views.
-     *
-     * in Layout:
-     *
-     * ```php
-     * <title><?= Html::encode($this->getTitle()) ?></title>
-     * ```
-     *
-     * in Views:
-     *
-     * ```php
-     * $this->setTitle('Web Application - Yii 3.0.');
-     * ```
-     *
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
-     * Set title in views.
-     *
-     * {@see getTitle()}
-     *
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setTitle(string $value): self
-    {
-        $this->title = $value;
-        return $this;
+        $this->state->addJsVars($jsVars);
     }
 
     protected function createBeforeRenderEvent(string $viewFile, array $parameters): StoppableEventInterface
@@ -684,23 +551,23 @@ final class WebView implements ViewInterface
     {
         $lines = [];
 
-        if (!empty($this->metaTags)) {
-            $lines[] = implode("\n", $this->metaTags);
+        if (!empty($this->state->getMetaTags())) {
+            $lines[] = implode("\n", $this->state->getMetaTags());
         }
-        if (!empty($this->linkTags[self::POSITION_HEAD])) {
-            $lines[] = implode("\n", $this->linkTags[self::POSITION_HEAD]);
+        if (!empty($this->state->getLinkTags()[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->state->getLinkTags()[self::POSITION_HEAD]);
         }
-        if (!empty($this->cssFiles[self::POSITION_HEAD])) {
-            $lines[] = implode("\n", $this->cssFiles[self::POSITION_HEAD]);
+        if (!empty($this->state->getCssFiles()[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->state->getCssFiles()[self::POSITION_HEAD]);
         }
-        if (!empty($this->css[self::POSITION_HEAD])) {
-            $lines[] = $this->generateCss($this->css[self::POSITION_HEAD]);
+        if (!empty($this->state->getCss()[self::POSITION_HEAD])) {
+            $lines[] = $this->generateCss($this->state->getCss()[self::POSITION_HEAD]);
         }
-        if (!empty($this->jsFiles[self::POSITION_HEAD])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POSITION_HEAD]);
+        if (!empty($this->state->getJsFiles()[self::POSITION_HEAD])) {
+            $lines[] = implode("\n", $this->state->getJsFiles()[self::POSITION_HEAD]);
         }
-        if (!empty($this->js[self::POSITION_HEAD])) {
-            $lines[] = $this->generateJs($this->js[self::POSITION_HEAD]);
+        if (!empty($this->state->getJs()[self::POSITION_HEAD])) {
+            $lines[] = $this->generateJs($this->state->getJs()[self::POSITION_HEAD]);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -717,20 +584,20 @@ final class WebView implements ViewInterface
     {
         $lines = [];
 
-        if (!empty($this->linkTags[self::POSITION_BEGIN])) {
-            $lines[] = implode("\n", $this->linkTags[self::POSITION_BEGIN]);
+        if (!empty($this->state->getLinkTags()[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->state->getLinkTags()[self::POSITION_BEGIN]);
         }
-        if (!empty($this->cssFiles[self::POSITION_BEGIN])) {
-            $lines[] = implode("\n", $this->cssFiles[self::POSITION_BEGIN]);
+        if (!empty($this->state->getCssFiles()[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->state->getCssFiles()[self::POSITION_BEGIN]);
         }
-        if (!empty($this->css[self::POSITION_BEGIN])) {
-            $lines[] = $this->generateCss($this->css[self::POSITION_BEGIN]);
+        if (!empty($this->state->getCss()[self::POSITION_BEGIN])) {
+            $lines[] = $this->generateCss($this->state->getCss()[self::POSITION_BEGIN]);
         }
-        if (!empty($this->jsFiles[self::POSITION_BEGIN])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POSITION_BEGIN]);
+        if (!empty($this->state->getJsFiles()[self::POSITION_BEGIN])) {
+            $lines[] = implode("\n", $this->state->getJsFiles()[self::POSITION_BEGIN]);
         }
-        if (!empty($this->js[self::POSITION_BEGIN])) {
-            $lines[] = $this->generateJs($this->js[self::POSITION_BEGIN]);
+        if (!empty($this->state->getJs()[self::POSITION_BEGIN])) {
+            $lines[] = $this->generateJs($this->state->getJs()[self::POSITION_BEGIN]);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -751,198 +618,47 @@ final class WebView implements ViewInterface
     {
         $lines = [];
 
-        if (!empty($this->linkTags[self::POSITION_END])) {
-            $lines[] = implode("\n", $this->linkTags[self::POSITION_END]);
+        if (!empty($this->state->getLinkTags()[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->state->getLinkTags()[self::POSITION_END]);
         }
-        if (!empty($this->cssFiles[self::POSITION_END])) {
-            $lines[] = implode("\n", $this->cssFiles[self::POSITION_END]);
+        if (!empty($this->state->getCssFiles()[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->state->getCssFiles()[self::POSITION_END]);
         }
-        if (!empty($this->css[self::POSITION_END])) {
-            $lines[] = $this->generateCss($this->css[self::POSITION_END]);
+        if (!empty($this->state->getCss()[self::POSITION_END])) {
+            $lines[] = $this->generateCss($this->state->getCss()[self::POSITION_END]);
         }
-        if (!empty($this->jsFiles[self::POSITION_END])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POSITION_END]);
+        if (!empty($this->state->getJsFiles()[self::POSITION_END])) {
+            $lines[] = implode("\n", $this->state->getJsFiles()[self::POSITION_END]);
         }
 
         if ($ajaxMode) {
             $scripts = array_merge(
-                $this->js[self::POSITION_END] ?? [],
-                $this->js[self::POSITION_READY] ?? [],
-                $this->js[self::POSITION_LOAD] ?? [],
+                $this->state->getJs()[self::POSITION_END] ?? [],
+                $this->state->getJs()[self::POSITION_READY] ?? [],
+                $this->state->getJs()[self::POSITION_LOAD] ?? [],
             );
             if (!empty($scripts)) {
                 $lines[] = $this->generateJs($scripts);
             }
         } else {
-            if (!empty($this->js[self::POSITION_END])) {
-                $lines[] = $this->generateJs($this->js[self::POSITION_END]);
+            if (!empty($this->state->getJs()[self::POSITION_END])) {
+                $lines[] = $this->generateJs($this->state->getJs()[self::POSITION_END]);
             }
-            if (!empty($this->js[self::POSITION_READY])) {
+            if (!empty($this->state->getJs()[self::POSITION_READY])) {
                 $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" .
-                    $this->generateJsWithoutTag($this->js[self::POSITION_READY]) .
+                    $this->generateJsWithoutTag($this->state->getJs()[self::POSITION_READY]) .
                     "\n});";
                 $lines[] = Html::script($js)->render();
             }
-            if (!empty($this->js[self::POSITION_LOAD])) {
+            if (!empty($this->state->getJs()[self::POSITION_LOAD])) {
                 $js = "window.addEventListener('load', function(event) {\n" .
-                    $this->generateJsWithoutTag($this->js[self::POSITION_LOAD]) .
+                    $this->generateJsWithoutTag($this->state->getJs()[self::POSITION_LOAD]) .
                     "\n});";
                 $lines[] = Html::script($js)->render();
             }
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    private function registerCssFileByConfig(?string $key, array $config): void
-    {
-        if (!array_key_exists(0, $config)) {
-            throw new InvalidArgumentException('Do not set CSS file.');
-        }
-        $file = $config[0];
-
-        if (!is_string($file)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'CSS file should be string. Got %s.',
-                    $this->getType($file),
-                )
-            );
-        }
-
-        $position = (int) ($config[1] ?? self::POSITION_HEAD);
-
-        unset($config[0], $config[1]);
-        $this->registerCssFile($file, $position, $config, $key);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    private function registerCssStringByConfig(?string $key, array $config): void
-    {
-        if (!array_key_exists(0, $config)) {
-            throw new InvalidArgumentException('Do not set CSS string.');
-        }
-        $css = $config[0];
-
-        if (!is_string($css) && !($css instanceof Style)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'CSS string should be string or instance of \\' . Style::class . '. Got %s.',
-                    $this->getType($css),
-                )
-            );
-        }
-
-        $position = $config[1] ?? self::POSITION_HEAD;
-        if (!$this->isValidCssPosition($position)) {
-            throw new InvalidArgumentException('Invalid position of CSS strings.');
-        }
-
-        unset($config[0], $config[1]);
-        if ($config !== []) {
-            $css = ($css instanceof Style ? $css : Html::style($css))->attributes($config);
-        }
-
-        is_string($css)
-            ? $this->registerCss($css, $position, [], $key)
-            : $this->registerStyleTag($css, $position, $key);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    private function registerJsFileByConfig(?string $key, array $config): void
-    {
-        if (!array_key_exists(0, $config)) {
-            throw new InvalidArgumentException('Do not set JS file.');
-        }
-        $file = $config[0];
-
-        if (!is_string($file)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'JS file should be string. Got %s.',
-                    $this->getType($file),
-                )
-            );
-        }
-
-        $position = (int) ($config[1] ?? self::POSITION_END);
-
-        unset($config[0], $config[1]);
-        $this->registerJsFile($file, $position, $config, $key);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    private function registerJsStringByConfig(?string $key, array $config): void
-    {
-        if (!array_key_exists(0, $config)) {
-            throw new InvalidArgumentException('Do not set JS string.');
-        }
-        $js = $config[0];
-
-        if (!is_string($js) && !($js instanceof Script)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'JS string should be string or instance of \\' . Script::class . '. Got %s.',
-                    $this->getType($js),
-                )
-            );
-        }
-
-        $position = $config[1] ?? self::POSITION_END;
-        if (!$this->isValidJsPosition($position)) {
-            throw new InvalidArgumentException('Invalid position of JS strings.');
-        }
-
-        unset($config[0], $config[1]);
-        if ($config !== []) {
-            $js = ($js instanceof Script ? $js : Html::script($js))->attributes($config);
-        }
-
-        is_string($js)
-            ? $this->registerJs($js, $position, $key)
-            : $this->registerScriptTag($js, $position, $key);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    private function registerJsVarByConfig(array $config): void
-    {
-        if (!array_key_exists(0, $config)) {
-            throw new InvalidArgumentException('Do not set JS variable name.');
-        }
-        $key = $config[0];
-
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'JS variable name should be string. Got %s.',
-                    $this->getType($key),
-                )
-            );
-        }
-
-        if (!array_key_exists(1, $config)) {
-            throw new InvalidArgumentException('Do not set JS variable value.');
-        }
-        /** @var mixed */
-        $value = $config[1];
-
-        $position = $config[2] ?? self::POSITION_HEAD;
-        if (!$this->isValidJsPosition($position)) {
-            throw new InvalidArgumentException('Invalid position of JS variable.');
-        }
-
-        $this->registerJsVar($key, $value, $position);
     }
 
     /**
@@ -1007,51 +723,5 @@ final class WebView implements ViewInterface
             $js[] = $item instanceof Script ? $item->getContent() : $item;
         }
         return implode("\n", $js);
-    }
-
-    /**
-     * @param mixed $position
-     *
-     * @psalm-assert =int $position
-     */
-    private function isValidCssPosition($position): bool
-    {
-        return in_array(
-            $position,
-            [
-                self::POSITION_HEAD,
-                self::POSITION_BEGIN,
-                self::POSITION_END,
-            ],
-            true,
-        );
-    }
-
-    /**
-     * @param mixed $position
-     *
-     * @psalm-assert =int $position
-     */
-    private function isValidJsPosition($position): bool
-    {
-        return in_array(
-            $position,
-            [
-                self::POSITION_HEAD,
-                self::POSITION_BEGIN,
-                self::POSITION_END,
-                self::POSITION_READY,
-                self::POSITION_LOAD,
-            ],
-            true,
-        );
-    }
-
-    /**
-     * @param mixed $value
-     */
-    private function getType($value): string
-    {
-        return is_object($value) ? get_class($value) : gettype($value);
     }
 }

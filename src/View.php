@@ -24,6 +24,8 @@ use function ob_start;
  * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
  *
  * @psalm-suppress PropertyNotSetInConstructor
+ *
+ * @property ViewState $state
  */
 final class View implements ViewInterface
 {
@@ -42,14 +44,6 @@ final class View implements ViewInterface
         $this->state = $state;
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
-    }
-
-    /**
-     * Clears the data for working with the event loop.
-     */
-    public function clear(): void
-    {
-        $this->viewFiles = [];
     }
 
     /**

@@ -619,4 +619,12 @@ trait ViewTrait
         /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
     }
+
+    /**
+     * Clears the data for working with the event loop.
+     */
+    public function clear(): void
+    {
+        $this->viewFiles = [];
+    }
 }
