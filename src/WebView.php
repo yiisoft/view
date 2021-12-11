@@ -35,8 +35,6 @@ use function strtr;
  *
  * WebView provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
  *
- * @psalm-suppress PropertyNotSetInConstructor
- *
  * @property WebViewState $state
  */
 final class WebView implements ViewInterface

@@ -23,8 +23,6 @@ use function ob_start;
  *
  * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
  *
- * @psalm-suppress PropertyNotSetInConstructor
- *
  * @property ViewState $state
  */
 final class View implements ViewInterface
