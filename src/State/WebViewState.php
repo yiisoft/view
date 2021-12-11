@@ -7,4 +7,10 @@ namespace Yiisoft\View\State;
 final class WebViewState
 {
     use StateTrait;
+
+    public function clear(): void
+    {
+        $this->parameters = [];
+        $this->blocks = [];
+    }
 }

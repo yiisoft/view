@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Definitions\DynamicReference;
+use Yiisoft\View\State\WebViewState;
 use Yiisoft\View\Theme;
 use Yiisoft\View\WebView;
 
@@ -24,8 +25,13 @@ return [
         );
     },
 
+    WebViewState::class => [
+        'reset' => function () {
+            $this->clear();
+        },
+    ],
+
     WebView::class => [
-        'class' => WebView::class,
         '__construct()' => [
             'basePath' => DynamicReference::to(
                 static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
