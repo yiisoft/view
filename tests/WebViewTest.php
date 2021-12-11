@@ -116,6 +116,24 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
+    public function testRegisterStyleTag(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $style = Html::style('H1 { color: red; }', ['id' => 'H1Css']);
+
+        $webView->registerStyleTag($style);
+        $html = $webView->render('/positions.php');
+
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD]' . $style->render() . '[/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY][/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]';
+
+        $this->assertSame($expected, $html);
+    }
+
     public function dataRegisterCssFile(): array
     {
         return [
