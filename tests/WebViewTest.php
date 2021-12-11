@@ -183,21 +183,6 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
-    public function testPlaceholders(): void
-    {
-        $webView = null;
-        $eventDispatcher = new SimpleEventDispatcher(static function ($event) use (&$webView) {
-            if ($event instanceof PageEnd) {
-                $webView->setPlaceholderSalt((string) time());
-            }
-        });
-        $webView = TestHelper::createWebView($eventDispatcher);
-        $webView->setPlaceholderSalt('apple');
-        $signature = $webView->getPlaceholderSignature();
-        $html = $webView->render('//layout.php', ['content' => 'content']);
-        $this->assertStringContainsString($signature, $html);
-    }
-
     public function testRegisterMeta(): void
     {
         $webView = TestHelper::createWebView();
@@ -751,6 +736,5 @@ final class WebViewTest extends TestCase
         $this->assertSame($view, $view->setBlock('test', ''));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
-        $this->assertSame($view, $view->setPlaceholderSalt(''));
     }
 }

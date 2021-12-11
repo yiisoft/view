@@ -190,6 +190,20 @@ trait ViewTrait
     }
 
     /**
+     * Returns a new instance with specified salt for the placeholder signature {@see getPlaceholderSignature()}.
+     *
+     * @param string $salt The placeholder salt.
+     *
+     * @return static
+     */
+    public function withPlaceholderSalt(string $salt): self
+    {
+        $new = clone $this;
+        $new->setPlaceholderSalt($salt);
+        return $new;
+    }
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
@@ -399,19 +413,6 @@ trait ViewTrait
     }
 
     /**
-     * Sets a salt for the placeholder signature {@see getPlaceholderSignature()}.
-     *
-     * @param string $salt The placeholder salt.
-     *
-     * @return static
-     */
-    public function setPlaceholderSalt(string $salt): self
-    {
-        $this->placeholderSignature = dechex(crc32($salt));
-        return $this;
-    }
-
-    /**
      * Renders a view.
      *
      * The view to be rendered can be specified in one of the following formats:
@@ -604,6 +605,11 @@ trait ViewTrait
         $event = $this->eventDispatcher->dispatch($event);
 
         return $event->getResult();
+    }
+
+    private function setPlaceholderSalt(string $salt): void
+    {
+        $this->placeholderSignature = dechex(crc32($salt));
     }
 
     /**

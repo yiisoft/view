@@ -80,6 +80,15 @@ interface ViewInterface
     public function withContext(ViewContextInterface $context): self;
 
     /**
+     * Returns a new instance with specified salt for the placeholder signature {@see getPlaceholderSignature()}.
+     *
+     * @param string $salt The placeholder salt.
+     *
+     * @return static
+     */
+    public function withPlaceholderSalt(string $salt): self;
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
@@ -199,15 +208,6 @@ interface ViewInterface
      * @return string The placeholder signature.
      */
     public function getPlaceholderSignature(): string;
-
-    /**
-     * Sets a salt for the placeholder signature {@see getPlaceholderSignature()}.
-     *
-     * @param string $salt The placeholder salt.
-     *
-     * @return static
-     */
-    public function setPlaceholderSalt(string $salt): self;
 
     /**
      * Renders a view.

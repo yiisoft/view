@@ -374,9 +374,8 @@ PHP
 
     public function testPlaceholderSalt(): void
     {
-        $view = TestHelper::createView();
-
-        $view->setPlaceholderSalt('apple');
+        $view = TestHelper::createView()
+            ->withPlaceholderSalt('apple');
 
         $this->assertSame(
             dechex(crc32('apple')),
@@ -406,7 +405,6 @@ PHP
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
         $this->assertSame($view, $view->addToParameter('test-array'));
-        $this->assertSame($view, $view->setPlaceholderSalt(''));
     }
 
     public function testClear(): void
@@ -434,6 +432,7 @@ PHP
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
+        $this->assertNotSame($view, $view->withPlaceholderSalt(''));
     }
 
     private function createViewWithBasePath(string $basePath): View
