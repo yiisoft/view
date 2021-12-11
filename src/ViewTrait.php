@@ -11,17 +11,17 @@ use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
+use Yiisoft\View\State\StateTrait;
 
-use function array_key_exists;
 use function array_merge;
 use function array_pop;
 use function basename;
+use function call_user_func_array;
 use function crc32;
 use function dechex;
 use function dirname;
 use function end;
 use function func_get_args;
-use function is_array;
 use function is_file;
 use function pathinfo;
 use function substr;
@@ -30,6 +30,8 @@ use function substr;
  * ViewTrait could be used as a base implementation of {@see ViewInterface}.
  *
  * @internal
+ *
+ * @property StateTrait $state
  */
 trait ViewTrait
 {
@@ -51,35 +53,12 @@ trait ViewTrait
     private array $renderers = [];
 
     /**
-     * @var array Parameters that are common for all view templates.
-     * @psalm-var array<string, mixed>
-     */
-    private array $parameters = [];
-
-    /**
-     * @var array Named content blocks that are common for all view templates.
-     * @psalm-var array<string, string>
-     */
-    private array $blocks = [];
-
-    /**
      * @var array The view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
      *
      * @psalm-var array<array-key, array<string, string>>
      */
     private array $viewFiles = [];
-
-    /**
-     * @param string $basePath The full path to the base directory of views.
-     * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
-     */
-    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->basePath = $basePath;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->setPlaceholderSalt(__DIR__);
-    }
 
     /**
      * Returns a new instance with the specified theme instance.
@@ -246,10 +225,7 @@ trait ViewTrait
      */
     public function setParameters(array $parameters): self
     {
-        /** @var mixed $value */
-        foreach ($parameters as $id => $value) {
-            $this->setParameter($id, $value);
-        }
+        $this->state->setParameters($parameters);
         return $this;
     }
 
@@ -263,7 +239,7 @@ trait ViewTrait
      */
     public function setParameter(string $id, $value): self
     {
-        $this->parameters[$id] = $value;
+        $this->state->setParameter($id, $value);
         return $this;
     }
 
@@ -280,16 +256,7 @@ trait ViewTrait
      */
     public function addToParameter(string $id, ...$value): self
     {
-        /** @var mixed $array */
-        $array = $this->parameters[$id] ?? [];
-        if (!is_array($array)) {
-            throw new InvalidArgumentException(
-                sprintf('The "%s" parameter already exists and is not an array.', $id)
-            );
-        }
-
-        $this->setParameter($id, array_merge($array, $value));
-
+        $this->state->addToParameter($id, ...$value);
         return $this;
     }
 
@@ -297,10 +264,13 @@ trait ViewTrait
      * Removes a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
+     *
+     * @return static
      */
-    public function removeParameter(string $id): void
+    public function removeParameter(string $id): self
     {
-        unset($this->parameters[$id]);
+        $this->state->removeParameter($id);
+        return $this;
     }
 
     /**
@@ -315,16 +285,7 @@ trait ViewTrait
      */
     public function getParameter(string $id)
     {
-        if (isset($this->parameters[$id])) {
-            return $this->parameters[$id];
-        }
-
-        $args = func_get_args();
-        if (array_key_exists(1, $args)) {
-            return $args[1];
-        }
-
-        throw new InvalidArgumentException('Parameter "' . $id . '" not found.');
+        return call_user_func_array([$this->state, 'getParameter'], func_get_args());
     }
 
     /**
@@ -336,7 +297,7 @@ trait ViewTrait
      */
     public function hasParameter(string $id): bool
     {
-        return isset($this->parameters[$id]);
+        return $this->state->hasParameter($id);
     }
 
     /**
@@ -349,7 +310,7 @@ trait ViewTrait
      */
     public function setBlock(string $id, string $content): self
     {
-        $this->blocks[$id] = $content;
+        $this->state->setBlock($id, $content);
         return $this;
     }
 
@@ -357,10 +318,13 @@ trait ViewTrait
      * Removes a content block.
      *
      * @param string $id The unique identifier of the block.
+     *
+     * @return static
      */
-    public function removeBlock(string $id): void
+    public function removeBlock(string $id): self
     {
-        unset($this->blocks[$id]);
+        $this->state->removeBlock($id);
+        return $this;
     }
 
     /**
@@ -372,11 +336,7 @@ trait ViewTrait
      */
     public function getBlock(string $id): string
     {
-        if (isset($this->blocks[$id])) {
-            return $this->blocks[$id];
-        }
-
-        throw new InvalidArgumentException('Block "' . $id . '" not found.');
+        return $this->state->getBlock($id);
     }
 
     /**
@@ -388,7 +348,7 @@ trait ViewTrait
      */
     public function hasBlock(string $id): bool
     {
-        return isset($this->blocks[$id]);
+        return $this->state->hasBlock($id);
     }
 
     /**
@@ -462,7 +422,7 @@ trait ViewTrait
      */
     public function renderFile(string $viewFile, array $parameters = []): string
     {
-        $parameters = array_merge($this->parameters, $parameters);
+        $parameters = array_merge($this->state->getParameters(), $parameters);
 
         // TODO: these two match now
         $requestedFile = $viewFile;

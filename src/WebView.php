@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 use RuntimeException;
 use Yiisoft\Html\Html;
@@ -21,6 +22,8 @@ use Yiisoft\View\Event\WebView\BodyEnd;
 use Yiisoft\View\Event\WebView\Head;
 use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
+
+use Yiisoft\View\State\WebViewState;
 
 use function array_key_exists;
 use function array_merge;
@@ -49,6 +52,8 @@ use function strtr;
 final class WebView implements ViewInterface
 {
     use ViewTrait;
+
+    private WebViewState $state;
 
     /**
      * This means the location is in the head section.
@@ -144,6 +149,19 @@ final class WebView implements ViewInterface
      * {@see registerJsFile()}
      */
     private array $jsFiles = [];
+
+    /**
+     * @param string $basePath The full path to the base directory of views.
+     * @param WebViewState $state
+     * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
+     */
+    public function __construct(string $basePath, WebViewState $state, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->basePath = $basePath;
+        $this->state = $state;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->setPlaceholderSalt(__DIR__);
+    }
 
     /**
      * Marks the position of an HTML head section.

@@ -136,8 +136,10 @@ interface ViewInterface
      * Removes a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
+     *
+     * @return static
      */
-    public function removeParameter(string $id): void;
+    public function removeParameter(string $id): self;
 
     /**
      * Gets a common parameter value by ID.
@@ -174,8 +176,10 @@ interface ViewInterface
      * Removes a content block.
      *
      * @param string $id The unique identifier of the block.
+     *
+     * @return static
      */
-    public function removeBlock(string $id): void;
+    public function removeBlock(string $id): self;
 
     /**
      * Gets content of the block by ID.

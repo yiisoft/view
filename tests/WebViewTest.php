@@ -19,8 +19,6 @@ use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\WebView;
 
-use function time;
-
 final class WebViewTest extends TestCase
 {
     use TestTrait;

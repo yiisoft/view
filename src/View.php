@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Event\View\AfterRender;
 use Yiisoft\View\Event\View\BeforeRender;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
+
+use Yiisoft\View\State\ViewState;
 
 use function ob_end_flush;
 use function ob_implicit_flush;
@@ -25,6 +28,21 @@ use function ob_start;
 final class View implements ViewInterface
 {
     use ViewTrait;
+
+    private ViewState $state;
+
+    /**
+     * @param string $basePath The full path to the base directory of views.
+     * @param ViewState $state
+     * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
+     */
+    public function __construct(string $basePath, ViewState $state, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->basePath = $basePath;
+        $this->state = $state;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->setPlaceholderSalt(__DIR__);
+    }
 
     /**
      * Clears the data for working with the event loop.

@@ -14,6 +14,7 @@ use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\PhpTemplateRenderer;
+use Yiisoft\View\State\ViewState;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
@@ -437,7 +438,7 @@ PHP
 
     private function createViewWithBasePath(string $basePath): View
     {
-        return new View($basePath, new SimpleEventDispatcher());
+        return new View($basePath, new ViewState(), new SimpleEventDispatcher());
     }
 
     private function createContext(string $viewPath): ViewContextInterface
