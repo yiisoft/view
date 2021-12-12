@@ -753,4 +753,15 @@ final class WebViewTest extends TestCase
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
     }
+
+    public function testCommonStateForClonedWebViews(): void
+    {
+        $view = TestHelper::createWebView();
+        $view->setParameter('test', 42);
+
+        $clonedView = $view->withLanguage('ru');
+        $clonedView->setParameter('test', 7);
+
+        $this->assertSame(7, $view->getParameter('test'));
+    }
 }

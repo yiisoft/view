@@ -422,6 +422,17 @@ PHP
         $this->assertNull($view->getViewFile());
     }
 
+    public function testCommonStateForClonedViews(): void
+    {
+        $view = TestHelper::createView();
+        $view->setParameter('test', 42);
+
+        $clonedView = $view->withLanguage('ru');
+        $clonedView->setParameter('test', 7);
+
+        $this->assertSame(7, $view->getParameter('test'));
+    }
+
     public function testImmutability(): void
     {
         $view = TestHelper::createView();
