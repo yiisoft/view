@@ -34,8 +34,6 @@ use function strtr;
  * WebView represents an instance of a view for use in a WEB environment.
  *
  * WebView provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
- *
- * @property WebViewState $state
  */
 final class WebView implements ViewInterface
 {
@@ -86,13 +84,12 @@ final class WebView implements ViewInterface
 
     /**
      * @param string $basePath The full path to the base directory of views.
-     * @param WebViewState $state
      * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
      */
-    public function __construct(string $basePath, WebViewState $state, EventDispatcherInterface $eventDispatcher)
+    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher)
     {
         $this->basePath = $basePath;
-        $this->state = $state;
+        $this->state = new WebViewState();
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
     }

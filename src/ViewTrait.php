@@ -11,7 +11,6 @@ use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
-use Yiisoft\View\State\StateTrait;
 
 use function array_merge;
 use function array_pop;
@@ -30,8 +29,6 @@ use function substr;
  * ViewTrait could be used as a base implementation of {@see ViewInterface}.
  *
  * @internal
- *
- * @property StateTrait $state
  */
 trait ViewTrait
 {
@@ -500,6 +497,15 @@ trait ViewTrait
     }
 
     /**
+     * Clears the data for working with the event loop.
+     */
+    public function clear(): void
+    {
+        $this->viewFiles = [];
+        $this->state->clear();
+    }
+
+    /**
      * Creates an event that occurs before rendering.
      *
      * @param string $viewFile The view file to be rendered.
@@ -618,13 +624,5 @@ trait ViewTrait
     {
         /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
-    }
-
-    /**
-     * Clears the data for working with the event loop.
-     */
-    public function clear(): void
-    {
-        $this->viewFiles = [];
     }
 }

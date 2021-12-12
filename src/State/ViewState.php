@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\State;
 
+/**
+ * @internal
+ */
 final class ViewState
 {
     use StateTrait;

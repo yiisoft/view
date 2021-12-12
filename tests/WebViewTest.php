@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
 use Yiisoft\Html\Html;
+use Yiisoft\Html\Tag\Link;
+use Yiisoft\Html\Tag\Meta;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\WebView\BodyBegin;
 use Yiisoft\View\Event\WebView\BodyEnd;
@@ -763,5 +766,40 @@ final class WebViewTest extends TestCase
         $clonedView->setParameter('test', 7);
 
         $this->assertSame(7, $view->getParameter('test'));
+    }
+
+    public function testClear(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->setBlock('name', 'Mike');
+        $webView->setParameter('age', 42);
+        $webView->setTitle('Hello, World!');
+        $webView->registerMetaTag(Meta::tag());
+        $webView->registerLinkTag(Link::tag());
+        $webView->registerCss('h1 { color: red; }');
+        $webView->registerCssFile('./main.css');
+        $webView->registerJs('alert(42);');
+        $webView->registerJsFile('./main.js');
+
+        try {
+            $webView->renderFile(__DIR__ . '/public/view/error.php');
+        } catch (Exception $e) {
+        }
+
+        $webView->clear();
+
+        $this->assertNull($webView->getViewFile());
+        $this->assertFalse($webView->hasBlock('name'));
+        $this->assertFalse($webView->hasParameter('age'));
+        $this->assertSame('', $webView->getTitle());
+
+        $this->assertSame(
+            '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD][/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY][/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]',
+            $webView->render('/positions.php')
+        );
     }
 }

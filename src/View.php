@@ -11,7 +11,6 @@ use Yiisoft\View\Event\View\AfterRender;
 use Yiisoft\View\Event\View\BeforeRender;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
-
 use Yiisoft\View\State\ViewState;
 
 use function ob_end_flush;
@@ -22,8 +21,6 @@ use function ob_start;
  * View represents an instance of a view for use in an any environment.
  *
  * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
- *
- * @property ViewState $state
  */
 final class View implements ViewInterface
 {
@@ -33,13 +30,12 @@ final class View implements ViewInterface
 
     /**
      * @param string $basePath The full path to the base directory of views.
-     * @param ViewState $state
      * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
      */
-    public function __construct(string $basePath, ViewState $state, EventDispatcherInterface $eventDispatcher)
+    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher)
     {
         $this->basePath = $basePath;
-        $this->state = $state;
+        $this->state = new ViewState();
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
     }

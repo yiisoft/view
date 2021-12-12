@@ -14,7 +14,6 @@ use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\PhpTemplateRenderer;
-use Yiisoft\View\State\ViewState;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
@@ -411,6 +410,8 @@ PHP
     public function testClear(): void
     {
         $view = TestHelper::createView();
+        $view->setBlock('name', 'Mike');
+        $view->setParameter('age', 42);
 
         try {
             $view->renderFile(__DIR__ . '/public/view/error.php');
@@ -420,6 +421,8 @@ PHP
         $view->clear();
 
         $this->assertNull($view->getViewFile());
+        $this->assertFalse($view->hasBlock('name'));
+        $this->assertFalse($view->hasParameter('age'));
     }
 
     public function testCommonStateForClonedViews(): void
@@ -449,7 +452,7 @@ PHP
 
     private function createViewWithBasePath(string $basePath): View
     {
-        return new View($basePath, new ViewState(), new SimpleEventDispatcher());
+        return new View($basePath, new SimpleEventDispatcher());
     }
 
     private function createContext(string $viewPath): ViewContextInterface
