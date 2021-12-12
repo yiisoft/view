@@ -548,9 +548,9 @@ final class WebView implements ViewInterface
      *
      * @param array $jsStrings
      *
-     * @return static
-     *
      * @throws InvalidArgumentException
+     *
+     * @return static
      */
     public function addJsStrings(array $jsStrings): self
     {
@@ -563,9 +563,9 @@ final class WebView implements ViewInterface
      *
      * @param array $jsVars
      *
-     * @return static
-     *
      * @throws InvalidArgumentException
+     *
+     * @return static
      */
     public function addJsVars(array $jsVars): self
     {
