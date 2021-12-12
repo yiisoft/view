@@ -402,9 +402,11 @@ PHP
         $view = TestHelper::createView();
 
         $this->assertSame($view, $view->setBlock('test', ''));
+        $this->assertSame($view, $view->removeBlock('test'));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
         $this->assertSame($view, $view->addToParameter('test-array'));
+        $this->assertSame($view, $view->removeParameter('test'));
     }
 
     public function testClear(): void

@@ -753,8 +753,11 @@ final class WebViewTest extends TestCase
 
         $this->assertSame($view, $view->setTitle(''));
         $this->assertSame($view, $view->setBlock('test', ''));
+        $this->assertSame($view, $view->removeBlock('test'));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
+        $this->assertSame($view, $view->addToParameter('test-array'));
+        $this->assertSame($view, $view->removeParameter('test'));
     }
 
     public function testCommonStateForClonedWebViews(): void
