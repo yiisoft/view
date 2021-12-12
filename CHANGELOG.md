@@ -1,18 +1,13 @@
 # Yii View Change Log
 
-## 4.1.0 under development
+## 5.0.0 under development
 
 - New #193: Add simple view context class `ViewContext` (vjik)
-- New #193: Add method `ViewInterface::withContextPath()` that set view context path, `View` and `WebView` are changed
-  accordingly (vjik)
-- New #194: Add method `ViewInterface::addToParameter()` that add value(s) to end of specified array parameter, 
-  `View` and `WebView` are changed accordingly (vjik)
-- New #195: Add method `ViewInterface::withClearedState()` that cleared state of view (parameters, blocks, etc.),
-  `View` and `WebView` are changed accordingly (vjik)
-- Chg #195: Mutable method `setPlaceholderSalt()` of `ViewInterface` replaced to immutable `withPlaceholderSalt()`,
-  `View` and `WebView` are changed accordingly (vjik)
-- Enh #195: Methods `removeParameter()` and `removeBlock()` of `ViewInterface` returns self, `View` and `WebView` 
-  are changed accordingly (vjik)
+- New #193: Add method `ViewInterface::withContextPath()` that set view context path (vjik)
+- New #194: Add method `ViewInterface::addToParameter()` that add value(s) to end of specified array parameter (vjik)
+- New #195: Add method `ViewInterface::withClearedState()` that cleared state of view (parameters, blocks, etc.) (vjik)
+- Chg #195: Mutable method `ViewInterface::setPlaceholderSalt()` replaced to immutable `withPlaceholderSalt()` (vjik)
+- Enh #195: Methods `removeParameter()` and `removeBlock()` of `ViewInterface` returns self (vjik)
 - Enh #195: Methods of `WebView` returns self: `registerMeta()`, `registerMetaTag()`, `registerLink()`,
   `registerLinkTag()`, `registerCss()`, ` registerCssFromFile()`, `  registerStyleTag()`, ` registerCssFile()`,
   `addCssFiles()`, `addCssStrings()`, `registerJs()`, `registerScriptTag()`, `registerJsFile()`, `registerJsVar()`,
