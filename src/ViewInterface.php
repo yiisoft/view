@@ -80,6 +80,15 @@ interface ViewInterface
     public function withContext(ViewContextInterface $context): self;
 
     /**
+     * Returns a new instance with the specified view context path.
+     *
+     * @param string $path The context path under which the {@see renderFile()} method is being invoked.
+     *
+     * @return static
+     */
+    public function withContextPath(string $path): self;
+
+    /**
      * Returns a new instance with specified salt for the placeholder signature {@see getPlaceholderSignature()}.
      *
      * @param string $salt The placeholder salt.
@@ -87,6 +96,13 @@ interface ViewInterface
      * @return static
      */
     public function withPlaceholderSalt(string $salt): self;
+
+    /**
+     * Returns a new instance with cleared state (blocks, parameters, etc.)
+     *
+     * @return static
+     */
+    public function withClearedState(): self;
 
     /**
      * Gets the base path to the view directory.
@@ -131,6 +147,19 @@ interface ViewInterface
      * @return static
      */
     public function setParameter(string $id, $value): self;
+
+    /**
+     * Add values to end of common array parameter. If specified parameter does not exist or him is not array,
+     * then parameter will be added as empty array.
+     *
+     * @param string $id The unique identifier of the parameter.
+     * @param mixed ...$value Value(s) for add to end of array parameter.
+     *
+     * @throws InvalidArgumentException When specified parameter already exists and is not an array.
+     *
+     * @return static
+     */
+    public function addToParameter(string $id, ...$value): self;
 
     /**
      * Removes a common parameter.

@@ -95,6 +95,18 @@ final class WebView implements ViewInterface
     }
 
     /**
+     * Returns a new instance with cleared state (blocks, parameters, registered CSS/JS, etc.)
+     *
+     * @return static
+     */
+    public function withClearedState(): self
+    {
+        $new = clone $this;
+        $new->state = new WebViewState();
+        return $new;
+    }
+
+    /**
      * Marks the position of an HTML head section.
      */
     public function head(): void

@@ -3,9 +3,12 @@
 ## 4.1.0 under development
 
 - New #193: Add simple view context class `ViewContext` (vjik)
-- New #193: Add methods `View::withContextPath()` and `WebView::withContextPath()` that set view context path (vjik)
-- New #194: Add methods `View::addToParameter()` and `WebView::addToParameter()` that add value(s) to end of
-  specified array parameter (vjik)
+- New #193: Add method `ViewInterface::withContextPath()` that set view context path, `View` and `WebView` are changed
+  accordingly (vjik)
+- New #194: Add method `ViewInterface::addToParameter()` that add value(s) to end of specified array parameter, 
+  `View` and `WebView` are changed accordingly (vjik)
+- New #195: Add method `ViewInterface::withClearedState()` that cleared state of view (parameters, blocks, etc.),
+  `View` and `WebView` are changed accordingly (vjik)
 - Chg #195: Mutable method `setPlaceholderSalt()` of `ViewInterface` replaced to immutable `withPlaceholderSalt()`,
   `View` and `WebView` are changed accordingly (vjik)
 - Enh #195: Methods `removeParameter()` and `removeBlock()` of `ViewInterface` returns self, `View` and `WebView` 

@@ -427,6 +427,19 @@ PHP
         $this->assertFalse($view->hasParameter('age'));
     }
 
+    public function testWithClearedState(): void
+    {
+        $view = TestHelper::createView();
+        $view->setBlock('name', 'Mike');
+        $view->setParameter('age', 42);
+
+        $newView = $view->withClearedState();
+
+        $this->assertNull($newView->getViewFile());
+        $this->assertFalse($newView->hasBlock('name'));
+        $this->assertFalse($newView->hasParameter('age'));
+    }
+
     public function testCommonStateForClonedViews(): void
     {
         $view = TestHelper::createView();
@@ -450,6 +463,7 @@ PHP
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));
+        $this->assertNotSame($view, $view->withClearedState());
     }
 
     private function createViewWithBasePath(string $basePath): View

@@ -824,4 +824,41 @@ final class WebViewTest extends TestCase
             $webView->render('/positions.php')
         );
     }
+
+    public function testWithClearedState(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->setBlock('name', 'Mike');
+        $webView->setParameter('age', 42);
+        $webView->setTitle('Hello, World!');
+        $webView->registerMetaTag(Meta::tag());
+        $webView->registerLinkTag(Link::tag());
+        $webView->registerCss('h1 { color: red; }');
+        $webView->registerCssFile('./main.css');
+        $webView->registerJs('alert(42);');
+        $webView->registerJsFile('./main.js');
+
+        $newWebView = $webView->withClearedState();
+
+        $this->assertNull($newWebView->getViewFile());
+        $this->assertFalse($newWebView->hasBlock('name'));
+        $this->assertFalse($newWebView->hasParameter('age'));
+        $this->assertSame('', $newWebView->getTitle());
+
+        $this->assertSame(
+            '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD][/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY][/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]',
+            $newWebView->render('/positions.php')
+        );
+    }
+
+    public function testImmutability(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $this->assertNotSame($webView, $webView->withClearedState());
+    }
 }
