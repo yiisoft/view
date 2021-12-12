@@ -12,6 +12,8 @@ use Throwable;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
 use Yiisoft\Html\Tag\Meta;
+use Yiisoft\Html\Tag\Script;
+use Yiisoft\Html\Tag\Style;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\WebView\BodyBegin;
 use Yiisoft\View\Event\WebView\BodyEnd;
@@ -758,6 +760,23 @@ final class WebViewTest extends TestCase
         $this->assertSame($view, $view->setParameters([]));
         $this->assertSame($view, $view->addToParameter('test-array'));
         $this->assertSame($view, $view->removeParameter('test'));
+        $this->assertSame($view, $view->registerMeta(['content' => 'utf8']));
+        $this->assertSame($view, $view->registerMetaTag(Meta::tag()));
+        $this->assertSame($view, $view->registerLink(['href' => '/main.css']));
+        $this->assertSame($view, $view->registerLinkTag(Link::tag()));
+        $this->assertSame($view, $view->registerCss('h1 { color: red; }'));
+        $this->assertSame($view, $view->registerCssFromFile(__DIR__ . '/public/example.css'));
+        $this->assertSame($view, $view->registerStyleTag(Style::tag()));
+        $this->assertSame($view, $view->registerCssFile('./main.css'));
+        $this->assertSame($view, $view->addCssFiles(['./main.css']));
+        $this->assertSame($view, $view->addCssStrings(['h1 { color: red; }']));
+        $this->assertSame($view, $view->registerJs('alert(42)'));
+        $this->assertSame($view, $view->registerScriptTag(Script::tag()));
+        $this->assertSame($view, $view->registerJsFile('./main.js'));
+        $this->assertSame($view, $view->registerJsVar('test', 42));
+        $this->assertSame($view, $view->addJsFiles(['./main.js']));
+        $this->assertSame($view, $view->addJsStrings(['alert(1);']));
+        $this->assertSame($view, $view->addJsVars(['test' => 42]));
     }
 
     public function testCommonStateForClonedWebViews(): void
