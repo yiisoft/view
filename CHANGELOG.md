@@ -6,6 +6,16 @@
 - New #193: Add methods `View::withContextPath()` and `WebView::withContextPath()` that set view context path (vjik)
 - New #194: Add methods `View::addToParameter()` and `WebView::addToParameter()` that add value(s) to end of
   specified array parameter (vjik)
+- Chg #195: Mutable method `setPlaceholderSalt()` of `ViewInterface` replaced to immutable `withPlaceholderSalt()`,
+  `View` and `WebView` are changed accordingly (vjik)
+- Enh #195: Methods `removeParameter()` and `removeBlock()` of `ViewInterface` returns self, `View` and `WebView` 
+  are changed accordingly (vjik)
+- Enh #195: Methods of `WebView` returns self: `registerMeta()`, `registerMetaTag()`, `registerLink()`,
+  `registerLinkTag()`, `registerCss()`, ` registerCssFromFile()`, `  registerStyleTag()`, ` registerCssFile()`,
+  `addCssFiles()`, `addCssStrings()`, `registerJs()`, `registerScriptTag()`, `registerJsFile()`, `registerJsVar()`,
+  `addJsFiles()`, `addJsStrings()`, `addJsVars()` (vjik)
+- Bug #188: Use common state for cloned instances of `View` and `WebView` (vjik)
+- Bug #195: Fix configuration: set parameters after reset `View` and `WebView` (vjik)
 
 ## 4.0.0 October 25, 2021
 
