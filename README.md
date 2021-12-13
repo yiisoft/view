@@ -40,6 +40,18 @@ The package provides two use cases for managing view templates:
 
 ### State of `View` and `WebView` services
 
+State of `View` service:
+- parameters,
+- blocks.
+
+State of `WebView` service:
+- parameters,
+- blocks,
+- title,
+- meta and link tags,
+- JS/CSS strings,
+- JS/CSS files.
+
 State of `View` and `WebView` services don't clone on clone of service instances, including when calling methods
 `with*()`. This allows use one state for cloned services. For example, we can get `WebView` from container in 
 controller via dependency injection and change context path:    
@@ -53,7 +65,7 @@ final class BlogController {
 }
 ```
 
-... and register CSS in widget:
+... and then register CSS in widget:
 
 ```php
 final class LastPosts extends Widget 
