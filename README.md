@@ -38,6 +38,45 @@ The package provides two use cases for managing view templates:
 - [Basic functionality](docs/basic-functionality.md) for use in any environment.
 - Advanced functionality for [use in a WEB environment](docs/use-in-web-environment.md).
 
+### State of `View` and `WebView` services
+
+State of `View` and `WebView` services don't clone on clone of service instances, including when calling methods
+`with*()`. This allows use one state for cloned services. For example, we can get `WebView` from container in 
+controller via dependency injection and change context path:    
+
+```php
+final class BlogController {
+    private WebView $view;
+    public function __construct (WebView $view) {
+        $this->view = $view->withContextPath(__DIR__.'/views');
+    }
+}
+```
+
+... and register CSS in widget:
+
+```php
+final class LastPosts extends Widget 
+{    
+    private WebView $view;
+    public function __construct (WebView $view) {
+        $this->view = $view;
+    }
+    protected function run(): string
+    {
+        ...
+        $this->view->registerCss('.lastPosts { background: #f1f1f1; }');
+        ...
+    }
+}
+```
+
+For full clone of `View` or `WebView` service use method `withClearedState()` that also clear and clone state: 
+
+```php
+$view = $view->withClearedState();
+```
+
 ## Extensions
   
 - [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - a wrapper that is used in
