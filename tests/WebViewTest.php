@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests;
 
+use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
 use Yiisoft\Html\Html;
+use Yiisoft\Html\Tag\Link;
+use Yiisoft\Html\Tag\Meta;
+use Yiisoft\Html\Tag\Script;
+use Yiisoft\Html\Tag\Style;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\WebView\BodyBegin;
 use Yiisoft\View\Event\WebView\BodyEnd;
@@ -18,8 +23,6 @@ use Yiisoft\View\Event\WebView\PageEnd;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\WebView;
-
-use function time;
 
 final class WebViewTest extends TestCase
 {
@@ -118,6 +121,24 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
+    public function testRegisterStyleTag(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $style = Html::style('H1 { color: red; }', ['id' => 'H1Css']);
+
+        $webView->registerStyleTag($style);
+        $html = $webView->render('/positions.php');
+
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD]' . $style->render() . '[/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY][/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]';
+
+        $this->assertSame($expected, $html);
+    }
+
     public function dataRegisterCssFile(): array
     {
         return [
@@ -181,21 +202,6 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('/positions.php');
         $this->assertStringContainsString($expected, $html);
-    }
-
-    public function testPlaceholders(): void
-    {
-        $webView = null;
-        $eventDispatcher = new SimpleEventDispatcher(static function ($event) use (&$webView) {
-            if ($event instanceof PageEnd) {
-                $webView->setPlaceholderSalt((string) time());
-            }
-        });
-        $webView = TestHelper::createWebView($eventDispatcher);
-        $webView->setPlaceholderSalt('apple');
-        $signature = $webView->getPlaceholderSignature();
-        $html = $webView->render('//layout.php', ['content' => 'content']);
-        $this->assertStringContainsString($signature, $html);
     }
 
     public function testRegisterMeta(): void
@@ -749,8 +755,110 @@ final class WebViewTest extends TestCase
 
         $this->assertSame($view, $view->setTitle(''));
         $this->assertSame($view, $view->setBlock('test', ''));
+        $this->assertSame($view, $view->removeBlock('test'));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
-        $this->assertSame($view, $view->setPlaceholderSalt(''));
+        $this->assertSame($view, $view->addToParameter('test-array'));
+        $this->assertSame($view, $view->removeParameter('test'));
+        $this->assertSame($view, $view->registerMeta(['content' => 'utf8']));
+        $this->assertSame($view, $view->registerMetaTag(Meta::tag()));
+        $this->assertSame($view, $view->registerLink(['href' => '/main.css']));
+        $this->assertSame($view, $view->registerLinkTag(Link::tag()));
+        $this->assertSame($view, $view->registerCss('h1 { color: red; }'));
+        $this->assertSame($view, $view->registerCssFromFile(__DIR__ . '/public/example.css'));
+        $this->assertSame($view, $view->registerStyleTag(Style::tag()));
+        $this->assertSame($view, $view->registerCssFile('./main.css'));
+        $this->assertSame($view, $view->addCssFiles(['./main.css']));
+        $this->assertSame($view, $view->addCssStrings(['h1 { color: red; }']));
+        $this->assertSame($view, $view->registerJs('alert(42)'));
+        $this->assertSame($view, $view->registerScriptTag(Script::tag()));
+        $this->assertSame($view, $view->registerJsFile('./main.js'));
+        $this->assertSame($view, $view->registerJsVar('test', 42));
+        $this->assertSame($view, $view->addJsFiles(['./main.js']));
+        $this->assertSame($view, $view->addJsStrings(['alert(1);']));
+        $this->assertSame($view, $view->addJsVars(['test' => 42]));
+    }
+
+    public function testCommonStateForClonedWebViews(): void
+    {
+        $view = TestHelper::createWebView();
+        $view->setParameter('test', 42);
+
+        $clonedView = $view->withLanguage('ru');
+        $clonedView->setParameter('test', 7);
+
+        $this->assertSame(7, $view->getParameter('test'));
+    }
+
+    public function testClear(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->setBlock('name', 'Mike');
+        $webView->setParameter('age', 42);
+        $webView->setTitle('Hello, World!');
+        $webView->registerMetaTag(Meta::tag());
+        $webView->registerLinkTag(Link::tag());
+        $webView->registerCss('h1 { color: red; }');
+        $webView->registerCssFile('./main.css');
+        $webView->registerJs('alert(42);');
+        $webView->registerJsFile('./main.js');
+
+        try {
+            $webView->renderFile(__DIR__ . '/public/view/error.php');
+        } catch (Exception $e) {
+        }
+
+        $webView->clear();
+
+        $this->assertNull($webView->getViewFile());
+        $this->assertFalse($webView->hasBlock('name'));
+        $this->assertFalse($webView->hasParameter('age'));
+        $this->assertSame('', $webView->getTitle());
+
+        $this->assertSame(
+            '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD][/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY][/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]',
+            $webView->render('/positions.php')
+        );
+    }
+
+    public function testWithClearedState(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->setBlock('name', 'Mike');
+        $webView->setParameter('age', 42);
+        $webView->setTitle('Hello, World!');
+        $webView->registerMetaTag(Meta::tag());
+        $webView->registerLinkTag(Link::tag());
+        $webView->registerCss('h1 { color: red; }');
+        $webView->registerCssFile('./main.css');
+        $webView->registerJs('alert(42);');
+        $webView->registerJsFile('./main.js');
+
+        $newWebView = $webView->withClearedState();
+
+        $this->assertNull($newWebView->getViewFile());
+        $this->assertFalse($newWebView->hasBlock('name'));
+        $this->assertFalse($newWebView->hasParameter('age'));
+        $this->assertSame('', $newWebView->getTitle());
+
+        $this->assertSame(
+            '[BEGINPAGE][/BEGINPAGE]' . "\n" .
+            '[HEAD][/HEAD]' . "\n" .
+            '[BEGINBODY][/BEGINBODY]' . "\n" .
+            '[ENDBODY][/ENDBODY]' . "\n" .
+            '[ENDPAGE][/ENDPAGE]',
+            $newWebView->render('/positions.php')
+        );
+    }
+
+    public function testImmutability(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $this->assertNotSame($webView, $webView->withClearedState());
     }
 }

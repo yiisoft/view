@@ -10,7 +10,6 @@ use Yiisoft\View\View;
 
 return [
     View::class => [
-        'class' => View::class,
         '__construct()' => [
             'basePath' => DynamicReference::to(
                 static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
@@ -19,8 +18,10 @@ return [
         'setParameters()' => [
             $params['yiisoft/view']['parameters'],
         ],
-        'reset' => function () {
+        'reset' => function () use ($params) {
+            /** @var View $this */
             $this->clear();
+            $this->setParameters($params['yiisoft/view']['parameters']);
         },
     ],
 ];

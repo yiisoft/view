@@ -374,9 +374,8 @@ PHP
 
     public function testPlaceholderSalt(): void
     {
-        $view = TestHelper::createView();
-
-        $view->setPlaceholderSalt('apple');
+        $view = TestHelper::createView()
+            ->withPlaceholderSalt('apple');
 
         $this->assertSame(
             dechex(crc32('apple')),
@@ -403,15 +402,18 @@ PHP
         $view = TestHelper::createView();
 
         $this->assertSame($view, $view->setBlock('test', ''));
+        $this->assertSame($view, $view->removeBlock('test'));
         $this->assertSame($view, $view->setParameter('test', ''));
         $this->assertSame($view, $view->setParameters([]));
         $this->assertSame($view, $view->addToParameter('test-array'));
-        $this->assertSame($view, $view->setPlaceholderSalt(''));
+        $this->assertSame($view, $view->removeParameter('test'));
     }
 
     public function testClear(): void
     {
         $view = TestHelper::createView();
+        $view->setBlock('name', 'Mike');
+        $view->setParameter('age', 42);
 
         try {
             $view->renderFile(__DIR__ . '/public/view/error.php');
@@ -421,6 +423,32 @@ PHP
         $view->clear();
 
         $this->assertNull($view->getViewFile());
+        $this->assertFalse($view->hasBlock('name'));
+        $this->assertFalse($view->hasParameter('age'));
+    }
+
+    public function testWithClearedState(): void
+    {
+        $view = TestHelper::createView();
+        $view->setBlock('name', 'Mike');
+        $view->setParameter('age', 42);
+
+        $newView = $view->withClearedState();
+
+        $this->assertNull($newView->getViewFile());
+        $this->assertFalse($newView->hasBlock('name'));
+        $this->assertFalse($newView->hasParameter('age'));
+    }
+
+    public function testCommonStateForClonedViews(): void
+    {
+        $view = TestHelper::createView();
+        $view->setParameter('test', 42);
+
+        $clonedView = $view->withLanguage('ru');
+        $clonedView->setParameter('test', 7);
+
+        $this->assertSame(7, $view->getParameter('test'));
     }
 
     public function testImmutability(): void
@@ -434,6 +462,8 @@ PHP
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
+        $this->assertNotSame($view, $view->withPlaceholderSalt(''));
+        $this->assertNotSame($view, $view->withClearedState());
     }
 
     private function createViewWithBasePath(string $basePath): View
