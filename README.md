@@ -40,11 +40,13 @@ The package provides two use cases for managing view templates:
 
 ### State of `View` and `WebView` services
 
-State of `View` service:
+While being immutable and, by itself, stateless, both `View` and `WebView` services have sets of stateful and mutable data.
+
+`View` service:
 - parameters,
 - blocks.
 
-State of `WebView` service:
+`WebView` service:
 - parameters,
 - blocks,
 - title,
@@ -52,9 +54,8 @@ State of `WebView` service:
 - JS/CSS strings,
 - JS/CSS files.
 
-State of `View` and `WebView` services don't clone on clone of service instances, including when calling methods
-`with*()`. This allows use one state for cloned services. For example, we can get `WebView` from container in 
-controller via dependency injection and change context path:    
+The state of `View` and `WebView` is not cloned when the services are cloned. So when
+using `with*()`, both new and old instances are sharing the same set of stateful mutable data. It allows, for example, to get `WebView` via type-hinting in a controller and change context path:
 
 ```php
 final class BlogController {
@@ -65,7 +66,7 @@ final class BlogController {
 }
 ```
 
-... and then register CSS in widget:
+... and then register CSS in a widget:
 
 ```php
 final class LastPosts extends Widget 
@@ -83,7 +84,7 @@ final class LastPosts extends Widget
 }
 ```
 
-For full clone of `View` or `WebView` service use method `withClearedState()` that also clear and clone state: 
+To get a deep cloned `View` or `WebView` use `withClearedState()`: 
 
 ```php
 $view = $view->withClearedState();
