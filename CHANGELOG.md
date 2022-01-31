@@ -7,6 +7,8 @@
 - New #194: Add method `ViewInterface::addToParameter()` that add value(s) to end of specified array parameter (vjik)
 - New #195: Add method `ViewInterface::withClearedState()` that cleared state of view (parameters, blocks, etc.) (vjik)
 - Chg #195: Mutable method `ViewInterface::setPlaceholderSalt()` replaced to immutable `withPlaceholderSalt()` (vjik)
+- Chg #196: Renamed and made mutable methods of `ViewInterface`: `withTheme()` to `setTheme()`,
+  `withLanguage()` to `setLanguage()` (vjik)
 - Enh #195: Methods `removeParameter()` and `removeBlock()` of `ViewInterface` returns self (vjik)
 - Enh #195: Methods of `WebView` returns self: `registerMeta()`, `registerMetaTag()`, `registerLink()`,
   `registerLinkTag()`, `registerCss()`, ` registerCssFromFile()`, `  registerStyleTag()`, ` registerCssFile()`,
