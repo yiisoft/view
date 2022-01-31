@@ -225,6 +225,19 @@ PHP
         );
     }
 
+    public function testLocalizeWithChangedLanguage(): void
+    {
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/es/file.php", 'Prueba');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory)->setLanguage('es');
+
+        $this->assertSameIgnoringSlash(
+            "$this->tempDirectory/es/file.php",
+            $view->localize("$this->tempDirectory/file.php"),
+        );
+    }
+
     public function testLocalizedDirectory(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory);
