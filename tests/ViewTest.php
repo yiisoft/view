@@ -123,7 +123,7 @@ PHP
         file_put_contents($subView, $subViewContent);
 
         $theme = new Theme([$this->tempDirectory => $themePath]);
-        $view = $this->createViewWithBasePath($this->tempDirectory)->withTheme($theme);
+        $view = $this->createViewWithBasePath($this->tempDirectory)->setTheme($theme);
 
         $this->assertSame($this->tempDirectory, $view->getBasePath());
         $this->assertSame('php', $view->getDefaultExtension());
@@ -445,7 +445,7 @@ PHP
         $view = TestHelper::createView();
         $view->setParameter('test', 42);
 
-        $clonedView = $view->withLanguage('ru');
+        $clonedView = $view->withSourceLanguage('ru');
         $clonedView->setParameter('test', 7);
 
         $this->assertSame(7, $view->getParameter('test'));
@@ -455,9 +455,7 @@ PHP
     {
         $view = TestHelper::createView();
 
-        $this->assertNotSame($view, $view->withTheme(new Theme([$this->tempDirectory => $this->tempDirectory])));
         $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
-        $this->assertNotSame($view, $view->withLanguage('en'));
         $this->assertNotSame($view, $view->withSourceLanguage('en'));
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));

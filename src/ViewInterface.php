@@ -15,15 +15,6 @@ use Yiisoft\View\Exception\ViewNotFoundException;
 interface ViewInterface
 {
     /**
-     * Returns a new instance with the specified theme instance.
-     *
-     * @param Theme $theme The theme instance.
-     *
-     * @return static
-     */
-    public function withTheme(Theme $theme): self;
-
-    /**
      * Returns a new instance with the specified renderers.
      *
      * @param array $renderers A list of available renderers indexed by their
@@ -41,15 +32,6 @@ interface ViewInterface
      * @return static
      */
     public function withRenderers(array $renderers): self;
-
-    /**
-     * Returns a new instance with the specified language.
-     *
-     * @param string $language The language.
-     *
-     * @return static
-     */
-    public function withLanguage(string $language): self;
 
     /**
      * Returns a new instance with the specified source language.
@@ -105,6 +87,15 @@ interface ViewInterface
     public function withClearedState(): self;
 
     /**
+     * Set the specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function setLanguage(string $language): self;
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
@@ -119,11 +110,20 @@ interface ViewInterface
     public function getDefaultExtension(): string;
 
     /**
-     * Gets the theme instance, or null if no theme has been set.
+     * Gets the theme instance, or `null` if no theme has been set.
      *
-     * @return Theme The theme instance, or null if no theme has been set.
+     * @return Theme|null The theme instance, or `null` if no theme has been set.
      */
     public function getTheme(): ?Theme;
+
+    /**
+     * Set the specified theme instance.
+     *
+     * @param Theme|null $theme The theme instance or `null` for reset theme.
+     *
+     * @return static
+     */
+    public function setTheme(?Theme $theme): self;
 
     /**
      * Sets a common parameters that is accessible in all view templates.
@@ -270,7 +270,7 @@ interface ViewInterface
     /**
      * Renders a view file.
      *
-     * If the theme was set {@see withTheme()}, it will try to render the themed version of the view file
+     * If the theme was set {@see setTheme()}, it will try to render the themed version of the view file
      * as long as it is available.
      *
      * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,

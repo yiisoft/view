@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View\State;
 
 use InvalidArgumentException;
+use Yiisoft\View\Theme;
 
 use function array_key_exists;
 use function func_get_args;
@@ -15,6 +16,9 @@ use function is_array;
  */
 trait StateTrait
 {
+    private ?Theme $theme = null;
+    private string $language = 'en';
+
     /**
      * @var array Parameters that are common for all view templates.
      * @psalm-var array<string, mixed>
@@ -26,6 +30,52 @@ trait StateTrait
      * @psalm-var array<string, string>
      */
     private array $blocks = [];
+
+    /**
+     * Set the specified theme instance.
+     *
+     * @param Theme|null $theme The theme instance or `null` for reset theme.
+     *
+     * @return static
+     */
+    public function setTheme(?Theme $theme): self
+    {
+        $this->theme = $theme;
+        return $this;
+    }
+
+    /**
+     * Gets the theme instance, or `null` if no theme has been set.
+     *
+     * @return Theme|null The theme instance, or `null` if no theme has been set.
+     */
+    public function getTheme(): ?Theme
+    {
+        return $this->theme;
+    }
+
+    /**
+     * Set the specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function setLanguage(string $language): self
+    {
+        $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * Gets the language code.
+     *
+     * @return string The language code.
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
 
     /**
      * Sets a common parameters that is accessible in all view templates.

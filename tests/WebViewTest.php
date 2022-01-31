@@ -784,7 +784,7 @@ final class WebViewTest extends TestCase
         $view = TestHelper::createWebView();
         $view->setParameter('test', 42);
 
-        $clonedView = $view->withLanguage('ru');
+        $clonedView = $view->withSourceLanguage('ru');
         $clonedView->setParameter('test', 7);
 
         $this->assertSame(7, $view->getParameter('test'));

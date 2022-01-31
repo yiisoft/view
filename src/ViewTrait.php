@@ -35,10 +35,8 @@ trait ViewTrait
     private EventDispatcherInterface $eventDispatcher;
 
     private string $basePath;
-    private ?Theme $theme = null;
     private ?ViewContextInterface $context = null;
     private string $placeholderSignature;
-    private string $language = 'en';
     private string $sourceLanguage = 'en';
     private string $defaultExtension = 'php';
 
@@ -56,20 +54,6 @@ trait ViewTrait
      * @psalm-var array<array-key, array<string, string>>
      */
     private array $viewFiles = [];
-
-    /**
-     * Returns a new instance with the specified theme instance.
-     *
-     * @param Theme $theme The theme instance.
-     *
-     * @return static
-     */
-    public function withTheme(Theme $theme): self
-    {
-        $new = clone $this;
-        $new->theme = $theme;
-        return $new;
-    }
 
     /**
      * Returns a new instance with the specified renderers.
@@ -92,20 +76,6 @@ trait ViewTrait
     {
         $new = clone $this;
         $new->renderers = $renderers;
-        return $new;
-    }
-
-    /**
-     * Returns a new instance with the specified language.
-     *
-     * @param string $language The language.
-     *
-     * @return static
-     */
-    public function withLanguage(string $language): self
-    {
-        $new = clone $this;
-        $new->language = $language;
         return $new;
     }
 
@@ -180,6 +150,19 @@ trait ViewTrait
     }
 
     /**
+     * Set the specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function setLanguage(string $language): self
+    {
+        $this->state->setLanguage($language);
+        return $this;
+    }
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
@@ -200,13 +183,26 @@ trait ViewTrait
     }
 
     /**
-     * Gets the theme instance, or null if no theme has been set.
+     * Gets the theme instance, or `null` if no theme has been set.
      *
-     * @return Theme The theme instance, or null if no theme has been set.
+     * @return Theme|null The theme instance, or `null` if no theme has been set.
      */
     public function getTheme(): ?Theme
     {
-        return $this->theme;
+        return $this->state->getTheme();
+    }
+
+    /**
+     * Set the specified theme instance.
+     *
+     * @param Theme|null $theme The theme instance or `null` for reset theme.
+     *
+     * @return static
+     */
+    public function setTheme(?Theme $theme): self
+    {
+        $this->state->setTheme($theme);
+        return $this;
     }
 
     /**
@@ -402,7 +398,7 @@ trait ViewTrait
     /**
      * Renders a view file.
      *
-     * If the theme was set {@see withTheme()}, it will try to render the themed version of the view file
+     * If the theme was set {@see setTheme()}, it will try to render the themed version of the view file
      * as long as it is available.
      *
      * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
@@ -424,8 +420,9 @@ trait ViewTrait
         // TODO: these two match now
         $requestedFile = $viewFile;
 
-        if ($this->theme !== null) {
-            $viewFile = $this->theme->applyTo($viewFile);
+        $theme = $this->getTheme();
+        if ($theme !== null) {
+            $viewFile = $theme->applyTo($viewFile);
         }
 
         if (is_file($viewFile)) {
@@ -473,7 +470,7 @@ trait ViewTrait
      */
     public function localize(string $file, ?string $language = null, ?string $sourceLanguage = null): string
     {
-        $language = $language ?? $this->language;
+        $language = $language ?? $this->state->getLanguage();
         $sourceLanguage = $sourceLanguage ?? $this->sourceLanguage;
 
         if ($language === $sourceLanguage) {
