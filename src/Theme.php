@@ -55,14 +55,14 @@ use function substr;
  * In this case, the themed version could be either `/app/themes/christmas/site/index.php` or
  * `/app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
  *
- * To use the theme directly without configurations, you should set it using the {@see View::withTheme()} as follows:
+ * To use the theme directly without configurations, you should set it using the {@see View::setTheme()} as follows:
  *
  * ```php
  * $pathMap = [...];
  * $basePath = '/path/to/private/themes/basic';
  * $baseUrl = '/path/to/public/themes/basic';
  *
- * $view = $view->withTheme(new Theme([...], $basePath, $baseUrl));
+ * $view->setTheme(new Theme([...], $basePath, $baseUrl));
  * ```
  */
 final class Theme

@@ -132,14 +132,14 @@ Theming is a way to replace a set of views with another set of views without the
 view rendering code. You can use theming to systematically change the look and feel of an application.
 
 To use theming, you should create and configure a `Yiisoft\View\Theme` instance
-and set it using the `withTheme()` method:
+and set it using the `setTheme()` method:
 
 ```php
 $theme = new \Yiisoft\View\Theme([
     '/path/to/views' => '/path/to/views/themes/basic/views',
 ]);
 
-$view = $view->withTheme($theme);
+$view->setTheme($theme);
 ```
 
 The first parameter of the `Theme` class accepts an array, which is a path map for mapping view directories to the
@@ -158,7 +158,7 @@ $theme = new \Yiisoft\View\Theme(
     '/path/to/public/themes/basic/assets', // The base URL of the themed assets.
 );
 
-$view = $view->withTheme($theme);
+$view->setTheme($theme);
 ```
 
 In a view, you can access the theme using the `getTheme()` method and manage assets as follows:
@@ -195,9 +195,8 @@ Two languages are defined for localization with the default value `en`:
 You can change default values:
 
 ```php
-$view = $view->withLanguage('fr');
-
 $view = $view->withSourceLanguage('es');
+$view->setLanguage('fr');
 ```
 
 In order to use multiple languages it is necessary to create subdirectories at directory level matching template files
