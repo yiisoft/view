@@ -18,9 +18,9 @@ use function ob_implicit_flush;
 use function ob_start;
 
 /**
- * View represents an instance of a view for use in an any environment.
+ * `View` represents an instance of a view for use in an any environment.
  *
- * View provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
+ * `View` provides a set of methods (e.g. {@see View::render()}) for rendering purpose.
  */
 final class View implements ViewInterface
 {

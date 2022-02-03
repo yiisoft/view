@@ -26,7 +26,7 @@ use function pathinfo;
 use function substr;
 
 /**
- * ViewTrait could be used as a base implementation of {@see ViewInterface}.
+ * `ViewTrait` could be used as a base implementation of {@see ViewInterface}.
  *
  * @internal
  */

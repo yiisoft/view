@@ -31,9 +31,9 @@ use function sprintf;
 use function strtr;
 
 /**
- * WebView represents an instance of a view for use in a WEB environment.
+ * `WebView` represents an instance of a view for use in a WEB environment.
  *
- * WebView provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
+ * `WebView` provides a set of methods (e.g. {@see WebView::render()}) for rendering purpose.
  */
 final class WebView implements ViewInterface
 {
