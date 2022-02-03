@@ -40,22 +40,28 @@ The package provides two use cases for managing view templates:
 
 ### State of `View` and `WebView` services
 
-While being immutable and, by itself, stateless, both `View` and `WebView` services have sets of stateful and mutable data.
+While being immutable and, by itself, stateless, both `View` and `WebView` services have sets of stateful and mutable
+data.
 
 `View` service:
 - parameters,
-- blocks.
+- blocks,
+- theme,
+- language.
 
 `WebView` service:
 - parameters,
 - blocks,
+- theme,
+- language,
 - title,
 - meta and link tags,
 - JS/CSS strings,
 - JS/CSS files.
 
 The state of `View` and `WebView` is not cloned when the services are cloned. So when
-using `with*()`, both new and old instances are sharing the same set of stateful mutable data. It allows, for example, to get `WebView` via type-hinting in a controller and change context path:
+using `with*()`, both new and old instances are sharing the same set of stateful mutable data. It allows, for example,
+to get `WebView` via type-hinting in a controller and change context path:
 
 ```php
 final class BlogController {
