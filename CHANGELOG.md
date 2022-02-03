@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 5.0.0 under development
+## 5.0.0 February 03, 2022
 
 - New #193: Add simple view context class `ViewContext` (vjik)
 - New #193: Add method `ViewInterface::withContextPath()` that set view context path (vjik)
