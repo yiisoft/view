@@ -15,7 +15,7 @@ use function ob_implicit_flush;
 use function ob_start;
 
 /**
- * PhpTemplateRenderer renders the PHP views.
+ * `PhpTemplateRenderer` renders the PHP views.
  */
 final class PhpTemplateRenderer implements TemplateRendererInterface
 {

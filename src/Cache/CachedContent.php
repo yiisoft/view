@@ -19,7 +19,7 @@ use function sprintf;
 use function strtr;
 
 /**
- * CacheContent caches content, supports the use of dynamic content {@see DynamicContent} inside cached content.
+ * `CacheContent` caches content, supports the use of dynamic content {@see DynamicContent} inside cached content.
  */
 final class CachedContent
 {

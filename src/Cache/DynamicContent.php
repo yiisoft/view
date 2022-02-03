@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View\Cache;
 
 /**
- * DynamicContent generates data for dynamic content that is used for cached content {@see CachedContent}.
+ * `DynamicContent` generates data for dynamic content that is used for cached content {@see CachedContent}.
  */
 final class DynamicContent
 {

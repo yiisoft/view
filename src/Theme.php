@@ -16,7 +16,7 @@ use function strpos;
 use function substr;
 
 /**
- * Theme represents an application theme.
+ * `Theme` represents an application theme.
  *
  * When {@see View} renders a view file, it will check the {@see View::$theme} to see if there is a themed
  * version of the view file exists. If so, the themed version will be rendered instead.
