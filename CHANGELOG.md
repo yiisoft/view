@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 5.0.1 under development
+
+- no changes in this release.
+
 ## 5.0.0 February 03, 2022
 
 - New #193: Add simple view context class `ViewContext` (vjik)
