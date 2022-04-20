@@ -39,6 +39,7 @@ trait ViewTrait
     private string $placeholderSignature;
     private string $sourceLanguage = 'en';
     private string $defaultExtension = 'php';
+    private ?string $language = null;
 
     /**
      * @var array A list of available renderers indexed by their corresponding
@@ -152,14 +153,14 @@ trait ViewTrait
     /**
      * Returns a new instance with specified language code.
      *
-     * @param string $language The language code.
+     * @param string|null $language The language code.
      *
      * @return static
      */
-    public function withLanguage(string $language): self
+    public function withLanguage(?string $language): self
     {
         $new = clone $this;
-        $new->setLanguage($language);
+        $new->language = $language;
         return $new;
     }
 
@@ -500,7 +501,7 @@ trait ViewTrait
      */
     public function localize(string $file, ?string $language = null, ?string $sourceLanguage = null): string
     {
-        $language = $language ?? $this->state->getLanguage();
+        $language = $language ?? $this->language ?? $this->state->getLanguage();
         $sourceLanguage = $sourceLanguage ?? $this->sourceLanguage;
 
         if ($language === $sourceLanguage) {
