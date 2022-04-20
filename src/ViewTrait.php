@@ -407,7 +407,7 @@ trait ViewTrait
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param null|string The language to which will be used to localize the view.
+     * @param string|null The language to which will be used to localize the view.
      *
      * @throws RuntimeException If the view cannot be resolved.
      * @throws ViewNotFoundException If the view file does not exist.
@@ -436,7 +436,7 @@ trait ViewTrait
      * @param string $viewFile The full absolute path of the view file.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param null|string The language to which will be used to localize the view.
+     * @param string|null The language to which will be used to localize the view.
      *
      * @throws Throwable
      * @throws ViewNotFoundException If the view file does not exist
