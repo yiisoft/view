@@ -96,6 +96,15 @@ interface ViewInterface
     public function withLanguage(string $language): self;
 
     /**
+     * Returns a new instance with specified base path to the view directory.
+     *
+     * @param string $basePath The base path to the view directory.
+     *
+     * @return static
+     */
+    public function withBasePath(string $basePath): self;
+
+    /**
      * Set the specified language code.
      *
      * @param string $language The language code.
