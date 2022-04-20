@@ -87,6 +87,15 @@ interface ViewInterface
     public function withClearedState(): self;
 
     /**
+     * Returns a new instance with specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function withLanguage(string $language): self;
+
+    /**
      * Set the specified language code.
      *
      * @param string $language The language code.

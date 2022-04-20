@@ -264,6 +264,34 @@ PHP
         );
     }
 
+    public function testRenderWithLanguage(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory));
+
+        file_put_contents("$this->tempDirectory/file.php", 'base');
+
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/es/file.php", 'Prueba');
+
+        $this->assertSame('Prueba', $view->render('file', [], 'es'));
+    }
+
+    public function testRenderFileWithLanguage(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+
+        file_put_contents("$this->tempDirectory/file.php", 'base');
+
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/es/file.php", 'Prueba');
+
+        $this->assertSame(
+            'Prueba',
+            $view->renderFile($this->tempDirectory . DIRECTORY_SEPARATOR . 'file.php', [], 'es')
+        );
+    }
+
     public function testParameter(): void
     {
         $view = TestHelper::createView();
@@ -475,6 +503,8 @@ PHP
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));
         $this->assertNotSame($view, $view->withClearedState());
+        $this->assertNotSame($view, $view->withLanguage('en'));
+        $this->assertNotSame($view, $view->withBasePath($this->tempDirectory));
     }
 
     private function createViewWithBasePath(string $basePath): View

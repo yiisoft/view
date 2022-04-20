@@ -150,6 +150,34 @@ trait ViewTrait
     }
 
     /**
+     * Returns a new instance with specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function withLanguage(string $language): self
+    {
+        $new = clone $this;
+        $new->setLanguage($language);
+        return $new;
+    }
+
+    /**
+     * Returns a new instance with specified base path to the view directory.
+     *
+     * @param string $basePath The base path to the view directory.
+     *
+     * @return static
+     */
+    public function withBasePath(string $basePath): self
+    {
+        $new = clone $this;
+        $new->basePath = $basePath;
+        return $new;
+    }
+
+    /**
      * Set the specified language code.
      *
      * @param string $language The language code.
@@ -379,6 +407,7 @@ trait ViewTrait
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
+     * @param null|string The language to which will be used to localize the view.
      *
      * @throws RuntimeException If the view cannot be resolved.
      * @throws ViewNotFoundException If the view file does not exist.
@@ -388,11 +417,11 @@ trait ViewTrait
      *
      * @return string The rendering result.
      */
-    public function render(string $view, array $parameters = []): string
+    public function render(string $view, array $parameters = [], ?string $language = null): string
     {
         $viewFile = $this->findTemplateFile($view);
 
-        return $this->renderFile($viewFile, $parameters);
+        return $this->renderFile($viewFile, $parameters, $language);
     }
 
     /**
@@ -407,13 +436,14 @@ trait ViewTrait
      * @param string $viewFile The full absolute path of the view file.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
+     * @param null|string The language to which will be used to localize the view.
      *
      * @throws Throwable
      * @throws ViewNotFoundException If the view file does not exist
      *
      * @return string The rendering result.
      */
-    public function renderFile(string $viewFile, array $parameters = []): string
+    public function renderFile(string $viewFile, array $parameters = [], ?string $language = null): string
     {
         $parameters = array_merge($this->state->getParameters(), $parameters);
 
@@ -426,7 +456,7 @@ trait ViewTrait
         }
 
         if (is_file($viewFile)) {
-            $viewFile = $this->localize($viewFile);
+            $viewFile = $this->localize($viewFile, $language);
         } else {
             throw new ViewNotFoundException("The view file \"$viewFile\" does not exist.");
         }
