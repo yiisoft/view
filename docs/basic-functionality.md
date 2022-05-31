@@ -306,7 +306,9 @@ $urlGenerator = $this->getParameter('urlGenerator');
 ?>
 
 <?php if ($this->hasParameter(SomeObject::class)): ?>
-    <?= $this->getParameter(SomeObject::class)->getContent() ?>
+    <?= $this
+        ->getParameter(SomeObject::class)
+        ->getContent() ?>
 <?php endif; ?>
 
 Posts:
@@ -461,7 +463,10 @@ $dynamicContent = new DynamicContent(
 );
 
 // We use the widget as a wrapper over the content that should be cached:
-FragmentCache::widget()->id('cache-id')->dynamicContents($dynamicContent)->begin();
+FragmentCache::widget()
+    ->id('cache-id')
+    ->dynamicContents($dynamicContent)
+    ->begin();
     echo 'Content to be cached ...';
     echo $dynamicContent->placeholder();
     echo 'Content to be cached ...';

@@ -118,7 +118,9 @@ in the `<head>` section. To specify which meta tags to add, two methods are prov
 $view->registerMeta(['name' => 'keywords', 'content' => 'yii, framework, php']);
 
 // Creates a meta tag from a `Yiisoft\Html\Tag\Meta` instance:
-$view->registerMetaTag(\Yiisoft\Html\Html::meta()->name('robots')->content('noindex'));
+$view->registerMetaTag(\Yiisoft\Html\Html::meta()
+    ->name('robots')
+    ->content('noindex'));
 ```
 
 The above code will register meta tags in a `Yiisoft\View\WebView` instance. The tags are added after the
@@ -142,7 +144,9 @@ $view->registerMeta(
 );
 
 $view->registerMetaTag(
-    \Yiisoft\Html\Html::meta()->name('description')->content('This website is about funny raccoons.'),
+    \Yiisoft\Html\Html::meta()
+        ->name('description')
+        ->content('This website is about funny raccoons.'),
     'description',
 );
 ```
