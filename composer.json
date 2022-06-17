@@ -43,7 +43,7 @@
         "vimeo/psalm": "^4.19",
         "yiisoft/aliases": "^2.0",
         "yiisoft/psr-dummy-provider": "^1.0",
-        "yiisoft/test-support": "^1.3"
+        "yiisoft/test-support": "^2.0"
     },
     "extra": {
         "config-plugin-options": {
