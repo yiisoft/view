@@ -2,7 +2,7 @@
 
 ## 5.0.1 under development
 
-- no changes in this release.
+- Enh #205: Add support for `yiisoft/cache` version `^2.0` (@vjik)
 
 ## 5.0.0 February 03, 2022
 
