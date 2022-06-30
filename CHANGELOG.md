@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 5.0.1 under development
+## 5.0.1 June 30, 2022
 
 - Enh #205: Add support for `yiisoft/cache` version `^2.0` (@vjik)
 
