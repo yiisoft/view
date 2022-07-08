@@ -1,6 +1,5 @@
 # Yii View Change Log
 
-## 6.0.0 under development
 ## 5.0.2 under development
 
 - New #204: Add method `ViewInterface::withBasePath()` that set base path to the view directory (@thenotsoft, @vjik)
