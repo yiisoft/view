@@ -474,10 +474,18 @@ PHP
         $this->assertSame(7, $view->getParameter('test'));
     }
 
+    public function testWithBasePath(): void
+    {
+        $view = TestHelper::createView()->withBasePath('/hello/dir');
+
+        $this->assertSame('/hello/dir', $view->getBasePath());
+    }
+
     public function testImmutability(): void
     {
         $view = TestHelper::createView();
 
+        $this->assertNotSame($view, $view->withBasePath(''));
         $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
         $this->assertNotSame($view, $view->withSourceLanguage('en'));
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
