@@ -225,6 +225,57 @@ PHP
         );
     }
 
+    public function testRenderSetLanguage(): void
+    {
+        FileHelper::ensureDirectory($this->tempDirectory);
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/file.php", 'test en render');
+        file_put_contents("$this->tempDirectory/es/file.php", 'test es render');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        $view->setLanguage('es');
+
+        $this->assertSameIgnoringSlash(
+            "test es render",
+            $view->render('/file'),
+        );
+    }
+
+    public function testRenderWithLanguage(): void
+    {
+        FileHelper::ensureDirectory($this->tempDirectory);
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/file.php", 'test en render');
+        file_put_contents("$this->tempDirectory/es/file.php", 'test es render');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+
+        $this->assertSameIgnoringSlash(
+            "test es render",
+            $view->withLanguage('es')->render('/file'),
+        );
+        $this->assertSame('test en render', $view->render('/file'));
+    }
+
+    public function testSubRenderWithLanguage(): void
+    {
+        FileHelper::ensureDirectory($this->tempDirectory);
+        FileHelper::ensureDirectory("$this->tempDirectory/es");
+        file_put_contents("$this->tempDirectory/file.php", "<?php\n echo \$this->render('_sub-file');");
+        file_put_contents("$this->tempDirectory/_sub-file.php", 'test en sub render');
+
+        file_put_contents("$this->tempDirectory/es/file.php", "<?php\n echo \$this->render('_sub-file');");
+        file_put_contents("$this->tempDirectory/es/_sub-file.php", 'test es sub render');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+
+        $this->assertSameIgnoringSlash(
+            'test es sub render',
+            $view->withLanguage('es')->render('/file'),
+        );
+        $this->assertSame('test en sub render', $view->render('/file'));
+    }
+
     public function testLocalizeWithChangedLanguage(): void
     {
         FileHelper::ensureDirectory("$this->tempDirectory/es");

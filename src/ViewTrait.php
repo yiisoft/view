@@ -11,6 +11,7 @@ use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
+use Yiisoft\View\State\LocaleState;
 
 use function array_merge;
 use function array_pop;
@@ -158,8 +159,23 @@ trait ViewTrait
      */
     public function setLanguage(string $language): self
     {
-        $this->state->setLanguage($language);
+        $this->localeState->setLanguage($language);
         return $this;
+    }
+
+    /**
+     * Set the specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function withLanguage(string $language): self
+    {
+        $new = clone $this;
+        $new->localeState = new LocaleState($language);
+
+        return $new;
     }
 
     /**
@@ -379,7 +395,6 @@ trait ViewTrait
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
-     * @param string|null $language The language to which will be used to localize the view.
      *
      * @throws RuntimeException If the view cannot be resolved.
      * @throws ViewNotFoundException If the view file does not exist.
@@ -389,11 +404,11 @@ trait ViewTrait
      *
      * @return string The rendering result.
      */
-    public function render(string $view, array $parameters = [], ?string $language = null): string
+    public function render(string $view, array $parameters = []): string
     {
         $viewFile = $this->findTemplateFile($view);
 
-        return $this->renderFile($viewFile, $parameters, $language);
+        return $this->renderFile($viewFile, $parameters);
     }
 
     /**
@@ -415,7 +430,7 @@ trait ViewTrait
      *
      * @return string The rendering result.
      */
-    public function renderFile(string $viewFile, array $parameters = [], ?string $language = null): string
+    public function renderFile(string $viewFile, array $parameters = []): string
     {
         $parameters = array_merge($this->state->getParameters(), $parameters);
 
@@ -428,7 +443,7 @@ trait ViewTrait
         }
 
         if (is_file($viewFile)) {
-            $viewFile = $this->localize($viewFile, $language);
+            $viewFile = $this->localize($viewFile, $this->localeState->getLanguage());
         } else {
             throw new ViewNotFoundException("The view file \"$viewFile\" does not exist.");
         }
@@ -472,7 +487,7 @@ trait ViewTrait
      */
     public function localize(string $file, ?string $language = null, ?string $sourceLanguage = null): string
     {
-        $language = $language ?? $this->state->getLanguage();
+        $language = $language ?? $this->localeState->getLanguage();
         $sourceLanguage = $sourceLanguage ?? $this->sourceLanguage;
 
         if ($language === $sourceLanguage) {

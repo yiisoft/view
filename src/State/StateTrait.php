@@ -17,7 +17,6 @@ use function is_array;
 trait StateTrait
 {
     private ?Theme $theme = null;
-    private string $language = 'en';
 
     /**
      * @var array Parameters that are common for all view templates.
@@ -52,29 +51,6 @@ trait StateTrait
     public function getTheme(): ?Theme
     {
         return $this->theme;
-    }
-
-    /**
-     * Set the specified language code.
-     *
-     * @param string $language The language code.
-     *
-     * @return static
-     */
-    public function setLanguage(string $language): self
-    {
-        $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * Gets the language code.
-     *
-     * @return string The language code.
-     */
-    public function getLanguage(): string
-    {
-        return $this->language;
     }
 
     /**
