@@ -443,7 +443,7 @@ trait ViewTrait
         }
 
         if (is_file($viewFile)) {
-            $viewFile = $this->localize($viewFile, $this->localeState->getLanguage());
+            $viewFile = $this->localize($viewFile);
         } else {
             throw new ViewNotFoundException("The view file \"$viewFile\" does not exist.");
         }
