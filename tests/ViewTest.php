@@ -123,7 +123,9 @@ PHP
         file_put_contents($subView, $subViewContent);
 
         $theme = new Theme([$this->tempDirectory => $themePath]);
-        $view = $this->createViewWithBasePath($this->tempDirectory)->setTheme($theme);
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->setTheme($theme);
 
         $this->assertSame($this->tempDirectory, $view->getBasePath());
         $this->assertSame('php', $view->getDefaultExtension());
@@ -153,7 +155,8 @@ PHP
         $subViewContent = 'subviewcontent';
         file_put_contents($subView, $subViewContent);
 
-        $view = $this->createViewWithBasePath($this->tempDirectory)
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory));
 
         $this->assertSame(null, $view->getTheme());
@@ -178,15 +181,20 @@ PHP
 
     public function testRenderWithoutFileExtension(): void
     {
-        $view = $this->createViewWithBasePath($this->tempDirectory)
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory));
         file_put_contents("$this->tempDirectory/file.php", 'Test');
         file_put_contents("$this->tempDirectory/file.tpl", 'Test');
         file_put_contents("$this->tempDirectory/file.txt.php", 'Test');
 
         $this->assertSame('Test', $view->render('file'));
-        $this->assertSame('Test', $view->withDefaultExtension('tpl')->render('file'));
-        $this->assertSame('Test', $view->withDefaultExtension('txt')->render('file'));
+        $this->assertSame('Test', $view
+            ->withDefaultExtension('tpl')
+            ->render('file'));
+        $this->assertSame('Test', $view
+            ->withDefaultExtension('txt')
+            ->render('file'));
     }
 
     public function testLocalize(): void
@@ -281,7 +289,9 @@ PHP
         FileHelper::ensureDirectory("$this->tempDirectory/es");
         file_put_contents("$this->tempDirectory/es/file.php", 'Prueba');
 
-        $view = $this->createViewWithBasePath($this->tempDirectory)->setLanguage('es');
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->setLanguage('es');
 
         $this->assertSameIgnoringSlash(
             "$this->tempDirectory/es/file.php",
@@ -515,10 +525,18 @@ PHP
         $this->assertSame(7, $view->getParameter('test'));
     }
 
+    public function testWithBasePath(): void
+    {
+        $view = TestHelper::createView()->withBasePath('/hello/dir');
+
+        $this->assertSame('/hello/dir', $view->getBasePath());
+    }
+
     public function testImmutability(): void
     {
         $view = TestHelper::createView();
 
+        $this->assertNotSame($view, $view->withBasePath(''));
         $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
         $this->assertNotSame($view, $view->withSourceLanguage('en'));
         $this->assertNotSame($view, $view->withDefaultExtension('php'));

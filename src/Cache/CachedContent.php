@@ -80,7 +80,9 @@ final class CachedContent
     public function get(): ?string
     {
         /** @var string|null $content */
-        $content = $this->cache->psr()->get($this->cacheKey());
+        $content = $this->cache
+            ->psr()
+            ->get($this->cacheKey());
 
         if ($content === null) {
             return null;
