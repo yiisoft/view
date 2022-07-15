@@ -167,7 +167,7 @@ final class WebView implements ViewInterface
             sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
         ]);
 
-        $this->clear();
+        $this->state->clear();
     }
 
     /**

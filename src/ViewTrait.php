@@ -517,6 +517,7 @@ trait ViewTrait
     {
         $this->viewFiles = [];
         $this->state->clear();
+        $this->localeState = new LocaleState();
     }
 
     /**
