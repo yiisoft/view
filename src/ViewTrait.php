@@ -57,6 +57,20 @@ trait ViewTrait
     private array $viewFiles = [];
 
     /**
+     * Returns a new instance with specified base path to the view directory.
+     *
+     * @param string $basePath The base path to the view directory.
+     *
+     * @return static
+     */
+    public function withBasePath(string $basePath): self
+    {
+        $new = clone $this;
+        $new->basePath = $basePath;
+        return $new;
+    }
+
+    /**
      * Returns a new instance with the specified renderers.
      *
      * @param array $renderers A list of available renderers indexed by their

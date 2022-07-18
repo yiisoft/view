@@ -8,4 +8,6 @@ use Yiisoft\View\Tests\TestSupport\CustomContext;
  * @var $this \Yiisoft\View\View
  */
 
-echo $this->withContext(new CustomContext())->render('view');
+echo $this
+    ->withContext(new CustomContext())
+    ->render('view');
