@@ -105,6 +105,15 @@ interface ViewInterface
     public function setLanguage(string $language): self;
 
     /**
+     * Set the specified language code.
+     *
+     * @param string $language The language code.
+     *
+     * @return static
+     */
+    public function withLanguage(string $language): self;
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
