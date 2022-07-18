@@ -52,6 +52,7 @@ final class View implements ViewInterface
     {
         $new = clone $this;
         $new->state = new ViewState();
+        $new->localeState = new LocaleState();
         return $new;
     }
 

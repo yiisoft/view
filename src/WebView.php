@@ -106,6 +106,7 @@ final class WebView implements ViewInterface
     {
         $new = clone $this;
         $new->state = new WebViewState();
+        $new->localeState = new LocaleState();
         return $new;
     }
 
