@@ -544,6 +544,7 @@ PHP
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));
         $this->assertNotSame($view, $view->withClearedState());
+        $this->assertNotSame($view, $view->withLanguage('es'));
     }
 
     private function createViewWithBasePath(string $basePath): View
