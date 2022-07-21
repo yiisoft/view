@@ -88,8 +88,10 @@ final class LastPosts extends Widget
 }
 ```
 
-### LocaleState of `View` and `WebView` services
-`LocaleState` like the previous state is not cloned when services are cloned. You can change the locale by using `setLocale()`, which will be applied to all other instances including existing ones. If you need to change the locale only for a single instance, you can use the immutable `withLocale()` method. Locale will be applied to all views rendered within views with `render()` calls.
+#### Locale in state
+You can change the locale by using `setLocale()`, which will be applied to all other instances that used current state
+including existing ones. If you need to change the locale only for a single instance, you can use the immutable
+`withLocale()` method. Locale will be applied to all views rendered within views with `render()` calls.
 
 Example with mutable method:
 
