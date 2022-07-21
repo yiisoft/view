@@ -20,6 +20,7 @@ use Yiisoft\View\Event\WebView\BodyEnd;
 use Yiisoft\View\Event\WebView\Head;
 use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
+use Yiisoft\View\State\LocaleState;
 use Yiisoft\View\State\WebViewState;
 
 use function array_merge;
@@ -40,6 +41,7 @@ final class WebView implements ViewInterface
     use ViewTrait;
 
     private WebViewState $state;
+    private LocaleState $localeState;
 
     /**
      * This means the location is in the head section.
@@ -90,6 +92,7 @@ final class WebView implements ViewInterface
     {
         $this->basePath = $basePath;
         $this->state = new WebViewState();
+        $this->localeState = new LocaleState();
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
     }
@@ -103,6 +106,7 @@ final class WebView implements ViewInterface
     {
         $new = clone $this;
         $new->state = new WebViewState();
+        $new->localeState = new LocaleState();
         return $new;
     }
 
@@ -164,7 +168,7 @@ final class WebView implements ViewInterface
             sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature()) => $this->renderBodyEndHtml($ajaxMode),
         ]);
 
-        $this->clear();
+        $this->state->clear();
     }
 
     /**

@@ -11,6 +11,7 @@ use Yiisoft\View\Event\View\AfterRender;
 use Yiisoft\View\Event\View\BeforeRender;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
+use Yiisoft\View\State\LocaleState;
 use Yiisoft\View\State\ViewState;
 
 use function ob_end_flush;
@@ -27,6 +28,7 @@ final class View implements ViewInterface
     use ViewTrait;
 
     private ViewState $state;
+    private LocaleState $localeState;
 
     /**
      * @param string $basePath The full path to the base directory of views.
@@ -36,6 +38,7 @@ final class View implements ViewInterface
     {
         $this->basePath = $basePath;
         $this->state = new ViewState();
+        $this->localeState = new LocaleState();
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
     }
@@ -49,6 +52,7 @@ final class View implements ViewInterface
     {
         $new = clone $this;
         $new->state = new ViewState();
+        $new->localeState = new LocaleState();
         return $new;
     }
 

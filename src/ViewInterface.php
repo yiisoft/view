@@ -43,13 +43,13 @@ interface ViewInterface
     public function withRenderers(array $renderers): self;
 
     /**
-     * Returns a new instance with the specified source language.
+     * Returns a new instance with the specified source locale.
      *
-     * @param string $language The source language.
+     * @param string $locale The source locale.
      *
      * @return static
      */
-    public function withSourceLanguage(string $language): self;
+    public function withSourceLocale(string $locale): self;
 
     /**
      * Returns a new instance with the specified default view file extension.
@@ -96,13 +96,22 @@ interface ViewInterface
     public function withClearedState(): self;
 
     /**
-     * Set the specified language code.
+     * Set the specified locale code.
      *
-     * @param string $language The language code.
+     * @param string $locale The locale code.
      *
      * @return static
      */
-    public function setLanguage(string $language): self;
+    public function setLocale(string $locale): self;
+
+    /**
+     * Set the specified locale code.
+     *
+     * @param string $locale The locale code.
+     *
+     * @return static
+     */
+    public function withLocale(string $locale): self;
 
     /**
      * Gets the base path to the view directory.
@@ -299,23 +308,23 @@ interface ViewInterface
     /**
      * Returns the localized version of a specified file.
      *
-     * The searching is based on the specified language code. In particular, a file with the same name will be looked
-     * for under the subdirectory whose name is the same as the language code. For example, given the file
-     * "path/to/view.php" and language code "zh-CN", the localized file will be looked for as "path/to/zh-CN/view.php".
-     * If the file is not found, it will try a fallback with just a language code that is "zh"
+     * The searching is based on the specified locale code. In particular, a file with the same name will be looked
+     * for under the subdirectory whose name is the same as the locale code. For example, given the file
+     * "path/to/view.php" and locale code "zh-CN", the localized file will be looked for as "path/to/zh-CN/view.php".
+     * If the file is not found, it will try a fallback with just a locale code that is "zh"
      * i.e. "path/to/zh/view.php".
      * If it is not found as well the original file will be returned.
      *
-     * If the target and the source language codes are the same, the original file will be returned.
+     * If the target and the source locale codes are the same, the original file will be returned.
      *
      * @param string $file The original file
-     * @param string|null $language The target language that the file should be localized to.
-     * @param string|null $sourceLanguage The language that the original file is in.
+     * @param string|null $locale The target locale that the file should be localized to.
+     * @param string|null $sourceLocale The locale that the original file is in.
      *
      * @return string The matching localized file, or the original file if the localized version is not found.
-     * If the target and the source language codes are the same, the original file will be returned.
+     * If the target and the source locale codes are the same, the original file will be returned.
      */
-    public function localize(string $file, ?string $language = null, ?string $sourceLanguage = null): string;
+    public function localize(string $file, ?string $locale = null, ?string $sourceLocale = null): string;
 
     /**
      * Clears the data for working with the event loop.

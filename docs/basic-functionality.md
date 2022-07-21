@@ -187,24 +187,24 @@ $url = $theme->getUrl('img/logo.svg');
 
 ## Localization
 
-Two languages are defined for localization with the default value `en`:
+Two locales are defined for localization with the default value `en`:
 
-- `$language` - The target language that the file should be localized to.
-- `$sourceLanguage` - The language that the original file is in.
+- `$locale` - The target locale that the file should be localized to.
+- `$sourceLocale` - The locale that the original file is in.
 
 You can change default values:
 
 ```php
-$view = $view->withSourceLanguage('es');
-$view->setLanguage('fr');
+$view = $view->withSourceLocale('es');
+$view->setLocale('fr');
 ```
 
-In order to use multiple languages it is necessary to create subdirectories at directory level matching template files
+In order to use multiple locales it is necessary to create subdirectories at directory level matching template files
 of the view. For example, if there is a view `/path/to/views/blog/posts.php` and we translate it into Russian, create
-a subdirectory `ru-RU` or `ru`. In this subdirectory, create a file for the Russian language:
+a subdirectory `ru-RU` or `ru`. In this subdirectory, create a file for the Russian locale:
 `/path/to/views/blog/ru/posts.php`.
 
-To localize the file, use the `localize($file, $language, $sourceLanguage)` method:
+To localize the file, use the `localize($file, $locale, $sourceLocale)` method:
 
 ```php
 $file = '/path/to/views/blog/posts.php';
@@ -228,14 +228,14 @@ $view->localize($file, 'ru', 'en');
 $view->localize($file, 'ru', 'ru');
 ```
 
-File choice is based on the specified language code. A file with the same name will be looked
-for under the subdirectory whose name is the same as the language code. For example, given the file
-`/path/to/views/blog/posts.php` and the language code `ru-RU`, the localized file will be looked
+File choice is based on the specified locale code. A file with the same name will be looked
+for under the subdirectory whose name is the same as the locale code. For example, given the file
+`/path/to/views/blog/posts.php` and the locale code `ru-RU`, the localized file will be looked
 for as `/path/to/views/blog/ru-RU/posts.php`. If the file is not found, it will try a fallback
 with just a language code that is `ru` i.e. `/path/to/views/blog/ru/posts.php`.
 
 > If the target file is not found, the original file will be returned.
-> If the target and the source language codes are the same, the original file will be returned.
+> If the target and the source locale codes are the same, the original file will be returned.
 
 ## Sharing data among views
 
@@ -476,12 +476,12 @@ FragmentCache::end();
 ### Variations
 
 Content being cached may be varied according to some parameters. For example, for a Web application supporting
-multiple languages, the same piece of view code may generate the content in different languages. Therefore, you
-may want to make the cached content varied according to the current application language.
+multiple locales, the same piece of view code may generate the content in different locales. Therefore, you
+may want to make the cached content varied according to the current application locale.
 
 To specify cache variations, you need to pass the third parameter to the constructor,
 which should be an array of string values, each representing a particular variation factor.
-For example, to make the cached content varied by the language, you may use the following code:
+For example, to make the cached content varied by the locale, you may use the following code:
 
 ```php
 /**
