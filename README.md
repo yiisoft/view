@@ -89,7 +89,7 @@ final class LastPosts extends Widget
 ```
 
 ### LocaleState of `View` and `WebView` services
-`LocaleState` like the previous state is not cloned when services are cloned. You can change the locale by using `setLanguage()`, which will be applied to all other instances including existing ones. If you need to change the locale only for a single instance, you can use the immutable `withLanguage()` method. Locale will be applied to all views rendered within views with `render()` calls.
+`LocaleState` like the previous state is not cloned when services are cloned. You can change the locale by using `setLocale()`, which will be applied to all other instances including existing ones. If you need to change the locale only for a single instance, you can use the immutable `withLocale()` method. Locale will be applied to all views rendered within views with `render()` calls.
 
 example with mutable method:
 ```php
@@ -108,7 +108,7 @@ final class LocaleMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         ...
-        $this->view->setLanguage($locale);
+        $this->view->setLocale($locale);
         ...
     }
 }
@@ -121,7 +121,7 @@ final class BlogController {
         $this->view = $view;
     }
     public function index() {
-        return $this->view->withLanguage('es')->render('index');
+        return $this->view->withLocale('es')->render('index');
     }
 }
 ```

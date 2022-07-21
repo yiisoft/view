@@ -233,7 +233,7 @@ PHP
         );
     }
 
-    public function testRenderSetLanguage(): void
+    public function testRenderSetLocale(): void
     {
         FileHelper::ensureDirectory($this->tempDirectory);
         FileHelper::ensureDirectory("$this->tempDirectory/es");
@@ -241,7 +241,7 @@ PHP
         file_put_contents("$this->tempDirectory/es/file.php", 'test es render');
 
         $view = $this->createViewWithBasePath($this->tempDirectory);
-        $view->setLanguage('es');
+        $view->setLocale('es');
 
         $this->assertSameIgnoringSlash(
             "test es render",
@@ -249,7 +249,7 @@ PHP
         );
     }
 
-    public function testRenderWithLanguage(): void
+    public function testRenderWithLocale(): void
     {
         FileHelper::ensureDirectory($this->tempDirectory);
         FileHelper::ensureDirectory("$this->tempDirectory/es");
@@ -260,12 +260,12 @@ PHP
 
         $this->assertSameIgnoringSlash(
             "test es render",
-            $view->withLanguage('es')->render('/file'),
+            $view->withLocale('es')->render('/file'),
         );
         $this->assertSame('test en render', $view->render('/file'));
     }
 
-    public function testSubRenderWithLanguage(): void
+    public function testSubRenderWithLocale(): void
     {
         FileHelper::ensureDirectory($this->tempDirectory);
         FileHelper::ensureDirectory("$this->tempDirectory/es");
@@ -279,19 +279,19 @@ PHP
 
         $this->assertSameIgnoringSlash(
             'test es sub render',
-            $view->withLanguage('es')->render('/file'),
+            $view->withLocale('es')->render('/file'),
         );
         $this->assertSame('test en sub render', $view->render('/file'));
     }
 
-    public function testLocalizeWithChangedLanguage(): void
+    public function testLocalizeWithChangedLocale(): void
     {
         FileHelper::ensureDirectory("$this->tempDirectory/es");
         file_put_contents("$this->tempDirectory/es/file.php", 'Prueba');
 
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
-            ->setLanguage('es');
+            ->setLocale('es');
 
         $this->assertSameIgnoringSlash(
             "$this->tempDirectory/es/file.php",
@@ -311,17 +311,17 @@ PHP
             ],
         ], $this->tempDirectory);
         $viewFile = $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'faq.php';
-        $sourceLanguage = 'en-US';
+        $sourceLocale = 'en-US';
 
-        // Source language and target language are same. The view path should be unchanged.
-        $currentLanguage = $sourceLanguage;
-        $this->assertSame($viewFile, $view->localize($viewFile, $currentLanguage, $sourceLanguage));
+        // Source locale and target locale are same. The view path should be unchanged.
+        $currentLocale = $sourceLocale;
+        $this->assertSame($viewFile, $view->localize($viewFile, $currentLocale, $sourceLocale));
 
-        // Source language and target language are different. The view path should be changed.
-        $currentLanguage = 'de-DE';
+        // Source locale and target locale are different. The view path should be changed.
+        $currentLocale = 'de-DE';
         $this->assertSame(
-            $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
-            $view->localize($viewFile, $currentLanguage, $sourceLanguage)
+            $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLocale . DIRECTORY_SEPARATOR . 'faq.php',
+            $view->localize($viewFile, $currentLocale, $sourceLocale)
         );
     }
 
@@ -519,7 +519,7 @@ PHP
         $view = TestHelper::createView();
         $view->setParameter('test', 42);
 
-        $clonedView = $view->withSourceLanguage('ru');
+        $clonedView = $view->withSourceLocale('ru');
         $clonedView->setParameter('test', 7);
 
         $this->assertSame(7, $view->getParameter('test'));
@@ -538,13 +538,13 @@ PHP
 
         $this->assertNotSame($view, $view->withBasePath(''));
         $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
-        $this->assertNotSame($view, $view->withSourceLanguage('en'));
+        $this->assertNotSame($view, $view->withSourceLocale('en'));
         $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));
         $this->assertNotSame($view, $view->withClearedState());
-        $this->assertNotSame($view, $view->withLanguage('es'));
+        $this->assertNotSame($view, $view->withLocale('es'));
     }
 
     private function createViewWithBasePath(string $basePath): View

@@ -9,38 +9,38 @@ namespace Yiisoft\View\State;
  */
 final class LocaleState
 {
-    private string $language;
+    private string $locale;
 
-    public function __construct(string $language = 'en')
+    public function __construct(string $locale = 'en')
     {
-        $this->language = $language;
+        $this->locale = $locale;
     }
 
     /**
-     * Set the specified language code.
+     * Set the specified locale code.
      *
-     * @param string $language The language code.
+     * @param string $locale The locale code.
      *
      * @return static
      */
-    public function setLanguage(string $language): self
+    public function setLocale(string $locale): self
     {
-        $this->language = $language;
+        $this->locale = $locale;
         return $this;
     }
 
     /**
-     * Gets the language code.
+     * Gets the locale code.
      *
-     * @return string The language code.
+     * @return string The locale code.
      */
-    public function getLanguage(): string
+    public function getLocale(): string
     {
-        return $this->language;
+        return $this->locale;
     }
 
     public function __toString(): string
     {
-        return $this->getLanguage();
+        return $this->getLocale();
     }
 }
