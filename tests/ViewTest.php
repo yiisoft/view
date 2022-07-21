@@ -244,7 +244,7 @@ PHP
         $view->setLocale('es');
 
         $this->assertSameIgnoringSlash(
-            "test es render",
+            'test es render',
             $view->render('/file'),
         );
     }
@@ -259,7 +259,7 @@ PHP
         $view = $this->createViewWithBasePath($this->tempDirectory);
 
         $this->assertSameIgnoringSlash(
-            "test es render",
+            'test es render',
             $view->withLocale('es')->render('/file'),
         );
         $this->assertSame('test en render', $view->render('/file'));
