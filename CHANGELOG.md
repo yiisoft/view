@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 6.0.1 under development
+
+- no changes in this release.
+
 ## 6.0.0 July 21, 2022
 
 - New #199: Add immutable method `ViewInterface::withLocale()` that set locale (@thenotsoft, @vjik, @samdark)
