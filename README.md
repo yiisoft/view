@@ -135,6 +135,7 @@ final class BlogController {
 ```
 
 #### Reset state
+
 To get a deep cloned `View` or `WebView` use `withClearedState()`: 
 
 ```php
