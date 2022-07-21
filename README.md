@@ -46,7 +46,7 @@ data.
 `View` service:
 - parameters,
 - blocks,
-- theme
+- theme,
 - locale.
 
 `WebView` service:
