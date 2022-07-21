@@ -2,7 +2,8 @@
 
 ## 5.0.2 under development
 
-- New #199: Add immutable method `ViewInterface::withLanguage()` that set language (@thenotsoft, @vjik, @samdark)
+- New #199: Add immutable method `ViewInterface::withLocale()` that set locale (@thenotsoft, @vjik, @samdark)
+- Chg #199: Renamed method `ViewInterface::setLanguage()` to `ViewInterface::setLocale` (@thenotsoft, @vjik, @samdark)
 - New #204: Add method `ViewInterface::withBasePath()` that set base path to the view directory (@thenotsoft, @vjik)
 - Chg #208: Add support for `yiisoft/files` of version `^2.0` (@DplusG)
 
