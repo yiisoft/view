@@ -46,14 +46,12 @@ data.
 `View` service:
 - parameters,
 - blocks,
-- theme,
-- language.
+- theme.
 
 `WebView` service:
 - parameters,
 - blocks,
 - theme,
-- language,
 - title,
 - meta and link tags,
 - JS/CSS strings,
@@ -86,6 +84,44 @@ final class LastPosts extends Widget
         ...
         $this->view->registerCss('.lastPosts { background: #f1f1f1; }');
         ...
+    }
+}
+```
+
+### LocaleState of `View` and `WebView` services
+`LocaleState` like the previous state is not cloned when services are cloned. You can change the local by using `setLanguage()`, which will be applied to all other instances and to the old ones. If you need to change the locale only for a new instance without changing the locale globally, then you can use the immutable method `withLanguage()`, changing the locale also be applied to all sub-renders.
+
+example with mutable method:
+```php
+final class LocaleMiddleware implements MiddlewareInterface
+{    
+    ...
+    private WebView $view;
+    ...
+    public function __construct (
+        ...
+        WebView $view
+        ...
+    ) {
+        $this->view = $view;
+    }
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        ...
+        $this->view->setLanguage($locale);
+        ...
+    }
+}
+````
+or immutable method:
+```php
+final class BlogController {
+    private WebView $view;
+    public function __construct (WebView $view) {
+        $this->view = $view;
+    }
+    public function index() {
+        return $this->view->withLanguage('es')->render('index');
     }
 }
 ```
