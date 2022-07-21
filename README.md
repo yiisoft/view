@@ -88,7 +88,7 @@ final class LastPosts extends Widget
 }
 ```
 
-#### Locale in state
+#### Locale state
 You can change the locale by using `setLocale()`, which will be applied to all other instances that used current state
 including existing ones. If you need to change the locale only for a single instance, you can use the immutable
 `withLocale()` method. Locale will be applied to all views rendered within views with `render()` calls.
