@@ -46,12 +46,14 @@ data.
 `View` service:
 - parameters,
 - blocks,
-- theme.
+- theme
+- locale.
 
 `WebView` service:
 - parameters,
 - blocks,
 - theme,
+- locale,
 - title,
 - meta and link tags,
 - JS/CSS strings,
