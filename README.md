@@ -114,7 +114,9 @@ final class LocaleMiddleware implements MiddlewareInterface
     }
 }
 ````
-or immutable method:
+
+Example with immutable method:
+
 ```php
 final class BlogController {
     private WebView $view;
