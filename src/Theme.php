@@ -139,7 +139,7 @@ final class Theme
         foreach ($this->pathMap as $from => $tos) {
             $from = FileHelper::normalizePath($from) . '/';
 
-            if (strpos($path, $from) === 0) {
+            if (str_starts_with($path, $from)) {
                 $n = strlen($from);
 
                 foreach ((array) $tos as $to) {

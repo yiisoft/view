@@ -12,26 +12,19 @@ use Yiisoft\View\WebView;
  */
 final class AfterRender implements AfterRenderEventInterface
 {
-    private WebView $view;
-
-    /**
-     * @var string The view file being rendered.
-     */
-    private string $file;
-
-    /**
-     * @var array The parameters array passed to the {@see WebView::render()} or {@see WebView::renderFile()} method.
-     */
-    private array $parameters;
-
-    private string $result;
-
-    public function __construct(WebView $view, string $file, array $parameters, string $result)
+    public function __construct(
+        private WebView $view,
+        /**
+         * @var string The view file being rendered.
+         */
+        private string $file,
+        /**
+         * @var array The parameters array passed to the {@see WebView::render()} or {@see WebView::renderFile()} method.
+         */
+        private array $parameters,
+        private string $result
+    )
     {
-        $this->view = $view;
-        $this->file = $file;
-        $this->parameters = $parameters;
-        $this->result = $result;
     }
 
     public function getView(): WebView

@@ -81,7 +81,7 @@ trait StateTrait
      *
      * @return static
      */
-    public function setParameter(string $id, $value): self
+    public function setParameter(string $id, mixed $value): self
     {
         $this->parameters[$id] = $value;
         return $this;
@@ -98,7 +98,7 @@ trait StateTrait
      *
      * @return static
      */
-    public function addToParameter(string $id, ...$value): self
+    public function addToParameter(string $id, mixed ...$value): self
     {
         /** @var mixed $array */
         $array = $this->parameters[$id] ?? [];

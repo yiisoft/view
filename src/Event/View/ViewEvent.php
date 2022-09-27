@@ -11,11 +11,8 @@ use Yiisoft\View\View;
  */
 abstract class ViewEvent
 {
-    private View $view;
-
-    final public function __construct(View $view)
+    final public function __construct(private View $view)
     {
-        $this->view = $view;
     }
 
     final public function getView(): View

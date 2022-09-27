@@ -805,7 +805,7 @@ final class WebViewTest extends TestCase
 
         try {
             $webView->renderFile(__DIR__ . '/public/view/error.php');
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         $webView->clear();
