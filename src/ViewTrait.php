@@ -260,7 +260,7 @@ trait ViewTrait
      *
      * @return static
      */
-    public function setParameter(string $id, $value): self
+    public function setParameter(string $id, mixed $value): self
     {
         $this->state->setParameter($id, $value);
         return $this;
@@ -277,7 +277,7 @@ trait ViewTrait
      *
      * @return static
      */
-    public function addToParameter(string $id, ...$value): self
+    public function addToParameter(string $id, mixed ...$value): self
     {
         $this->state->addToParameter($id, ...$value);
         return $this;
@@ -500,8 +500,8 @@ trait ViewTrait
      */
     public function localize(string $file, ?string $locale = null, ?string $sourceLocale = null): string
     {
-        $locale = $locale ?? $this->localeState->getLocale();
-        $sourceLocale = $sourceLocale ?? $this->sourceLocale;
+        $locale ??= $this->localeState->getLocale();
+        $sourceLocale ??= $this->sourceLocale;
 
         if ($locale === $sourceLocale) {
             return $file;

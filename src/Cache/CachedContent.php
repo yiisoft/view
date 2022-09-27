@@ -11,10 +11,7 @@ use Yiisoft\Cache\CacheKeyNormalizer;
 use Yiisoft\Cache\Dependency\Dependency;
 
 use function array_merge;
-use function get_class;
-use function gettype;
 use function is_string;
-use function is_object;
 use function sprintf;
 use function strtr;
 
@@ -23,8 +20,6 @@ use function strtr;
  */
 final class CachedContent
 {
-    private string $id;
-    private CacheInterface $cache;
     private CacheKeyNormalizer $cacheKeyNormalizer;
 
     /**
@@ -43,10 +38,8 @@ final class CachedContent
      * @param DynamicContent[] $dynamicContents The dynamic content instances.
      * @param string[] $variations List of string factors that would cause the variation of the content being cached.
      */
-    public function __construct(string $id, CacheInterface $cache, array $dynamicContents = [], array $variations = [])
+    public function __construct(private string $id, private CacheInterface $cache, array $dynamicContents = [], array $variations = [])
     {
-        $this->id = $id;
-        $this->cache = $cache;
         $this->cacheKeyNormalizer = new CacheKeyNormalizer();
         $this->setDynamicContents($dynamicContents);
         $this->setVariations($variations);
@@ -98,7 +91,7 @@ final class CachedContent
      */
     private function cacheKey(): string
     {
-        return $this->cacheKeyNormalizer->normalize(array_merge([__CLASS__, $this->id], $this->variations));
+        return $this->cacheKeyNormalizer->normalize(array_merge([self::class, $this->id], $this->variations));
     }
 
     /**
@@ -134,7 +127,7 @@ final class CachedContent
             if (!($dynamicContent instanceof DynamicContent)) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid dynamic content "%s" specified. It must be a "%s" instance.',
-                    is_object($dynamicContent) ? get_class($dynamicContent) : gettype($dynamicContent),
+                    get_debug_type($dynamicContent),
                     DynamicContent::class,
                 ));
             }
@@ -154,7 +147,7 @@ final class CachedContent
             if (!is_string($variation)) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid variation "%s" specified. It must be a string type.',
-                    is_object($variation) ? get_class($variation) : gettype($variation),
+                    get_debug_type($variation),
                 ));
             }
 

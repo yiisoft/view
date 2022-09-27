@@ -35,9 +35,6 @@ final class CachedContentTest extends TestCase
 
     /**
      * @dataProvider cacheParametersProvider
-     *
-     * @param int|null $ttl
-     * @param Dependency|null $dependency
      */
     public function testCache(?int $ttl, ?Dependency $dependency): void
     {

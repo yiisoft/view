@@ -12,25 +12,19 @@ use Yiisoft\View\View;
  */
 final class BeforeRender implements StoppableEventInterface
 {
-    private View $view;
-
-    /**
-     * @var string The view file being rendered.
-     */
-    private string $file;
-
-    /**
-     * @var array The parameters array passed to the {@see View::render()} or {@see View::renderFile()} method.
-     */
-    private array $parameters;
-
     private bool $stopPropagation = false;
 
-    public function __construct(View $view, string $file, array $parameters)
-    {
-        $this->view = $view;
-        $this->file = $file;
-        $this->parameters = $parameters;
+    public function __construct(
+        private View $view,
+        /**
+         * @var string The view file being rendered.
+         */
+        private string $file,
+        /**
+         * @var array The parameters array passed to the {@see View::render()} or {@see View::renderFile()} method.
+         */
+        private array $parameters
+    ) {
     }
 
     public function stopPropagation(): void
