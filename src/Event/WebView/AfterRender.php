@@ -23,8 +23,7 @@ final class AfterRender implements AfterRenderEventInterface
          */
         private array $parameters,
         private string $result
-    )
-    {
+    ) {
     }
 
     public function getView(): WebView

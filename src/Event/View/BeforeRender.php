@@ -24,8 +24,7 @@ final class BeforeRender implements StoppableEventInterface
          * @var array The parameters array passed to the {@see View::render()} or {@see View::renderFile()} method.
          */
         private array $parameters
-    )
-    {
+    ) {
     }
 
     public function stopPropagation(): void

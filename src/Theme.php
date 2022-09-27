@@ -12,7 +12,6 @@ use function is_string;
 use function ltrim;
 use function rtrim;
 use function strlen;
-use function strpos;
 use function substr;
 
 /**
