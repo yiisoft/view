@@ -22,9 +22,8 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
     public function render(ViewInterface $view, string $template, array $parameters): string
     {
         $renderer = function (): void {
-            $funcGetArg = func_get_arg(1);
             /** @psalm-suppress MixedArgument */
-            extract($funcGetArg, EXTR_OVERWRITE);
+            extract(func_get_arg(1), EXTR_OVERWRITE);
             /** @psalm-suppress UnresolvableInclude */
             require func_get_arg(0);
         };
@@ -35,7 +34,7 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
         PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
         try {
             /** @psalm-suppress PossiblyInvalidFunctionCall */
-            $renderer->bindTo($view)();
+            $renderer->bindTo($view)($template, $parameters);
             return ob_get_clean();
         } catch (Throwable $e) {
             while (ob_get_level() > $obInitialLevel) {

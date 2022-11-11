@@ -497,7 +497,7 @@ final class WebViewState
             throw new InvalidArgumentException(
                 sprintf(
                     'CSS file should be string. Got %s.',
-                    $this->getType($file),
+                    get_debug_type($file),
                 )
             );
         }
@@ -522,7 +522,7 @@ final class WebViewState
             throw new InvalidArgumentException(
                 sprintf(
                     'CSS string should be string or instance of \\' . Style::class . '. Got %s.',
-                    $this->getType($css),
+                    get_debug_type($css),
                 )
             );
         }
@@ -572,7 +572,7 @@ final class WebViewState
             throw new InvalidArgumentException(
                 sprintf(
                     'JS file should be string. Got %s.',
-                    $this->getType($file),
+                    get_debug_type($file),
                 )
             );
         }
@@ -597,7 +597,7 @@ final class WebViewState
             throw new InvalidArgumentException(
                 sprintf(
                     'JS string should be string or instance of \\' . Script::class . '. Got %s.',
-                    $this->getType($js),
+                    get_debug_type($js),
                 )
             );
         }
@@ -631,7 +631,7 @@ final class WebViewState
             throw new InvalidArgumentException(
                 sprintf(
                     'JS variable name should be string. Got %s.',
-                    $this->getType($key),
+                    get_debug_type($key),
                 )
             );
         }
@@ -666,10 +666,5 @@ final class WebViewState
             ],
             true,
         );
-    }
-
-    private function getType(mixed $value): string
-    {
-        return get_debug_type($value);
     }
 }

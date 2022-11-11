@@ -19,8 +19,11 @@ final class DynamicContent
      * @param callable $contentGenerator PHP callable with the signature: `function (array $parameters = []): string;`.
      * @param array $parameters The parameters (name-value pairs) that will be passed in the $contentGenerator context.
      */
-    public function __construct(private string $id, callable $contentGenerator, private array $parameters = [])
-    {
+    public function __construct(
+        private string $id,
+        callable $contentGenerator,
+        private array $parameters = []
+    ) {
         $this->contentGenerator = $contentGenerator;
     }
 

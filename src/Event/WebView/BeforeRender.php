@@ -14,15 +14,15 @@ final class BeforeRender implements StoppableEventInterface
 {
     private bool $stopPropagation = false;
 
+    /**
+     * @param WebView $view
+     * @param string $file The view file being rendered.
+     * @param array $parameters The parameters array passed to the {@see WebView::render()}
+     * or {@see WebView::renderFile()} method.
+     */
     public function __construct(
         private WebView $view,
-        /**
-         * @var string The view file being rendered.
-         */
         private string $file,
-        /**
-         * @var array The parameters array passed to the {@see WebView::render()} or {@see WebView::renderFile()} method.
-         */
         private array $parameters
     ) {
     }

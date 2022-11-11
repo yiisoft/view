@@ -38,8 +38,12 @@ final class CachedContent
      * @param DynamicContent[] $dynamicContents The dynamic content instances.
      * @param string[] $variations List of string factors that would cause the variation of the content being cached.
      */
-    public function __construct(private string $id, private CacheInterface $cache, array $dynamicContents = [], array $variations = [])
-    {
+    public function __construct(
+        private string $id,
+        private CacheInterface $cache,
+        array $dynamicContents = [],
+        array $variations = []
+    ) {
         $this->cacheKeyNormalizer = new CacheKeyNormalizer();
         $this->setDynamicContents($dynamicContents);
         $this->setVariations($variations);

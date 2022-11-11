@@ -12,15 +12,14 @@ use Yiisoft\View\View;
  */
 final class AfterRender implements AfterRenderEventInterface
 {
+    /**
+     * @param string $file The view file being rendered.
+     * @param array $parameters The parameters array passed to the {@see View::render()} or {@see View::renderFile()}
+     * method.
+     */
     public function __construct(
         private View $view,
-        /**
-         * @var string The view file being rendered.
-         */
         private string $file,
-        /**
-         * @var array The parameters array passed to the {@see View::render()} or {@see View::renderFile()} method.
-         */
         private array $parameters,
         private string $result
     ) {

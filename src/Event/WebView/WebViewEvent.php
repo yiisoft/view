@@ -11,8 +11,9 @@ use Yiisoft\View\WebView;
  */
 abstract class WebViewEvent
 {
-    final public function __construct(private WebView $view)
-    {
+    final public function __construct(
+        private WebView $view
+    ) {
     }
 
     final public function getView(): WebView
