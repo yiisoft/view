@@ -23,7 +23,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
-        NonVariableToVariableOnFunctionCallRector::class => [__DIR__.'/src/PhpTemplateRenderer.php'],
-        RemoveExtraParametersRector::class => [__DIR__.'/src/PhpTemplateRenderer.php'],
+        NonVariableToVariableOnFunctionCallRector::class => [__DIR__ . '/src/PhpTemplateRenderer.php'],
+        RemoveExtraParametersRector::class => [__DIR__ . '/src/PhpTemplateRenderer.php'],
     ]);
 };
