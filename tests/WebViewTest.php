@@ -541,7 +541,7 @@ final class WebViewTest extends TestCase
     {
         return [
             ['Do not set CSS file.', [[]]],
-            ['CSS file should be string. Got integer.', [[42]]],
+            ['CSS file should be string. Got int.', [[42]]],
             ['Invalid position of CSS file.', [['file.css', 99]]],
         ];
     }
@@ -580,7 +580,7 @@ final class WebViewTest extends TestCase
     {
         return [
             ['Do not set JS file.', [[]]],
-            ['JS file should be string. Got integer.', [[42]]],
+            ['JS file should be string. Got int.', [[42]]],
             ['Invalid position of JS file.', [['file.js', 99]]],
         ];
     }
@@ -637,8 +637,8 @@ final class WebViewTest extends TestCase
         return [
             ['Do not set CSS string.', [[]]],
             ['Do not set CSS string.', ['key' => []]],
-            ['CSS string should be string or instance of \Yiisoft\Html\Tag\Style. Got integer.', [[42]]],
-            ['CSS string should be string or instance of \Yiisoft\Html\Tag\Style. Got integer.', ['key' => [42]]],
+            ['CSS string should be string or instance of \Yiisoft\Html\Tag\Style. Got int.', [[42]]],
+            ['CSS string should be string or instance of \Yiisoft\Html\Tag\Style. Got int.', ['key' => [42]]],
             ['Invalid position of CSS strings.', [['.a1 { color: red; }', 99]]],
             ['Invalid position of CSS strings.', ['key' => ['.a1 { color: red; }', 99]]],
         ];
@@ -683,8 +683,8 @@ final class WebViewTest extends TestCase
         return [
             ['Do not set JS string.', [[]]],
             ['Do not set JS string.', ['key' => []]],
-            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', [[42]]],
-            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got integer.', ['key' => [42]]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got int.', [[42]]],
+            ['JS string should be string or instance of \Yiisoft\Html\Tag\Script. Got int.', ['key' => [42]]],
             ['Invalid position of JS strings.', [['alert(1);', 99]]],
             ['Invalid position of JS strings.', ['key' => ['alert(1);', 99]]],
         ];
@@ -726,7 +726,7 @@ final class WebViewTest extends TestCase
     {
         return [
             ['Do not set JS variable name.', [[]]],
-            ['JS variable name should be string. Got integer.', [[42]]],
+            ['JS variable name should be string. Got int.', [[42]]],
             ['Do not set JS variable value.', [['var']]],
             ['Invalid position of JS variable.', [['title', 'hello', 99]]],
         ];

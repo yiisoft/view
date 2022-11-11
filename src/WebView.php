@@ -100,7 +100,7 @@ final class WebView implements ViewInterface
     /**
      * Returns a new instance with cleared state (blocks, parameters, registered CSS/JS, etc.)
      */
-    public function withClearedState(): self
+    public function withClearedState(): static
     {
         $new = clone $this;
         $new->state = new WebViewState();

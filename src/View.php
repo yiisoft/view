@@ -46,7 +46,7 @@ final class View implements ViewInterface
     /**
      * Returns a new instance with cleared state (blocks, parameters, etc.)
      */
-    public function withClearedState(): self
+    public function withClearedState(): static
     {
         $new = clone $this;
         $new->state = new ViewState();
