@@ -27,7 +27,7 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "psr/event-dispatcher": "1.0.0",
         "psr/event-dispatcher-implementation": "1.0.0",
         "yiisoft/arrays": "^2.0",
