@@ -18,10 +18,8 @@ interface ViewInterface
      * Returns a new instance with specified base path to the view directory.
      *
      * @param string $basePath The base path to the view directory.
-     *
-     * @return static
      */
-    public function withBasePath(string $basePath): self;
+    public function withBasePath(string $basePath): static;
 
     /**
      * Returns a new instance with the specified renderers.
@@ -37,81 +35,63 @@ interface ViewInterface
      * and rendered via {@see PhpTemplateRenderer}.
      *
      * @psalm-param array<string, TemplateRendererInterface> $renderers
-     *
-     * @return static
      */
-    public function withRenderers(array $renderers): self;
+    public function withRenderers(array $renderers): static;
 
     /**
      * Returns a new instance with the specified source locale.
      *
      * @param string $locale The source locale.
-     *
-     * @return static
      */
-    public function withSourceLocale(string $locale): self;
+    public function withSourceLocale(string $locale): static;
 
     /**
      * Returns a new instance with the specified default view file extension.
      *
      * @param string $defaultExtension The default view file extension. Default is "php".
      * This will be appended to view file names if they don't have file extensions.
-     *
-     * @return static
      */
-    public function withDefaultExtension(string $defaultExtension): self;
+    public function withDefaultExtension(string $defaultExtension): static;
 
     /**
      * Returns a new instance with the specified view context instance.
      *
      * @param ViewContextInterface $context The context under which the {@see renderFile()} method is being invoked.
-     *
-     * @return static
      */
-    public function withContext(ViewContextInterface $context): self;
+    public function withContext(ViewContextInterface $context): static;
 
     /**
      * Returns a new instance with the specified view context path.
      *
      * @param string $path The context path under which the {@see renderFile()} method is being invoked.
-     *
-     * @return static
      */
-    public function withContextPath(string $path): self;
+    public function withContextPath(string $path): static;
 
     /**
      * Returns a new instance with specified salt for the placeholder signature {@see getPlaceholderSignature()}.
      *
      * @param string $salt The placeholder salt.
-     *
-     * @return static
      */
-    public function withPlaceholderSalt(string $salt): self;
+    public function withPlaceholderSalt(string $salt): static;
 
     /**
      * Returns a new instance with cleared state (blocks, parameters, etc.)
-     *
-     * @return static
      */
-    public function withClearedState(): self;
+    public function withClearedState(): static;
 
     /**
      * Set the specified locale code.
      *
      * @param string $locale The locale code.
-     *
-     * @return static
      */
-    public function setLocale(string $locale): self;
+    public function setLocale(string $locale): static;
 
     /**
      * Set the specified locale code.
      *
      * @param string $locale The locale code.
-     *
-     * @return static
      */
-    public function withLocale(string $locale): self;
+    public function withLocale(string $locale): static;
 
     /**
      * Gets the base path to the view directory.
@@ -138,10 +118,8 @@ interface ViewInterface
      * Set the specified theme instance.
      *
      * @param Theme|null $theme The theme instance or `null` for reset theme.
-     *
-     * @return static
      */
-    public function setTheme(?Theme $theme): self;
+    public function setTheme(?Theme $theme): static;
 
     /**
      * Sets a common parameters that is accessible in all view templates.
@@ -150,21 +128,17 @@ interface ViewInterface
      *
      * @psalm-param array<string, mixed> $parameters
      *
-     * @return static
-     *
      * @see setParameter()
      */
-    public function setParameters(array $parameters): self;
+    public function setParameters(array $parameters): static;
 
     /**
      * Sets a common parameter that is accessible in all view templates.
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
-     *
-     * @return static
      */
-    public function setParameter(string $id, $value): self;
+    public function setParameter(string $id, $value): static;
 
     /**
      * Add values to end of common array parameter. If specified parameter does not exist or him is not array,
@@ -174,19 +148,15 @@ interface ViewInterface
      * @param mixed ...$value Value(s) for add to end of array parameter.
      *
      * @throws InvalidArgumentException When specified parameter already exists and is not an array.
-     *
-     * @return static
      */
-    public function addToParameter(string $id, ...$value): self;
+    public function addToParameter(string $id, ...$value): static;
 
     /**
      * Removes a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
-     *
-     * @return static
      */
-    public function removeParameter(string $id): self;
+    public function removeParameter(string $id): static;
 
     /**
      * Gets a common parameter value by ID.
@@ -214,19 +184,15 @@ interface ViewInterface
      *
      * @param string $id The unique identifier of the block.
      * @param string $content The content of the block.
-     *
-     * @return static
      */
-    public function setBlock(string $id, string $content): self;
+    public function setBlock(string $id, string $content): static;
 
     /**
      * Removes a content block.
      *
      * @param string $id The unique identifier of the block.
-     *
-     * @return static
      */
-    public function removeBlock(string $id): self;
+    public function removeBlock(string $id): static;
 
     /**
      * Gets content of the block by ID.

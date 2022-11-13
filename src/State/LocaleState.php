@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\State;
 
+use Stringable;
+
 /**
  * @internal
  */
-final class LocaleState
+final class LocaleState implements Stringable
 {
-    private string $locale;
-
-    public function __construct(string $locale = 'en')
-    {
-        $this->locale = $locale;
+    public function __construct(
+        private string $locale = 'en'
+    ) {
     }
 
     /**
      * Set the specified locale code.
      *
      * @param string $locale The locale code.
-     *
-     * @return static
      */
     public function setLocale(string $locale): self
     {

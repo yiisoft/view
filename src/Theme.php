@@ -12,7 +12,6 @@ use function is_string;
 use function ltrim;
 use function rtrim;
 use function strlen;
-use function strpos;
 use function substr;
 
 /**
@@ -139,7 +138,7 @@ final class Theme
         foreach ($this->pathMap as $from => $tos) {
             $from = FileHelper::normalizePath($from) . '/';
 
-            if (strpos($path, $from) === 0) {
+            if (str_starts_with($path, $from)) {
                 $n = strlen($from);
 
                 foreach ((array) $tos as $to) {

@@ -21,7 +21,7 @@ final class PhpTemplateRendererTest extends TestCase
 
         try {
             $renderer->render($view, __DIR__ . '/public/view/error.php', []);
-        } catch (LogicException $e) {
+        } catch (LogicException) {
         }
 
         $this->assertSame(ob_get_level(), $obInitialLevel);
