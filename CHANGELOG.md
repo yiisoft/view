@@ -1,8 +1,9 @@
 # Yii View Change Log
 
-## 6.0.1 under development
+## 7.0.0 under development
 
-- Enh: Add composer require checker into CI
+- Enh #211: Raise minimum PHP version to `^8.0` (@xepozz, @vjik)
+- Chg #211: Change return type of immutable methods in `ViewInterface` from `self` to `static` (@vjik) 
 
 ## 6.0.0 July 21, 2022
 

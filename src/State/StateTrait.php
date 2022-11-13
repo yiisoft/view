@@ -34,10 +34,8 @@ trait StateTrait
      * Set the specified theme instance.
      *
      * @param Theme|null $theme The theme instance or `null` for reset theme.
-     *
-     * @return static
      */
-    public function setTheme(?Theme $theme): self
+    public function setTheme(?Theme $theme): static
     {
         $this->theme = $theme;
         return $this;
@@ -60,11 +58,9 @@ trait StateTrait
      *
      * @psalm-param array<string, mixed> $parameters
      *
-     * @return static
-     *
      * @see setParameter()
      */
-    public function setParameters(array $parameters): self
+    public function setParameters(array $parameters): static
     {
         /** @var mixed $value */
         foreach ($parameters as $id => $value) {
@@ -78,10 +74,8 @@ trait StateTrait
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
-     *
-     * @return static
      */
-    public function setParameter(string $id, $value): self
+    public function setParameter(string $id, mixed $value): static
     {
         $this->parameters[$id] = $value;
         return $this;
@@ -95,10 +89,8 @@ trait StateTrait
      * @param mixed ...$value Value(s) for add to end of array parameter.
      *
      * @throws InvalidArgumentException When specified parameter already exists and is not an array.
-     *
-     * @return static
      */
-    public function addToParameter(string $id, ...$value): self
+    public function addToParameter(string $id, mixed ...$value): static
     {
         /** @var mixed $array */
         $array = $this->parameters[$id] ?? [];
@@ -117,10 +109,8 @@ trait StateTrait
      * Removes a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
-     *
-     * @return static
      */
-    public function removeParameter(string $id): self
+    public function removeParameter(string $id): static
     {
         unset($this->parameters[$id]);
         return $this;
@@ -172,10 +162,8 @@ trait StateTrait
      *
      * @param string $id The unique identifier of the block.
      * @param string $content The content of the block.
-     *
-     * @return static
      */
-    public function setBlock(string $id, string $content): self
+    public function setBlock(string $id, string $content): static
     {
         $this->blocks[$id] = $content;
         return $this;
@@ -185,10 +173,8 @@ trait StateTrait
      * Removes a content block.
      *
      * @param string $id The unique identifier of the block.
-     *
-     * @return static
      */
-    public function removeBlock(string $id): self
+    public function removeBlock(string $id): static
     {
         unset($this->blocks[$id]);
         return $this;

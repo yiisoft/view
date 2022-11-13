@@ -9,9 +9,6 @@ namespace Yiisoft\View\Cache;
  */
 final class DynamicContent
 {
-    private string $id;
-    private array $parameters;
-
     /**
      * @var callable
      */
@@ -22,11 +19,12 @@ final class DynamicContent
      * @param callable $contentGenerator PHP callable with the signature: `function (array $parameters = []): string;`.
      * @param array $parameters The parameters (name-value pairs) that will be passed in the $contentGenerator context.
      */
-    public function __construct(string $id, callable $contentGenerator, array $parameters = [])
-    {
-        $this->id = $id;
+    public function __construct(
+        private string $id,
+        callable $contentGenerator,
+        private array $parameters = []
+    ) {
         $this->contentGenerator = $contentGenerator;
-        $this->parameters = $parameters;
     }
 
     /**

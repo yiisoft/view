@@ -60,10 +60,8 @@ trait ViewTrait
      * Returns a new instance with specified base path to the view directory.
      *
      * @param string $basePath The base path to the view directory.
-     *
-     * @return static
      */
-    public function withBasePath(string $basePath): self
+    public function withBasePath(string $basePath): static
     {
         $new = clone $this;
         $new->basePath = $basePath;
@@ -84,10 +82,8 @@ trait ViewTrait
      * and rendered via {@see PhpTemplateRenderer}.
      *
      * @psalm-param array<string, TemplateRendererInterface> $renderers
-     *
-     * @return static
      */
-    public function withRenderers(array $renderers): self
+    public function withRenderers(array $renderers): static
     {
         $new = clone $this;
         $new->renderers = $renderers;
@@ -98,10 +94,8 @@ trait ViewTrait
      * Returns a new instance with the specified source locale.
      *
      * @param string $locale The source locale.
-     *
-     * @return static
      */
-    public function withSourceLocale(string $locale): self
+    public function withSourceLocale(string $locale): static
     {
         $new = clone $this;
         $new->sourceLocale = $locale;
@@ -113,10 +107,8 @@ trait ViewTrait
      *
      * @param string $defaultExtension The default view file extension. Default is "php".
      * This will be appended to view file names if they don't have file extensions.
-     *
-     * @return static
      */
-    public function withDefaultExtension(string $defaultExtension): self
+    public function withDefaultExtension(string $defaultExtension): static
     {
         $new = clone $this;
         $new->defaultExtension = $defaultExtension;
@@ -127,10 +119,8 @@ trait ViewTrait
      * Returns a new instance with the specified view context instance.
      *
      * @param ViewContextInterface $context The context under which the {@see renderFile()} method is being invoked.
-     *
-     * @return static
      */
-    public function withContext(ViewContextInterface $context): self
+    public function withContext(ViewContextInterface $context): static
     {
         $new = clone $this;
         $new->context = $context;
@@ -142,10 +132,8 @@ trait ViewTrait
      * Returns a new instance with the specified view context path.
      *
      * @param string $path The context path under which the {@see renderFile()} method is being invoked.
-     *
-     * @return static
      */
-    public function withContextPath(string $path): self
+    public function withContextPath(string $path): static
     {
         return $this->withContext(new ViewContext($path));
     }
@@ -154,10 +142,8 @@ trait ViewTrait
      * Returns a new instance with specified salt for the placeholder signature {@see getPlaceholderSignature()}.
      *
      * @param string $salt The placeholder salt.
-     *
-     * @return static
      */
-    public function withPlaceholderSalt(string $salt): self
+    public function withPlaceholderSalt(string $salt): static
     {
         $new = clone $this;
         $new->setPlaceholderSalt($salt);
@@ -168,10 +154,8 @@ trait ViewTrait
      * Set the specified locale code.
      *
      * @param string $locale The locale code.
-     *
-     * @return static
      */
-    public function setLocale(string $locale): self
+    public function setLocale(string $locale): static
     {
         $this->localeState->setLocale($locale);
         return $this;
@@ -181,10 +165,8 @@ trait ViewTrait
      * Set the specified locale code.
      *
      * @param string $locale The locale code.
-     *
-     * @return static
      */
-    public function withLocale(string $locale): self
+    public function withLocale(string $locale): static
     {
         $new = clone $this;
         $new->localeState = new LocaleState($locale);
@@ -226,10 +208,8 @@ trait ViewTrait
      * Set the specified theme instance.
      *
      * @param Theme|null $theme The theme instance or `null` for reset theme.
-     *
-     * @return static
      */
-    public function setTheme(?Theme $theme): self
+    public function setTheme(?Theme $theme): static
     {
         $this->state->setTheme($theme);
         return $this;
@@ -242,11 +222,9 @@ trait ViewTrait
      *
      * @psalm-param array<string, mixed> $parameters
      *
-     * @return static
-     *
      * @see setParameter()
      */
-    public function setParameters(array $parameters): self
+    public function setParameters(array $parameters): static
     {
         $this->state->setParameters($parameters);
         return $this;
@@ -257,10 +235,8 @@ trait ViewTrait
      *
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
-     *
-     * @return static
      */
-    public function setParameter(string $id, $value): self
+    public function setParameter(string $id, mixed $value): static
     {
         $this->state->setParameter($id, $value);
         return $this;
@@ -274,10 +250,8 @@ trait ViewTrait
      * @param mixed ...$value Value(s) for add to end of array parameter.
      *
      * @throws InvalidArgumentException When specified parameter already exists and is not an array.
-     *
-     * @return static
      */
-    public function addToParameter(string $id, ...$value): self
+    public function addToParameter(string $id, mixed ...$value): static
     {
         $this->state->addToParameter($id, ...$value);
         return $this;
@@ -287,10 +261,8 @@ trait ViewTrait
      * Removes a common parameter.
      *
      * @param string $id The unique identifier of the parameter.
-     *
-     * @return static
      */
-    public function removeParameter(string $id): self
+    public function removeParameter(string $id): static
     {
         $this->state->removeParameter($id);
         return $this;
@@ -328,10 +300,8 @@ trait ViewTrait
      *
      * @param string $id The unique identifier of the block.
      * @param string $content The content of the block.
-     *
-     * @return static
      */
-    public function setBlock(string $id, string $content): self
+    public function setBlock(string $id, string $content): static
     {
         $this->state->setBlock($id, $content);
         return $this;
@@ -341,10 +311,8 @@ trait ViewTrait
      * Removes a content block.
      *
      * @param string $id The unique identifier of the block.
-     *
-     * @return static
      */
-    public function removeBlock(string $id): self
+    public function removeBlock(string $id): static
     {
         $this->state->removeBlock($id);
         return $this;
@@ -500,8 +468,8 @@ trait ViewTrait
      */
     public function localize(string $file, ?string $locale = null, ?string $sourceLocale = null): string
     {
-        $locale = $locale ?? $this->localeState->getLocale();
-        $sourceLocale = $sourceLocale ?? $this->sourceLocale;
+        $locale ??= $this->localeState->getLocale();
+        $sourceLocale ??= $this->sourceLocale;
 
         if ($locale === $sourceLocale) {
             return $file;

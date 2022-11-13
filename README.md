@@ -21,14 +21,14 @@ to be usable separately.
 
 ## Requirements
 
-- PHP 7.4 or higher.
+- PHP 8.0 or higher.
 
 ## Installation
 
 The package could be installed via composer:
 
 ```shell
-composer require yiisoft/view --prefer-dist
+composer require yiisoft/view
 ```
 
 ## General usage

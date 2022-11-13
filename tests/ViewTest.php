@@ -76,7 +76,7 @@ PHP
 
         try {
             $view->renderFile($exceptionViewFile);
-        } catch (Exception $e) {
+        } catch (Exception) {
             // shutdown exception
         }
         $view->renderFile($normalViewFile);
@@ -491,7 +491,7 @@ PHP
 
         try {
             $view->renderFile(__DIR__ . '/public/view/error.php');
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         $view->clear();
@@ -555,11 +555,8 @@ PHP
     private function createContext(string $viewPath): ViewContextInterface
     {
         return new class ($viewPath) implements ViewContextInterface {
-            private string $viewPath;
-
-            public function __construct(string $viewPath)
+            public function __construct(private string $viewPath)
             {
-                $this->viewPath = $viewPath;
             }
 
             public function getViewPath(): string

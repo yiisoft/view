@@ -12,25 +12,18 @@ use Yiisoft\View\WebView;
  */
 final class BeforeRender implements StoppableEventInterface
 {
-    private WebView $view;
-
-    /**
-     * @var string The view file being rendered.
-     */
-    private string $file;
-
-    /**
-     * @var array The parameters array passed to the {@see WebView::render()} or {@see WebView::renderFile()} method.
-     */
-    private array $parameters;
-
     private bool $stopPropagation = false;
 
-    public function __construct(WebView $view, string $file, array $parameters)
-    {
-        $this->view = $view;
-        $this->file = $file;
-        $this->parameters = $parameters;
+    /**
+     * @param string $file The view file being rendered.
+     * @param array $parameters The parameters array passed to the {@see WebView::render()}
+     * or {@see WebView::renderFile()} method.
+     */
+    public function __construct(
+        private WebView $view,
+        private string $file,
+        private array $parameters
+    ) {
     }
 
     public function stopPropagation(): void
