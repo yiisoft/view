@@ -207,7 +207,7 @@ final class WebViewState
      */
     public function registerLink(array $attributes, int $position = WebView::POSITION_HEAD, ?string $key = null): void
     {
-        $this->registerLinkTag(Html::link()->addAttributes($attributes), $position, $key);
+        $this->registerLinkTag(Html::link()->attributes($attributes), $position, $key);
     }
 
     /**
@@ -534,7 +534,7 @@ final class WebViewState
 
         unset($config[0], $config[1]);
         if ($config !== []) {
-            $css = ($css instanceof Style ? $css : Html::style($css))->addAttributes($config);
+            $css = ($css instanceof Style ? $css : Html::style($css))->attributes($config);
         }
 
         is_string($css)
@@ -609,7 +609,7 @@ final class WebViewState
 
         unset($config[0], $config[1]);
         if ($config !== []) {
-            $js = ($js instanceof Script ? $js : Html::script($js))->addAttributes($config);
+            $js = ($js instanceof Script ? $js : Html::script($js))->attributes($config);
         }
 
         is_string($js)
