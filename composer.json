@@ -33,7 +33,7 @@
         "yiisoft/arrays": "^2.0",
         "yiisoft/cache": "^1.0|^2.0",
         "yiisoft/files": "^1.0|^2.0",
-        "yiisoft/html": "^3.0",
+        "yiisoft/html": "^2.5|^3.0",
         "yiisoft/json": "^1.0"
     },
     "require-dev": {

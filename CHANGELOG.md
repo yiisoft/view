@@ -4,14 +4,16 @@
 
 - Enh #211: Raise minimum PHP version to `^8.0` (@xepozz, @vjik)
 - Chg #211: Change return type of immutable methods in `ViewInterface` from `self` to `static` (@vjik) 
+- Enh #213: Add support for `yiisoft/html` version `^3.0` (@vjik)
 
 ## 6.0.0 July 21, 2022
 
 - New #199: Add immutable method `ViewInterface::withLocale()` that set locale (@thenotsoft, @vjik, @samdark)
 - Chg #199: Renamed method `ViewInterface::setLanguage()` to `ViewInterface::setLocale()` (@thenotsoft, @samdark)
-- Chg #199: Renamed method `ViewInterface::withSourceLanguage()` to `ViewInterface::withSourceLocale()` (@thenotsoft, @samdark)
+- Chg #199: Renamed method `ViewInterface::withSourceLanguage()` to
+  `ViewInterface::withSourceLocale()` (@thenotsoft, @samdark)
 - New #204: Add method `ViewInterface::withBasePath()` that set base path to the view directory (@thenotsoft, @vjik)
-- Chg #208: Add support for `yiisoft/files` of version `^2.0` (@DplusG)
+- Chg #208: Add support for `yiisoft/files` version `^2.0` (@DplusG)
 
 ## 5.0.1 June 30, 2022
 
@@ -53,9 +55,9 @@
 
 - Сhg: In configuration `params.php` rename parameter `commonParameters` to `parameters` (@vjik)
 - Chg: Remove methods `View::withAddedCommonParameters()` and `WebView::withAddedCommonParameters()` (@vjik)
-- Chg: In classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`, `setCommonParameter()` to `setParameter()`,
-  `removeCommonParameter()` to `removeParameter()`, `getCommonParameter()` to `getParameter()`,
-  `hasCommonParameter()` to `hasParameter()` (@vjik)
+- Chg: In classes `View` and `WebView` rename methods `setCommonParameters()` to `setParameters()`,
+  `setCommonParameter()` to `setParameter()`, `removeCommonParameter()` to `removeParameter()`, `getCommonParameter()` 
+  to `getParameter()`, `hasCommonParameter()` to `hasParameter()` (@vjik)
 - Chg: Add fluent interface for setters in `View` and `WebView` classes (@vjik)
   
 ## 2.1.0 September 14, 2021
