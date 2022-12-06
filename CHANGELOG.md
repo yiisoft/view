@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 7.0.1 under development
+
+- no changes in this release.
+
 ## 7.0.0 December 06, 2022
 
 - Chg #211: Change return type of immutable methods in `ViewInterface` from `self` to `static` (@vjik)
