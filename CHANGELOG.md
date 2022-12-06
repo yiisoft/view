@@ -1,9 +1,9 @@
 # Yii View Change Log
 
-## 7.0.0 under development
+## 7.0.0 December 06, 2022
 
+- Chg #211: Change return type of immutable methods in `ViewInterface` from `self` to `static` (@vjik)
 - Enh #211: Raise minimum PHP version to `^8.0` (@xepozz, @vjik)
-- Chg #211: Change return type of immutable methods in `ViewInterface` from `self` to `static` (@vjik) 
 - Enh #213: Add support for `yiisoft/html` version `^3.0` (@vjik)
 
 ## 6.0.0 July 21, 2022
