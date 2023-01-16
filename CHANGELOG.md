@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 7.0.2 under development
+
+- no changes in this release.
+
 ## 7.0.1 January 16, 2023
 
 - Chg: Allow yiisoft/arrays ^3.0 (samdark)
