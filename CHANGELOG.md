@@ -2,7 +2,7 @@
 
 ## 7.0.1 under development
 
-- no changes in this release.
+- Chg: Allow yiisoft/arrays ^3.0 (samdark)
 
 ## 7.0.0 December 06, 2022
 
