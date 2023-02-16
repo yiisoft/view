@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 8.0.1 under development
+
+- no changes in this release.
+
 ## 8.0.0 February 16, 2023
 
 - Chg #219: Adapt configuration group names to Yii conventions (@vjik)
