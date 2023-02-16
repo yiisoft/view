@@ -3,7 +3,7 @@
 ## 8.0.0 under development
 
 - Chg #219: Adapt configuration group names to Yii conventions (@vjik)
-- Enh #220: Add support for `yiisoft/aliases` version `^3.0` (@vjik)
+- Enh #222: Add support for `yiisoft/cache` version `^3.0` (@vjik)
 
 ## 7.0.1 January 16, 2023
 
