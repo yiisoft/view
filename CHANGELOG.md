@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 8.0.0 under development
+## 8.0.0 February 16, 2023
 
 - Chg #219: Adapt configuration group names to Yii conventions (@vjik)
 - Enh #222: Add support for `yiisoft/cache` version `^3.0` (@vjik)
