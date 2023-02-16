@@ -44,6 +44,7 @@
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.30|^5.1",
         "yiisoft/aliases": "^2.0",
+        "yiisoft/di": "^1.2",
         "yiisoft/psr-dummy-provider": "^1.0",
         "yiisoft/test-support": "^1.4|^3.0"
     },
@@ -53,8 +54,8 @@
         },
         "config-plugin": {
             "params": "params.php",
-            "common": "common.php",
-            "web": "web.php"
+            "di": "di.php",
+            "di-web": "di-web.php"
         }
     },
     "autoload": {
