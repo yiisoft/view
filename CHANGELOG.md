@@ -1,12 +1,13 @@
 # Yii View Change Log
 
-## 7.0.2 under development
+## 8.0.0 under development
 
-- no changes in this release.
+- Chg #219: Adapt configuration group names to Yii conventions (@vjik)
+- Enh #220: Add support for `yiisoft/aliases` version `^3.0` (@vjik)
 
 ## 7.0.1 January 16, 2023
 
-- Chg: Allow yiisoft/arrays ^3.0 (samdark)
+- Chg: Allow `yiisoft/arrays` `^3.0` (@samdark)
 
 ## 7.0.0 December 06, 2022
 
