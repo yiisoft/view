@@ -61,7 +61,7 @@ final class CachedContent
      *
      * @return string The rendered cached content.
      */
-    public function cache(string $content, $ttl = 60, Dependency $dependency = null, float $beta = 1.0): string
+    public function cache(string $content, \DateInterval|int|null $ttl = 60, Dependency $dependency = null, float $beta = 1.0): string
     {
         /** @psalm-suppress MixedArgument */
         return $this->replaceDynamicPlaceholders(
