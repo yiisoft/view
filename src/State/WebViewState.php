@@ -41,6 +41,7 @@ final class WebViewState
 
     /**
      * @var array The registered link tags.
+     *
      * @psalm-var array<int, Link[]>
      *
      * @see registerLink()
@@ -50,6 +51,7 @@ final class WebViewState
 
     /**
      * @var array The registered CSS code blocks.
+     *
      * @psalm-var array<int, string[]|Style[]>
      *
      * {@see registerCss()}
@@ -58,6 +60,7 @@ final class WebViewState
 
     /**
      * @var array The registered CSS files.
+     *
      * @psalm-var array<int, string[]>
      *
      * {@see registerCssFile()}
@@ -66,6 +69,7 @@ final class WebViewState
 
     /**
      * @var array The registered JS code blocks
+     *
      * @psalm-var array<int, string[]|Script[]>
      *
      * {@see registerJs()}
@@ -74,6 +78,7 @@ final class WebViewState
 
     /**
      * @var array The registered JS files.
+     *
      * @psalm-var array<int, string[]>
      *
      * {@see registerJsFile()}
@@ -98,6 +103,7 @@ final class WebViewState
 
     /**
      * @return array The registered link tags.
+     *
      * @psalm-return array<int, Link[]>
      */
     public function getLinkTags(): array
@@ -107,6 +113,7 @@ final class WebViewState
 
     /**
      * @return array The registered CSS code blocks.
+     *
      * @psalm-return array<int, string[]|Style[]>
      */
     public function getCss(): array
@@ -116,6 +123,7 @@ final class WebViewState
 
     /**
      * @return array The registered CSS files.
+     *
      * @psalm-return array<int, string[]>
      */
     public function getCssFiles(): array
@@ -125,6 +133,7 @@ final class WebViewState
 
     /**
      * @return array The registered JS code blocks
+     *
      * @psalm-return array<int, string[]|Script[]>
      */
     public function getJs(): array
@@ -134,6 +143,7 @@ final class WebViewState
 
     /**
      * @return array The registered JS files.
+     *
      * @psalm-return array<int, string[]>
      */
     public function getJsFiles(): array
