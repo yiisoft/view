@@ -32,7 +32,7 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
         ob_start();
         ob_implicit_flush(false);
         try {
-            /** @psalm-suppress PossiblyInvalidFunctionCall */
+            /** @psalm-suppress PossiblyInvalidFunctionCall,PossiblyNullFunctionCall */
             $renderer->bindTo($view)($template, $parameters);
             return ob_get_clean();
         } catch (Throwable $e) {
