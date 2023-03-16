@@ -141,9 +141,7 @@ final class WebView implements ViewInterface
     public function beginPage(): void
     {
         ob_start();
-        /** @psalm-suppress InvalidArgument */
-        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
-
+        ob_implicit_flush(false);
         $this->eventDispatcher->dispatch(new PageBegin($this));
     }
 
@@ -190,8 +188,7 @@ final class WebView implements ViewInterface
         $viewFile = $this->findTemplateFile($view);
 
         ob_start();
-        /** @psalm-suppress InvalidArgument */
-        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
+        ob_implicit_flush(false);
 
         $this->beginPage();
         $this->head();
@@ -213,8 +210,7 @@ final class WebView implements ViewInterface
     public function renderAjaxString(string $string): string
     {
         ob_start();
-        /** @psalm-suppress InvalidArgument */
-        PHP_VERSION_ID >= 80000 ? ob_implicit_flush(false) : ob_implicit_flush(0);
+        ob_implicit_flush(false);
 
         $this->beginPage();
         $this->head();
