@@ -2,7 +2,7 @@
 
 ## 8.0.1 under development
 
-- no changes in this release.
+- Bug #224: Fix signature of `CachedContent::cache()` (@vjik)
 
 ## 8.0.0 February 16, 2023
 
