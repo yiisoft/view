@@ -44,7 +44,6 @@ trait ViewTrait
     /**
      * @var array A list of available renderers indexed by their corresponding
      * supported file extensions.
-     *
      * @psalm-var array<string, TemplateRendererInterface>
      */
     private array $renderers = [];

@@ -20,14 +20,12 @@ trait StateTrait
 
     /**
      * @var array Parameters that are common for all view templates.
-     *
      * @psalm-var array<string, mixed>
      */
     private array $parameters = [];
 
     /**
      * @var array Named content blocks that are common for all view templates.
-     *
      * @psalm-var array<string, string>
      */
     private array $blocks = [];
