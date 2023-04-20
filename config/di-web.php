@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Psr\Container\ContainerInterface;
 use Yiisoft\Aliases\Aliases;
+use Yiisoft\Definitions\Contract\ReferenceInterface;
 use Yiisoft\Definitions\DynamicReference;
 use Yiisoft\View\Theme;
 use Yiisoft\View\WebView;
@@ -30,13 +32,19 @@ return [
                 static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
             ),
         ],
-        'setParameters()' => [
-            $params['yiisoft/view']['parameters'],
-        ],
-        'reset' => function () use ($params) {
+        'setParameters()' => ['parameters' => $params['yiisoft/view']['parameters']],
+        'withRenderers()' => ['renderers' => $params['yiisoft/view']['renderers']],
+        'withDefaultExtension()' => [$params['yiisoft/view']['defaultExtension']],
+        'reset' => function (ContainerInterface $container) use ($params) {
             /** @var WebView $this */
             $this->clear();
-            $this->setParameters($params['yiisoft/view']['parameters']);
+            $parameters = $params['yiisoft/view']['parameters'];
+            foreach ($parameters as $name => $parameter) {
+                $parameters[$name] = $parameter instanceof ReferenceInterface ?
+                    $parameter->resolve($container) :
+                    $parameter;
+            }
+            $this->setParameters($parameters);
         },
     ],
 ];

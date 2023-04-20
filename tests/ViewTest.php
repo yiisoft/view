@@ -197,6 +197,15 @@ PHP
             ->render('file'));
     }
 
+    public function testContext(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        $context = $this->createContext($this->tempDirectory);
+        $view = $view->withContext($context);
+
+        $this->assertSame($context, $view->getContext());
+    }
+
     public function testLocalize(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory);
