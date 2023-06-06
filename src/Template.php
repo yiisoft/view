@@ -20,33 +20,21 @@ final class Template
     ) {
     }
 
-    /**
-     * @return string
-     */
     public function getTemplate(): string
     {
         return $this->template;
     }
 
-    /**
-     * @return array
-     */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * @return ViewInterface
-     */
     public function getView(): ViewInterface
     {
         return $this->view;
     }
 
-    /**
-     * @return ViewContextInterface|null
-     */
     public function getViewContext(): ?ViewContextInterface
     {
         return $this->viewContext;
