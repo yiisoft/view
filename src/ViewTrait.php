@@ -438,7 +438,9 @@ trait ViewTrait
         if ($this->beforeRender($viewFile, $parameters)) {
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
-            $output = $renderer->render($this, $viewFile, $parameters);
+            $output = $renderer->render(
+                new Template(template: $viewFile, parameters: $parameters, view: $this, viewContext: $this->context)
+            );
             $output = $this->afterRender($viewFile, $parameters, $output);
         }
 
