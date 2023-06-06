@@ -15,7 +15,6 @@ interface TemplateRendererInterface
      * This method is invoked by {@see View} and {@see WebView} whenever it tries to render a view.
      * The classes must implement this method to render the given view file.
      *
-     *
      * @return string The rendering result.
      */
     public function render(Template $template): string;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use LogicException;
-use phpseclib3\Crypt\DH\Parameters;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\View\PhpTemplateRenderer;
 use Yiisoft\View\Template;
