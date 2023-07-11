@@ -12,11 +12,11 @@ interface TemplateRendererInterface
     /**
      * Renders a template file.
      *
-     * This method is invoked by {@see View} and {@see WebView} whenever it tries to render a view.
-     * The classes must implement this method to render the given view file.
+     * {@see View} and {@see WebView} invoke this method whenever it tries to render a view.
+     * The classes must implement this method to render the given template file.
      *
      * @param ViewInterface $view The view instance used for rendering the file.
-     * @param string $template The template file.
+     * @param string $template The template file to render.
      * @param array $parameters The parameters to be passed to the view file.
      *
      * @return string The rendering result.

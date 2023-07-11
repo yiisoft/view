@@ -28,7 +28,7 @@ interface ViewInterface
      * corresponding supported file extensions.
      *
      * ```php
-     * $view = $view->withRenderers(['twig' => new \Yiisoft\Yii\Twig\ViewRenderer($environment)]);
+     * $view = $view->withRenderers(['twig' => new \Yiisoft\View\Twig\ViewRenderer($environment)]);
      * ```
      *
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
