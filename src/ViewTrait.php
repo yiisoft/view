@@ -75,7 +75,7 @@ trait ViewTrait
      * corresponding supported file extensions.
      *
      * ```php
-     * $view = $view->withRenderers(['twig' => new \Yiisoft\View\Twig\TemplateRenderer($environment)]);
+     * $view = $view->withRenderers(['twig' => new \Yiisoft\View\Twig\ViewRenderer($environment)]);
      * ```
      *
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
@@ -182,14 +182,6 @@ trait ViewTrait
     public function getBasePath(): string
     {
         return $this->basePath;
-    }
-
-    /**
-     * Gets the context instance, or `null` if no context has been set.
-     */
-    public function getContext(): ?ViewContextInterface
-    {
-        return $this->context;
     }
 
     /**

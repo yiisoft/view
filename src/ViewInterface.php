@@ -101,13 +101,6 @@ interface ViewInterface
     public function getBasePath(): string;
 
     /**
-     * Gets the context instance, or `null` if no context has been set.
-     *
-     * @return ViewContextInterface|null The context instance, or `null` if no context has been set.
-     */
-    public function getContext(): ?ViewContextInterface;
-
-    /**
      * Gets the default view file extension.
      *
      * @return string The default view file extension.
