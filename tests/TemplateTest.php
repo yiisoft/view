@@ -20,7 +20,7 @@ final class TemplateTest extends TestCase
             new ViewContext(__DIR__)
         );
 
-        $this->assertSame($file, $template->getTemplate());
+        $this->assertSame($file, $template->getPath());
         $this->assertSame(['foo' => 'bar'], $template->getParameters());
         $this->assertSame($view, $template->getView());
         $this->assertSame(__DIR__, $template->getViewContext()->getViewPath());
