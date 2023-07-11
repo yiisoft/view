@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Yiisoft\View;
 
+/**
+ * The template holds the information needed to render a view.
+ */
 final class Template
 {
     /**
-     * @param string $template The template file.
-     * @param array $parameters The parameters to be passed to the view file.
+     * @param string $path The full absolute path of the view template file.
+     * @param array $parameters The parameters to pass to the template.
      * @param ViewInterface $view The view instance used for rendering the file.
      * @param ViewContextInterface|null $viewContext The context instance of the view.
      */
     public function __construct(
-        private string $template,
+        private string $path,
         private array $parameters,
         private ViewInterface $view,
         private ?ViewContextInterface $viewContext = null
@@ -22,7 +25,7 @@ final class Template
 
     public function getTemplate(): string
     {
-        return $this->template;
+        return $this->path;
     }
 
     public function getParameters(): array
