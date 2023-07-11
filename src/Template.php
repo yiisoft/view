@@ -23,21 +23,41 @@ final class Template
     ) {
     }
 
-    public function getTemplate(): string
+    /**
+     * Get the full absolute path of the view template file.
+     *
+     * @return string The full absolute path of the view template file.
+     */
+    public function getPath(): string
     {
         return $this->path;
     }
 
+    /**
+     * Get the parameters to pass to the template.
+     *
+     * @return array The parameters to pass to the template.
+     */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
+    /**
+     * Get the view instance used for rendering the file.
+     *
+     * @return ViewInterface The view instance used for rendering the file.
+     */
     public function getView(): ViewInterface
     {
         return $this->view;
     }
 
+    /**
+     * Get the context instance of the view.
+     *
+     * @return ViewContextInterface|null The context instance of the view.
+     */
     public function getViewContext(): ?ViewContextInterface
     {
         return $this->viewContext;
