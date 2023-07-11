@@ -7,6 +7,7 @@ namespace Yiisoft\View\Tests;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\View\PhpTemplateRenderer;
+use Yiisoft\View\Template;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 
 final class PhpTemplateRendererTest extends TestCase
@@ -20,7 +21,7 @@ final class PhpTemplateRendererTest extends TestCase
         $obInitialLevel = ob_get_level();
 
         try {
-            $renderer->render($view, __DIR__ . '/public/view/error.php', []);
+            $renderer->render(new Template(path: __DIR__ . '/public/view/error.php', parameters: [], view: $view));
         } catch (LogicException) {
         }
 
