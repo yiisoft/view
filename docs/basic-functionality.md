@@ -1,9 +1,9 @@
 # Basic functionality
 
 The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and
-a `Yiisoft\View\WebView` class with advanced functionality for use in a WEB environment. This guide applies to both
+a `Yiisoft\View\WebView` class with advanced functionality for use in a web environment. This guide applies to both
 classes, but examples will be provided using the `Yiisoft\View\View`. For advanced examples with
-`Yiisoft\View\WebView` functionality, see the "[Use in the WEB environment](use-in-web-environment.md)" guide.
+`Yiisoft\View\WebView` functionality, see the "[Use in the web environment](use-in-web-environment.md)" guide.
 
 To create a `Yiisoft\View\View` class, you must specify two mandatory parameters:
 
@@ -43,15 +43,15 @@ Posts:
 
 Within a view, you can access `$this` which refers to the `Yiisoft\View\View` managing and rendering current view template.
 Besides `$this`, there may be other variables in a view, such as `$posts` in the above example.
-These variables represent the data that is passed as parameters when rendering the view. Note that `<?=`
-does not automatically encode variables for safe use with HTML and you should take care of it.
+These variables represent the data that's passed as parameters when rendering the view. Note that `<?=`
+doesn't automatically encode variables for safe use with HTML and you should take care of it.
 
-> Tip: The predefined variables are listed in a comment block at beginning of a view so that they
-> can be recognized by IDEs. It is also a good way of documenting your views.
+> Tip: The predefined variables are listed in a comment block at the beginning of a view so that they
+> can be recognized by IDEs. It's also a good way of documenting your views.
 
 ## Rendering
 
-To render the file shown above, two methods are provided: `render()` and `renderFile()`.
+To render the file shown above, there are two methods: `render()` and `renderFile()`.
 
 The `renderFile()` method accepts a full absolute path of the view file to be rendered,
 and an array of parameters (name-value pairs) that will be available in the view template:
@@ -75,9 +75,9 @@ Instead of an absolute file path, it accepts a name of a view in one of the foll
 - A name of a view starting with a slash (for example, `/blog/posts`). It will be prepended with
   the base path that was passed to `Yiisoft\View\View` constructor. For example, `/blog/posts`
   will be resolved into `/path/to/views/blog/posts.php`.
-- A name of a view without the starting slash (e.g. `blog/posts`). The corresponding view file will be looked for
+- A name of a view without the starting slash (such as `blog/posts`). The corresponding view file will be looked for
   in the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
-  context instance was not set, it will be looked for under the directory containing the view currently being
+  context instance wasn't set, it will be looked for under the directory containing the view currently being
   rendered.
 
 The view name may omit a file extension. In this case, `.php` will be used as the extension.
@@ -119,11 +119,11 @@ and use that implementation via `$view->withRenderers()` method.
 ```php
 $view = $view->withRenderers([
     'tpl' => new MyCustomViewRenderer(),
-    'twig' => new \Yiisoft\Yii\Twig\ViewRenderer($environment),
+    'twig' => new \Yiisoft\View\Twig\TemplateRenderer($environment),
 ]);
 ```
 
-During rendering, the file extension will be analyzed and if the array key matches the file extension,
+During rendering, the file extension will be analyzed, and if the array key matches the file extension,
 the corresponding renderer will be applied.
 
 ## Theming
@@ -199,7 +199,7 @@ $view = $view->withSourceLocale('es');
 $view->setLocale('fr');
 ```
 
-In order to use multiple locales it is necessary to create subdirectories at directory level matching template files
+To use multiple locales, it's necessary to create subdirectories at directory level matching template files
 of the view. For example, if there is a view `/path/to/views/blog/posts.php` and we translate it into Russian, create
 a subdirectory `ru-RU` or `ru`. In this subdirectory, create a file for the Russian locale:
 `/path/to/views/blog/ru/posts.php`.
@@ -231,10 +231,10 @@ $view->localize($file, 'ru', 'ru');
 File choice is based on the specified locale code. A file with the same name will be looked
 for under the subdirectory whose name is the same as the locale code. For example, given the file
 `/path/to/views/blog/posts.php` and the locale code `ru-RU`, the localized file will be looked
-for as `/path/to/views/blog/ru-RU/posts.php`. If the file is not found, it will try a fallback
-with just a language code that is `ru` i.e. `/path/to/views/blog/ru/posts.php`.
+for as `/path/to/views/blog/ru-RU/posts.php`. If the file isn't found, it will try a fallback
+with just a language code that's `ru` i.e. `/path/to/views/blog/ru/posts.php`.
 
-> If the target file is not found, the original file will be returned.
+> If the target file isn't found, the original file will be returned.
 > If the target and the source locale codes are the same, the original file will be returned.
 
 ## Sharing data among views
@@ -254,7 +254,7 @@ $this->setBlock('block-id-1', '...content of block1...');
 $this->setBlock('block-id-2', '...content of block2...');
 ```
 
-Then, display the blocks if there are any, or the default content if the block is not defined:
+Then, display the blocks if there are any, or the default content if the block isn't defined:
 
 ```php
 <?php
@@ -321,7 +321,7 @@ Posts:
 ```
 
 You can not call the `hasParameter()` method, but pass the default value to the `getParameter()` method.
-At the same time, if the default value is not passed, and the requested parameter does not exist,
+At the same time, if the default value isn't passed, and the requested parameter doesn't exist,
 an `InvalidArgumentException` exception will be thrown.
 
 ```php
@@ -336,7 +336,7 @@ To delete data, use `removeBlock('id')` and `removeParameter('id')` methods.
 
 ## Content caching
 
-In some cases, caching content can significantly improve performance of your application. For example,
+Sometimes, caching content can significantly improve the performance of your application. For example,
 if a page displays a summary of yearly sales in a table, you can store this table in a cache to eliminate
 the time needed to generate this table for each request.
 
@@ -356,7 +356,7 @@ $cachedContent = new CachedContent('cache-id', $cache);
 // Trying to get content from the cache
 $content = $cachedContent->get();
 
-// If the content is not in the cache, then we will generate it and add it to the cache
+// If the content isn't in the cache, then we will generate it and add it to the cache
 if ($content === null) {
   // Generating content
   $content = $view->render('view/name');
@@ -369,21 +369,21 @@ echo $content;
 ```
 
 In addition to the content, the `Yiisoft\View\Cache\CachedContent::cache()` method
-accepts three additional optional arguments:
+accepts three extra optional arguments:
 
 - `$ttl (int)` - The TTL of the cached content. Default is `60`.
 - `$dependency (Yiisoft\Cache\Dependency\Dependency|null)` - The dependency of the cached content. Default is `null`.
-- `$beta (float)` - The value for calculating the range that is used for "Probably early expiration". Default is `1.0`.
+- `$beta (float)` - The value for calculating the range that's used for "Probably early expiration". Default is `1.0`.
 
 For more information about caching and cache options, see the documentation of the
 [yiisoft/cache package](https://github.com/yiisoft/cache).
 
 ### Dynamic Content
 
-When caching content, you may encounter the situation where a large fragment of content is relatively
+When caching content, you may meet the situation where a large fragment of content is relatively
 static except one or a few places. For example, a page header may display a main menu bar together with
 a name of the current user. Another problem is that the content being cached may contain PHP code that must
-be executed for every request. Both problems can be solved by using the `Yiisoft\View\Cache\DynamicContent` class.
+be executed for every request. You can solve both problems by using the `Yiisoft\View\Cache\DynamicContent` class.
 
 ```php
 /**
@@ -409,7 +409,7 @@ $cachedContent = new CachedContent('cache-id', $cache, [$dynamicContent]);
 // Trying to get content from the cache
 $content = $cachedContent->get();
 
-// If the content is not in the cache, then we will generate it and add it to the cache
+// If the content isn't in the cache, then we will generate it and add it to the cache
 if ($content === null) {
   // Generating content
   // In the view, we call `$dynamicContent->placeholder()`
@@ -422,7 +422,7 @@ if ($content === null) {
 echo $content;
 ```
 
-A dynamic content means a fragment of output that should not be cached even if it is enclosed within a fragment cache.
+A dynamic content means a fragment of output that shouldn't be cached even if it's enclosed within a fragment cache.
 You may call `$dynamicContent->placeholder()` within a cached fragment to insert dynamic content at the desired place
 of the view, like the following:
 
@@ -445,7 +445,7 @@ Content to be cached ...
 ```
 
 
-For caching content fragments, it is much more convenient to use dynamic content using the
+For caching content fragments, it's much more convenient to use dynamic content using the
 `Yiisoft\Yii\Widgets\FragmentCache` widget from the
 [yiisoft/yii-widgets](https://github.com/yiisoft/yii-widgets) package:
 
@@ -475,7 +475,7 @@ FragmentCache::end();
 
 ### Variations
 
-Content being cached may be varied according to some parameters. For example, for a Web application supporting
+Content being cached may be varied according to some parameters. For example, for a web application supporting
 multiple locales, the same piece of view code may generate the content in different locales. Therefore, you
 may want to make the cached content varied according to the current application locale.
 
