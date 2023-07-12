@@ -17,8 +17,8 @@ return [
                 static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
             ),
         ],
-        'setParameters()' => ['parameters' => $params['yiisoft/view']['parameters']],
-        'withRenderers()' => ['renderers' => $params['yiisoft/view']['renderers']],
+        'setParameters()' => [$params['yiisoft/view']['parameters']],
+        'withRenderers()' => [$params['yiisoft/view']['renderers']],
         'withDefaultExtension()' => [$params['yiisoft/view']['defaultExtension']],
         'reset' => function (ContainerInterface $container) use ($params) {
             /** @var View $this */

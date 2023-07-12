@@ -4,7 +4,7 @@
 
 - Bug #224: Fix signature of `CachedContent::cache()` (@vjik)
 - Bug #226: Fix `reset` config for referenced definitions (@rustamwin)
-- Chg #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
+- Enh #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
 
 ## 8.0.0 February 16, 2023
 
