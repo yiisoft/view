@@ -39,7 +39,8 @@ trait ViewTrait
     private ?ViewContextInterface $context = null;
     private string $placeholderSignature;
     private string $sourceLocale = 'en';
-    private string $defaultExtension = 'php';
+    private string $defaultExtension = self::PHP_EXTENSION;
+    private string $fallbackExtension = self::PHP_EXTENSION;
 
     /**
      * @var array A list of available renderers indexed by their corresponding
@@ -105,13 +106,26 @@ trait ViewTrait
     /**
      * Returns a new instance with the specified default view file extension.
      *
-     * @param string $defaultExtension The default view file extension. Default is "php".
+     * @param string $defaultExtension The default view file extension. Default is {@see ViewInterface::PHP_EXTENSION}.
      * This will be appended to view file names if they don't have file extensions.
      */
     public function withDefaultExtension(string $defaultExtension): static
     {
         $new = clone $this;
         $new->defaultExtension = $defaultExtension;
+        return $new;
+    }
+
+    /**
+     * Returns a new instance with the specified fallback view file extension.
+     *
+     * @param string $fallbackExtension The fallback view file extension. Default is {@see ViewInterface::PHP_EXTENSION}.
+     * This will be appended to view file names if they don't exist.
+     */
+    public function withFallbackExtension(string $fallbackExtension): static
+    {
+        $new = clone $this;
+        $new->fallbackExtension = $fallbackExtension;
         return $new;
     }
 
@@ -607,7 +621,7 @@ trait ViewTrait
         $path = $file . '.' . $this->defaultExtension;
 
         if ($this->defaultExtension !== 'php' && !is_file($path)) {
-            $path = $file . '.php';
+            $path = $file . '.' . $this->fallbackExtension;
         }
 
         return $path;

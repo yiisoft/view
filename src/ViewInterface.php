@@ -14,6 +14,8 @@ use Yiisoft\View\Exception\ViewNotFoundException;
  */
 interface ViewInterface
 {
+    public const PHP_EXTENSION = 'php';
+
     /**
      * Returns a new instance with specified base path to the view directory.
      *

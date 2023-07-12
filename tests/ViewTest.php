@@ -195,6 +195,10 @@ PHP
         $this->assertSame('Test', $view
             ->withDefaultExtension('txt')
             ->render('file'));
+        $this->assertSame(
+            'Test',
+            $view->withDefaultExtension('phpt')->withFallbackExtension('tpl')->render('file')
+        );
     }
 
     public function testLocalize(): void
@@ -545,6 +549,7 @@ PHP
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));
         $this->assertNotSame($view, $view->withClearedState());
         $this->assertNotSame($view, $view->withLocale('es'));
+        $this->assertNotSame($view, $view->withFallbackExtension('tpl'));
     }
 
     private function createViewWithBasePath(string $basePath): View
