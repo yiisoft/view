@@ -14,6 +14,8 @@ use Yiisoft\View\Exception\ViewNotFoundException;
  */
 interface ViewInterface
 {
+    public const PHP_EXTENSION = 'php';
+
     /**
      * Returns a new instance with specified base path to the view directory.
      *
@@ -48,8 +50,9 @@ interface ViewInterface
     /**
      * Returns a new instance with the specified default view file extension.
      *
-     * @param string $defaultExtension The default view file extension. Default is "php".
+     * @param string $defaultExtension The default view file extension. Default is {@see PHP_EXTENSION}.
      * This will be appended to view file names if they don't have file extensions.
+     * @deprecated Since 8.0.1 and will be removed in the next major version.
      */
     public function withDefaultExtension(string $defaultExtension): static;
 
@@ -104,6 +107,7 @@ interface ViewInterface
      * Gets the default view file extension.
      *
      * @return string The default view file extension.
+     * @deprecated Since 8.0.1 and will be removed in the next major version.
      */
     public function getDefaultExtension(): string;
 

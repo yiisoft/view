@@ -184,17 +184,28 @@ PHP
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory));
-        file_put_contents("$this->tempDirectory/file.php", 'Test');
-        file_put_contents("$this->tempDirectory/file.tpl", 'Test');
-        file_put_contents("$this->tempDirectory/file.txt.php", 'Test');
+        file_put_contents("$this->tempDirectory/file.php", 'Test php');
+        file_put_contents("$this->tempDirectory/file.tpl", 'Test tpl');
+        file_put_contents("$this->tempDirectory/file.phpt", 'Test phpt');
+        file_put_contents("$this->tempDirectory/file.txt.twig", 'Test txt');
 
-        $this->assertSame('Test', $view->render('file'));
-        $this->assertSame('Test', $view
-            ->withDefaultExtension('tpl')
-            ->render('file'));
-        $this->assertSame('Test', $view
-            ->withDefaultExtension('txt')
-            ->render('file'));
+        $this->assertSame('Test php', $view->render('file'));
+        $this->assertSame(
+            'Test tpl',
+            $view->withDefaultExtension('tpl')
+                ->render('file')
+        );
+        $this->assertSame(
+            'Test txt',
+            $view->withDefaultExtension('twig')
+                ->render('file.txt')
+        );
+        $this->assertSame(
+            'Test phpt',
+            $view->withDefaultExtension('twig')
+                ->withFallbackExtension('phpt')
+                ->render('file')
+        );
     }
 
     public function testLocalize(): void
@@ -545,6 +556,7 @@ PHP
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));
         $this->assertNotSame($view, $view->withClearedState());
         $this->assertNotSame($view, $view->withLocale('es'));
+        $this->assertNotSame($view, $view->withFallbackExtension('tpl'));
     }
 
     private function createViewWithBasePath(string $basePath): View

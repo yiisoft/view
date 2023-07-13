@@ -5,6 +5,10 @@
 - Bug #224: Fix signature of `CachedContent::cache()` (@vjik)
 - Bug #226: Fix `reset` config for referenced definitions (@rustamwin)
 - Enh #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
+- Enh #232: Make fallback extension configurable (@rustamwin)
+- Chg #232: Deprecate `ViewInterface::withDefaultExtension()` and `ViewInterface::getDefaultExtension()` in favor of 
+  `withFallbackExtension()` and `getFallbackExtension()` (@rustamwin)
+- Bug #232: Fix render templates that contain dots in their name (@rustamwin)
 
 ## 8.0.0 February 16, 2023
 
