@@ -7,7 +7,7 @@
 - Enh #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
 - Enh #232: Make fallback extension configurable (@rustamwin)
 - Chg #232: Deprecate `ViewInterface::withDefaultExtension()` and `ViewInterface::getDefaultExtension()` in favor of 
-  `ViewInterface::withFallbackExtension()` and `ViewInterface::getFallbackExtension()` (@rustamwin)
+  `withFallbackExtension()` and `getFallbackExtension()` (@rustamwin)
 - Bug #232: Fix render templates that contain dots in their name (@rustamwin)
 
 ## 8.0.0 February 16, 2023
