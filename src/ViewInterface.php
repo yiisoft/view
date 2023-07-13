@@ -119,7 +119,6 @@ interface ViewInterface
      */
     public function getDefaultExtension(): string;
 
-
     /**
      * Gets the fallback view file extension.
      *
