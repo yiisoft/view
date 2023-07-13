@@ -39,7 +39,6 @@ trait ViewTrait
     private ?ViewContextInterface $context = null;
     private string $placeholderSignature;
     private string $sourceLocale = 'en';
-    private string $defaultExtension = self::PHP_EXTENSION;
     private string $fallbackExtension = self::PHP_EXTENSION;
 
     /**
@@ -108,12 +107,11 @@ trait ViewTrait
      *
      * @param string $defaultExtension The default view file extension. Default is {@see ViewInterface::PHP_EXTENSION}.
      * This will be appended to view file names if they don't have file extensions.
+     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see withFallbackExtension()} instead.
      */
     public function withDefaultExtension(string $defaultExtension): static
     {
-        $new = clone $this;
-        $new->defaultExtension = $defaultExtension;
-        return $new;
+        return $this->withFallbackExtension($defaultExtension);
     }
 
     /**
@@ -202,10 +200,21 @@ trait ViewTrait
      * Gets the default view file extension.
      *
      * @return string The default view file extension.
+     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see getFallbackExtension()} instead.
      */
     public function getDefaultExtension(): string
     {
-        return $this->defaultExtension;
+        return $this->getFallbackExtension();
+    }
+
+    /**
+     * Gets the fallback view file extension.
+     *
+     * @return string The fallback view file extension.
+     */
+    public function getFallbackExtension(): string
+    {
+        return $this->fallbackExtension;
     }
 
     /**
@@ -614,17 +623,11 @@ trait ViewTrait
             throw new RuntimeException("Unable to resolve view file for view \"$view\": no active view context.");
         }
 
-        if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+        if (pathinfo($file, PATHINFO_EXTENSION) !== '' && is_file($file)) {
             return $file;
         }
 
-        $path = $file . '.' . $this->defaultExtension;
-
-        if ($this->defaultExtension !== 'php' && !is_file($path)) {
-            $path = $file . '.' . $this->fallbackExtension;
-        }
-
-        return $path;
+        return $file . '.' . $this->fallbackExtension;
     }
 
     /**

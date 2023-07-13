@@ -52,8 +52,17 @@ interface ViewInterface
      *
      * @param string $defaultExtension The default view file extension. Default is "php".
      * This will be appended to view file names if they don't have file extensions.
+     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see withFallbackExtension()} instead.
      */
     public function withDefaultExtension(string $defaultExtension): static;
+
+    /**
+     * Returns a new instance with the specified fallback view file extension.
+     *
+     * @param string $fallbackExtension The fallback view file extension. Default is {@see PHP_EXTENSION}.
+     * This will be appended to view file names if they don't exist.
+     */
+    public function withFallbackExtension(string $fallbackExtension): static;
 
     /**
      * Returns a new instance with the specified view context instance.
@@ -106,8 +115,17 @@ interface ViewInterface
      * Gets the default view file extension.
      *
      * @return string The default view file extension.
+     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see withFallbackExtension()} instead.
      */
     public function getDefaultExtension(): string;
+
+
+    /**
+     * Gets the fallback view file extension.
+     *
+     * @return string The fallback view file extension.
+     */
+    public function getFallbackExtension(): string;
 
     /**
      * Gets the theme instance, or `null` if no theme has been set.
