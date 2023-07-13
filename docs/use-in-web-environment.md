@@ -1,6 +1,6 @@
-# Use in the WEB environment
+# Use in the web environment
 
-This guide describes additional functionality of the `Yiisoft\View\WebView` class intended for use in a WEB environment.
+This guide describes extra functionality of the `Yiisoft\View\WebView` class intended for use in a web environment.
 Please read the "[Basic Functionality](basic-functionality.md)" guide first.
 
 To create `Yiisoft\View\WebView` class, you must specify two mandatory parameters:
@@ -19,7 +19,7 @@ $view = new \Yiisoft\View\WebView(
 ## Creating view templates
 
 In an example below, a view is a simple PHP script that outputs information about posts in a loop.
-Note that for example purpose, we have greatly simplified the template code. In practice, you may
+Note that for example purpose, we've greatly simplified the template code. In practice, you may
 want to add more content to it, such as `<head>` tags, main menu, etc.
 
 ```php
@@ -90,7 +90,7 @@ Then in the view, make sure you have the following code in the `<head>` section:
 ## Rendering
 
 In addition to the `render()` and `renderFile()` methods, two `renderAjax()` and `renderAjaxString()`
-methods have been added for the WEB environment to render AJAX requests.
+methods have been added for the web environment to render AJAX requests.
 
 The `renderAjax()` method is like `render()` except that it will surround the view being rendered with
 the calls of `beginPage()`, `head()`, `beginBody()`, `endBody()` and `endPage()`. By doing so, the method can
@@ -132,7 +132,7 @@ where you call `Yiisoft\View\WebView::head()` in the view template:
 <meta name="robots" content="noindex">
 ```
 
-Note that if you call `registerMeta()` or `registerMetaTag()` multiple times, it will register multiple meta tags,
+Note that if you call `registerMeta()` or `registerMetaTag()` many times, it will register many meta tags,
 regardless whether the meta tags are the same or not. To make sure there is only a single instance of a meta tag of
 the same type, you can specify a key as a second parameter when calling the methods. For example, the following code
 registers two `description` meta tags. However, only the second one will be rendered.
@@ -153,7 +153,7 @@ $view->registerMetaTag(
 
 ## Registering link tags
 
-Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
+Like [meta tags](#registering-meta-tags), link tags are useful often, such as customizing favicon, pointing to
 RSS feed or delegating OpenID to another server. You can work with link tags in a similar way as meta tags by using
 `registerLink()` or `registerLinkTag()`. For example, in a content view, you can register a link tag like follows:
 
@@ -180,7 +180,7 @@ The code above will result in:
 <link rel="icon" type="image/png">
 ```
 
-You can use second parameter to specify position at which the link tag should be inserted in a page.
+You can use the second parameter to specify the position at which the link tag should be inserted in a page.
 Default is `Yiisoft\View\WebView::POSITION_HEAD`. Like registering meta tags, you can specify
 a key to avoid creating duplicate link tags. In the `registerLink()` and `registerLinkTag()`
 the key is specified as a third parameter.
@@ -197,7 +197,7 @@ use Yiisoft\View\WebView;
 $view->registerCssFile('/path/to/style.css');
 // Result: <link href="/path/to/file.css" rel="stylesheet">
 
-// With an URL:
+// With a URL:
 $view->registerCssFile('https//example.com/style.css');
 // Result: <link href="https//example.com/style.css" rel="stylesheet">
 
@@ -209,9 +209,9 @@ $view->registerCssFile('/path/to/style.css', WebView::POSITION_HEAD, [
     'media' => 'print',
 ]);
 
-// With an specific of the identifying key.
+// With a specific of the identifying key.
 $view->registerCssFile('/path/to/style.css', WebView::POSITION_HEAD, [], 'file-key');
-// If the key is not specified, the URL of the CSS file will be used instead.
+// If the key isn't specified, the URL of the CSS file will be used instead.
 ```
 
 The registration of the CSS code block is as follows:
@@ -246,7 +246,7 @@ The code above will result in:
 ```
 
 For all methods, the `POSITION_HEAD` position is used by default, and the last argument specifies the key that
-identifies this block of CSS code. If the key is not specified, the `md5()` hash of the CSS code block
+identifies this block of CSS code. If the key isn't specified, the `md5()` hash of the CSS code block
 will be used instead.
 
 ## Registering JavaScript
@@ -260,7 +260,7 @@ use Yiisoft\View\WebView;
 $view->registerJsFile('/path/to/script.js');
 // Result: <script src="/path/to/script.js"></script>
 
-// With an URL:
+// With a URL:
 $view->registerJsFile('https//example.com/script.js');
 // Result: <script src="https//example.com/script.js"></script>
 
@@ -273,9 +273,9 @@ $view->registerJsFile('/path/to/script.js', WebView::POSITION_END, [
 ]);
 // Result: <script src="/path/to/script.js" async></script>
 
-// With an specific of the identifying key.
+// With a specific of the identifying key.
 $view->registerJsFile('/path/to/script.js', WebView::POSITION_END, [], 'file-key');
-// If the key is not specified, the URL of the JavaScript file will be used instead.
+// If the key isn't specified, the URL of the JavaScript file will be used instead.
 ```
 
 The registration of the JavaScript code block is as follows:
@@ -302,7 +302,7 @@ The code above will result in:
 ```
 
 For both methods, the `POSITION_END` position is used by default, and the last argument specifies the key
-that identifies this block of JavaScript code. If the key is not specified, the `md5()` hash of the
+that identifies this block of JavaScript code. If the key isn't specified, the `md5()` hash of the
 JavaScript code block will be used instead.
 
 Additionally, a separate method is provided for registering JavaScript variables:
@@ -339,7 +339,7 @@ The code above will result in:
 <script>var data = {"username":"John","age":42};</script>
 ```
 
-The name of variable will be used as key, preventing duplicated variable names.
+The name of variable will be used as a key, preventing duplicated variable names.
 
 ## Use with an asset manager
 
@@ -361,9 +361,9 @@ $this->addJsStrings($assetManager->getJsStrings());
 $this->addJsVars($assetManager->getJsVars());
 ```
 
-These methods process the CSS and JavaScript configuration created by the asset manager and converts it into HTML code.
+These methods process the CSS and JavaScript configuration created by the asset manager and convert it into HTML code.
 
-## WebView Events
+## WebView events
 
 The `Yiisoft\View\WebView` class triggers several events during the view rendering process. Events are classes:
 
@@ -382,7 +382,7 @@ which is specified in the constructor when the `Yiisoft\View\WebView` instance i
 
 ## Security
 
-When creating views that generate HTML pages, it is important that you properly encode and/or
+When creating views that generate HTML pages, it's important that you properly encode and/or
 filter all the data when outputted. Otherwise, your application may be subject to
 [cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
 
@@ -408,5 +408,5 @@ use Yiisoft\Html\Html;
 ```
 
 If you need to securely display HTML content, you can use content filtering tools such as
-[HTML Purifier](https://github.com/ezyang/htmlpurifier). A drawback is that it is not very
-performant so consider caching the result.
+[HTML Purifier](https://github.com/ezyang/htmlpurifier). A drawback is that it isn't very
+performant, so consider caching the result.

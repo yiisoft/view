@@ -75,7 +75,7 @@ trait ViewTrait
      * corresponding supported file extensions.
      *
      * ```php
-     * $view = $view->withRenderers(['twig' => new \Yiisoft\Yii\Twig\ViewRenderer($environment)]);
+     * $view = $view->withRenderers(['twig' => new \Yiisoft\View\Twig\ViewRenderer($environment)]);
      * ```
      *
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
@@ -420,7 +420,7 @@ trait ViewTrait
      * Renders a view file.
      *
      * If the theme was set {@see setTheme()}, it will try to render the themed version of the view file
-     * as long as it is available.
+     * as long as it's available.
      *
      * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
      * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
@@ -430,7 +430,7 @@ trait ViewTrait
      * file.
      *
      * @throws Throwable
-     * @throws ViewNotFoundException If the view file does not exist
+     * @throws ViewNotFoundException If the view file doesn't exist
      *
      * @return string The rendering result.
      */

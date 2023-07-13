@@ -3,6 +3,8 @@
 ## 8.0.1 under development
 
 - Bug #224: Fix signature of `CachedContent::cache()` (@vjik)
+- Bug #226: Fix `reset` config for referenced definitions (@rustamwin)
+- Enh #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
 - Enh #232: Make fallback extension configurable (@rustamwin)
 - Chg #232: Deprecate `ViewInterface::withDefaultExtension()` and `ViewInterface::getDefaultExtension()` in favor of 
   `ViewInterface::withFallbackExtension()` and `ViewInterface::getFallbackExtension()` (@rustamwin)

@@ -11,5 +11,7 @@ return [
             'basePath' => '',
             'baseUrl' => '',
         ],
+        'renderers' => [],
+        'defaultExtension' => 'php',
     ],
 ];
