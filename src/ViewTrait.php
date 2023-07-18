@@ -39,7 +39,10 @@ trait ViewTrait
     private ?ViewContextInterface $context = null;
     private string $placeholderSignature;
     private string $sourceLocale = 'en';
-    private string $fallbackExtension = self::PHP_EXTENSION;
+    /**
+     * @var string[]
+     */
+    private array $fallbackExtensions = [self::PHP_EXTENSION];
 
     /**
      * @var array A list of available renderers indexed by their corresponding
@@ -120,10 +123,10 @@ trait ViewTrait
      * @param string $fallbackExtension The fallback view file extension. Default is {@see ViewInterface::PHP_EXTENSION}.
      * This will be appended to view file names if they don't exist.
      */
-    public function withFallbackExtension(string $fallbackExtension): static
+    public function withFallbackExtension(string $fallbackExtension, string ...$otherFallbacks): static
     {
         $new = clone $this;
-        $new->fallbackExtension = $fallbackExtension;
+        $new->fallbackExtensions = [$fallbackExtension, ...array_values($otherFallbacks)];
         return $new;
     }
 
@@ -204,17 +207,17 @@ trait ViewTrait
      */
     public function getDefaultExtension(): string
     {
-        return $this->getFallbackExtension();
+        return $this->getFallbackExtension()[0];
     }
 
     /**
      * Gets the fallback view file extension.
      *
-     * @return string The fallback view file extension.
+     * @return string[] The fallback view file extension.
      */
-    public function getFallbackExtension(): string
+    public function getFallbackExtension(): array
     {
-        return $this->fallbackExtension;
+        return $this->fallbackExtensions;
     }
 
     /**
@@ -627,7 +630,16 @@ trait ViewTrait
             return $file;
         }
 
-        return $file . '.' . $this->fallbackExtension;
+        foreach ($this->fallbackExtensions as $fallbackExtension) {
+            $fileWithFallbackExtension = $file . '.' . $fallbackExtension;
+            if (is_file($fileWithFallbackExtension)) {
+                return $fileWithFallbackExtension;
+            }
+        }
+
+        [$firstFallbackExtension] = $this->fallbackExtensions;
+
+        return $file . '.' . $firstFallbackExtension;
     }
 
     /**
