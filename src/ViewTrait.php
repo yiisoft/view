@@ -215,7 +215,7 @@ trait ViewTrait
      *
      * @return string[] The fallback view file extension.
      */
-    public function getFallbackExtension(): array
+    public function getFallbackExtensions(): array
     {
         return $this->fallbackExtensions;
     }
