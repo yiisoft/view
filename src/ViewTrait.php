@@ -203,11 +203,11 @@ trait ViewTrait
      * Gets the default view file extension.
      *
      * @return string The default view file extension.
-     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see getFallbackExtension()} instead.
+     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see getFallbackExtensions()} instead.
      */
     public function getDefaultExtension(): string
     {
-        return $this->getFallbackExtension()[0];
+        return $this->getFallbackExtensions()[0];
     }
 
     /**
