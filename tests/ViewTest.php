@@ -179,32 +179,59 @@ PHP
         $this->assertSame('42', $view->render('/change-context'));
     }
 
-    public function testRenderWithoutFileExtension(): void
+    public function renderFilesWithExtensionProvider(): array
+    {
+        return [
+            [
+                'file',
+                'php',
+                'php',
+                ['php'],
+            ],
+            [
+                'file',
+                'tpl',
+                'tpl',
+                ['tpl'],
+            ],
+            [
+                'file',
+                'phpt',
+                'phpt',
+                ['phpt'],
+            ],
+            [
+                'file.txt',
+                'twig',
+                'twig',
+                ['txt', 'twig'],
+            ],
+            [
+                'file',
+                'smarty',
+                'smarty',
+                ['smarty', 'twig'],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider renderFilesWithExtensionProvider
+     */
+    public function testRenderWithoutFileExtension(string $filename, string $extension, string $defaultExtension, array $fallbackExtensions): void
     {
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory));
-        file_put_contents("$this->tempDirectory/file.php", 'Test php');
-        file_put_contents("$this->tempDirectory/file.tpl", 'Test tpl');
-        file_put_contents("$this->tempDirectory/file.phpt", 'Test phpt');
-        file_put_contents("$this->tempDirectory/file.txt.twig", 'Test txt');
+        file_put_contents("$this->tempDirectory/$filename.$extension", 'Test ' . $extension);
 
-        $this->assertSame('Test php', $view->render('file'));
         $this->assertSame(
-            'Test tpl',
-            $view->withDefaultExtension('tpl')
-                ->render('file')
+            'Test ' . $extension,
+            $view->withDefaultExtension($defaultExtension)->render($filename) // BC test
         );
         $this->assertSame(
-            'Test txt',
-            $view->withDefaultExtension('twig')
-                ->render('file.txt')
-        );
-        $this->assertSame(
-            'Test phpt',
-            $view->withDefaultExtension('twig')
-                ->withFallbackExtension('phpt')
-                ->render('file')
+            'Test ' . $extension,
+            $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
         );
     }
 
@@ -372,7 +399,7 @@ PHP
         $this->assertSame(['a'], $view->getParameter('test'));
     }
 
-    public function testAddToParameterWithVaridicValues(): void
+    public function testAddToParameterWithVariadicValues(): void
     {
         $view = TestHelper::createView();
 
