@@ -637,9 +637,7 @@ trait ViewTrait
             }
         }
 
-        [$firstFallbackExtension] = $this->fallbackExtensions;
-
-        return $file . '.' . $firstFallbackExtension;
+        return $file . '.' . $this->fallbackExtensions[0];
     }
 
     /**
