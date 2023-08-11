@@ -80,17 +80,19 @@ Instead of an absolute file path, it accepts a name of a view in one of the foll
   context instance wasn't set, it will be looked for under the directory containing the view currently being
   rendered.
 
-The view name may omit a file extension. In this case, `.php` will be used as the extension.
-For example, the view name `blog/posts` correspond to the file name `blog/posts.php`.
-You can change the default file extension as follows:
+The view name may omit a file extension. In this case, fallback extensions will be used as the extension.
+Default fallback extension is `php`. For example, the view name `blog/posts` correspond to the file name `blog/posts.php`.
+You can change fallback extensions as follows:
 
 ```php
-$view->getDefaultExtension(); // 'php'
+$view->getFallbackExtensions(); // ['php']
 
-$view = $view->withDefaultExtension('tpl');
+$view = $view->withFallbackExtension('tpl', 'twig');
 
-$view->getDefaultExtension(); // 'tpl'
+$view->getFallbackExtensions(); // ['tpl', 'twig']
 ```
+
+> In this case, the first matching fallback extension will be used, so pay attention to their order when setting up.
 
 Rendering methods could be called inside views to render nested views:
 
