@@ -246,8 +246,6 @@ final class WebView implements ViewInterface
      * Set title in views.
      *
      * {@see getTitle()}
-     *
-     * @param string $value
      */
     public function setTitle(string $value): self
     {
