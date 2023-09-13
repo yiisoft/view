@@ -145,8 +145,6 @@ final class WebViewState
      * Set title in views.
      *
      * {@see getTitle()}
-     *
-     * @param string $value
      */
     public function setTitle(string $value): self
     {
