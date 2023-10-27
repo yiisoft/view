@@ -9,6 +9,7 @@
 - Chg #232: Deprecate `ViewInterface::withDefaultExtension()` and `ViewInterface::getDefaultExtension()` in favor of 
   `withFallbackExtension()` and `getFallbackExtensions()` (@rustamwin)
 - Bug #232: Fix render templates that contain dots in their name (@rustamwin)
+- Enh #242: Add `ViewTrait::getLocale()` method (@Tigrov)
 
 ## 8.0.0 February 16, 2023
 
