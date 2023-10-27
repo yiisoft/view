@@ -190,6 +190,16 @@ trait ViewTrait
     }
 
     /**
+     * Get the specified locale code.
+     *
+     * @return string The locale code.
+     */
+    public function getLocale(): string
+    {
+        return $this->localeState->getLocale();
+    }
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.
