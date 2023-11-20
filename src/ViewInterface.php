@@ -97,6 +97,13 @@ interface ViewInterface
     public function withLocale(string $locale): static;
 
     /**
+     * Get the specified locale code.
+     *
+     * @return string The locale code.
+     */
+    public function getLocale(): string;
+
+    /**
      * Gets the base path to the view directory.
      *
      * @return string The base view path.

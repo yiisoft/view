@@ -586,6 +586,17 @@ PHP
         $this->assertNotSame($view, $view->withFallbackExtension('tpl'));
     }
 
+    public function testGetLocale()
+    {
+        $view = TestHelper::createView();
+
+        $this->assertSame('en', $view->getLocale());
+
+        $view->setLocale('en-US');
+
+        $this->assertSame('en-US', $view->getLocale());
+    }
+
     private function createViewWithBasePath(string $basePath): View
     {
         return new View($basePath, new SimpleEventDispatcher());
