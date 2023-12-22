@@ -133,6 +133,13 @@ interface ViewInterface
     public function setTheme(?Theme $theme): static;
 
     /**
+     * Set the specified theme instance immutable.
+     *
+     * @param Theme|null $theme The theme instance or `null` for reset theme.
+     */
+    public function withTheme(?Theme $theme): static;
+
+    /**
      * Sets a common parameters that is accessible in all view templates.
      *
      * @param array $parameters Parameters that are common for all view templates.

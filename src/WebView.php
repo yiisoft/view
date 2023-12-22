@@ -21,6 +21,7 @@ use Yiisoft\View\Event\WebView\Head;
 use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
 use Yiisoft\View\State\LocaleState;
+use Yiisoft\View\State\ThemeState;
 use Yiisoft\View\State\WebViewState;
 
 use function array_merge;
@@ -42,6 +43,7 @@ final class WebView implements ViewInterface
 
     private WebViewState $state;
     private LocaleState $localeState;
+    private ThemeState $themeState;
 
     /**
      * This means the location is in the head section.
@@ -93,6 +95,7 @@ final class WebView implements ViewInterface
         $this->basePath = $basePath;
         $this->state = new WebViewState();
         $this->localeState = new LocaleState();
+        $this->themeState = new ThemeState();
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
     }

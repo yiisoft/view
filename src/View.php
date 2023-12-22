@@ -12,6 +12,7 @@ use Yiisoft\View\Event\View\BeforeRender;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\State\LocaleState;
+use Yiisoft\View\State\ThemeState;
 use Yiisoft\View\State\ViewState;
 
 use function ob_end_flush;
@@ -29,6 +30,7 @@ final class View implements ViewInterface
 
     private ViewState $state;
     private LocaleState $localeState;
+    private ThemeState $themeState;
 
     /**
      * @param string $basePath The full path to the base directory of views.
@@ -39,6 +41,7 @@ final class View implements ViewInterface
         $this->basePath = $basePath;
         $this->state = new ViewState();
         $this->localeState = new LocaleState();
+        $this->themeState = new ThemeState();
         $this->eventDispatcher = $eventDispatcher;
         $this->setPlaceholderSalt(__DIR__);
     }

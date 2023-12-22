@@ -12,6 +12,7 @@ use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\State\LocaleState;
+use Yiisoft\View\State\ThemeState;
 
 use function array_merge;
 use function array_pop;
@@ -237,7 +238,7 @@ trait ViewTrait
      */
     public function getTheme(): ?Theme
     {
-        return $this->state->getTheme();
+        return $this->themeState->getTheme();
     }
 
     /**
@@ -247,8 +248,16 @@ trait ViewTrait
      */
     public function setTheme(?Theme $theme): static
     {
-        $this->state->setTheme($theme);
+        $this->themeState->setTheme($theme);
         return $this;
+    }
+
+    public function withTheme(?Theme $theme): static
+    {
+        $new = clone $this;
+        $new->themeState = new ThemeState($theme);
+
+        return $new;
     }
 
     /**
@@ -535,6 +544,7 @@ trait ViewTrait
         $this->viewFiles = [];
         $this->state->clear();
         $this->localeState = new LocaleState();
+        $this->themeState = new ThemeState();
     }
 
     /**
