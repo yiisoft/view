@@ -584,6 +584,18 @@ PHP
         $this->assertNotSame($view, $view->withClearedState());
         $this->assertNotSame($view, $view->withLocale('es'));
         $this->assertNotSame($view, $view->withFallbackExtension('tpl'));
+        $this->assertNotSame($view, $view->withTheme(null));
+    }
+
+    public function testImmutableTheme(): void
+    {
+        $view = TestHelper::createView();
+        $theme = new Theme([]);
+        $viewWithTheme = $view->withTheme($theme);
+
+        $this->assertNull($view->getTheme());
+        $this->assertNotNull($viewWithTheme->getTheme());
+        $this->assertSame($theme, $viewWithTheme->getTheme());
     }
 
     public function testGetLocale()
@@ -604,7 +616,7 @@ PHP
 
     private function createContext(string $viewPath): ViewContextInterface
     {
-        return new class ($viewPath) implements ViewContextInterface {
+        return new class($viewPath) implements ViewContextInterface {
             public function __construct(private string $viewPath)
             {
             }

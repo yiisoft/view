@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\View\State;
 
 use InvalidArgumentException;
-use Yiisoft\View\Theme;
 
 use function array_key_exists;
 use function func_get_args;
@@ -16,8 +15,6 @@ use function is_array;
  */
 trait StateTrait
 {
-    private ?Theme $theme = null;
-
     /**
      * @var array Parameters that are common for all view templates.
      * @psalm-var array<string, mixed>
@@ -29,27 +26,6 @@ trait StateTrait
      * @psalm-var array<string, string>
      */
     private array $blocks = [];
-
-    /**
-     * Set the specified theme instance.
-     *
-     * @param Theme|null $theme The theme instance or `null` for reset theme.
-     */
-    public function setTheme(?Theme $theme): static
-    {
-        $this->theme = $theme;
-        return $this;
-    }
-
-    /**
-     * Gets the theme instance, or `null` if no theme has been set.
-     *
-     * @return Theme|null The theme instance, or `null` if no theme has been set.
-     */
-    public function getTheme(): ?Theme
-    {
-        return $this->theme;
-    }
 
     /**
      * Sets a common parameters that is accessible in all view templates.
