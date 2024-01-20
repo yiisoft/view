@@ -584,7 +584,7 @@ PHP
         $this->assertNotSame($view, $view->withClearedState());
         $this->assertNotSame($view, $view->withLocale('es'));
         $this->assertNotSame($view, $view->withFallbackExtension('tpl'));
-        $this->assertNotSame($view, $view->withTheme(new Theme([])));
+        $this->assertNotSame($view, $view->withTheme(null));
     }
 
     public function testImmutableTheme(): void
