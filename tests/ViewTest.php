@@ -19,6 +19,7 @@ use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
+
 use function crc32;
 use function dechex;
 use function file_put_contents;
