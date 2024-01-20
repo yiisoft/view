@@ -20,7 +20,6 @@ final class ThemeState
      * Set the specified view theme.
      *
      * @param Theme|null $theme $theme The theme instance or `null` for reset theme.
-     * @return $this
      */
     public function setTheme(?Theme $theme): self
     {
