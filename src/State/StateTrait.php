@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View\State;
 
 use InvalidArgumentException;
+
 use function array_key_exists;
 use function func_get_args;
 use function is_array;
