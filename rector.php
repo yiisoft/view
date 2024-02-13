@@ -22,6 +22,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
+        MixedTypeRector::class,
         RemoveExtraParametersRector::class => [__DIR__ . '/src/PhpTemplateRenderer.php'],
     ]);
 };
