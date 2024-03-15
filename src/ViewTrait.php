@@ -34,7 +34,7 @@ use function substr;
  */
 trait ViewTrait
 {
-    private EventDispatcherInterface $eventDispatcher;
+    private ?EventDispatcherInterface $eventDispatcher;
 
     private string $basePath;
     private ?ViewContextInterface $context = null;
@@ -586,6 +586,10 @@ trait ViewTrait
      */
     private function beforeRender(string $viewFile, array $parameters): bool
     {
+        if ($this->eventDispatcher === null) {
+            return true;
+        }
+
         $event = $this->createBeforeRenderEvent($viewFile, $parameters);
         $event = $this->eventDispatcher->dispatch($event);
         /** @var StoppableEventInterface $event */
@@ -607,6 +611,10 @@ trait ViewTrait
      */
     private function afterRender(string $viewFile, array $parameters, string $result): string
     {
+        if ($this->eventDispatcher === null) {
+            return $result;
+        }
+
         $event = $this->createAfterRenderEvent($viewFile, $parameters, $result);
 
         /** @var AfterRenderEventInterface $event */

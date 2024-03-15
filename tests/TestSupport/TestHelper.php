@@ -24,7 +24,7 @@ final class TestHelper
     {
         return new View(
             dirname(__DIR__) . '/public/view',
-            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $eventDispatcher,
         );
     }
 
@@ -32,7 +32,7 @@ final class TestHelper
     {
         return new WebView(
             dirname(__DIR__) . '/public/view',
-            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $eventDispatcher,
         );
     }
 }
