@@ -88,9 +88,9 @@ final class WebView implements ViewInterface
 
     /**
      * @param string $basePath The full path to the base directory of views.
-     * @param EventDispatcherInterface $eventDispatcher The event dispatcher instance.
+     * @param EventDispatcherInterface|null $eventDispatcher The event dispatcher instance.
      */
-    public function __construct(string $basePath, EventDispatcherInterface $eventDispatcher)
+    public function __construct(string $basePath, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->basePath = $basePath;
         $this->state = new WebViewState();
@@ -117,7 +117,7 @@ final class WebView implements ViewInterface
     public function head(): void
     {
         echo sprintf(self::PLACEHOLDER_HEAD, $this->getPlaceholderSignature());
-        $this->eventDispatcher->dispatch(new Head($this));
+        $this->eventDispatcher?->dispatch(new Head($this));
     }
 
     /**
@@ -126,7 +126,7 @@ final class WebView implements ViewInterface
     public function beginBody(): void
     {
         echo sprintf(self::PLACEHOLDER_BODY_BEGIN, $this->getPlaceholderSignature());
-        $this->eventDispatcher->dispatch(new BodyBegin($this));
+        $this->eventDispatcher?->dispatch(new BodyBegin($this));
     }
 
     /**
@@ -134,7 +134,7 @@ final class WebView implements ViewInterface
      */
     public function endBody(): void
     {
-        $this->eventDispatcher->dispatch(new BodyEnd($this));
+        $this->eventDispatcher?->dispatch(new BodyEnd($this));
         echo sprintf(self::PLACEHOLDER_BODY_END, $this->getPlaceholderSignature());
     }
 
@@ -145,7 +145,7 @@ final class WebView implements ViewInterface
     {
         ob_start();
         ob_implicit_flush(false);
-        $this->eventDispatcher->dispatch(new PageBegin($this));
+        $this->eventDispatcher?->dispatch(new PageBegin($this));
     }
 
     /**
@@ -157,7 +157,7 @@ final class WebView implements ViewInterface
      */
     public function endPage(bool $ajaxMode = false): void
     {
-        $this->eventDispatcher->dispatch(new PageEnd($this));
+        $this->eventDispatcher?->dispatch(new PageEnd($this));
 
         $content = ob_get_clean();
 

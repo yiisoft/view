@@ -6,7 +6,6 @@ namespace Yiisoft\View\Tests\TestSupport;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
 
@@ -24,7 +23,7 @@ final class TestHelper
     {
         return new View(
             dirname(__DIR__) . '/public/view',
-            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $eventDispatcher,
         );
     }
 
@@ -32,7 +31,7 @@ final class TestHelper
     {
         return new WebView(
             dirname(__DIR__) . '/public/view',
-            $eventDispatcher ?? new SimpleEventDispatcher(),
+            $eventDispatcher,
         );
     }
 }
