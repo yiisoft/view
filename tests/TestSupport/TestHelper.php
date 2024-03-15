@@ -6,7 +6,6 @@ namespace Yiisoft\View\Tests\TestSupport;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\View;
 use Yiisoft\View\WebView;
 
