@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 use InvalidArgumentException;
+use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 use RuntimeException;
@@ -36,7 +37,7 @@ trait ViewTrait
 {
     private ?EventDispatcherInterface $eventDispatcher;
 
-    private string $basePath;
+    private ?string $basePath = null;
     private ?ViewContextInterface $context = null;
     private string $placeholderSignature;
     private string $sourceLocale = 'en';
@@ -207,6 +208,10 @@ trait ViewTrait
      */
     public function getBasePath(): string
     {
+        if ($this->basePath === null) {
+            throw new LogicException('The base path is not set.');
+        }
+
         return $this->basePath;
     }
 
@@ -643,7 +648,7 @@ trait ViewTrait
     {
         if ($view !== '' && $view[0] === '/') {
             // path relative to basePath e.g. "/layouts/main"
-            $file = $this->basePath . '/' . ltrim($view, '/');
+            $file = $this->getBasePath() . '/' . ltrim($view, '/');
         } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
             // path relative to currently rendered view
             $file = dirname($currentViewFile) . '/' . $view;

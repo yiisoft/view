@@ -6,6 +6,7 @@ namespace Yiisoft\View\Tests;
 
 use Exception;
 use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Yiisoft\Files\FileHelper;
@@ -607,6 +608,15 @@ PHP
         $view->setLocale('en-US');
 
         $this->assertSame('en-US', $view->getLocale());
+    }
+
+    public function testWithoutBasePath(): void
+    {
+        $view = new View();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The base path is not set.');
+        $view->getBasePath();
     }
 
     private function createViewWithBasePath(string $basePath): View
