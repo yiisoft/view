@@ -87,10 +87,10 @@ final class WebView implements ViewInterface
     private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END-%s]]>';
 
     /**
-     * @param string $basePath The full path to the base directory of views.
+     * @param string|null $basePath The full path to the base directory of views.
      * @param EventDispatcherInterface|null $eventDispatcher The event dispatcher instance.
      */
-    public function __construct(string $basePath, ?EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?string $basePath = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->basePath = $basePath;
         $this->state = new WebViewState();

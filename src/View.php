@@ -33,10 +33,10 @@ final class View implements ViewInterface
     private ThemeState $themeState;
 
     /**
-     * @param string $basePath The full path to the base directory of views.
+     * @param string|null $basePath The full path to the base directory of views.
      * @param EventDispatcherInterface|null $eventDispatcher The event dispatcher instance.
      */
-    public function __construct(string $basePath, ?EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?string $basePath = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->basePath = $basePath;
         $this->state = new ViewState();
