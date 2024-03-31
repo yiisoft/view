@@ -384,7 +384,7 @@ which is specified in the constructor when the `Yiisoft\View\WebView` instance i
 
 When creating views that generate HTML pages, it's important that you properly encode and/or
 filter all the data when outputted. Otherwise, your application may be subject to
-[cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
+[cross-site scripting](https://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
 
 To display a plain text, encode it first by calling `Yiisoft\Html\Html::encode()`.
 For example, the following code encodes the username before displaying it:
