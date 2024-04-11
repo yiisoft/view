@@ -3,7 +3,7 @@
 The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and
 a `Yiisoft\View\WebView` class with advanced functionality for use in a web environment. This guide applies to both
 classes, but examples will be provided using the `Yiisoft\View\View`. For advanced examples with
-`Yiisoft\View\WebView` functionality, see the [Use in the web environment](use-in-web-environment.md) guide.
+`Yiisoft\View\WebView` functionality, see the "[Use in the web environment](use-in-web-environment.md)" guide.
 
 To create a `Yiisoft\View\View` class, you must specify two mandatory parameters:
 
