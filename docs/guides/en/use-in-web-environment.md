@@ -1,7 +1,7 @@
 # Use in the web environment
 
 This guide describes extra functionality of the `Yiisoft\View\WebView` class intended for use in a web environment.
-Please read the [Basic Functionality](basic-functionality.md) guide first.
+Please read the "[Basic Functionality](basic-functionality.md)" guide first.
 
 To create `Yiisoft\View\WebView` class, you must specify two mandatory parameters:
 
