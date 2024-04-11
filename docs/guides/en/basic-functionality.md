@@ -1,9 +1,17 @@
+<p align="center">
+    <a href="https://github.com/yiisoft" target="_blank">
+        <img src="https://yiisoft.github.io/docs/images/yii_logo.svg" height="100px">
+    </a>
+    <h1 align="center">Yii View Rendering Library</h1>
+    <br>
+</p>
+
 # Basic functionality
 
 The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and
 a `Yiisoft\View\WebView` class with advanced functionality for use in a web environment. This guide applies to both
 classes, but examples will be provided using the `Yiisoft\View\View`. For advanced examples with
-`Yiisoft\View\WebView` functionality, see the "[Use in the web environment](use-in-web-environment.md)" guide.
+`Yiisoft\View\WebView` functionality, see the [Use in the web environment](use-in-web-environment.md) guide.
 
 To create a `Yiisoft\View\View` class, you must specify two mandatory parameters:
 
@@ -76,7 +84,7 @@ Instead of an absolute file path, it accepts a name of a view in one of the foll
   the base path that was passed to `Yiisoft\View\View` constructor. For example, `/blog/posts`
   will be resolved into `/path/to/views/blog/posts.php`.
 - A name of a view without the starting slash (such as `blog/posts`). The corresponding view file will be looked for
-  in the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
+  in the context instance of `Yiisoft\View\ViewContextInterface` set via `$view->withContext()`. If the
   context instance wasn't set, it will be looked for under the directory containing the view currently being
   rendered.
 
@@ -166,8 +174,6 @@ $view->setTheme($theme);
 In a view, you can access the theme using the `getTheme()` method and manage assets as follows:
 
 ```php
-<?php
-
 declare(strict_types=1);
 
 /** @var \Yiisoft\View\View $this */
@@ -445,7 +451,6 @@ Content to be cached ...
 
 Content to be cached ...
 ```
-
 
 For caching content fragments, it's much more convenient to use dynamic content using the
 `Yiisoft\Yii\Widgets\FragmentCache` widget from the
