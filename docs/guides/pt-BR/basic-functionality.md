@@ -3,7 +3,7 @@
 O pacote fornece uma classe `Yiisoft\View\View` com funcionalidade básica para gerenciar visualizações, e
 uma classe `Yiisoft\View\WebView` com funcionalidade avançada para uso em um ambiente web. Este guia se aplica a ambas
 classes, mas exemplos serão fornecidos usando `Yiisoft\View\View`. Para exemplos avançados na
-Funcionalidade `Yiisoft\View\WebView`, consulte o guia [Usar no ambiente web](use-in-web-environment.md).
+Funcionalidade `Yiisoft\View\WebView`, consulte o guia "[Usar no ambiente web](use-in-web-environment.md)".
 
 Para criar uma classe `Yiisoft\View\View`, você deve especificar dois parâmetros obrigatórios:
 
