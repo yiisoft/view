@@ -1,11 +1,3 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://yiisoft.github.io/docs/images/yii_logo.svg" height="100px">
-    </a>
-    <h1 align="center">Yii View Rendering Library</h1>
-    <br>
-</p>
-
 # Basic functionality
 
 The package provides a `Yiisoft\View\View` class with basic functionality for managing views, and
@@ -84,7 +76,7 @@ Instead of an absolute file path, it accepts a name of a view in one of the foll
   the base path that was passed to `Yiisoft\View\View` constructor. For example, `/blog/posts`
   will be resolved into `/path/to/views/blog/posts.php`.
 - A name of a view without the starting slash (such as `blog/posts`). The corresponding view file will be looked for
-  in the context instance of `Yiisoft\View\ViewContextInterface` set via `$view->withContext()`. If the
+  in the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
   context instance wasn't set, it will be looked for under the directory containing the view currently being
   rendered.
 
@@ -174,8 +166,6 @@ $view->setTheme($theme);
 In a view, you can access the theme using the `getTheme()` method and manage assets as follows:
 
 ```php
-declare(strict_types=1);
-
 /** @var \Yiisoft\View\View $this */
 
 $theme = $this->getTheme();

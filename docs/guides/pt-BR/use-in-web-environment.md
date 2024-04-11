@@ -1,11 +1,3 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://yiisoft.github.io/docs/images/yii_logo.svg" height="100px">
-    </a>
-    <h1 align="center">Yii View Rendering Library</h1>
-    <br>
-</p>
-
 # Uso no ambiente web
 
 Este guia descreve funcionalidades extras da classe `Yiisoft\View\WebView` destinada ao uso em um ambiente web.

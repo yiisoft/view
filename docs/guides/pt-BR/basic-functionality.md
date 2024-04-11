@@ -1,11 +1,3 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://yiisoft.github.io/docs/images/yii_logo.svg" height="100px">
-    </a>
-    <h1 align="center">Yii View Rendering Library</h1>
-    <br>
-</p>
-
 # Funcionalidade básica
 
 O pacote fornece uma classe `Yiisoft\View\View` com funcionalidade básica para gerenciar visualizações, e
@@ -175,8 +167,6 @@ $view->setTheme($theme);
 Em uma view, você pode acessar o tema usando o método `getTheme()` e gerenciar ativos da seguinte forma:
 
 ```php
-declare(strict_types=1);
-
 /** @var \Yiisoft\View\View $this */
 
 $theme = $this->getTheme();
