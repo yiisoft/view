@@ -71,9 +71,9 @@ you must specify the position in which this tag will be rendered. Positions are 
 
 - `POSITION_HEAD` - In the head section. Corresponds to the `head()` method.
 - `POSITION_BEGIN` - At the beginning of the body section. Corresponds to the `beginBody()` method.
-- `POSITION_END` - At the end of the body section. Corresponds to the `endBody()` method. Located after `POSITION_READY`.
+- `POSITION_END` - At the end of the body section. Corresponds to the `endBody()` method.
 - `POSITION_READY` - Executed when HTML document composition is ready. Located after `POSITION_END`.
-- `POSITION_LOAD` - Executed when HTML page is completely loaded.
+- `POSITION_LOAD` - Executed when HTML page is completely loaded. Located after `POSITION_READY`.
 
 Every Web page should have a title. You can set the title in this way:
 
