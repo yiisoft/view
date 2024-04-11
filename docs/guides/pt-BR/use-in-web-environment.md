@@ -1,7 +1,7 @@
 # Uso no ambiente web
 
 Este guia descreve funcionalidades extras da classe `Yiisoft\View\WebView` destinada ao uso em um ambiente web.
-Por favor, leia primeiro o guia [Funcionalidade básica](basic-functionality.md).
+Por favor, leia primeiro o guia "[Funcionalidade básica](basic-functionality.md)".
 
 Para criar a classe `Yiisoft\View\WebView`, você deve especificar dois parâmetros obrigatórios:
 
