@@ -166,10 +166,6 @@ $view->setTheme($theme);
 In a view, you can access the theme using the `getTheme()` method and manage assets as follows:
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 /** @var \Yiisoft\View\View $this */
 
 $theme = $this->getTheme();
@@ -445,7 +441,6 @@ Content to be cached ...
 
 Content to be cached ...
 ```
-
 
 For caching content fragments, it's much more convenient to use dynamic content using the
 `Yiisoft\Yii\Widgets\FragmentCache` widget from the

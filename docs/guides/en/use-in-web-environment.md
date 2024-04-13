@@ -58,7 +58,7 @@ use Yiisoft\Html\Html;
 To have scripts and tags registered and rendered correctly, special methods are called in the example above:
 
 - `beginPage()` - This method should be called at the very beginning of the view template.
-- `beginPage()` - This method should be called at the very end of the view template.
+- `endPage()` - This method should be called at the very end of the view template.
 - `head()` - This method should be called within the `<head>` section of an HTML page. It generates a placeholder which
   will be replaced with the registered head HTML code (e.g. link tags, meta tags) when a page finishes rendering.
 - `beginBody()` - This method should be called at the beginning of the `<body>` section. It generates a placeholder
@@ -69,11 +69,11 @@ To have scripts and tags registered and rendered correctly, special methods are 
 When registering [CSS](#registering-css), [JavaScript](#registering-javascript) and [link tags](#registering-link-tags),
 you must specify the position in which this tag will be rendered. Positions are implemented by public constants:
 
-- `POSITION_HEAD` - Corresponds to the `head()` method.
-- `POSITION_BEGIN` - Corresponds to the `beginBody()` method.
-- `POSITION_END` - Corresponds to the `endBody()` method.
-- `POSITION_READY` - Corresponds to the `endBody()` method. Located after `POSITION_END`.
-- `POSITION_LOAD` - Corresponds to the `endBody()` method. Located after `POSITION_READY`.
+- `POSITION_HEAD` - In the head section. Corresponds to the `head()` method.
+- `POSITION_BEGIN` - At the beginning of the body section. Corresponds to the `beginBody()` method.
+- `POSITION_END` - At the end of the body section. Corresponds to the `endBody()` method.
+- `POSITION_READY` - Executed when HTML document composition is ready. Located after `POSITION_END`.
+- `POSITION_LOAD` - Executed when HTML page is completely loaded. Located after `POSITION_READY`.
 
 Every Web page should have a title. You can set the title in this way:
 
