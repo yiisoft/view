@@ -2,7 +2,7 @@
 
 O pacote fornece dois casos de uso para gerenciamento de modelos de visualização:
 
-- [Funcionalidade básica](basic-funcionality.md) para uso em qualquer ambiente.
+- [Funcionalidade básica](basic-functionality.md) para uso em qualquer ambiente.
 - [Funcionalidade avançada](use-in-web-environment.md) para uso em ambiente web.
 
 ### Estado dos serviços `View` e `WebView`
