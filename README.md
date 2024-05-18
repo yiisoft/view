@@ -31,11 +31,6 @@ composer require yiisoft/view
 
 ## General usage
 
-The package provides two use cases for managing view templates:
-
-- [Basic functionality](docs/guide/en/basic-functionality.md) for use in any environment.
-- [Advanced functionality](docs/guide/en/use-in-web-environment.md) for use in a web environment.
-
 ### State of `View` and `WebView` services
 
 While being immutable and, by itself, stateless, both `View` and `WebView` services have sets of stateful and mutable
@@ -150,6 +145,11 @@ $view = $view->withClearedState();
   allow you to use the [Twig](https://twig.symfony.com) view template engine, instead of the default PHP renderer.
 
 ## Documentation
+
+The package provides two use cases for managing view templates:
+
+- [Basic functionality](docs/guide/en/basic-functionality.md) for use in any environment.
+- [Advanced functionality](docs/guide/en/use-in-web-environment.md) for use in a web environment.
 
 - Guide: [Português - Brasil](docs/guide/pt-BR/README.md)
 - [Internals](docs/internals.md)
