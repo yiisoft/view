@@ -9,12 +9,12 @@
     "homepage": "https://www.yiiframework.com/",
     "license": "BSD-3-Clause",
     "support": {
+        "issues": "https://github.com/yiisoft/view/issues?state=open",
         "source": "https://github.com/yiisoft/view",
-        "issues": "https://github.com/yiisoft/view/issues",
         "forum": "https://www.yiiframework.com/forum/",
         "wiki": "https://www.yiiframework.com/wiki/",
-        "chat": "https://t.me/yii3en",
-        "irc": "ircs://irc.libera.chat:6697/yii"
+        "irc": "ircs://irc.libera.chat:6697/yii",
+        "chat": "https://t.me/yii3en"
     },
     "funding": [
         {
