@@ -1,34 +1,33 @@
-## Documentação
+## Uso geral
 
-O pacote fornece dois casos de uso para gerenciar modelos de visualização:
+O pacote fornece dois casos de uso para gerenciamento de modelos de visualização:
 
-- [Funcionalidade básica](basic-functionality.md) para uso em qualquer ambiente.
+- [Funcionalidade básica](basic-funcionality.md) para uso em qualquer ambiente.
 - [Funcionalidade avançada](use-in-web-environment.md) para uso em ambiente web.
 
-### State of `View` and `WebView` services
+### Estado dos serviços `View` e `WebView`
 
-While being immutable and, by itself, stateless, both `View` and `WebView` services have sets of stateful and mutable
-data.
+Embora sejam imutáveis e, por si só, sem estado, os serviços `View` e `WebView` possuem conjuntos de serviços com estado e dados mutáveis.
 
-`View` service:
-- parameters,
-- blocks,
-- theme,
-- locale.
+Serviço `View`:
+- parâmetros,
+- blocos,
+- tema,
+- local.
 
-`WebView` service:
-- parameters,
-- blocks,
-- theme,
-- locale,
-- title,
-- meta and link tags,
-- JS/CSS strings,
-- JS/CSS files.
+Serviço `WebView`:
+- parâmetros,
+- blocos,
+- tema,
+- localidade,
+- título,
+- meta tags e links,
+- strings JS/CSS,
+- Arquivos JS/CSS.
 
-The state of `View` and `WebView` isn't cloned when the services are cloned. So when
-using `with*()`, both new and old instances are sharing the same set of stateful mutable data. It allows, for example,
-to get `WebView` via type-hinting in a controller and change context path:
+O estado de `View` e `WebView` não são clonados quando os serviços são clonados. Então quando
+usar com `with*()`, instâncias novas e antigas compartilharão o mesmo conjunto de dados mutáveis com estado. Permitem, por exemplo,
+obter `WebView` por meio de dicas de tipo em um controlador e alterar o caminho do contexto:
 
 ```php
 final class BlogController {
@@ -39,7 +38,7 @@ final class BlogController {
 }
 ```
 
-and then register CSS in a widget:
+e então registrar CSS em um widget:
 
 ```php
 final class LastPosts extends Widget 
@@ -57,13 +56,13 @@ final class LastPosts extends Widget
 }
 ```
 
-#### Locale state
+#### Estado Locale (internacionalização)
 
-You can change the locale by using `setLocale()`, which will be applied to all other instances that used current state
-including existing ones. If you need to change the locale only for a single instance, you can use the immutable
-`withLocale()` method. Locale will be applied to all views rendered within views with `render()` calls.
+Você pode alterar a localidade usando `setLocale()`, que será aplicado a todas as outras instâncias que usaram o estado atual
+incluindo os existentes. Se você precisar alterar a localidade apenas para uma única instância, poderá usar o método imutável
+`withLocale()`. A localidade será aplicada a todas as visualizações renderizadas nas visualizações com chamadas `render()`.
 
-Example with mutable method:
+Exemplo com método mutável:
 
 ```php
 final class LocaleMiddleware implements MiddlewareInterface
@@ -78,6 +77,7 @@ final class LocaleMiddleware implements MiddlewareInterface
     ) {
         $this->view = $view;
     }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         ...
@@ -85,35 +85,37 @@ final class LocaleMiddleware implements MiddlewareInterface
         ...
     }
 }
-````
+```
 
-Example with immutable method:
+Exemplo com método imutável:
 
 ```php
 final class BlogController {
+
     private WebView $view;
+
     public function __construct (WebView $view) {
         $this->view = $view;
     }
+
     public function index() {
         return $this->view->withLocale('es')->render('index');
     }
 }
 ```
 
-#### Reset state
+#### Redefinir o estado
 
-To get a deep cloned `View` or `WebView` use `withClearedState()`: 
+Para obter um `View` ou `WebView` clonado profundamente, use `withClearedState()`:
 
 ```php
 $view = $view->withClearedState();
 ```
 
-## Extensions
+## Extensões
   
-- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - a wrapper that's used in
-  [Yii Framework]((https://www.yiiframework.com/)).
-  Adds extra functionality for a web environment and compatibility 
-  with [PSR-7](https://www.php-fig.org/psr/psr-7) interfaces.
-- [yiisoft/view-twig](https://github.com/yiisoft/view-twig) - an extension that provides a view renderer that will
-  allow you to use the [Twig](https://twig.symfony.com) view template engine, instead of the default PHP renderer.
+- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - um wrapper usado na [Estrutura Yii](https://www.yiiframework.com/).
+   Adiciona funcionalidade extra para um ambiente web e compatibilidade
+   com interfaces [PSR-7](https://www.php-fig.org/psr/psr-7).
+- [yiisoft/view-twig](https://github.com/yiisoft/view-twig) - uma extensão que fornece um renderizador de visualização que
+   permite que você use o mecanismo de modelo de visualização [Twig](https://twig.symfony.com), em vez do renderizador PHP padrão.
