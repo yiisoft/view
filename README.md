@@ -146,12 +146,7 @@ $view = $view->withClearedState();
 
 ## Documentation
 
-The package provides two use cases for managing view templates:
-
-- [Basic functionality](docs/guide/en/basic-functionality.md) for use in any environment.
-- [Advanced functionality](docs/guide/en/use-in-web-environment.md) for use in a web environment.
-
-- Guide: [Português - Brasil](docs/guide/pt-BR/README.md)
+- Guide: [English](docs/guide/en/README.md), [Português - Brasil](docs/guide/pt-BR/README.md)
 - [Internals](docs/internals.md)
 
 If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
