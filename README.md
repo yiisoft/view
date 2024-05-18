@@ -31,6 +31,11 @@ composer require yiisoft/view
 
 ## General usage
 
+The package provides two use cases for managing view templates:
+
+- [Basic functionality](docs/guide/en/basic-functionality.md) for use in any environment.
+- Advanced functionality for [use in a web environment](docs/use-in-web-environment.md).
+
 ### State of `View` and `WebView` services
 
 While being immutable and, by itself, stateless, both `View` and `WebView` services have sets of stateful and mutable
