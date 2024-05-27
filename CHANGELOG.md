@@ -13,6 +13,7 @@
 - New #242: Add `View::getLocale()` and `WebView::getLocale()` methods (@Tigrov)
 - Enh #250: Make event dispatcher in `View` and `WebView` optional (@vjik)
 - Enh #251: Make base path in `View` and `WebView` optional (@vjik)
+- Enh #248: Add types to `ViewInterface::setParameter()` and `ViewInterface::addToParameter()` parameters (@vjik)
 
 ## 8.0.0 February 16, 2023
 

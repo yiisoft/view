@@ -156,7 +156,7 @@ interface ViewInterface
      * @param string $id The unique identifier of the parameter.
      * @param mixed $value The value of the parameter.
      */
-    public function setParameter(string $id, $value): static;
+    public function setParameter(string $id, mixed $value): static;
 
     /**
      * Add values to end of common array parameter. If specified parameter does not exist or him is not array,
@@ -167,7 +167,7 @@ interface ViewInterface
      *
      * @throws InvalidArgumentException When specified parameter already exists and is not an array.
      */
-    public function addToParameter(string $id, ...$value): static;
+    public function addToParameter(string $id, mixed ...$value): static;
 
     /**
      * Removes a common parameter.
