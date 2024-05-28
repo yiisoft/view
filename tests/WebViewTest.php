@@ -15,6 +15,8 @@ use Yiisoft\Html\Tag\Meta;
 use Yiisoft\Html\Tag\Script;
 use Yiisoft\Html\Tag\Style;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
+use Yiisoft\View\Event\WebView\AfterRender;
+use Yiisoft\View\Event\WebView\BeforeRender;
 use Yiisoft\View\Event\WebView\BodyBegin;
 use Yiisoft\View\Event\WebView\BodyEnd;
 use Yiisoft\View\Event\WebView\Head;
@@ -415,6 +417,27 @@ final class WebViewTest extends TestCase
                 BodyBegin::class,
                 BodyEnd::class,
                 PageEnd::class,
+            ],
+            $eventDispatcher->getEventClasses()
+        );
+    }
+
+    public function testRenderEvents(): void
+    {
+        $eventDispatcher = new SimpleEventDispatcher();
+        $webView = TestHelper::createWebView($eventDispatcher);
+
+        $webView->render('/layout.php', ['content' => '']);
+
+        $this->assertSame(
+            [
+                BeforeRender::class,
+                PageBegin::class,
+                Head::class,
+                BodyBegin::class,
+                BodyEnd::class,
+                PageEnd::class,
+                AfterRender::class,
             ],
             $eventDispatcher->getEventClasses()
         );
