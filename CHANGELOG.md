@@ -1,19 +1,19 @@
 # Yii View Change Log
 
-## 8.0.1 under development
+## 9.0.0 May 28, 2024
 
+- New #242: Add `View::getLocale()` and `WebView::getLocale()` methods (@Tigrov)
 - New #243: Add immutable method `ViewInterface::withTheme()` (@Gerych1984)
-- Bug #224: Fix signature of `CachedContent::cache()` (@vjik)
-- Bug #226: Fix `reset` config for referenced definitions (@rustamwin)
-- Enh #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
-- Enh #232, #233: Make fallback extension configurable & support multiple fallbacks (@rustamwin)
 - Chg #232: Deprecate `ViewInterface::withDefaultExtension()` and `ViewInterface::getDefaultExtension()` in favor of 
   `withFallbackExtension()` and `getFallbackExtensions()` (@rustamwin)
-- Bug #232: Fix render templates that contain dots in their name (@rustamwin)
-- New #242: Add `View::getLocale()` and `WebView::getLocale()` methods (@Tigrov)
+- Enh #226: Adjust config to make `View` and `WebView` more configurable (@rustamwin)
+- Enh #232, #233: Make fallback extension configurable & support multiple fallbacks (@rustamwin)
+- Enh #248: Add types to `ViewInterface::setParameter()` and `ViewInterface::addToParameter()` parameters (@vjik)
 - Enh #250: Make event dispatcher in `View` and `WebView` optional (@vjik)
 - Enh #251: Make base path in `View` and `WebView` optional (@vjik)
-- Enh #248: Add types to `ViewInterface::setParameter()` and `ViewInterface::addToParameter()` parameters (@vjik)
+- Bug #224: Fix signature of `CachedContent::cache()` (@vjik)
+- Bug #226: Fix `reset` config for referenced definitions (@rustamwin)
+- Bug #232: Fix render templates that contain dots in their name (@rustamwin)
 
 ## 8.0.0 February 16, 2023
 
