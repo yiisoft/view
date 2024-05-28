@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 9.0.1 under development
+
+- no changes in this release.
+
 ## 9.0.0 May 28, 2024
 
 - New #242: Add `View::getLocale()` and `WebView::getLocale()` methods (@Tigrov)
