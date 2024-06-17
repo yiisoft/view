@@ -114,7 +114,7 @@ $view = $view->withClearedState();
 
 ## Extensões
   
-- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - um wrapper usado na [Estrutura Yii](https://www.yiiframework.com/).
+- [Yii View Renderer](https://github.com/yiisoft/yii-view-renderer) - um wrapper usado na [Estrutura Yii](https://www.yiiframework.com/).
    Adiciona funcionalidade extra para um ambiente web e compatibilidade
    com interfaces [PSR-7](https://www.php-fig.org/psr/psr-7).
 - [yiisoft/view-twig](https://github.com/yiisoft/view-twig) - uma extensão que fornece um renderizador de visualização que
