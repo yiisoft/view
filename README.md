@@ -142,7 +142,7 @@ $view = $view->withClearedState();
 
 ## Extensions
   
-- [yiisoft/yii-view](https://github.com/yiisoft/yii-view) - a wrapper that's used in
+- [Yii View Renderer](https://github.com/yiisoft/yii-view-renderer) - a wrapper that's used in
   [Yii Framework](https://www.yiiframework.com/).
   Adds extra functionality for a web environment and compatibility 
   with [PSR-7](https://www.php-fig.org/psr/psr-7) interfaces.
