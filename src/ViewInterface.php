@@ -270,26 +270,6 @@ interface ViewInterface
     public function render(string $view, array $parameters = []): string;
 
     /**
-     * Renders a view file.
-     *
-     * If the theme was set {@see setTheme()}, it will try to render the themed version of the view file
-     * as long as it is available.
-     *
-     * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
-     * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
-     *
-     * @param string $viewFile The full absolute path of the view file.
-     * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
-     * file.
-     *
-     * @throws Throwable
-     * @throws ViewNotFoundException If the view file does not exist
-     *
-     * @return string The rendering result.
-     */
-    public function renderFile(string $viewFile, array $parameters = []): string;
-
-    /**
      * Returns the localized version of a specified file.
      *
      * The searching is based on the specified locale code. In particular, a file with the same name will be looked

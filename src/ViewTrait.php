@@ -440,29 +440,6 @@ trait ViewTrait
     {
         $viewFile = $this->findTemplateFile($view);
 
-        return $this->renderFile($viewFile, $parameters);
-    }
-
-    /**
-     * Renders a view file.
-     *
-     * If the theme was set {@see setTheme()}, it will try to render the themed version of the view file
-     * as long as it's available.
-     *
-     * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
-     * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
-     *
-     * @param string $viewFile The full absolute path of the view file.
-     * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
-     * file.
-     *
-     * @throws Throwable
-     * @throws ViewNotFoundException If the view file doesn't exist
-     *
-     * @return string The rendering result.
-     */
-    public function renderFile(string $viewFile, array $parameters = []): string
-    {
         $parameters = array_merge($this->state->getParameters(), $parameters);
 
         // TODO: these two match now
@@ -646,20 +623,10 @@ trait ViewTrait
      */
     private function findTemplateFile(string $view): string
     {
-        if ($view !== '' && $view[0] === '/') {
-            // path relative to basePath e.g. "/layouts/main"
-            $file = $this->getBasePath() . '/' . ltrim($view, '/');
-        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
-            // path relative to currently rendered view
-            $file = dirname($currentViewFile) . '/' . $view;
-        } elseif ($this->context instanceof ViewContextInterface) {
-            // path provided by context
-            $file = $this->context->getViewPath() . '/' . $view;
-        } else {
-            throw new RuntimeException("Unable to resolve view file for view \"$view\": no active view context.");
-        }
+        $file = $this->findViewFilePath($view);
+        $hasExtension = pathinfo($file, PATHINFO_EXTENSION) !== '';
 
-        if (pathinfo($file, PATHINFO_EXTENSION) !== '' && is_file($file)) {
+        if ($hasExtension && is_file($file)) {
             return $file;
         }
 
@@ -670,7 +637,38 @@ trait ViewTrait
             }
         }
 
+        if ($hasExtension) {
+            return $file;
+        }
+
         return $file . '.' . $this->fallbackExtensions[0];
+    }
+
+    private function findViewFilePath(string $view): string
+    {
+        if (str_starts_with($view, './')) {
+            $currentViewFile = $this->getRequestedViewFile();
+            if ($currentViewFile === null) {
+                throw new LogicException('...');
+            }
+            return dirname($currentViewFile) . substr($view, 1);
+        }
+
+        if (str_starts_with($view, '//')) {
+            return $this->getBasePath() . substr($view, 1);
+        }
+
+        if ($this->isWindows()) {
+            if (str_contains($view, ':')) {
+                return $view;
+            }
+        } else {
+            if (str_starts_with($view, '/')) {
+                return $view;
+            }
+        }
+
+        return ($this->context?->getViewPath() ?? $this->getBasePath()) . '/' . $view;
     }
 
     /**
@@ -680,5 +678,13 @@ trait ViewTrait
     {
         /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
+    }
+
+    /**
+     * Returns whether the current environment is Windows.
+     */
+    private function isWindows(): bool
+    {
+        return DIRECTORY_SEPARATOR === '\\';
     }
 }

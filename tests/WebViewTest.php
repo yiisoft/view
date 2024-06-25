@@ -54,7 +54,7 @@ final class WebViewTest extends TestCase
         $webView = TestHelper::createWebView();
         $webView->registerJsVar($name, $value);
 
-        $html = $webView->render('/layout.php', ['content' => 'content']);
+        $html = $webView->render('layout.php', ['content' => 'content']);
         $this->assertStringContainsString($expected, $html);
     }
 
@@ -79,7 +79,7 @@ final class WebViewTest extends TestCase
 
         $webView->registerJsFile($url);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
         $this->assertStringContainsString('[ENDBODY]<script src="' . $url . '"></script>[/ENDBODY]', $html);
     }
 
@@ -119,7 +119,7 @@ final class WebViewTest extends TestCase
 
         $webView->registerJsFile('/somefile.js', $position);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
         $this->assertStringContainsString($expected, $html);
     }
 
@@ -130,7 +130,7 @@ final class WebViewTest extends TestCase
         $style = Html::style('H1 { color: red; }', ['id' => 'H1Css']);
 
         $webView->registerStyleTag($style);
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD]' . $style->render() . '[/HEAD]' . "\n" .
@@ -162,7 +162,7 @@ final class WebViewTest extends TestCase
 
         $webView->registerCssFile($url);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
         $this->assertStringContainsString('[HEAD]<link href="' . $url . '" rel="stylesheet">[/HEAD]', $html);
     }
 
@@ -202,7 +202,7 @@ final class WebViewTest extends TestCase
 
         $webView->registerCssFile('/somefile.css', $position);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
         $this->assertStringContainsString($expected, $html);
     }
 
@@ -215,7 +215,7 @@ final class WebViewTest extends TestCase
             'content' => 'yii',
         ]);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString('[HEAD]<meta name="keywords" content="yii">[/HEAD]', $html);
     }
@@ -234,7 +234,7 @@ final class WebViewTest extends TestCase
             'content' => 'yii3',
         ]));
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString('<meta name="keywords" content="yii">', $html);
         $this->assertStringContainsString('<meta name="keywords" content="yii3">', $html);
@@ -254,7 +254,7 @@ final class WebViewTest extends TestCase
             'content' => 'yii3',
         ]), 'keywords');
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString('<meta name="keywords" content="yii3">', $html);
         $this->assertStringNotContainsString('<meta name="keywords" content="yii">', $html);
@@ -280,7 +280,7 @@ final class WebViewTest extends TestCase
             ? $webView->registerLink(['href' => '/main.css'])
             : $webView->registerLink(['href' => '/main.css'], $position);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString($expected, $html);
     }
@@ -298,7 +298,7 @@ final class WebViewTest extends TestCase
             ? $webView->registerLinkTag($link)
             : $webView->registerLinkTag($link, $position);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString($expected, $html);
     }
@@ -313,7 +313,7 @@ final class WebViewTest extends TestCase
         $webView->registerLinkTag($link1, WebView::POSITION_HEAD, 'unique');
         $webView->registerLinkTag($link2, WebView::POSITION_HEAD, 'unique');
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString('<link href="/main2.css">', $html);
         $this->assertStringNotContainsString('<link href="/main1.css">', $html);
@@ -339,7 +339,7 @@ final class WebViewTest extends TestCase
             ? $webView->registerCss('.red{color:red;}')
             : $webView->registerCss('.red{color:red;}', $position);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString($expected, $html);
     }
@@ -354,7 +354,7 @@ final class WebViewTest extends TestCase
             ['id' => 'main'],
         );
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString('[HEAD]<style id="main">.red{color:red;}</style>[/HEAD]', $html);
     }
@@ -365,7 +365,7 @@ final class WebViewTest extends TestCase
 
         $webView->registerCssFromFile(__DIR__ . '/public/example.css', WebView::POSITION_HEAD, ['id' => 'main']);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $this->assertStringContainsString(
             '[HEAD]<style id="main">A { color: blue; }</style>[/HEAD]',
@@ -396,7 +396,7 @@ final class WebViewTest extends TestCase
     {
         $content = 'Hello!';
 
-        $html = TestHelper::createWebView()->renderAjax('/only-content.php', ['content' => $content]);
+        $html = TestHelper::createWebView()->renderAjax('//only-content.php', ['content' => $content]);
 
         $this->assertSame($content, $html);
     }
@@ -427,7 +427,7 @@ final class WebViewTest extends TestCase
         $eventDispatcher = new SimpleEventDispatcher();
         $webView = TestHelper::createWebView($eventDispatcher);
 
-        $webView->render('/layout.php', ['content' => '']);
+        $webView->render('layout.php', ['content' => '']);
 
         $this->assertSame(
             [
@@ -451,7 +451,7 @@ final class WebViewTest extends TestCase
             ->type('application/ld+json');
 
         $webView->registerScriptTag($script);
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD][/HEAD]' . "\n" .
@@ -484,7 +484,7 @@ final class WebViewTest extends TestCase
         $webView->registerScriptTag($script6, WebView::POSITION_READY);
         $webView->registerJs($js7, WebView::POSITION_READY);
         $webView->registerJs($js8, WebView::POSITION_LOAD);
-        $html = $webView->render('/layout.php', ['content' => '']);
+        $html = $webView->render('layout.php', ['content' => '']);
 
         $this->assertStringContainsString(
             "<script>$js1\n$js2</script>\n" .
@@ -549,7 +549,7 @@ final class WebViewTest extends TestCase
             ['file-2.css', 'crossorigin' => 'anonymous', WebView::POSITION_BEGIN],
         ]);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD]<link href="file-1.css" rel="stylesheet">[/HEAD]' . "\n" .
@@ -588,7 +588,7 @@ final class WebViewTest extends TestCase
             ['file-2.js', 'async' => true, WebView::POSITION_BEGIN],
         ]);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD][/HEAD]' . "\n" .
@@ -636,7 +636,7 @@ final class WebViewTest extends TestCase
             [Html::style('.a11 { color: red; }'), 'id' => 'second'],
         ]);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD]<style>.a1 { color: red; }' . "\n" .
@@ -689,7 +689,7 @@ final class WebViewTest extends TestCase
             Html::script('{"@type":"Article"}')->type('application/ld+json'),
         ]);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD]<script async>app4.start();</script>[/HEAD]' . "\n" .
@@ -733,7 +733,7 @@ final class WebViewTest extends TestCase
             ['var3', 'value3', WebView::POSITION_END],
         ]);
 
-        $html = $webView->render('/positions.php');
+        $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
             '[HEAD]<script>var var1 = "value1";' . "\n" .
@@ -827,7 +827,7 @@ final class WebViewTest extends TestCase
         $webView->registerJsFile('./main.js');
 
         try {
-            $webView->renderFile(__DIR__ . '/public/view/error.php');
+            $webView->render(__DIR__ . '/public/view/error.php');
         } catch (Exception) {
         }
 
@@ -844,7 +844,7 @@ final class WebViewTest extends TestCase
             '[BEGINBODY][/BEGINBODY]' . "\n" .
             '[ENDBODY][/ENDBODY]' . "\n" .
             '[ENDPAGE][/ENDPAGE]',
-            $webView->render('/positions.php')
+            $webView->render('//positions.php')
         );
     }
 
@@ -874,7 +874,7 @@ final class WebViewTest extends TestCase
             '[BEGINBODY][/BEGINBODY]' . "\n" .
             '[ENDBODY][/ENDBODY]' . "\n" .
             '[ENDPAGE][/ENDPAGE]',
-            $newWebView->render('/positions.php')
+            $newWebView->render('positions.php')
         );
     }
 

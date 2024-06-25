@@ -188,15 +188,13 @@ final class WebView implements ViewInterface
      */
     public function renderAjax(string $view, array $parameters = []): string
     {
-        $viewFile = $this->findTemplateFile($view);
-
         ob_start();
         ob_implicit_flush(false);
 
         $this->beginPage();
         $this->head();
         $this->beginBody();
-        echo $this->renderFile($viewFile, $parameters);
+        echo $this->render($view, $parameters);
         $this->endBody();
         $this->endPage(true);
 
