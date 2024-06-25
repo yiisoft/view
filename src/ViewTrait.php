@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
-use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
@@ -418,21 +417,21 @@ trait ViewTrait
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - The name of the view starting with a slash to join the base path {@see getBasePath()} (e.g. "/site/index").
-     * - The name of the view without the starting slash (e.g. "site/index"). The corresponding view file will be
+     * - the absolute path to the view file, e.g. "/path/to/view.php";
+     * - the name of the view starting with `//` to join the base path {@see getBasePath()}, e.g. "//site/index";
+     * - the name of the view starting with `./` to join the directory containing the view currently being rendered
+     *   (i.e., this happens when rendering a view within another view), e.g. "./widget";
+     * - the name of the view without the starting `//` or `./` (e.g. "site/index"). The corresponding view file will be
      *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
-     *   If the context instance was not set {@see withContext()}, it will be looked for under the directory containing
-     *   the view currently being rendered (i.e., this happens when rendering a view within another view).
+     *   If the context instance was not set {@see withContext()}, it will be looked for under the base path.
      *
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
-     * @throws RuntimeException If the view cannot be resolved.
+     * @throws LogicException If the view cannot be resolved.
      * @throws ViewNotFoundException If the view file does not exist.
      * @throws Throwable
-     *
-     * {@see renderFile()}
      *
      * @return string The rendering result.
      */
@@ -616,14 +615,13 @@ trait ViewTrait
      * @param string $view The view name of the view file. Please refer to
      * {@see render()} on how to specify this parameter.
      *
-     * @throws RuntimeException If a relative view name is given while there is no active context to determine the
-     * corresponding view file.
+     * @throws LogicException If a relative view name is given while there is no currently rendered view.
      *
      * @return string The view file path. Note that the file may not exist.
      */
     private function findTemplateFile(string $view): string
     {
-        $file = $this->findViewFilePath($view);
+        $file = $this->resolveViewFilePath($view);
         $hasExtension = pathinfo($file, PATHINFO_EXTENSION) !== '';
 
         if ($hasExtension && is_file($file)) {
@@ -644,12 +642,12 @@ trait ViewTrait
         return $file . '.' . $this->fallbackExtensions[0];
     }
 
-    private function findViewFilePath(string $view): string
+    private function resolveViewFilePath(string $view): string
     {
         if (str_starts_with($view, './')) {
             $currentViewFile = $this->getRequestedViewFile();
             if ($currentViewFile === null) {
-                throw new LogicException('...');
+                throw new LogicException('Unable to resolve file for view \"$view\": no currently rendered view.');
             }
             return dirname($currentViewFile) . substr($view, 1);
         }

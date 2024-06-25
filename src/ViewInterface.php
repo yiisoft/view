@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View;
 
 use InvalidArgumentException;
-use RuntimeException;
+use LogicException;
 use Throwable;
 use Yiisoft\View\Exception\ViewNotFoundException;
 
@@ -249,21 +249,21 @@ interface ViewInterface
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - The name of the view starting with a slash to join the base path {@see getBasePath()} (e.g. "/site/index").
-     * - The name of the view without the starting slash (e.g. "site/index"). The corresponding view file will be
+     * - the absolute path to the view file, e.g. "/path/to/view.php";
+     * - the name of the view starting with `//` to join the base path {@see getBasePath()}, e.g. "//site/index";
+     * - the name of the view starting with `./` to join the directory containing the view currently being rendered
+     *   (i.e., this happens when rendering a view within another view), e.g. "./widget";
+     * - the name of the view without the starting `//` or `./` (e.g. "site/index"). The corresponding view file will be
      *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
-     *   If the context instance was not set {@see withContext()}, it will be looked for under the directory containing
-     *   the view currently being rendered (i.e., this happens when rendering a view within another view).
+     *   If the context instance was not set {@see withContext()}, it will be looked for under the base path.
      *
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
-     * @throws RuntimeException If the view cannot be resolved.
+     * @throws LogicException If the view cannot be resolved.
      * @throws ViewNotFoundException If the view file does not exist.
      * @throws Throwable
-     *
-     * {@see renderFile()}
      *
      * @return string The rendering result.
      */
