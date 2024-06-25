@@ -8,14 +8,13 @@ use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\View;
 
 /**
- * `AfterRender` event is triggered by {@see View::renderFile()} right after it renders a view file.
+ * `AfterRender` event is triggered by {@see View::render()} right after it renders a view file.
  */
 final class AfterRender implements AfterRenderEventInterface
 {
     /**
      * @param string $file The view file being rendered.
-     * @param array $parameters The parameters array passed to the {@see View::render()} or {@see View::renderFile()}
-     * method.
+     * @param array $parameters The parameters array passed to the {@see View::render()} method.
      */
     public function __construct(
         private View $view,

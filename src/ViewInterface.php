@@ -59,14 +59,14 @@ interface ViewInterface
     /**
      * Returns a new instance with the specified view context instance.
      *
-     * @param ViewContextInterface $context The context under which the {@see renderFile()} method is being invoked.
+     * @param ViewContextInterface $context The context under which the {@see render()} method is being invoked.
      */
     public function withContext(ViewContextInterface $context): static;
 
     /**
      * Returns a new instance with the specified view context path.
      *
-     * @param string $path The context path under which the {@see renderFile()} method is being invoked.
+     * @param string $path The context path under which the {@see render()} method is being invoked.
      */
     public function withContextPath(string $path): static;
 

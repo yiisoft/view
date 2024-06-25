@@ -134,7 +134,7 @@ trait ViewTrait
     /**
      * Returns a new instance with the specified view context instance.
      *
-     * @param ViewContextInterface $context The context under which the {@see renderFile()} method is being invoked.
+     * @param ViewContextInterface $context The context under which the {@see render()} method is being invoked.
      */
     public function withContext(ViewContextInterface $context): static
     {
@@ -147,7 +147,7 @@ trait ViewTrait
     /**
      * Returns a new instance with the specified view context path.
      *
-     * @param string $path The context path under which the {@see renderFile()} method is being invoked.
+     * @param string $path The context path under which the {@see render()} method is being invoked.
      */
     public function withContextPath(string $path): static
     {
@@ -532,7 +532,7 @@ trait ViewTrait
      * Creates an event that occurs before rendering.
      *
      * @param string $viewFile The view file to be rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      *
      * @return StoppableEventInterface The stoppable event instance.
      */
@@ -542,7 +542,7 @@ trait ViewTrait
      * Creates an event that occurs after rendering.
      *
      * @param string $viewFile The view file being rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      * @param string $result The rendering result of the view file.
      *
      * @return AfterRenderEventInterface The event instance.
@@ -554,14 +554,14 @@ trait ViewTrait
     ): AfterRenderEventInterface;
 
     /**
-     * This method is invoked right before {@see renderFile()} renders a view file.
+     * This method is invoked right before {@see render()} renders a view file.
      *
      * The default implementations will trigger the {@see \Yiisoft\View\Event\View\BeforeRender}
      * or {@see \Yiisoft\View\Event\WebView\BeforeRender} event. If you override this method,
      * make sure you call the parent implementation first.
      *
      * @param string $viewFile The view file to be rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      *
      * @return bool Whether to continue rendering the view file.
      */
@@ -578,17 +578,17 @@ trait ViewTrait
     }
 
     /**
-     * This method is invoked right after {@see renderFile()} renders a view file.
+     * This method is invoked right after {@see render()} renders a view file.
      *
      * The default implementations will trigger the {@see \Yiisoft\View\Event\View\AfterRender}
      * or {@see \Yiisoft\View\Event\WebView\AfterRender} event. If you override this method,
      * make sure you call the parent implementation first.
      *
      * @param string $viewFile The view file being rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      * @param string $result The rendering result of the view file.
      *
-     * @return string Updated output. It will be passed to {@see renderFile()} and returned.
+     * @return string Updated output. It will be passed to {@see render()} and returned.
      */
     private function afterRender(string $viewFile, array $parameters, string $result): string
     {
