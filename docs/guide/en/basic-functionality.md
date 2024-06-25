@@ -51,18 +51,7 @@ doesn't automatically encode variables for safe use with HTML and you should tak
 
 ## Rendering
 
-To render the file shown above, there are two methods: `render()` and `renderFile()`.
-
-The `renderFile()` method accepts a full absolute path of the view file to be rendered,
-and an array of parameters (name-value pairs) that will be available in the view template:
-
-```php
-$view->renderFile('/path/to/views/blog/posts.php', [
-    'posts' => $posts,
-]);
-```
-
-The `render()` method is a wrapper over `renderFile()` with additional functionality:
+To render the file shown above, there is the `render()` method:
 
 ```php
 $view->render('blog/posts', [
@@ -70,15 +59,15 @@ $view->render('blog/posts', [
 ]);
 ```
 
-Instead of an absolute file path, it accepts a name of a view in one of the following formats:
+It accepts a name of a view in one of the following formats:
 
-- A name of a view starting with a slash (for example, `/blog/posts`). It will be prepended with
-  the base path that was passed to `Yiisoft\View\View` constructor. For example, `/blog/posts`
-  will be resolved into `/path/to/views/blog/posts.php`.
-- A name of a view without the starting slash (such as `blog/posts`). The corresponding view file will be looked for
-  in the context (instance of `Yiisoft\View\ViewContextInterface`) set via `$view->withContext()`. If the
-  context instance wasn't set, it will be looked for under the directory containing the view currently being
-  rendered.
+- the absolute path to the view file, e.g. "/path/to/view.php";
+- the name of the view starting with `//` to join the base path, e.g. "//site/index";
+- the name of the view starting with `./` to join the directory containing the view currently being rendered
+  (i.e., this happens when rendering a view within another view), e.g. "./widget";
+- the name of the view without the starting `//` or `./` (e.g. "site/index"). The corresponding view file will be
+  looked for under the view path of the context set via `withContext()`.
+  If the context instance was not set `withContext()`, it will be looked for under the base path.
 
 The view name may omit a file extension. In this case, fallback extensions will be used as the extension.
 Default fallback extension is `php`. For example, the view name `blog/posts` correspond to the file name `blog/posts.php`.
@@ -94,7 +83,7 @@ $view->getFallbackExtensions(); // ['tpl', 'twig']
 
 > In this case, the first matching fallback extension will be used, so pay attention to their order when setting up.
 
-Rendering methods could be called inside views to render nested views:
+Rendering method could be called inside views to render nested views:
 
 ```php
 <?php
@@ -109,9 +98,11 @@ declare(strict_types=1);
 
 Title
 
-<?= $this->renderFile('/path/to/views/any/file.php') ?>
+<?= $this->render('/path/to/views/any/file.php') ?>
 
-<?= $this->renderFile('blog/posts', ['posts' => $posts]) ?>
+<?= $this->render('blog/posts', ['posts' => $posts]) ?>
+
+<?= $this->render('./nested') ?>
 ```
 
 By default, rendering simply includes a view file as a regular PHP file, captures its output, and returns

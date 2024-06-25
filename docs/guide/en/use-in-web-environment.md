@@ -89,7 +89,7 @@ Then in the view, make sure you have the following code in the `<head>` section:
 
 ## Rendering
 
-In addition to the `render()` and `renderFile()` methods, two `renderAjax()` and `renderAjaxString()`
+In addition to the `render()` method, two `renderAjax()` and `renderAjaxString()`
 methods have been added for the web environment to render AJAX requests.
 
 The `renderAjax()` method is like `render()` except that it will surround the view being rendered with
