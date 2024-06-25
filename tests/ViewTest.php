@@ -50,6 +50,15 @@ final class ViewTest extends TestCase
         FileHelper::removeDirectory($this->tempDirectory);
     }
 
+    public function testAbsolutePath(): void
+    {
+        $view = new View();
+
+        $result = $view->render(__DIR__ . '/public/view/parameters.php', ['parameter' => 42]);
+
+        $this->assertSame('42', $result);
+    }
+
     /**
      * @link https://github.com/yiisoft/yii2/issues/13058
      */
