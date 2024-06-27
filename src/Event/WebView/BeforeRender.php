@@ -8,7 +8,7 @@ use Psr\EventDispatcher\StoppableEventInterface;
 use Yiisoft\View\WebView;
 
 /**
- * `BeforeRender` event is triggered by {@see WebView::renderFile()} right before it renders a view file.
+ * `BeforeRender` event is triggered by {@see WebView::render()} right before it renders a view file.
  */
 final class BeforeRender implements StoppableEventInterface
 {
@@ -16,8 +16,7 @@ final class BeforeRender implements StoppableEventInterface
 
     /**
      * @param string $file The view file being rendered.
-     * @param array $parameters The parameters array passed to the {@see WebView::render()}
-     * or {@see WebView::renderFile()} method.
+     * @param array $parameters The parameters array passed to the {@see WebView::render()} method.
      */
     public function __construct(
         private WebView $view,

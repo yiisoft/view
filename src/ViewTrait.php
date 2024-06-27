@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
-use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
@@ -135,7 +134,7 @@ trait ViewTrait
     /**
      * Returns a new instance with the specified view context instance.
      *
-     * @param ViewContextInterface $context The context under which the {@see renderFile()} method is being invoked.
+     * @param ViewContextInterface $context The context under which the {@see render()} method is being invoked.
      */
     public function withContext(ViewContextInterface $context): static
     {
@@ -148,7 +147,7 @@ trait ViewTrait
     /**
      * Returns a new instance with the specified view context path.
      *
-     * @param string $path The context path under which the {@see renderFile()} method is being invoked.
+     * @param string $path The context path under which the {@see render()} method is being invoked.
      */
     public function withContextPath(string $path): static
     {
@@ -418,21 +417,21 @@ trait ViewTrait
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - The name of the view starting with a slash to join the base path {@see getBasePath()} (e.g. "/site/index").
-     * - The name of the view without the starting slash (e.g. "site/index"). The corresponding view file will be
+     * - the absolute path to the view file, e.g. "/path/to/view.php";
+     * - the name of the view starting with `//` to join the base path {@see getBasePath()}, e.g. "//site/index";
+     * - the name of the view starting with `./` to join the directory containing the view currently being rendered
+     *   (i.e., this happens when rendering a view within another view), e.g. "./widget";
+     * - the name of the view without the starting `//` or `./` (e.g. "site/index"). The corresponding view file will be
      *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
-     *   If the context instance was not set {@see withContext()}, it will be looked for under the directory containing
-     *   the view currently being rendered (i.e., this happens when rendering a view within another view).
+     *   If the context instance was not set {@see withContext()}, it will be looked for under the base path.
      *
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
      * file.
      *
-     * @throws RuntimeException If the view cannot be resolved.
+     * @throws LogicException If the view cannot be resolved.
      * @throws ViewNotFoundException If the view file does not exist.
      * @throws Throwable
-     *
-     * {@see renderFile()}
      *
      * @return string The rendering result.
      */
@@ -440,29 +439,6 @@ trait ViewTrait
     {
         $viewFile = $this->findTemplateFile($view);
 
-        return $this->renderFile($viewFile, $parameters);
-    }
-
-    /**
-     * Renders a view file.
-     *
-     * If the theme was set {@see setTheme()}, it will try to render the themed version of the view file
-     * as long as it's available.
-     *
-     * If the renderer was set {@see withRenderers()}, the method will use it to render the view file. Otherwise,
-     * it will simply include the view file as a normal PHP file, capture its output and return it as a string.
-     *
-     * @param string $viewFile The full absolute path of the view file.
-     * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
-     * file.
-     *
-     * @throws Throwable
-     * @throws ViewNotFoundException If the view file doesn't exist
-     *
-     * @return string The rendering result.
-     */
-    public function renderFile(string $viewFile, array $parameters = []): string
-    {
         $parameters = array_merge($this->state->getParameters(), $parameters);
 
         // TODO: these two match now
@@ -556,7 +532,7 @@ trait ViewTrait
      * Creates an event that occurs before rendering.
      *
      * @param string $viewFile The view file to be rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      *
      * @return StoppableEventInterface The stoppable event instance.
      */
@@ -566,7 +542,7 @@ trait ViewTrait
      * Creates an event that occurs after rendering.
      *
      * @param string $viewFile The view file being rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      * @param string $result The rendering result of the view file.
      *
      * @return AfterRenderEventInterface The event instance.
@@ -578,14 +554,14 @@ trait ViewTrait
     ): AfterRenderEventInterface;
 
     /**
-     * This method is invoked right before {@see renderFile()} renders a view file.
+     * This method is invoked right before {@see render()} renders a view file.
      *
      * The default implementations will trigger the {@see \Yiisoft\View\Event\View\BeforeRender}
      * or {@see \Yiisoft\View\Event\WebView\BeforeRender} event. If you override this method,
      * make sure you call the parent implementation first.
      *
      * @param string $viewFile The view file to be rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      *
      * @return bool Whether to continue rendering the view file.
      */
@@ -602,17 +578,17 @@ trait ViewTrait
     }
 
     /**
-     * This method is invoked right after {@see renderFile()} renders a view file.
+     * This method is invoked right after {@see render()} renders a view file.
      *
      * The default implementations will trigger the {@see \Yiisoft\View\Event\View\AfterRender}
      * or {@see \Yiisoft\View\Event\WebView\AfterRender} event. If you override this method,
      * make sure you call the parent implementation first.
      *
      * @param string $viewFile The view file being rendered.
-     * @param array $parameters The parameter array passed to the {@see renderFile()} method.
+     * @param array $parameters The parameter array passed to the {@see render()} method.
      * @param string $result The rendering result of the view file.
      *
-     * @return string Updated output. It will be passed to {@see renderFile()} and returned.
+     * @return string Updated output. It will be passed to {@see render()} and returned.
      */
     private function afterRender(string $viewFile, array $parameters, string $result): string
     {
@@ -639,27 +615,16 @@ trait ViewTrait
      * @param string $view The view name of the view file. Please refer to
      * {@see render()} on how to specify this parameter.
      *
-     * @throws RuntimeException If a relative view name is given while there is no active context to determine the
-     * corresponding view file.
+     * @throws LogicException If a relative view name is given while there is no currently rendered view.
      *
      * @return string The view file path. Note that the file may not exist.
      */
     private function findTemplateFile(string $view): string
     {
-        if ($view !== '' && $view[0] === '/') {
-            // path relative to basePath e.g. "/layouts/main"
-            $file = $this->getBasePath() . '/' . ltrim($view, '/');
-        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== null) {
-            // path relative to currently rendered view
-            $file = dirname($currentViewFile) . '/' . $view;
-        } elseif ($this->context instanceof ViewContextInterface) {
-            // path provided by context
-            $file = $this->context->getViewPath() . '/' . $view;
-        } else {
-            throw new RuntimeException("Unable to resolve view file for view \"$view\": no active view context.");
-        }
+        $file = $this->resolveViewFilePath($view);
+        $hasExtension = pathinfo($file, PATHINFO_EXTENSION) !== '';
 
-        if (pathinfo($file, PATHINFO_EXTENSION) !== '' && is_file($file)) {
+        if ($hasExtension && is_file($file)) {
             return $file;
         }
 
@@ -670,7 +635,38 @@ trait ViewTrait
             }
         }
 
+        if ($hasExtension) {
+            return $file;
+        }
+
         return $file . '.' . $this->fallbackExtensions[0];
+    }
+
+    private function resolveViewFilePath(string $view): string
+    {
+        if (str_starts_with($view, './')) {
+            $currentViewFile = $this->getRequestedViewFile();
+            if ($currentViewFile === null) {
+                throw new LogicException('Unable to resolve file for view \"$view\": no currently rendered view.');
+            }
+            return dirname($currentViewFile) . substr($view, 1);
+        }
+
+        if (str_starts_with($view, '//')) {
+            return $this->getBasePath() . substr($view, 1);
+        }
+
+        if ($this->isWindows()) {
+            if (str_contains($view, ':')) {
+                return $view;
+            }
+        } else {
+            if (str_starts_with($view, '/')) {
+                return $view;
+            }
+        }
+
+        return ($this->context?->getViewPath() ?? $this->getBasePath()) . '/' . $view;
     }
 
     /**
@@ -680,5 +676,13 @@ trait ViewTrait
     {
         /** @psalm-suppress InvalidArrayOffset */
         return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
+    }
+
+    /**
+     * Returns whether the current environment is Windows.
+     */
+    private function isWindows(): bool
+    {
+        return DIRECTORY_SEPARATOR === '\\';
     }
 }

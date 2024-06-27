@@ -50,6 +50,15 @@ final class ViewTest extends TestCase
         FileHelper::removeDirectory($this->tempDirectory);
     }
 
+    public function testAbsolutePath(): void
+    {
+        $view = new View();
+
+        $result = $view->render(__DIR__ . '/public/view/parameters.php', ['parameter' => 42]);
+
+        $this->assertSame('42', $result);
+    }
+
     /**
      * @link https://github.com/yiisoft/yii2/issues/13058
      */
@@ -76,11 +85,11 @@ PHP
         $obInitialLevel = ob_get_level();
 
         try {
-            $view->renderFile($exceptionViewFile);
+            $view->render($exceptionViewFile);
         } catch (Exception) {
             // shutdown exception
         }
-        $view->renderFile($normalViewFile);
+        $view->render($normalViewFile);
 
         $this->assertEquals($obInitialLevel, ob_get_level());
     }
@@ -90,20 +99,13 @@ PHP
         $view = $this->createViewWithBasePath($this->tempDirectory);
 
         $this->expectException(ViewNotFoundException::class);
-        $this->expectExceptionMessage('The view file "not-exist.php" does not exist.');
+        $this->expectExceptionMessage(
+            'The view file "' .
+            __DIR__ . '/public/tmp/View/not-exist.php' .
+            '" does not exist.'
+        );
 
-        $view->renderFile('not-exist.php');
-    }
-
-    public function testExceptionWhenRenderIfNoActiveViewContext(): void
-    {
-        $view = $this->createViewWithBasePath($this->tempDirectory);
-        file_put_contents("$this->tempDirectory/file.php", 'Test');
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unable to resolve view file for view "file.php": no active view context.');
-
-        $this->assertSame('Test', $view->render('file.php'));
+        $view->render('not-exist.php');
     }
 
     public function testRelativePathInView(): void
@@ -115,8 +117,8 @@ PHP
         file_put_contents(
             $baseView,
             <<<'PHP'
-<?= $this->render("sub") ?>
-PHP
+            <?= $this->render('./sub') ?>
+            PHP
         );
 
         $subView = "{$this->tempDirectory}/sub.php";
@@ -132,7 +134,7 @@ PHP
         $this->assertSame('php', $view->getDefaultExtension());
         $this->assertSame(null, $view->getViewFile());
         $this->assertSame($theme, $view->getTheme());
-        $this->assertSame($subViewContent, $view->render('/base'));
+        $this->assertSame($subViewContent, $view->render('base'));
         $this->assertSame($subViewContent, $view->render('//base'));
     }
 
@@ -145,8 +147,8 @@ PHP
         file_put_contents(
             $baseView,
             <<<'PHP'
-<?= $this->render("sub/sub") ?>
-PHP
+            <?= $this->render('./sub/sub') ?>
+            PHP
         );
 
         $subViewPath = $baseViewPath . DIRECTORY_SEPARATOR . 'sub';
@@ -177,7 +179,7 @@ PHP
     {
         $view = TestHelper::createView();
 
-        $this->assertSame('42', $view->render('/change-context'));
+        $this->assertSame('42', $view->render('change-context'));
     }
 
     public function renderFilesWithExtensionProvider(): array
@@ -284,7 +286,7 @@ PHP
 
         $this->assertSameIgnoringSlash(
             'test es render',
-            $view->render('/file'),
+            $view->render('file'),
         );
     }
 
@@ -299,9 +301,9 @@ PHP
 
         $this->assertSameIgnoringSlash(
             'test es render',
-            $view->withLocale('es')->render('/file'),
+            $view->withLocale('es')->render('file'),
         );
-        $this->assertSame('test en render', $view->render('/file'));
+        $this->assertSame('test en render', $view->render('file'));
     }
 
     public function testSubRenderWithLocale(): void
@@ -318,9 +320,9 @@ PHP
 
         $this->assertSameIgnoringSlash(
             'test es sub render',
-            $view->withLocale('es')->render('/file'),
+            $view->withLocale('es')->render('file'),
         );
-        $this->assertSame('test en sub render', $view->render('/file'));
+        $this->assertSame('test en sub render', $view->render('file'));
     }
 
     public function testLocalizeWithChangedLocale(): void
@@ -529,7 +531,7 @@ PHP
         $view->setParameter('age', 42);
 
         try {
-            $view->renderFile(__DIR__ . '/public/view/error.php');
+            $view->render(__DIR__ . '/public/view/error.php');
         } catch (Exception) {
         }
 
