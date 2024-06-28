@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 10.0.1 under development
+
+- no changes in this release.
+
 ## 10.0.0 June 28, 2024
 
 - Chg #266: Change logic of template file searching in `ViewInterface::render()` (@vjik)
