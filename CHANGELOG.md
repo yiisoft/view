@@ -1,11 +1,11 @@
 # Yii View Change Log
 
-## 10.0.0 under development
+## 10.0.0 June 28, 2024
 
-- Chg #266: Change logic of template file searching in `ViewInterface::render()` (@vjik) 
+- Chg #266: Change logic of template file searching in `ViewInterface::render()` (@vjik)
 - Chg #266: Remove `ViewInterface::renderFile()` (@vjik)
 - Chg #266: When the view cannot be resolved in `ViewInterface::render()`, change exception from `RuntimeException` to
-  `LogicException` (@vjik) 
+  `LogicException` (@vjik)
 
 ## 9.0.0 May 28, 2024
 
