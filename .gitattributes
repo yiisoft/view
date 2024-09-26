@@ -31,6 +31,7 @@
 /infection.json.dist    export-ignore
 /phpunit.xml.dist       export-ignore
 /psalm.xml              export-ignore
+/psalm83.xml            export-ignore
 /tests                  export-ignore
 /docs                   export-ignore
 

@@ -27,7 +27,7 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "psr/event-dispatcher": "1.0.0",
         "psr/event-dispatcher-implementation": "1.0.0",
         "yiisoft/arrays": "^2.0|^3.0",
@@ -38,15 +38,15 @@
     },
     "require-dev": {
         "maglnet/composer-require-checker": "^4.2",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.6",
         "rector/rector": "^1.2",
         "roave/infection-static-analysis-plugin": "^1.25",
         "spatie/phpunit-watcher": "^1.23",
-        "vimeo/psalm": "^4.30|^5.20",
+        "vimeo/psalm": "^5.26",
         "yiisoft/aliases": "^3.0",
         "yiisoft/di": "^1.2",
         "yiisoft/psr-dummy-provider": "^1.0",
-        "yiisoft/test-support": "^1.4|^3.0"
+        "yiisoft/test-support": "^3.0"
     },
     "extra": {
         "config-plugin-options": {
