@@ -20,9 +20,9 @@ final class DynamicContent
      * @param array $parameters The parameters (name-value pairs) that will be passed in the $contentGenerator context.
      */
     public function __construct(
-        private string $id,
+        private readonly string $id,
         callable $contentGenerator,
-        private array $parameters = []
+        private readonly array $parameters = []
     ) {
         $this->contentGenerator = $contentGenerator;
     }

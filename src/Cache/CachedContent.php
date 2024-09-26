@@ -20,7 +20,7 @@ use function strtr;
  */
 final class CachedContent
 {
-    private CacheKeyNormalizer $cacheKeyNormalizer;
+    private readonly CacheKeyNormalizer $cacheKeyNormalizer;
 
     /**
      * @var array<string, DynamicContent>
@@ -39,8 +39,8 @@ final class CachedContent
      * @param string[] $variations List of string factors that would cause the variation of the content being cached.
      */
     public function __construct(
-        private string $id,
-        private CacheInterface $cache,
+        private readonly string $id,
+        private readonly CacheInterface $cache,
         array $dynamicContents = [],
         array $variations = []
     ) {

@@ -628,7 +628,7 @@ PHP
     private function createContext(string $viewPath): ViewContextInterface
     {
         return new class ($viewPath) implements ViewContextInterface {
-            public function __construct(private string $viewPath)
+            public function __construct(private readonly string $viewPath)
             {
             }
 
