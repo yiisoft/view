@@ -2,7 +2,7 @@
 
 ## 10.0.1 under development
 
-- no changes in this release.
+- Enh #269: Bump PHP version to `^8.1` (@vjik)
 
 ## 10.0.0 June 28, 2024
 
