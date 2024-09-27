@@ -34,7 +34,7 @@ return [
         ],
         'setParameters()' => [$params['yiisoft/view']['parameters']],
         'withRenderers()' => [$params['yiisoft/view']['renderers']],
-        'withFallbackExtension()' => [$params['yiisoft/view']['defaultExtension']],
+        'withFallbackExtension()' => [...(array) $params['yiisoft/view']['fallbackExtension']],
         'reset' => function (ContainerInterface $container) use ($params) {
             /** @var WebView $this */
             $this->clear();
