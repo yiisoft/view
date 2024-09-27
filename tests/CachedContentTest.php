@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\View\Tests;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
@@ -24,7 +25,7 @@ final class CachedContentTest extends TestCase
         $this->cache = new Cache(new ArrayCache());
     }
 
-    public function cacheParametersProvider(): array
+    public static function cacheParametersProvider(): array
     {
         return [
             'ttl-null-dependency-null' => [null, null],
@@ -33,9 +34,7 @@ final class CachedContentTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider cacheParametersProvider
-     */
+    #[DataProvider('cacheParametersProvider')]
     public function testCache(?int $ttl, ?Dependency $dependency): void
     {
         $cacheContent = new CachedContent('test', $this->cache);

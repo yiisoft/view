@@ -8,7 +8,7 @@ use Yiisoft\View\Event\WebView\BodyEnd;
 use Yiisoft\View\Event\WebView\WebViewEvent;
 use Yiisoft\View\WebView;
 
-final class BodyEndTest extends WebViewEventTest
+final class BodyEndTest extends WebViewEventTestCase
 {
     protected function createEvent(WebView $view): WebViewEvent
     {

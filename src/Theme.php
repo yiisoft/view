@@ -69,7 +69,7 @@ final class Theme
     /**
      * @var array<string, string|string[]>
      */
-    private array $pathMap;
+    private readonly array $pathMap;
     private string $basePath = '';
     private string $baseUrl = '';
 
@@ -209,7 +209,7 @@ final class Theme
         }
     }
 
-    private function throwInvalidPathMapException(): void
+    private function throwInvalidPathMapException(): never
     {
         throw new InvalidArgumentException(
             'The path map should contain the mapping between view directories and corresponding theme directories.'

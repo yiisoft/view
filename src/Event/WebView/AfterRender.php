@@ -17,10 +17,10 @@ final class AfterRender implements AfterRenderEventInterface
      * @param array $parameters The parameters array passed to the {@see WebView::render()} method.
      */
     public function __construct(
-        private WebView $view,
-        private string $file,
-        private array $parameters,
-        private string $result
+        private readonly WebView $view,
+        private readonly string $file,
+        private readonly array $parameters,
+        private readonly string $result
     ) {
     }
 

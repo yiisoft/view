@@ -6,6 +6,7 @@ namespace Yiisoft\View\Tests;
 
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
@@ -30,7 +31,7 @@ final class WebViewTest extends TestCase
 {
     use TestTrait;
 
-    public function dataRegisterJsVar(): array
+    public static function dataRegisterJsVar(): array
     {
         return [
             [
@@ -46,9 +47,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterJsVar
-     */
+    #[DataProvider('dataRegisterJsVar')]
     public function testRegisterJsVar(string $expected, string $name, $value): void
     {
         $webView = TestHelper::createWebView();
@@ -58,7 +57,7 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
-    public function dataRegisterJsFile(): array
+    public static function dataRegisterJsFile(): array
     {
         return [
             ['http://example.com/main.js'],
@@ -70,9 +69,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterJsFile
-     */
+    #[DataProvider('dataRegisterJsFile')]
     public function testRegisterJsFile(string $url): void
     {
         $webView = TestHelper::createWebView();
@@ -92,7 +89,7 @@ final class WebViewTest extends TestCase
         $webView->registerJsFile('/somefile.js', 42);
     }
 
-    public function dataRegisterJsFileWithPosition(): array
+    public static function dataRegisterJsFileWithPosition(): array
     {
         return [
             [
@@ -110,9 +107,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterJsFileWithPosition
-     */
+    #[DataProvider('dataRegisterJsFileWithPosition')]
     public function testRegisterJsFileWithPosition(string $expected, int $position): void
     {
         $webView = TestHelper::createWebView();
@@ -141,7 +136,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataRegisterCssFile(): array
+    public static function dataRegisterCssFile(): array
     {
         return [
             ['http://example.com/main.css'],
@@ -153,9 +148,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterCssFile
-     */
+    #[DataProvider('dataRegisterCssFile')]
     public function testRegisterCssFile(string $url): void
     {
         $webView = TestHelper::createWebView();
@@ -175,7 +168,7 @@ final class WebViewTest extends TestCase
         $webView->registerCssFile('/somefile.css', 42);
     }
 
-    public function dataRegisterCssFileWithPosition(): array
+    public static function dataRegisterCssFileWithPosition(): array
     {
         return [
             [
@@ -193,9 +186,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterCssFileWithPosition
-     */
+    #[DataProvider('dataRegisterCssFileWithPosition')]
     public function testRegisterCssFileWithPosition(string $expected, int $position): void
     {
         $webView = TestHelper::createWebView();
@@ -260,7 +251,7 @@ final class WebViewTest extends TestCase
         $this->assertStringNotContainsString('<meta name="keywords" content="yii">', $html);
     }
 
-    public function dataRegisterLink(): array
+    public static function dataRegisterLink(): array
     {
         return [
             ['[HEAD]<link href="/main.css">[/HEAD]', WebView::POSITION_HEAD],
@@ -269,9 +260,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterLink
-     */
+    #[DataProvider('dataRegisterLink')]
     public function testRegisterLink(string $expected, ?int $position): void
     {
         $webView = TestHelper::createWebView();
@@ -285,9 +274,7 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
-    /**
-     * @dataProvider dataRegisterLink
-     */
+    #[DataProvider('dataRegisterLink')]
     public function testRegisterLinkTag(string $expected, ?int $position): void
     {
         $webView = TestHelper::createWebView();
@@ -319,7 +306,7 @@ final class WebViewTest extends TestCase
         $this->assertStringNotContainsString('<link href="/main1.css">', $html);
     }
 
-    public function dataRegisterCss(): array
+    public static function dataRegisterCss(): array
     {
         return [
             ['[HEAD]<style>.red{color:red;}</style>[/HEAD]', WebView::POSITION_HEAD],
@@ -328,9 +315,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegisterCss
-     */
+    #[DataProvider('dataRegisterCss')]
     public function testRegisterCss(string $expected, ?int $position): void
     {
         $webView = TestHelper::createWebView();
@@ -560,7 +545,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataFailAddCssFiles(): array
+    public static function dataFailAddCssFiles(): array
     {
         return [
             ['Do not set CSS file.', [[]]],
@@ -569,9 +554,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFailAddCssFiles
-     */
+    #[DataProvider('dataFailAddCssFiles')]
     public function testFailAddCssFiles(string $message, array $cssFiles): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -599,7 +582,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataFailAddJsFiles(): array
+    public static function dataFailAddJsFiles(): array
     {
         return [
             ['Do not set JS file.', [[]]],
@@ -608,9 +591,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFailAddJsFiles
-     */
+    #[DataProvider('dataFailAddJsFiles')]
     public function testFailAddJsFiles(string $message, array $jsFiles): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -655,7 +636,7 @@ final class WebViewTest extends TestCase
         $this->assertEqualStringsIgnoringLineEndings($expected, $html);
     }
 
-    public function dataFailAddCssStrings(): array
+    public static function dataFailAddCssStrings(): array
     {
         return [
             ['Do not set CSS string.', [[]]],
@@ -667,9 +648,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFailAddCssStrings
-     */
+    #[DataProvider('dataFailAddCssStrings')]
     public function testFailAddCssStrings(string $message, array $cssStrings): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -701,7 +680,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataFailAddJsStrings(): array
+    public static function dataFailAddJsStrings(): array
     {
         return [
             ['Do not set JS string.', [[]]],
@@ -713,9 +692,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFailAddJsStrings
-     */
+    #[DataProvider('dataFailAddJsStrings')]
     public function testFailAddJsStrings(string $message, array $jsStrings): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -745,7 +722,7 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
-    public function dataFailAddJsVars(): array
+    public static function dataFailAddJsVars(): array
     {
         return [
             ['Do not set JS variable name.', [[]]],
@@ -755,9 +732,7 @@ final class WebViewTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFailAddJsVars
-     */
+    #[DataProvider('dataFailAddJsVars')]
     public function testFailAddJsVars(string $message, array $jsVars): void
     {
         $this->expectException(InvalidArgumentException::class);

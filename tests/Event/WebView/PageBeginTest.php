@@ -8,7 +8,7 @@ use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\WebViewEvent;
 use Yiisoft\View\WebView;
 
-final class PageBeginTest extends WebViewEventTest
+final class PageBeginTest extends WebViewEventTestCase
 {
     protected function createEvent(WebView $view): WebViewEvent
     {

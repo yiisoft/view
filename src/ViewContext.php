@@ -7,7 +7,7 @@ namespace Yiisoft\View;
 final class ViewContext implements ViewContextInterface
 {
     public function __construct(
-        private string $viewPath
+        private readonly string $viewPath
     ) {
     }
 

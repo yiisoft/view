@@ -19,9 +19,9 @@ final class BeforeRender implements StoppableEventInterface
      * @param array $parameters The parameters array passed to the {@see WebView::render()} method.
      */
     public function __construct(
-        private WebView $view,
-        private string $file,
-        private array $parameters
+        private readonly WebView $view,
+        private readonly string $file,
+        private readonly array $parameters
     ) {
     }
 

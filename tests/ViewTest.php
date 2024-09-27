@@ -7,6 +7,7 @@ namespace Yiisoft\View\Tests;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Yiisoft\Files\FileHelper;
@@ -182,7 +183,7 @@ PHP
         $this->assertSame('42', $view->render('change-context'));
     }
 
-    public function renderFilesWithExtensionProvider(): array
+    public static function renderFilesWithExtensionProvider(): array
     {
         return [
             [
@@ -218,9 +219,7 @@ PHP
         ];
     }
 
-    /**
-     * @dataProvider renderFilesWithExtensionProvider
-     */
+    #[DataProvider('renderFilesWithExtensionProvider')]
     public function testRenderWithoutFileExtension(string $filename, string $extension, string $defaultExtension, array $fallbackExtensions): void
     {
         $view = $this
@@ -629,7 +628,7 @@ PHP
     private function createContext(string $viewPath): ViewContextInterface
     {
         return new class ($viewPath) implements ViewContextInterface {
-            public function __construct(private string $viewPath)
+            public function __construct(private readonly string $viewPath)
             {
             }
 

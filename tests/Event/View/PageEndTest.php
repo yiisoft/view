@@ -8,7 +8,7 @@ use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Event\View\ViewEvent;
 use Yiisoft\View\View;
 
-final class PageEndTest extends ViewEventTest
+final class PageEndTest extends ViewEventTestCase
 {
     protected function createEvent(View $view): ViewEvent
     {

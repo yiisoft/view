@@ -19,9 +19,9 @@ final class BeforeRender implements StoppableEventInterface
      * @param array $parameters The parameters array passed to the {@see View::render()} method.
      */
     public function __construct(
-        private View $view,
-        private string $file,
-        private array $parameters
+        private readonly View $view,
+        private readonly string $file,
+        private readonly array $parameters
     ) {
     }
 

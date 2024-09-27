@@ -9,7 +9,7 @@ use Yiisoft\View\Event\View\ViewEvent;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\View;
 
-abstract class ViewEventTest extends TestCase
+abstract class ViewEventTestCase extends TestCase
 {
     public function testBase(): void
     {

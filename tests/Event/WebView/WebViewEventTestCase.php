@@ -9,7 +9,7 @@ use Yiisoft\View\Event\WebView\WebViewEvent;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\WebView;
 
-abstract class WebViewEventTest extends TestCase
+abstract class WebViewEventTestCase extends TestCase
 {
     public function testBase(): void
     {
