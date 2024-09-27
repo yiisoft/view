@@ -12,7 +12,7 @@ application when you upgrade the package from one version to another.
 - Removed `ViewInterface` methods `withDefaultExtension()` and `getDefaultExtension()`. Use `withFallbackExtension()`
   and `getFallbackExtensions()` instead, respectively. 
 - Rename configuration parameter `defaultExtension` to `fallbackExtension`.
-- 
+
 ## Upgrade from 9.x
 
 - Use `render()` method instead of `renderFile()` in `View` And `WebView` classes.
