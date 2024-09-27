@@ -19,7 +19,7 @@ return [
         ],
         'setParameters()' => [$params['yiisoft/view']['parameters']],
         'withRenderers()' => [$params['yiisoft/view']['renderers']],
-        'withDefaultExtension()' => [$params['yiisoft/view']['defaultExtension']],
+        'withFallbackExtension()' => [$params['yiisoft/view']['defaultExtension']],
         'reset' => function (ContainerInterface $container) use ($params) {
             /** @var View $this */
             $this->clear();

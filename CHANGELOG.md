@@ -3,6 +3,7 @@
 ## 10.0.1 under development
 
 - Enh #269: Bump PHP version to `^8.1` and refactor code (@vjik)
+- Chg #271: Remove deprecated methods `withDefaultExtension()` and `getDefaultExtension()` from `ViewInterface` (@vjik)
 
 ## 10.0.0 June 28, 2024
 
