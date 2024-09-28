@@ -132,8 +132,7 @@ PHP
             ->setTheme($theme);
 
         $this->assertSame($this->tempDirectory, $view->getBasePath());
-        $this->assertSame('php', $view->getDefaultExtension());
-        $this->assertSame(null, $view->getViewFile());
+        $this->assertNull($view->getViewFile());
         $this->assertSame($theme, $view->getTheme());
         $this->assertSame($subViewContent, $view->render('base'));
         $this->assertSame($subViewContent, $view->render('//base'));
@@ -227,10 +226,6 @@ PHP
             ->withContext($this->createContext($this->tempDirectory));
         file_put_contents("$this->tempDirectory/$filename.$extension", 'Test ' . $extension);
 
-        $this->assertSame(
-            'Test ' . $extension,
-            $view->withDefaultExtension($defaultExtension)->render($filename) // BC test
-        );
         $this->assertSame(
             'Test ' . $extension,
             $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
@@ -579,7 +574,6 @@ PHP
         $this->assertNotSame($view, $view->withBasePath(''));
         $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
         $this->assertNotSame($view, $view->withSourceLocale('en'));
-        $this->assertNotSame($view, $view->withDefaultExtension('php'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
         $this->assertNotSame($view, $view->withPlaceholderSalt(''));

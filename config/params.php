@@ -12,6 +12,6 @@ return [
             'baseUrl' => '',
         ],
         'renderers' => [],
-        'defaultExtension' => 'php',
+        'fallbackExtension' => 'php', // Available array also, e.g. ['php', 'tpl']
     ],
 ];

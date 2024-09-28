@@ -48,15 +48,6 @@ interface ViewInterface
     public function withSourceLocale(string $locale): static;
 
     /**
-     * Returns a new instance with the specified default view file extension.
-     *
-     * @param string $defaultExtension The default view file extension. Default is {@see PHP_EXTENSION}.
-     * This will be appended to view file names if they don't have file extensions.
-     * @deprecated Since 8.0.1 and will be removed in the next major version.
-     */
-    public function withDefaultExtension(string $defaultExtension): static;
-
-    /**
      * Returns a new instance with the specified view context instance.
      *
      * @param ViewContextInterface $context The context under which the {@see render()} method is being invoked.
@@ -109,14 +100,6 @@ interface ViewInterface
      * @return string The base view path.
      */
     public function getBasePath(): string;
-
-    /**
-     * Gets the default view file extension.
-     *
-     * @return string The default view file extension.
-     * @deprecated Since 8.0.1 and will be removed in the next major version.
-     */
-    public function getDefaultExtension(): string;
 
     /**
      * Gets the theme instance, or `null` if no theme has been set.

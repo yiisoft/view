@@ -7,6 +7,12 @@ application when you upgrade the package from one version to another.
 > to upgrade from version A to version C and there is version B between A and C, you need
 > to following the instructions for both A and B.
 
+## Upgrade from 10.x
+
+- Removed `ViewInterface` methods `withDefaultExtension()` and `getDefaultExtension()`. Use `withFallbackExtension()`
+  and `getFallbackExtensions()` instead, respectively. 
+- Rename configuration parameter `defaultExtension` to `fallbackExtension`.
+
 ## Upgrade from 9.x
 
 - Use `render()` method instead of `renderFile()` in `View` And `WebView` classes.

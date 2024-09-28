@@ -107,18 +107,6 @@ trait ViewTrait
     }
 
     /**
-     * Returns a new instance with the specified default view file extension.
-     *
-     * @param string $defaultExtension The default view file extension. Default is {@see ViewInterface::PHP_EXTENSION}.
-     * This will be appended to view file names if they don't have file extensions.
-     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see withFallbackExtension()} instead.
-     */
-    public function withDefaultExtension(string $defaultExtension): static
-    {
-        return $this->withFallbackExtension($defaultExtension);
-    }
-
-    /**
      * Returns a new instance with the specified fallback view file extension.
      *
      * @param string $fallbackExtension The fallback view file extension. Default is {@see ViewInterface::PHP_EXTENSION}.
@@ -212,17 +200,6 @@ trait ViewTrait
         }
 
         return $this->basePath;
-    }
-
-    /**
-     * Gets the default view file extension.
-     *
-     * @return string The default view file extension.
-     * @deprecated Since 8.0.1 and will be removed in the next major version. Use {@see getFallbackExtensions()} instead.
-     */
-    public function getDefaultExtension(): string
-    {
-        return $this->getFallbackExtensions()[0];
     }
 
     /**
