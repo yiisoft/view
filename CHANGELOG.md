@@ -5,6 +5,7 @@
 - Enh #269: Bump PHP version to `^8.1` and refactor code (@vjik)
 - Chg #271: Remove deprecated methods `withDefaultExtension()` and `getDefaultExtension()` from `ViewInterface` (@vjik)
 - Chg #271: Rename configuration parameter `defaultExtension` to `fallbackExtension` (@vjik)
+- Chg #272: Add variadic parameter `$default` to `ViewInterface::getParameter()` (@vjik)
 
 ## 10.0.0 June 28, 2024
 

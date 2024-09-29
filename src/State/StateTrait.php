@@ -6,8 +6,6 @@ namespace Yiisoft\View\State;
 
 use InvalidArgumentException;
 
-use function array_key_exists;
-use function func_get_args;
 use function is_array;
 
 /**
@@ -102,15 +100,14 @@ trait StateTrait
      *
      * @return mixed The value of the parameter.
      */
-    public function getParameter(string $id)
+    public function getParameter(string $id, mixed ...$default): mixed
     {
         if (isset($this->parameters[$id])) {
             return $this->parameters[$id];
         }
 
-        $args = func_get_args();
-        if (array_key_exists(1, $args)) {
-            return $args[1];
+        if (!empty($default)) {
+            return reset($default);
         }
 
         throw new InvalidArgumentException('Parameter "' . $id . '" not found.');
