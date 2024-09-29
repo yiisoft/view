@@ -224,9 +224,9 @@ final class WebViewState
      * Registers a CSS code block.
      *
      * @param string $css The content of the CSS code block to be registered.
-     * @param string|null $key The key that identifies the CSS code block. If null, it will use $css as the key.
-     * If two CSS code blocks are registered with the same key, the latter will overwrite the former.
      * @param array $attributes The HTML attributes for the {@see Style} tag.
+     * @param string|null $key The key that identifies the CSS code block. If `null`, it will use `$css` as the key.
+     * If two CSS code blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerCss(
         string $css,
@@ -234,7 +234,9 @@ final class WebViewState
         array $attributes = [],
         ?string $key = null
     ): void {
-        $key = $key ?: md5($css);
+        if ($key === null) {
+            $key = md5($css);
+        }
         $this->css[$position][$key] = $attributes === [] ? $css : Html::style($css, $attributes);
     }
 
@@ -266,7 +268,9 @@ final class WebViewState
      */
     public function registerStyleTag(Style $style, int $position = WebView::POSITION_HEAD, ?string $key = null): void
     {
-        $key = $key ?: md5($style->render());
+        if ($key === null) {
+            $key = md5($style->render());
+        }
         $this->css[$position][$key] = $style;
     }
 

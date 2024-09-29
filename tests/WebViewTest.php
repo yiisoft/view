@@ -136,6 +136,31 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
+    public function testRegisterStyleTagEdgeCase(): void
+    {
+        $style = Html::style('H1 { color: red; }');
+        $webView = TestHelper::createWebView()
+            ->registerStyleTag($style)
+            ->registerStyleTag($style, key: '')
+            ->registerStyleTag($style, key: '0')
+            ->registerStyleTag($style, key: 'test');
+
+        $html = $webView->render('positions.php');
+
+        $expected = <<<CODE
+            [BEGINPAGE][/BEGINPAGE]
+            [HEAD]{$style->render()}
+            {$style->render()}
+            {$style->render()}
+            {$style->render()}[/HEAD]
+            [BEGINBODY][/BEGINBODY]
+            [ENDBODY][/ENDBODY]
+            [ENDPAGE][/ENDPAGE]
+            CODE;
+
+        $this->assertSame($expected, $html);
+    }
+
     public static function dataRegisterCssFile(): array
     {
         return [
@@ -327,6 +352,26 @@ final class WebViewTest extends TestCase
         $html = $webView->render('positions.php');
 
         $this->assertStringContainsString($expected, $html);
+    }
+
+    public function testRegisterCssWithKeyEdgeCase(): void
+    {
+        $webView = TestHelper::createWebView()
+            ->registerCss('.red{color:red;}')
+            ->registerCss('.red{color:red;}', key: '')
+            ->registerCss('.red{color:red;}', key: '0')
+            ->registerCss('.red{color:red;}', key: 'red');
+
+        $html = $webView->render('positions.php');
+
+        $this->assertStringContainsString(
+            <<<CSS
+            .red{color:red;}
+            .red{color:red;}
+            .red{color:red;}
+            CSS,
+            $html
+        );
     }
 
     public function testRegisterCssWithAttributes(): void
