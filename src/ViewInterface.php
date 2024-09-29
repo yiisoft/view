@@ -169,7 +169,7 @@ interface ViewInterface
      *
      * @return mixed The value of the parameter.
      */
-    public function getParameter(string $id);
+    public function getParameter(string $id, mixed ...$default): mixed;
 
     /**
      * Checks the existence of a common parameter by ID.

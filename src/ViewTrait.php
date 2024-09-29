@@ -17,12 +17,11 @@ use Yiisoft\View\State\ThemeState;
 use function array_merge;
 use function array_pop;
 use function basename;
-use function call_user_func_array;
+use function call_user_func;
 use function crc32;
 use function dechex;
 use function dirname;
 use function end;
-use function func_get_args;
 use function is_file;
 use function pathinfo;
 use function substr;
@@ -304,9 +303,9 @@ trait ViewTrait
      *
      * @return mixed The value of the parameter.
      */
-    public function getParameter(string $id)
+    public function getParameter(string $id, mixed ...$default): mixed
     {
-        return call_user_func_array([$this->state, 'getParameter'], func_get_args());
+        return call_user_func([$this->state, 'getParameter'], $id, ...$default);
     }
 
     /**

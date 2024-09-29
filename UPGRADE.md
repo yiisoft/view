@@ -12,6 +12,7 @@ application when you upgrade the package from one version to another.
 - Removed `ViewInterface` methods `withDefaultExtension()` and `getDefaultExtension()`. Use `withFallbackExtension()`
   and `getFallbackExtensions()` instead, respectively. 
 - Rename configuration parameter `defaultExtension` to `fallbackExtension`.
+- Added variadic parameter `$default` to `ViewInterface::getParameter()`
 
 ## Upgrade from 9.x
 
