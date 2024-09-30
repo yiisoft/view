@@ -139,7 +139,6 @@ final class WebViewTest extends TestCase
         );
     }
 
-
     public function testRegisterStyleTag(): void
     {
         $webView = TestHelper::createWebView();
