@@ -41,7 +41,7 @@ final class WebViewState
 
     /**
      * @var array The registered link tags.
-     * @psalm-var array<int, Link[]>
+     * @psalm-var array<int, non-empty-array<array-key, Link>>
      *
      * @see registerLink()
      * @see registerLinkTag()
@@ -50,7 +50,7 @@ final class WebViewState
 
     /**
      * @var array The registered CSS code blocks.
-     * @psalm-var array<int, string[]|Style[]>
+     * @psalm-var array<int, non-empty-array<array-key, string|Style>>
      *
      * {@see registerCss()}
      */
@@ -58,7 +58,7 @@ final class WebViewState
 
     /**
      * @var array The registered CSS files.
-     * @psalm-var array<int, string[]>
+     * @psalm-var array<int, non-empty-array<array-key, string>>
      *
      * {@see registerCssFile()}
      */
@@ -66,7 +66,7 @@ final class WebViewState
 
     /**
      * @var array The registered JS code blocks
-     * @psalm-var array<int, string[]|Script[]>
+     * @psalm-var array<int, non-empty-array<array-key, string|Script>>
      *
      * {@see registerJs()}
      */
@@ -74,7 +74,7 @@ final class WebViewState
 
     /**
      * @var array The registered JS files.
-     * @psalm-var array<int, string[]>
+     * @psalm-var array<int, non-empty-array<array-key, string>>
      *
      * {@see registerJsFile()}
      */
@@ -98,7 +98,7 @@ final class WebViewState
 
     /**
      * @return array The registered link tags.
-     * @psalm-return array<int, Link[]>
+     * @psalm-return array<int, non-empty-array<array-key, Link>>
      */
     public function getLinkTags(): array
     {
@@ -107,7 +107,7 @@ final class WebViewState
 
     /**
      * @return array The registered CSS code blocks.
-     * @psalm-return array<int, string[]|Style[]>
+     * @psalm-return array<int, non-empty-array<array-key, string|Style>>
      */
     public function getCss(): array
     {
@@ -116,7 +116,7 @@ final class WebViewState
 
     /**
      * @return array The registered CSS files.
-     * @psalm-return array<int, string[]>
+     * @psalm-return array<int, non-empty-array<array-key, string>>
      */
     public function getCssFiles(): array
     {
@@ -125,7 +125,7 @@ final class WebViewState
 
     /**
      * @return array The registered JS code blocks
-     * @psalm-return array<int, string[]|Script[]>
+     * @psalm-return array<int, non-empty-array<array-key, string|Script>>
      */
     public function getJs(): array
     {
@@ -134,7 +134,7 @@ final class WebViewState
 
     /**
      * @return array The registered JS files.
-     * @psalm-return array<int, string[]>
+     * @psalm-return array<int, non-empty-array<array-key, string>>
      */
     public function getJsFiles(): array
     {
