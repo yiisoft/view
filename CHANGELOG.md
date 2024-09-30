@@ -6,6 +6,10 @@
 - Chg #271: Remove deprecated methods `withDefaultExtension()` and `getDefaultExtension()` from `ViewInterface` (@vjik)
 - Chg #271: Rename configuration parameter `defaultExtension` to `fallbackExtension` (@vjik)
 - Chg #272: Add variadic parameter `$default` to `ViewInterface::getParameter()` (@vjik)
+- Bug #273: Fix empty string and "0" keys in `WebView` methods: `registerCss()`, `registerStyleTag()`,
+  `registerCssFile()`, `registerJs()`, `registerScriptTag()` and `registerJsFile()` (@vjik)
+- Enh #273: Use more specific psalm types in results of `WebView` methods: `getLinkTags()`, `getCss()`, `getCssFiles()`,
+  `getJs()` and `getJsFiles()` (@vjik) 
 
 ## 10.0.0 June 28, 2024
 
