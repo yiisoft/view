@@ -118,6 +118,28 @@ final class WebViewTest extends TestCase
         $this->assertStringContainsString($expected, $html);
     }
 
+    public function testRegisterJsFileWithKeyEdgeCase(): void
+    {
+        $webView = TestHelper::createWebView()
+            ->registerJsFile('main.js')
+            ->registerJsFile('main.js', key: '')
+            ->registerJsFile('main.js', key: '0')
+            ->registerJsFile('main.js', key: 'four');
+
+        $html = $webView->render('positions.php');
+
+        $this->assertStringContainsString(
+            <<<HTML
+            [ENDBODY]<script src="main.js"></script>
+            <script src="main.js"></script>
+            <script src="main.js"></script>
+            <script src="main.js"></script>[/ENDBODY]
+            HTML,
+            $html
+        );
+    }
+
+
     public function testRegisterStyleTag(): void
     {
         $webView = TestHelper::createWebView();
@@ -182,6 +204,25 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('positions.php');
         $this->assertStringContainsString('[HEAD]<link href="' . $url . '" rel="stylesheet">[/HEAD]', $html);
+    }
+
+    public function testRegisterCssFileEdgeCase(): void
+    {
+        $webView = TestHelper::createWebView()
+            ->registerCssFile('main.css')
+            ->registerCssFile('main.css', options: ['data-x' => '1'], key: '')
+            ->registerCssFile('main.css', options: ['data-x' => '2'], key: '0');
+
+        $html = $webView->render('positions.php');
+
+        $this->assertStringContainsString(
+            <<<HTML
+            [HEAD]<link href="main.css" rel="stylesheet">
+            <link href="main.css" rel="stylesheet" data-x="1">
+            <link href="main.css" rel="stylesheet" data-x="2">[/HEAD]
+            HTML,
+            $html
+        );
     }
 
     public function testRegisterCssFileWithInvalidPosition(): void
@@ -492,6 +533,31 @@ final class WebViewTest extends TestCase
         $this->assertSame($expected, $html);
     }
 
+    public function testRegisterScriptTagWithKeyEdgeCase(): void
+    {
+        $script = Html::script('alert(1);');
+        $webView = TestHelper::createWebView()
+            ->registerScriptTag($script)
+            ->registerScriptTag($script, key: '')
+            ->registerScriptTag($script, key: '0')
+            ->registerScriptTag($script, key: 'four');
+
+        $html = $webView->render('positions.php');
+
+        $expected = <<<HTML
+            [BEGINPAGE][/BEGINPAGE]
+            [HEAD][/HEAD]
+            [BEGINBODY][/BEGINBODY]
+            [ENDBODY]{$script->render()}
+            {$script->render()}
+            {$script->render()}
+            {$script->render()}[/ENDBODY]
+            [ENDPAGE][/ENDPAGE]
+            HTML;
+
+        $this->assertSame($expected, $html);
+    }
+
     public function testRegisterJsAndRegisterScriptTag(): void
     {
         $webView = TestHelper::createWebView();
@@ -568,6 +634,27 @@ final class WebViewTest extends TestCase
             "<script>$js7</script>";
 
         $this->assertSame($expected, $html);
+    }
+
+    public function testRegisterJsWithKeyEdgeCase(): void
+    {
+        $webView = TestHelper::createWebView()
+            ->registerJs('alert(1);')
+            ->registerJs('alert(1);', key: '')
+            ->registerJs('alert(1);', key: '0')
+            ->registerJs('alert(1);', key: 'four');
+
+        $html = $webView->render('positions.php');
+
+        $this->assertStringContainsString(
+            <<<JS
+            <script>alert(1);
+            alert(1);
+            alert(1);
+            alert(1);</script>
+            JS,
+            $html
+        );
     }
 
     public function testAddCssFiles(): void
