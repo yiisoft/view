@@ -41,7 +41,7 @@ final class WebViewState
 
     /**
      * @var array The registered link tags.
-     * @psalm-var array<int, Link[]>
+     * @psalm-var array<int, non-empty-array<array-key, Link>>
      *
      * @see registerLink()
      * @see registerLinkTag()
@@ -50,7 +50,7 @@ final class WebViewState
 
     /**
      * @var array The registered CSS code blocks.
-     * @psalm-var array<int, string[]|Style[]>
+     * @psalm-var array<int, non-empty-array<array-key, string|Style>>
      *
      * {@see registerCss()}
      */
@@ -58,7 +58,7 @@ final class WebViewState
 
     /**
      * @var array The registered CSS files.
-     * @psalm-var array<int, string[]>
+     * @psalm-var array<int, non-empty-array<array-key, string>>
      *
      * {@see registerCssFile()}
      */
@@ -66,7 +66,7 @@ final class WebViewState
 
     /**
      * @var array The registered JS code blocks
-     * @psalm-var array<int, string[]|Script[]>
+     * @psalm-var array<int, non-empty-array<array-key, string|Script>>
      *
      * {@see registerJs()}
      */
@@ -74,7 +74,7 @@ final class WebViewState
 
     /**
      * @var array The registered JS files.
-     * @psalm-var array<int, string[]>
+     * @psalm-var array<int, non-empty-array<array-key, string>>
      *
      * {@see registerJsFile()}
      */
@@ -98,7 +98,7 @@ final class WebViewState
 
     /**
      * @return array The registered link tags.
-     * @psalm-return array<int, Link[]>
+     * @psalm-return array<int, non-empty-array<array-key, Link>>
      */
     public function getLinkTags(): array
     {
@@ -107,7 +107,7 @@ final class WebViewState
 
     /**
      * @return array The registered CSS code blocks.
-     * @psalm-return array<int, string[]|Style[]>
+     * @psalm-return array<int, non-empty-array<array-key, string|Style>>
      */
     public function getCss(): array
     {
@@ -116,7 +116,7 @@ final class WebViewState
 
     /**
      * @return array The registered CSS files.
-     * @psalm-return array<int, string[]>
+     * @psalm-return array<int, non-empty-array<array-key, string>>
      */
     public function getCssFiles(): array
     {
@@ -125,7 +125,7 @@ final class WebViewState
 
     /**
      * @return array The registered JS code blocks
-     * @psalm-return array<int, string[]|Script[]>
+     * @psalm-return array<int, non-empty-array<array-key, string|Script>>
      */
     public function getJs(): array
     {
@@ -134,7 +134,7 @@ final class WebViewState
 
     /**
      * @return array The registered JS files.
-     * @psalm-return array<int, string[]>
+     * @psalm-return array<int, non-empty-array<array-key, string>>
      */
     public function getJsFiles(): array
     {
@@ -224,9 +224,9 @@ final class WebViewState
      * Registers a CSS code block.
      *
      * @param string $css The content of the CSS code block to be registered.
-     * @param string|null $key The key that identifies the CSS code block. If null, it will use $css as the key.
-     * If two CSS code blocks are registered with the same key, the latter will overwrite the former.
      * @param array $attributes The HTML attributes for the {@see Style} tag.
+     * @param string|null $key The key that identifies the CSS code block. If `null`, it will use `$css` as the key.
+     * If two CSS code blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerCss(
         string $css,
@@ -234,8 +234,7 @@ final class WebViewState
         array $attributes = [],
         ?string $key = null
     ): void {
-        $key = $key ?: md5($css);
-        $this->css[$position][$key] = $attributes === [] ? $css : Html::style($css, $attributes);
+        $this->css[$position][$key ?? md5($css)] = $attributes === [] ? $css : Html::style($css, $attributes);
     }
 
     /**
@@ -266,8 +265,7 @@ final class WebViewState
      */
     public function registerStyleTag(Style $style, int $position = WebView::POSITION_HEAD, ?string $key = null): void
     {
-        $key = $key ?: md5($style->render());
-        $this->css[$position][$key] = $style;
+        $this->css[$position][$key ?? md5($style->render())] = $style;
     }
 
     /**
@@ -280,20 +278,20 @@ final class WebViewState
      * @param string $url The CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
      * for the supported options.
-     * @param string|null $key The key that identifies the CSS script file. If null, it will use $url as the key.
+     * @param string|null $key The key that identifies the CSS script file. If `null`, it will use `$url` as the key.
      * If two CSS files are registered with the same key, the latter will overwrite the former.
      */
     public function registerCssFile(
         string $url,
         int $position = WebView::POSITION_HEAD,
         array $options = [],
-        string $key = null
+        ?string $key = null
     ): void {
         if (!$this->isValidCssPosition($position)) {
             throw new InvalidArgumentException('Invalid position of CSS file.');
         }
 
-        $this->cssFiles[$position][$key ?: $url] = Html::cssFile($url, $options)->render();
+        $this->cssFiles[$position][$key ?? $url] = Html::cssFile($url, $options)->render();
     }
 
     /**
@@ -337,13 +335,12 @@ final class WebViewState
      * - {@see WebView::POSITION_END}: at the end of the body section. This is the default value.
      * - {@see WebView::POSITION_LOAD}: executed when HTML page is completely loaded.
      * - {@see WebView::POSITION_READY}: executed when HTML document composition is ready.
-     * @param string|null $key The key that identifies the JS code block. If null, it will use $js as the key.
+     * @param string|null $key The key that identifies the JS code block. If `null`, it will use `$js` as the key.
      * If two JS code blocks are registered with the same key, the latter will overwrite the former.
      */
     public function registerJs(string $js, int $position = WebView::POSITION_END, ?string $key = null): void
     {
-        $key = $key ?: md5($js);
-        $this->js[$position][$key] = $js;
+        $this->js[$position][$key ?? md5($js)] = $js;
     }
 
     /**
@@ -353,8 +350,7 @@ final class WebViewState
      */
     public function registerScriptTag(Script $script, int $position = WebView::POSITION_END, ?string $key = null): void
     {
-        $key = $key ?: md5($script->render());
-        $this->js[$position][$key] = $script;
+        $this->js[$position][$key ?? md5($script->render())] = $script;
     }
 
     /**
@@ -389,7 +385,7 @@ final class WebViewState
             throw new InvalidArgumentException('Invalid position of JS file.');
         }
 
-        $this->jsFiles[$position][$key ?: $url] = Html::javaScriptFile($url, $options)->render();
+        $this->jsFiles[$position][$key ?? $url] = Html::javaScriptFile($url, $options)->render();
     }
 
     /**
