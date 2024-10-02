@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 11.0.1 under development
+
+- no changes in this release.
+
 ## 11.0.0 October 02, 2024
 
 - Chg #271: Remove deprecated methods `withDefaultExtension()` and `getDefaultExtension()` from `ViewInterface` (@vjik)
