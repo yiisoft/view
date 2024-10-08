@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 11.0.1 under development
+## 11.0.1 October 08, 2024
 
 - Enh #275: Make `psr/event-dispatcher` dependency optional (@vjik)
 
