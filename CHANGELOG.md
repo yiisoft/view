@@ -2,7 +2,7 @@
 
 ## 11.0.1 under development
 
-- no changes in this release.
+- Enh #275: Make `psr/event-dispatcher` dependency optional (@vjik)
 
 ## 11.0.0 October 02, 2024
 
