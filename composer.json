@@ -28,8 +28,6 @@
     ],
     "require": {
         "php": "^8.1",
-        "psr/event-dispatcher": "1.0.0",
-        "psr/event-dispatcher-implementation": "1.0.0",
         "yiisoft/arrays": "^2.0|^3.0",
         "yiisoft/cache": "^1.0|^2.0|^3.0",
         "yiisoft/files": "^1.0|^2.0",
@@ -57,6 +55,9 @@
             "di": "di.php",
             "di-web": "di-web.php"
         }
+    },
+    "suggestion": {
+        "psr/event-dispatcher": "Use any PSR-compatible event dispatcher to dispatch `View`/`WebView` events."
     },
     "autoload": {
         "psr-4": {
