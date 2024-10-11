@@ -12,8 +12,8 @@ final class ResetContextTest extends TestCase
 {
     public function testBase(): void
     {
-        $baseView = (new View(__DIR__.'/views-base'))
-            ->withContext(new ViewContext(__DIR__.'/views-context'));
+        $baseView = (new View(__DIR__ . '/views-base'))
+            ->withContext(new ViewContext(__DIR__ . '/views-context'));
 
         $view = $baseView->withContext(null);
 
