@@ -2,7 +2,7 @@
 
 ## 11.0.2 under development
 
-- no changes in this release.
+- Chg #276: Allow to pass `null` to `ViewInterface` methods `withBasePath()` and `withContext()` (@vjik) 
 
 ## 11.0.1 October 08, 2024
 

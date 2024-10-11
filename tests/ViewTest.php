@@ -614,6 +614,19 @@ PHP
         $view->getBasePath();
     }
 
+    public function testResetBasePath(): void
+    {
+        $baseView = new View(__DIR__);
+
+        $view = $baseView->withBasePath(null);
+
+        $this->assertSame(__DIR__, $baseView->getBasePath());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The base path is not set.');
+        $view->getBasePath();
+    }
+
     private function createViewWithBasePath(string $basePath): View
     {
         return new View($basePath, new SimpleEventDispatcher());
