@@ -19,9 +19,9 @@ interface ViewInterface
     /**
      * Returns a new instance with specified base path to the view directory.
      *
-     * @param string $basePath The base path to the view directory.
+     * @param string|null $basePath The base path to the view directory.
      */
-    public function withBasePath(string $basePath): static;
+    public function withBasePath(string|null $basePath): static;
 
     /**
      * Returns a new instance with the specified renderers.
@@ -50,9 +50,9 @@ interface ViewInterface
     /**
      * Returns a new instance with the specified view context instance.
      *
-     * @param ViewContextInterface $context The context under which the {@see render()} method is being invoked.
+     * @param ViewContextInterface|null $context The context under which the {@see render()} method is being invoked.
      */
-    public function withContext(ViewContextInterface $context): static;
+    public function withContext(ViewContextInterface|null $context): static;
 
     /**
      * Returns a new instance with the specified view context path.
