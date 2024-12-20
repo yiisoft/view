@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 11.1.0 under development
+## 12.0.0 under development
 
 - Chg #276: Allow to pass `null` to `ViewInterface` methods `withBasePath()` and `withContext()` (@vjik)
 - New #278: Add `ViewInterface::deepClone()` method that clone object, including state cloning (@vjik)
