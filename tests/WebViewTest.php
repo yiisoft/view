@@ -25,6 +25,7 @@ use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
+use Yiisoft\View\Theme;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -982,6 +983,30 @@ final class WebViewTest extends TestCase
             '[ENDPAGE][/ENDPAGE]',
             $newWebView->render('positions.php')
         );
+    }
+
+    public function testDeepClone(): void
+    {
+        $lightTheme = new Theme();
+        $darkTheme = new Theme();
+
+        $sourceView = new WebView();
+        $sourceView->setTitle('Moscow');
+        $sourceView->setLocale('ru');
+        $sourceView->setTheme($lightTheme);
+
+        $view = $sourceView->deepClone();
+        $view->setTitle('Voronezh');
+        $view->setLocale('en');
+        $view->setTheme($darkTheme);
+
+        $this->assertNotSame($view, $sourceView);
+        $this->assertSame('Moscow', $sourceView->getTitle());
+        $this->assertSame('ru', $sourceView->getLocale());
+        $this->assertSame($lightTheme, $sourceView->getTheme());
+        $this->assertSame('Voronezh', $view->getTitle());
+        $this->assertSame('en', $view->getLocale());
+        $this->assertSame($darkTheme, $view->getTheme());
     }
 
     public function testImmutability(): void

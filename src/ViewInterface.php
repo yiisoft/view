@@ -11,6 +11,8 @@ use Yiisoft\View\Exception\ViewNotFoundException;
 
 /**
  * View allows rendering templates and sub-templates using data provided.
+ *
+ * @method static deepClone()
  */
 interface ViewInterface
 {
