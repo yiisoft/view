@@ -551,6 +551,30 @@ PHP
         $this->assertNull($newView->getTheme());
     }
 
+    public function testDeepClone(): void
+    {
+        $lightTheme = new Theme();
+        $darkTheme = new Theme();
+
+        $sourceView = new View();
+        $sourceView->setParameter('age', 42);
+        $sourceView->setLocale('ru');
+        $sourceView->setTheme($lightTheme);
+
+        $view = $sourceView->deepClone();
+        $view->setParameter('age', 19);
+        $view->setLocale('en');
+        $view->setTheme($darkTheme);
+
+        $this->assertNotSame($view, $sourceView);
+        $this->assertSame(42, $sourceView->getParameter('age'));
+        $this->assertSame('ru', $sourceView->getLocale());
+        $this->assertSame($lightTheme, $sourceView->getTheme());
+        $this->assertSame(19, $view->getParameter('age'));
+        $this->assertSame('en', $view->getLocale());
+        $this->assertSame($darkTheme, $view->getTheme());
+    }
+
     public function testCommonStateForClonedViews(): void
     {
         $view = TestHelper::createView();

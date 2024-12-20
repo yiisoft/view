@@ -113,6 +113,18 @@ final class WebView implements ViewInterface
     }
 
     /**
+     * Returns a new instance with deep clone of the object, including state cloning.
+     */
+    public function deepClone(): static
+    {
+        $new = clone $this;
+        $new->state = clone $this->state;
+        $new->localeState = clone $this->localeState;
+        $new->themeState = clone $this->themeState;
+        return $new;
+    }
+
+    /**
      * Marks the position of an HTML head section.
      */
     public function head(): void

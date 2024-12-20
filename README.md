@@ -134,10 +134,18 @@ final class BlogController {
 
 #### Reset state
 
-To get a deep cloned `View` or `WebView` use `withClearedState()`: 
+To get a deep cloned `View` or `WebView` with a reset state use `withClearedState()`: 
 
 ```php
 $view = $view->withClearedState();
+```
+
+#### Deep clone
+
+To get a deep cloned `View` or `WebView`, including state cloning, use `deepClone()` method:
+
+```php
+$view = $view->deepClone();
 ```
 
 ## Extensions

@@ -987,6 +987,30 @@ final class WebViewTest extends TestCase
         );
     }
 
+    public function testDeepClone(): void
+    {
+        $lightTheme = new Theme();
+        $darkTheme = new Theme();
+
+        $sourceView = new WebView();
+        $sourceView->setTitle('Moscow');
+        $sourceView->setLocale('ru');
+        $sourceView->setTheme($lightTheme);
+
+        $view = $sourceView->deepClone();
+        $view->setTitle('Voronezh');
+        $view->setLocale('en');
+        $view->setTheme($darkTheme);
+
+        $this->assertNotSame($view, $sourceView);
+        $this->assertSame('Moscow', $sourceView->getTitle());
+        $this->assertSame('ru', $sourceView->getLocale());
+        $this->assertSame($lightTheme, $sourceView->getTheme());
+        $this->assertSame('Voronezh', $view->getTitle());
+        $this->assertSame('en', $view->getLocale());
+        $this->assertSame($darkTheme, $view->getTheme());
+    }
+
     public function testImmutability(): void
     {
         $webView = TestHelper::createWebView();

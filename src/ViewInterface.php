@@ -74,6 +74,11 @@ interface ViewInterface
     public function withClearedState(): static;
 
     /**
+     * Returns a new instance with deep clone of the object, including state cloning.
+     */
+    public function deepClone(): static;
+
+    /**
      * Set the specified locale code.
      *
      * @param string $locale The locale code.

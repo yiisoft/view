@@ -59,6 +59,18 @@ final class View implements ViewInterface
     }
 
     /**
+     * Returns a new instance with deep clone of the object, including state cloning.
+     */
+    public function deepClone(): static
+    {
+        $new = clone $this;
+        $new->state = clone $this->state;
+        $new->localeState = clone $this->localeState;
+        $new->themeState = clone $this->themeState;
+        return $new;
+    }
+
+    /**
      * Marks the beginning of a view.
      */
     public function beginPage(): void
