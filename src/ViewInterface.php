@@ -11,8 +11,6 @@ use Yiisoft\View\Exception\ViewNotFoundException;
 
 /**
  * View allows rendering templates and sub-templates using data provided.
- *
- * @method static deepClone()
  */
 interface ViewInterface
 {
@@ -74,6 +72,11 @@ interface ViewInterface
      * Returns a new instance with cleared state (blocks, parameters, etc.)
      */
     public function withClearedState(): static;
+
+    /**
+     * Returns a new instance with deep clone of the object, including state cloning.
+     */
+    public function deepClone(): static;
 
     /**
      * Set the specified locale code.
