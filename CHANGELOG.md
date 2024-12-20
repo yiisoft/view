@@ -7,7 +7,7 @@
 ## 11.0.1 October 08, 2024
 
 - Enh #275: Make `psr/event-dispatcher` dependency optional (@vjik)
-- Bug #279: Fix don't clearing theme in `View::withClearedState()` and `WebView::withClearedState()` (@vjik) 
+- Bug #279: Fix clearing theme in `View::withClearedState()` and `WebView::withClearedState()` (@vjik) 
 
 ## 11.0.0 October 02, 2024
 
