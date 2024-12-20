@@ -967,6 +967,7 @@ final class WebViewTest extends TestCase
         $webView->registerCssFile('./main.css');
         $webView->registerJs('alert(42);');
         $webView->registerJsFile('./main.js');
+        $webView->setTheme(new Theme());
 
         $newWebView = $webView->withClearedState();
 
@@ -974,6 +975,7 @@ final class WebViewTest extends TestCase
         $this->assertFalse($newWebView->hasBlock('name'));
         $this->assertFalse($newWebView->hasParameter('age'));
         $this->assertSame('', $newWebView->getTitle());
+        $this->assertNull($newWebView->getTheme());
 
         $this->assertSame(
             '[BEGINPAGE][/BEGINPAGE]' . "\n" .
