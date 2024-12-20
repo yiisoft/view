@@ -538,15 +538,17 @@ PHP
 
     public function testWithClearedState(): void
     {
-        $view = TestHelper::createView();
+        $view = new View();
         $view->setBlock('name', 'Mike');
         $view->setParameter('age', 42);
+        $view->setTheme(new Theme());
 
         $newView = $view->withClearedState();
 
         $this->assertNull($newView->getViewFile());
         $this->assertFalse($newView->hasBlock('name'));
         $this->assertFalse($newView->hasParameter('age'));
+        $this->assertNull($newView->getTheme());
     }
 
     public function testCommonStateForClonedViews(): void

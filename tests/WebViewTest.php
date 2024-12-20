@@ -25,6 +25,7 @@ use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
+use Yiisoft\View\Theme;
 use Yiisoft\View\WebView;
 
 final class WebViewTest extends TestCase
@@ -966,6 +967,7 @@ final class WebViewTest extends TestCase
         $webView->registerCssFile('./main.css');
         $webView->registerJs('alert(42);');
         $webView->registerJsFile('./main.js');
+        $webView->setTheme(new Theme());
 
         $newWebView = $webView->withClearedState();
 
@@ -973,6 +975,7 @@ final class WebViewTest extends TestCase
         $this->assertFalse($newWebView->hasBlock('name'));
         $this->assertFalse($newWebView->hasParameter('age'));
         $this->assertSame('', $newWebView->getTitle());
+        $this->assertNull($newWebView->getTheme());
 
         $this->assertSame(
             '[BEGINPAGE][/BEGINPAGE]' . "\n" .
