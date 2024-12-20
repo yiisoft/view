@@ -4,11 +4,11 @@
 
 - Chg #276: Allow to pass `null` to `ViewInterface` methods `withBasePath()` and `withContext()` (@vjik)
 - New #278: Add `ViewInterface::deepClone()` method that clones object, including state cloning (@vjik)
+- Bug #279: Fix clearing theme in `View::withClearedState()` and `WebView::withClearedState()` (@vjik)
 
 ## 11.0.1 October 08, 2024
 
 - Enh #275: Make `psr/event-dispatcher` dependency optional (@vjik)
-- Bug #279: Fix clearing theme in `View::withClearedState()` and `WebView::withClearedState()` (@vjik) 
 
 ## 11.0.0 October 02, 2024
 
