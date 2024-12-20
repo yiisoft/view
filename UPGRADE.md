@@ -11,7 +11,7 @@ application when you upgrade the package from one version to another.
 
 - `ViewInterface` was changed. You should adjust it in your own implementations.
   - Added `deepClone()` method. 
-  - Allow to pass `null` to `withBasePath()` and `withContext()` methods.
+  - Allowed to pass `null` to `withBasePath()` and `withContext()` methods.
 
 ## Upgrade from 10.x
 
