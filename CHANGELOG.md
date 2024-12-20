@@ -3,7 +3,7 @@
 ## 12.0.0 under development
 
 - Chg #276: Allow to pass `null` to `ViewInterface` methods `withBasePath()` and `withContext()` (@vjik)
-- New #278: Add `ViewInterface::deepClone()` method that clone object, including state cloning (@vjik)
+- New #278: Add `ViewInterface::deepClone()` method that clones object, including state cloning (@vjik)
 
 ## 11.0.1 October 08, 2024
 
