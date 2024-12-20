@@ -9,7 +9,7 @@ application when you upgrade the package from one version to another.
 
 ## Upgrade from 11.x
 
-- Changed `ViewInterface`. You should implement it in your own implementations of interface.
+- `ViewInterface` was changed. You should adjust it in your own implementations.
   - Added `deepClone()` method. 
   - Allow to pass `null` to `withBasePath()` and `withContext()` methods.
 
