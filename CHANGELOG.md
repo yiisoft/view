@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 12.0.1 under development
+
+- no changes in this release.
+
 ## 12.0.0 December 23, 2024
 
 - New #278: Add `ViewInterface::deepClone()` method that clones object, including state cloning (@vjik)
