@@ -4,6 +4,7 @@
 
 - Enh #282: Allow to use the name of the view starting with `../` to join the parent directory containing the view 
   currently being rendered (@vjik)
+- Bug #282: Fix exception message when relative path is used without currently rendered view (@vjik) 
 
 ## 12.0.0 December 23, 2024
 
