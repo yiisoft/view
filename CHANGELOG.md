@@ -2,7 +2,7 @@
 
 ## 12.0.1 under development
 
-- Enh #282: Allow to use the name of the view starting with `../` to join the parent directory containing the view 
+- Enh #282: Allow using `../` in the name of the view to refer to parent directory of the the directory containing the view 
   currently being rendered (@vjik)
 - Bug #282: Fix exception message when relative path is used without currently rendered view (@vjik) 
 
