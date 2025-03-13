@@ -5,6 +5,8 @@
 - Enh #282: Allow using `../` in the name of the view to refer to parent directory of the the directory containing the view 
   currently being rendered (@vjik)
 - Bug #282: Fix exception message when relative path is used without currently rendered view (@vjik) 
+- Chg #280: Change PHP constraint in `composer.json` to `8.1 - 8.4` (@vjik)
+- Bug #280: Explicitly mark nullable parameters (@vjik)
 
 ## 12.0.0 December 23, 2024
 

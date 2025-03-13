@@ -14,6 +14,9 @@ use Yiisoft\View\Exception\ViewNotFoundException;
  */
 interface ViewInterface
 {
+    /**
+     * @psalm-suppress MissingClassConstType Needs for PHP 8.1 only
+     */
     public const PHP_EXTENSION = 'php';
 
     /**
