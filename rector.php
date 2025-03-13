@@ -21,4 +21,3 @@ return RectorConfig::configure()
         RemoveExtraParametersRector::class => [__DIR__ . '/src/PhpTemplateRenderer.php'],
         NullToStrictStringFuncCallArgRector::class,
     ]);
-
