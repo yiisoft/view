@@ -621,11 +621,11 @@ trait ViewTrait
     private function resolveViewFilePath(string $view): string
     {
         if (str_starts_with($view, './')) {
-            $currentViewFile = $this->getRequestedViewFile();
-            if ($currentViewFile === null) {
-                throw new LogicException('Unable to resolve file for view \"$view\": no currently rendered view.');
-            }
-            return dirname($currentViewFile) . substr($view, 1);
+            return dirname($this->getRequestedViewFile()) . substr($view, 1);
+        }
+
+        if (str_starts_with($view, '../')) {
+            return dirname($this->getRequestedViewFile(), 2) . substr($view, 2);
         }
 
         if (str_starts_with($view, '//')) {
@@ -646,12 +646,14 @@ trait ViewTrait
     }
 
     /**
-     * @return string|null The requested view currently being rendered. `null` if no view file is being rendered.
+     * @return string The requested view currently being rendered.
      */
-    private function getRequestedViewFile(): ?string
+    private function getRequestedViewFile(): string
     {
         /** @psalm-suppress InvalidArrayOffset */
-        return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
+        return empty($this->viewFiles)
+            ? throw new LogicException('Unable to resolve file for view \"$view\": no currently rendered view.')
+            : end($this->viewFiles)['requested'];
     }
 
     /**

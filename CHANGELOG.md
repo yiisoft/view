@@ -2,7 +2,8 @@
 
 ## 12.0.1 under development
 
-- no changes in this release.
+- Enh #282: Allow to use the name of the view starting with `../` to join the parent directory containing the view 
+  currently being rendered (@vjik)
 
 ## 12.0.0 December 23, 2024
 
