@@ -403,7 +403,7 @@ final class WebView implements ViewInterface
         string $url,
         int $position = self::POSITION_HEAD,
         array $options = [],
-        string $key = null
+        ?string $key = null
     ): self {
         $this->state->registerCssFile($url, $position, $options, $key);
         return $this;
@@ -486,7 +486,7 @@ final class WebView implements ViewInterface
         string $url,
         int $position = self::POSITION_END,
         array $options = [],
-        string $key = null
+        ?string $key = null
     ): self {
         $this->state->registerJsFile($url, $position, $options, $key);
         return $this;
