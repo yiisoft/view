@@ -172,6 +172,10 @@ final class WebView implements ViewInterface
     {
         $this->eventDispatcher?->dispatch(new PageEnd($this));
 
+        /**
+         * @var string $content We assume that in this case active output buffer is always existed, so `ob_get_clean()`
+         * returns a string.
+         */
         $content = ob_get_clean();
 
         echo strtr($content, [
@@ -211,6 +215,10 @@ final class WebView implements ViewInterface
         $this->endBody();
         $this->endPage(true);
 
+        /**
+         * @var string We assume that in this case active output buffer is always existed, so `ob_get_clean()` returns
+         * a string.
+         */
         return ob_get_clean();
     }
 
@@ -233,6 +241,10 @@ final class WebView implements ViewInterface
         $this->endBody();
         $this->endPage(true);
 
+        /**
+         * @var string We assume that in this case active output buffer is always existed, so `ob_get_clean()` returns
+         * a string.
+         */
         return ob_get_clean();
     }
 

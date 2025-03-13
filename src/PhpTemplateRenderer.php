@@ -22,7 +22,7 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
     public function render(ViewInterface $view, string $template, array $parameters): string
     {
         $renderer = function (): void {
-            /** @psalm-suppress MixedArgument */
+            /** @psalm-suppress MixedArgument, PossiblyFalseArgument */
             extract(func_get_arg(1), EXTR_OVERWRITE);
             /** @psalm-suppress UnresolvableInclude */
             require func_get_arg(0);
@@ -34,6 +34,11 @@ final class PhpTemplateRenderer implements TemplateRendererInterface
         try {
             /** @psalm-suppress PossiblyInvalidFunctionCall,PossiblyNullFunctionCall */
             $renderer->bindTo($view)($template, $parameters);
+
+            /**
+             * @var string We assume that in this case active output buffer is always existed, so `ob_get_clean()`
+             * returns a string.
+             */
             return ob_get_clean();
         } catch (Throwable $e) {
             while (ob_get_level() > $obInitialLevel) {
