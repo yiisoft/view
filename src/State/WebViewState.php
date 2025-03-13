@@ -379,7 +379,7 @@ final class WebViewState
         string $url,
         int $position = WebView::POSITION_END,
         array $options = [],
-        string $key = null
+        ?string $key = null
     ): void {
         if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS file.');
