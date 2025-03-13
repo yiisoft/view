@@ -13,6 +13,7 @@ final class RelativePathTest extends TestCase
 {
     #[TestWith(['with-extension.php'])]
     #[TestWith(['without-extension.php'])]
+    #[TestWith(['nested/template.php'])]
     public function testParent(string $template): void
     {
         $view = new View();
