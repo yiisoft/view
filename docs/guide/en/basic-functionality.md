@@ -71,6 +71,9 @@ It accepts a name of a view in one of the following formats:
   looked for under the view path of the context set via `withContext()` (if the context instance was not set
   `withContext()`, it will be looked for under the base path).
 
+Note: Using `..` in view path can lead to accessing unsafe data, e.g., `//../../etc/passwd`. Ensure that such cases are
+handled properly.
+
 The view name may omit a file extension. In this case, fallback extensions will be used as the extension.
 Default fallback extension is `php`. For example, the view name `blog/posts` correspond to the file name `blog/posts.php`.
 You can change fallback extensions as follows:
