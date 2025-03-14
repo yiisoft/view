@@ -397,9 +397,14 @@ trait ViewTrait
      * - the name of the view starting with `//` to join the base path {@see getBasePath()}, e.g. "//site/index";
      * - the name of the view starting with `./` to join the directory containing the view currently being rendered
      *   (i.e., this happens when rendering a view within another view), e.g. "./widget";
-     * - the name of the view without the starting `//` or `./` (e.g. "site/index"). The corresponding view file will be
-     *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
+     * - the name of the view starting with `../` to join the parent directory containing the view currently being
+     *   rendered, e.g. "../_header";
+     * - the name of the view without the starting `//`, `./` or `../` (e.g. "site/index"). The corresponding view file
+     *   will be looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
      *   If the context instance was not set {@see withContext()}, it will be looked for under the base path.
+     *
+     * Warning: Using `..` in view path can lead to accessing unsafe data, e.g., `//../../etc/passwd`. Ensure that such
+     * cases are handled properly.
      *
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
@@ -621,11 +626,11 @@ trait ViewTrait
     private function resolveViewFilePath(string $view): string
     {
         if (str_starts_with($view, './')) {
-            $currentViewFile = $this->getRequestedViewFile();
-            if ($currentViewFile === null) {
-                throw new LogicException('Unable to resolve file for view \"$view\": no currently rendered view.');
-            }
-            return dirname($currentViewFile) . substr($view, 1);
+            return dirname($this->getRequestedViewFile($view)) . substr($view, 1);
+        }
+
+        if (str_starts_with($view, '../')) {
+            return dirname($this->getRequestedViewFile($view), 2) . substr($view, 2);
         }
 
         if (str_starts_with($view, '//')) {
@@ -646,12 +651,14 @@ trait ViewTrait
     }
 
     /**
-     * @return string|null The requested view currently being rendered. `null` if no view file is being rendered.
+     * @return string The requested view currently being rendered.
      */
-    private function getRequestedViewFile(): ?string
+    private function getRequestedViewFile(string $view): string
     {
         /** @psalm-suppress InvalidArrayOffset */
-        return empty($this->viewFiles) ? null : end($this->viewFiles)['requested'];
+        return empty($this->viewFiles)
+            ? throw new LogicException("Unable to resolve file for view \"$view\": no currently rendered view.")
+            : end($this->viewFiles)['requested'];
     }
 
     /**

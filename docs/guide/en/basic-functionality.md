@@ -65,9 +65,14 @@ It accepts a name of a view in one of the following formats:
 - the name of the view starting with `//` to join the base path, e.g. "//site/index";
 - the name of the view starting with `./` to join the directory containing the view currently being rendered
   (i.e., this happens when rendering a view within another view), e.g. "./widget";
-- the name of the view without the starting `//` or `./` (e.g. "site/index"), so view file will be
+- the name of the view starting with `../` to join the parent directory containing the view currently being rendered,
+  e.g. "../_header";
+- the name of the view without the starting `//`, `./` or `../` (e.g. "site/index"), so view file will be
   looked for under the view path of the context set via `withContext()` (if the context instance was not set
   `withContext()`, it will be looked for under the base path).
+
+> Warning: Using `..` in view path can lead to accessing unsafe data, e.g., `//../../etc/passwd`. Ensure that such cases are
+handled properly.
 
 The view name may omit a file extension. In this case, fallback extensions will be used as the extension.
 Default fallback extension is `php`. For example, the view name `blog/posts` correspond to the file name `blog/posts.php`.
