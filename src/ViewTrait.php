@@ -403,7 +403,7 @@ trait ViewTrait
      *   will be looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
      *   If the context instance was not set {@see withContext()}, it will be looked for under the base path.
      *
-     * Note: Using `..` in view path can lead to accessing unsafe data, e.g., `//../../etc/passwd`. Ensure that such
+     * Warning: Using `..` in view path can lead to accessing unsafe data, e.g., `//../../etc/passwd`. Ensure that such
      * cases are handled properly.
      *
      * @param string $view The view name.
