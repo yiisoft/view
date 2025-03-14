@@ -397,9 +397,14 @@ trait ViewTrait
      * - the name of the view starting with `//` to join the base path {@see getBasePath()}, e.g. "//site/index";
      * - the name of the view starting with `./` to join the directory containing the view currently being rendered
      *   (i.e., this happens when rendering a view within another view), e.g. "./widget";
-     * - the name of the view without the starting `//` or `./` (e.g. "site/index"). The corresponding view file will be
-     *   looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
+     * - the name of the view starting with `../` to join the parent directory containing the view currently being
+     *   rendered, e.g. "../_header";
+     * - the name of the view without the starting `//`, `./` or `../` (e.g. "site/index"). The corresponding view file
+     *   will be looked for under the {@see ViewContextInterface::getViewPath()} of the context set via {@see withContext()}.
      *   If the context instance was not set {@see withContext()}, it will be looked for under the base path.
+     *
+     * Note: Using `..` in view path can lead to accessing unsafe data, e.g., `//../../etc/passwd`. Ensure that such
+     * cases are handled properly.
      *
      * @param string $view The view name.
      * @param array $parameters The parameters (name-value pairs) that will be extracted and made available in the view
