@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 12.1.1 under development
+
+- no changes in this release.
+
 ## 12.1.0 March 15, 2025
 
 - Chg #280: Change PHP constraint in `composer.json` to `8.1 - 8.4` (@vjik)
