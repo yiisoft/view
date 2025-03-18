@@ -16,7 +16,11 @@ return [
         $pathMap = [];
 
         foreach ($params['yiisoft/view']['theme']['pathMap'] as $key => $value) {
-            $pathMap[$aliases->get($key)] = $aliases->get($value);
+            if (is_array($value)) {
+              $pathMap[$aliases->get($key)] = array_map([$aliases, 'get'], $value);
+            } else {
+              $pathMap[$aliases->get($key)] = $aliases->get($value);
+            }
         }
 
         return new Theme(
