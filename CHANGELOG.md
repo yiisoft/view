@@ -2,7 +2,7 @@
 
 ## 12.1.1 under development
 
-- no changes in this release.
+- New #284: Allow to pass `Stringable` objects to `WebView::setTitle()` method (@vjik)
 
 ## 12.1.0 March 15, 2025
 

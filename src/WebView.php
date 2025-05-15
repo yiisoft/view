@@ -7,6 +7,7 @@ namespace Yiisoft\View;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
+use Stringable;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
 use Yiisoft\Html\Tag\Meta;
@@ -273,9 +274,9 @@ final class WebView implements ViewInterface
      *
      * {@see getTitle()}
      */
-    public function setTitle(string $value): self
+    public function setTitle(string|Stringable $value): self
     {
-        $this->state->setTitle($value);
+        $this->state->setTitle((string) $value);
         return $this;
     }
 
