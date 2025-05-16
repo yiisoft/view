@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 12.2.1 under development
+
+- no changes in this release.
+
 ## 12.2.0 May 16, 2025
 
 - New #284: Allow to pass `Stringable` objects to `WebView::setTitle()` method (@vjik)
