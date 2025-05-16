@@ -61,6 +61,23 @@ final class ConfigTest extends TestCase
         $this->assertInstanceOf(WebView::class, $webView);
     }
 
+    public function testDiWebWithPathMap(): void
+    {
+        $params = $this->getParams();
+        $params['yiisoft/view']['theme']['pathMap'] = [
+            '/app/module/views' => 'app/themes/module/basic',
+            '/app/views' => [
+                '/app/themes/christmas',
+                '/app/themes/basic',
+            ],
+        ];
+        $container = $this->createContainer('web', $params);
+
+        $theme = $container->get(Theme::class);
+
+        $this->assertInstanceOf(Theme::class, $theme);
+    }
+
     private function createContainer(?string $postfix = null, ?array $params = null): Container
     {
         return new Container(
