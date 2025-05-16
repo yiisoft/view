@@ -7,8 +7,10 @@ namespace Yiisoft\View\Tests;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Stringable;
 use Throwable;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Link;
@@ -23,6 +25,7 @@ use Yiisoft\View\Event\WebView\BodyEnd;
 use Yiisoft\View\Event\WebView\Head;
 use Yiisoft\View\Event\WebView\PageBegin;
 use Yiisoft\View\Event\WebView\PageEnd;
+use Yiisoft\View\Tests\TestSupport\StringableObject;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
@@ -872,10 +875,12 @@ final class WebViewTest extends TestCase
         TestHelper::createWebView()->addJsVars($jsVars);
     }
 
-    public function testTitle(): void
+    #[TestWith(['test'])]
+    #[TestWith([new StringableObject('test')])]
+    public function testTitle(string|Stringable $value): void
     {
         $view = TestHelper::createWebView();
-        $view->setTitle('test');
+        $view->setTitle($value);
         $this->assertSame('test', $view->getTitle());
     }
 
