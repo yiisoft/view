@@ -3,6 +3,7 @@
 ## 12.1.1 under development
 
 - New #284: Allow to pass `Stringable` objects to `WebView::setTitle()` method (@vjik)
+- Bug #283: Allow using multiple theme paths in `yiisoft/view → theme → pathMap` package parameter (@mariovials, @vjik)  
 
 ## 12.1.0 March 15, 2025
 
