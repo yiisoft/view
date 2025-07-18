@@ -13,9 +13,11 @@ use Yiisoft\View\View;
 return [
     View::class => [
         '__construct()' => [
-            'basePath' => DynamicReference::to(
-                static fn (Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
-            ),
+            'basePath' => $params['yiisoft/view']['basePath'] === null
+                ? null
+                : DynamicReference::to(
+                    static fn(Aliases $aliases) => $aliases->get($params['yiisoft/view']['basePath'])
+                ),
         ],
         'setParameters()' => [$params['yiisoft/view']['parameters']],
         'withRenderers()' => [$params['yiisoft/view']['renderers']],
