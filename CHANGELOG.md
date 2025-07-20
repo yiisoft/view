@@ -2,7 +2,7 @@
 
 ## 12.2.1 under development
 
-- no changes in this release.
+- Enh #286: Allow to use `null` as value of `basePath` parameter in package configuration (@vjik)
 
 ## 12.2.0 May 16, 2025
 
