@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 12.2.2 under development
+
+- no changes in this release.
+
 ## 12.2.1 July 20, 2025
 
 - Enh #286: Allow to use `null` as value of `basePath` parameter in package configuration (@vjik)
