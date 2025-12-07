@@ -19,7 +19,7 @@ PHP-based as default, and more. It's used in [Yii Framework](https://www.yiifram
 
 ## Requirements
 
-- PHP 8.1 or higher.
+- PHP 8.1 - 8.5.
 
 ## Installation
 
