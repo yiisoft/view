@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 12.2.3 under development
+
+- no changes in this release.
+
 ## 12.2.2 December 07, 2025
 
 - Enh #287: Add PHP 8.5 support (@vjik)
