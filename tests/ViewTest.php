@@ -162,7 +162,7 @@ PHP
             ->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory));
 
-        $this->assertSame(null, $view->getTheme());
+        $this->assertNull($view->getTheme());
         $this->assertSame($subViewContent, $view->render('test/base'));
     }
 
@@ -620,7 +620,7 @@ PHP
         $this->assertSame($theme, $viewWithTheme->getTheme());
     }
 
-    public function testGetLocale()
+    public function testGetLocale(): void
     {
         $view = TestHelper::createView();
 

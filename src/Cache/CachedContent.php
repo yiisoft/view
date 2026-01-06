@@ -99,7 +99,7 @@ final class CachedContent
      */
     private function cacheKey(): string
     {
-        return $this->cacheKeyNormalizer->normalize(array_merge([self::class, $this->id], $this->variations));
+        return $this->cacheKeyNormalizer::normalize(array_merge([self::class, $this->id], $this->variations));
     }
 
     /**

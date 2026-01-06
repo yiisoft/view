@@ -62,7 +62,7 @@ To have scripts and tags registered and rendered correctly, special methods are 
 - `head()` - This method should be called within the `<head>` section of an HTML page. It generates a placeholder which
   will be replaced with the registered head HTML code (e.g. link tags, meta tags) when a page finishes rendering.
 - `beginBody()` - This method should be called at the beginning of the `<body>` section. It generates a placeholder
-  which will be replaced by the registered HTML code (e.g. СSS, JavaScript) targeted at the body begin position.
+  which will be replaced by the registered HTML code (e.g. CSS, JavaScript) targeted at the body begin position.
 - `endBody()` - This method should be called at the end of the `<body>` section. It generates a placeholder which
   will be replaced by the registered HTML code (e.g. JavaScript) targeted at the body end position.
 
