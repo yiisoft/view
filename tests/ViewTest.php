@@ -262,19 +262,28 @@ PHP
     public function testOverlappingExtensionRendererPriority(): void
     {
         $filename = 'test';
+        $baseRenderer = new PhpTemplateRenderer();
 
         // Create a renderer that adds a marker to identify which renderer was used
-        $phpRenderer = new class () implements TemplateRendererInterface {
+        $phpRenderer = new class ($baseRenderer) implements TemplateRendererInterface {
+            public function __construct(private PhpTemplateRenderer $baseRenderer)
+            {
+            }
+
             public function render(ViewInterface $view, string $template, array $parameters): string
             {
-                return '[php]' . (new PhpTemplateRenderer())->render($view, $template, $parameters);
+                return '[php]' . $this->baseRenderer->render($view, $template, $parameters);
             }
         };
 
-        $bladePhpRenderer = new class () implements TemplateRendererInterface {
+        $bladePhpRenderer = new class ($baseRenderer) implements TemplateRendererInterface {
+            public function __construct(private PhpTemplateRenderer $baseRenderer)
+            {
+            }
+
             public function render(ViewInterface $view, string $template, array $parameters): string
             {
-                return '[blade.php]' . (new PhpTemplateRenderer())->render($view, $template, $parameters);
+                return '[blade.php]' . $this->baseRenderer->render($view, $template, $parameters);
             }
         };
 
