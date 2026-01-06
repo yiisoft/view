@@ -25,11 +25,11 @@ final class MultiRendererBench
                 $phpView,
                 <<<'PHP_WRAP'
                 <?php
-                
+
                 declare(strict_types=1);
-                
+
                 /** @var \Yiisoft\View\View $this */
-                
+
                 echo 'PHP view';
                 PHP_WRAP
             );
