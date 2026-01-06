@@ -266,7 +266,9 @@ PHP
 
         // Create a renderer that adds a marker to identify which renderer was used
         $phpRenderer = new class ($baseRenderer) implements TemplateRendererInterface {
-            public function __construct(private PhpTemplateRenderer $baseRenderer) {}
+            public function __construct(private PhpTemplateRenderer $baseRenderer)
+            {
+            }
 
             public function render(ViewInterface $view, string $template, array $parameters): string
             {
@@ -275,7 +277,9 @@ PHP
         };
 
         $bladePhpRenderer = new class ($baseRenderer) implements TemplateRendererInterface {
-            public function __construct(private PhpTemplateRenderer $baseRenderer) {}
+            public function __construct(private PhpTemplateRenderer $baseRenderer)
+            {
+            }
 
             public function render(ViewInterface $view, string $template, array $parameters): string
             {
