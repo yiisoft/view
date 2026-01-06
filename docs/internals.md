@@ -42,3 +42,21 @@ all dependencies are correctly defined in `composer.json`. To run the checker, e
 ```shell
 ./vendor/bin/composer-require-checker
 ```
+
+## Benchmarks
+
+The package provides performance benchmarks for the main use-cases, implemented with [phpbench](https://phpbench.readthedocs.io/).
+
+Benchmarks are located in `tests/Benchmark` and configured via `phpbench.json`.
+
+To run the benchmarks:
+
+```shell
+./vendor/bin/phpbench run
+```
+
+Or via Composer script:
+
+```shell
+composer bench
+```
