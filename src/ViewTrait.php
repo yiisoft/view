@@ -92,6 +92,8 @@ trait ViewTrait
     public function withRenderers(array $renderers): static
     {
         $new = clone $this;
+        // Sort by extension length (descending) to match more specific extensions first
+        uksort($renderers, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
         $new->renderers = $renderers;
         return $new;
     }
@@ -449,11 +451,7 @@ trait ViewTrait
             $renderer = null;
             $fileName = basename($viewFile);
 
-            // Sort extensions by length in descending order to match more specific extensions first
-            $sortedRenderers = $this->renderers;
-            uksort($sortedRenderers, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
-
-            foreach ($sortedRenderers as $extension => $candidateRenderer) {
+            foreach ($this->renderers as $extension => $candidateRenderer) {
                 if ($extension === '') {
                     continue;
                 }
