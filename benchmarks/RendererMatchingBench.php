@@ -189,7 +189,7 @@ class RendererMatchingBench
 
     /**
      * Create a sample renderer array for testing.
-     * 
+     *
      * Note: All extensions use the same PhpTemplateRenderer instance because
      * this benchmark focuses on extension matching performance, not renderer
      * execution. In real-world usage, different extensions would typically
