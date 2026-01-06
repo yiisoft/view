@@ -19,7 +19,7 @@ final class WebViewAssetsBench
         $this->preparedView = $this->view;
     }
 
-    #[Bench\BeforeMethods(['prepareView'])]
+    #[Bench\BeforeMethods(['benchRegisterAssetsAndRender'])]
     public function prepareView(): void
     {
         $view = $this->view->withClearedState();
