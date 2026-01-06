@@ -16,11 +16,13 @@ use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\PhpTemplateRenderer;
+use Yiisoft\View\TemplateRendererInterface;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
+use Yiisoft\View\ViewInterface;
 
 use function crc32;
 use function dechex;
@@ -262,17 +264,17 @@ PHP
         $filename = 'test';
 
         // Create a renderer that adds a marker to identify which renderer was used
-        $phpRenderer = new class () extends PhpTemplateRenderer {
-            public function render($view, $template, array $params = []): string
+        $phpRenderer = new class () implements TemplateRendererInterface {
+            public function render(ViewInterface $view, string $template, array $parameters): string
             {
-                return '[php]' . parent::render($view, $template, $params);
+                return '[php]' . (new PhpTemplateRenderer())->render($view, $template, $parameters);
             }
         };
 
-        $bladePhpRenderer = new class () extends PhpTemplateRenderer {
-            public function render($view, $template, array $params = []): string
+        $bladePhpRenderer = new class () implements TemplateRendererInterface {
+            public function render(ViewInterface $view, string $template, array $parameters): string
             {
-                return '[blade.php]' . parent::render($view, $template, $params);
+                return '[blade.php]' . (new PhpTemplateRenderer())->render($view, $template, $parameters);
             }
         };
 
