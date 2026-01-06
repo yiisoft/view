@@ -10,7 +10,7 @@ use Yiisoft\View\WebView;
 
 final class WebViewAssetsBench
 {
-    private WebView $view;
+    private readonly WebView $view;
     private WebView $preparedView;
 
     public function __construct()

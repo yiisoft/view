@@ -10,7 +10,7 @@ use Yiisoft\View\View;
 
 final class NestedViewsBench
 {
-    private View $view;
+    private readonly View $view;
 
     public function __construct()
     {

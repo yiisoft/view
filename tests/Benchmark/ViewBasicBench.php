@@ -9,7 +9,7 @@ use Yiisoft\View\View;
 
 final class ViewBasicBench
 {
-    private View $view;
+    private readonly View $view;
 
     public function __construct()
     {

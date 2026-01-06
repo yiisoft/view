@@ -9,7 +9,7 @@ use Yiisoft\View\WebView;
 
 final class WebViewBench
 {
-    private WebView $view;
+    private readonly WebView $view;
 
     public function __construct()
     {

@@ -12,7 +12,7 @@ use Yiisoft\View\ViewInterface;
 
 final class MultiRendererBench
 {
-    private View $view;
+    private readonly View $view;
 
     public function __construct()
     {
@@ -23,15 +23,15 @@ final class MultiRendererBench
         if (!is_file($phpView)) {
             file_put_contents(
                 $phpView,
-                <<<'PHP'
-<?php
-
-declare(strict_types=1);
-
-/** @var \Yiisoft\View\View $this */
-
-echo 'PHP view';
-PHP
+                <<<'PHP_WRAP'
+                <?php
+                
+                declare(strict_types=1);
+                
+                /** @var \Yiisoft\View\View $this */
+                
+                echo 'PHP view';
+                PHP_WRAP
             );
         }
 
