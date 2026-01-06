@@ -213,7 +213,7 @@ PHP
             'blade, double extension' => [
                 'filename' => 'file',
                 'extension' => 'blade.php',
-                'fallbackExtensions' => ['blade.php']
+                'fallbackExtensions' => ['blade.php'],
             ],
         ];
     }

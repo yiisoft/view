@@ -25,7 +25,6 @@ use function end;
 use function is_file;
 use function pathinfo;
 use function str_ends_with;
-use function strlen;
 use function substr;
 
 /**
