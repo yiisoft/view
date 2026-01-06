@@ -44,8 +44,7 @@
         "yiisoft/aliases": "^3.0",
         "yiisoft/di": "^1.4",
         "yiisoft/psr-dummy-provider": "^1.0.2",
-        "yiisoft/test-support": "^3.0.2",
-        "psr/event-dispatcher": "^1.0"
+        "yiisoft/test-support": "^3.0.2"
     },
     "extra": {
         "config-plugin-options": {
