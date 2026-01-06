@@ -25,7 +25,9 @@ use function end;
 use function is_file;
 use function pathinfo;
 use function str_ends_with;
+use function strlen;
 use function substr;
+use function uksort;
 
 /**
  * `ViewTrait` could be used as a base implementation of {@see ViewInterface}.
@@ -90,6 +92,8 @@ trait ViewTrait
     public function withRenderers(array $renderers): static
     {
         $new = clone $this;
+        // Sort by extension length (descending) to match more specific extensions first
+        uksort($renderers, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
         $new->renderers = $renderers;
         return $new;
     }
