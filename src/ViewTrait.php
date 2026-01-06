@@ -24,6 +24,8 @@ use function dirname;
 use function end;
 use function is_file;
 use function pathinfo;
+use function str_ends_with;
+use function strlen;
 use function substr;
 
 /**
@@ -443,8 +445,24 @@ trait ViewTrait
         ];
 
         if ($this->beforeRender($viewFile, $parameters)) {
-            $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
-            $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
+            $renderer = null;
+            $fileName = basename($viewFile);
+
+            foreach ($this->renderers as $extension => $candidateRenderer) {
+                if ($extension === '') {
+                    continue;
+                }
+
+                if (!str_ends_with($fileName, '.' . $extension)) {
+                    continue;
+                }
+
+                $renderer = $candidateRenderer;
+                break;
+            }
+
+            $renderer ??= new PhpTemplateRenderer();
+
             $output = $renderer->render($this, $viewFile, $parameters);
             $output = $this->afterRender($viewFile, $parameters, $output);
         }
@@ -607,6 +625,17 @@ trait ViewTrait
 
         if ($hasExtension && is_file($file)) {
             return $file;
+        }
+
+        foreach (array_keys($this->renderers) as $rendererExtension) {
+            if ($rendererExtension === '') {
+                continue;
+            }
+
+            $fileWithRendererExtension = $file . '.' . $rendererExtension;
+            if (is_file($fileWithRendererExtension)) {
+                return $fileWithRendererExtension;
+            }
         }
 
         foreach ($this->fallbackExtensions as $fallbackExtension) {

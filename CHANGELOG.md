@@ -2,7 +2,7 @@
 
 ## 12.2.3 under development
 
-- no changes in this release.
+- Bug #289: Fix template file searching for double extensions such as `blade.php` (@samdark)
 
 ## 12.2.2 December 07, 2025
 

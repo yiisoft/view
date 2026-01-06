@@ -185,41 +185,41 @@ PHP
     public static function renderFilesWithExtensionProvider(): array
     {
         return [
-            [
-                'file',
-                'php',
-                'php',
-                ['php'],
+            'php' => [
+                'filename' => 'file',
+                'extension' => 'php',
+                'fallbackExtensions' => ['php'],
             ],
-            [
-                'file',
-                'tpl',
-                'tpl',
-                ['tpl'],
+            'tpl' => [
+                'filename' => 'file',
+                'extension' => 'tpl',
+                'fallbackExtensions' => ['tpl'],
             ],
-            [
-                'file',
-                'phpt',
-                'phpt',
-                ['phpt'],
+            'phpt' => [
+                'filename' => 'file',
+                'extension' => 'phpt',
+                'fallbackExtensions' => ['phpt'],
             ],
-            [
-                'file.txt',
-                'twig',
-                'twig',
-                ['txt', 'twig'],
+            'twig' => [
+                'filename' => 'file.txt',
+                'extension' => 'twig',
+                'fallbackExtensions' => ['txt', 'twig'],
             ],
-            [
-                'file',
-                'smarty',
-                'smarty',
-                ['smarty', 'twig'],
+            'smarty' => [
+                'filename' => 'file',
+                'extension' => 'smarty',
+                'fallbackExtensions' => ['smarty', 'twig'],
+            ],
+            'blade, double extension' => [
+                'filename' => 'file',
+                'extension' => 'blade.php',
+                'fallbackExtensions' => ['blade.php']
             ],
         ];
     }
 
     #[DataProvider('renderFilesWithExtensionProvider')]
-    public function testRenderWithoutFileExtension(string $filename, string $extension, string $defaultExtension, array $fallbackExtensions): void
+    public function testRenderWithoutFileExtension(string $filename, string $extension, array $fallbackExtensions): void
     {
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
@@ -229,6 +229,27 @@ PHP
         $this->assertSame(
             'Test ' . $extension,
             $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
+        );
+    }
+
+    /**
+     * @link https://github.com/yiisoft/view/issues/289
+     */
+    public function testDoubleExtensionRenderer(): void
+    {
+        $filename = 'test';
+
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+            ->withRenderers([
+                'blade.php' => new PhpTemplateRenderer(),
+            ]);
+        file_put_contents("$this->tempDirectory/$filename.blade.php", 'Test blade.php');
+
+        $this->assertSame(
+            'Test blade.php',
+            $view->render($filename)
         );
     }
 
