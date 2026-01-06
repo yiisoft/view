@@ -21,7 +21,9 @@ final class MultiRendererBench
 
         $phpView = $basePath . '/view.php';
         if (!is_file($phpView)) {
-            file_put_contents($phpView, <<<'PHP'
+            file_put_contents(
+                $phpView,
+                <<<'PHP'
 <?php
 
 declare(strict_types=1);

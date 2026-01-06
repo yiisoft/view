@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\View\Tests\Benchmark;
 
-use PhpBench\Attributes as Bench;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\View;
 

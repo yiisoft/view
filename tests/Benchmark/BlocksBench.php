@@ -19,7 +19,9 @@ final class BlocksBench
 
         $contentView = $basePath . '/content.php';
         if (!is_file($contentView)) {
-            file_put_contents($contentView, <<<'PHP'
+            file_put_contents(
+                $contentView,
+                <<<'PHP'
 <?php
 
 declare(strict_types=1);
@@ -34,7 +36,9 @@ PHP
 
         $layoutView = $basePath . '/layout.php';
         if (!is_file($layoutView)) {
-            file_put_contents($layoutView, <<<'PHP'
+            file_put_contents(
+                $layoutView,
+                <<<'PHP'
 <?php
 
 declare(strict_types=1);

@@ -22,7 +22,9 @@ final class NestedViewsBench
         FileHelper::ensureDirectory($subDir);
 
         if (!is_file($baseView)) {
-            file_put_contents($baseView, <<<'PHP'
+            file_put_contents(
+                $baseView,
+                <<<'PHP'
 <?php
 
 declare(strict_types=1);
