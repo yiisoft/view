@@ -1,0 +1,7 @@
+{
+    "runner.bootstrap": "vendor/autoload.php",
+    "runner.path": "tests/Benchmark",
+    "runner.revs": 1000,
+    "runner.iterations": 10,
+    "runner.retry_threshold": 2
+}
