@@ -253,6 +253,45 @@ PHP
         );
     }
 
+    /**
+     * Test that longer extensions are matched before shorter ones when there are overlapping extensions.
+     * @link https://github.com/yiisoft/view/pull/291#discussion_r2663151134
+     */
+    public function testOverlappingExtensionRendererPriority(): void
+    {
+        $filename = 'test';
+
+        // Create a renderer that adds a marker to identify which renderer was used
+        $phpRenderer = new class () extends PhpTemplateRenderer {
+            public function render($view, $template, array $params = []): string
+            {
+                return '[php]' . parent::render($view, $template, $params);
+            }
+        };
+
+        $bladePhpRenderer = new class () extends PhpTemplateRenderer {
+            public function render($view, $template, array $params = []): string
+            {
+                return '[blade.php]' . parent::render($view, $template, $params);
+            }
+        };
+
+        // Register both "php" and "blade.php" renderers
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+            ->withRenderers([
+                'php' => $phpRenderer,
+                'blade.php' => $bladePhpRenderer,
+            ]);
+
+        file_put_contents("$this->tempDirectory/$filename.blade.php", 'content');
+
+        // The blade.php renderer should be used because it's more specific (longer extension)
+        $result = $view->render($filename);
+        $this->assertStringStartsWith('[blade.php]', $result);
+    }
+
     public function testLocalize(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory);
