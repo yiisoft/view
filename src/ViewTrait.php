@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
-use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
@@ -105,7 +104,7 @@ trait ViewTrait
             if (!$renderer instanceof TemplateRendererInterface) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        "Render %s is not an instance of %s.",
+                        'Render %s is not an instance of %s.',
                         get_class($renderer),
                         TemplateRendererInterface::class
                     )
