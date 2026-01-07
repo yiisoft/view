@@ -96,7 +96,7 @@ trait ViewTrait
                 throw new InvalidArgumentException(
                     sprintf(
                         'Empty extension is not supported. Please add extension for %s.',
-                        get_class($renderer)
+                        $renderer::class
                     )
                 );
             }
@@ -105,7 +105,7 @@ trait ViewTrait
                 throw new InvalidArgumentException(
                     sprintf(
                         'Render %s is not an instance of %s.',
-                        get_class($renderer),
+                        $renderer::class,
                         TemplateRendererInterface::class
                     )
                 );
