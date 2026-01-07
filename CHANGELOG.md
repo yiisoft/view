@@ -2,7 +2,7 @@
 
 ## 12.2.3 under development
 
-- no changes in this release.
+- Bug #295: Remove unnecessary `CacheKeyNormalizer` instance creation in `CachedContent` (@samdark)
 
 ## 12.2.2 December 07, 2025
 
