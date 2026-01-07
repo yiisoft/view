@@ -10,6 +10,7 @@ use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use stdClass;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\View\PageBegin;
@@ -232,6 +233,34 @@ PHP
             'Test ' . $extension,
             $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
         );
+    }
+
+    public function testWithRenderersEmptyExtensionThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Empty extension is not supported. Please add extension for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            '' => new PhpTemplateRenderer(),
+        ]);
+    }
+
+    public function testWithRenderersInvalidRendererTypeThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Render stdClass is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => new stdClass(),
+        ]);
     }
 
     /**

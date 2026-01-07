@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
+use RuntimeException;
 use Throwable;
 use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
@@ -91,6 +92,28 @@ trait ViewTrait
      */
     public function withRenderers(array $renderers): static
     {
+        foreach ($renderers as $extension => $renderer) {
+            if ($extension === '') {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Empty extension is not supported. Please add extension for %s.',
+                        get_class($renderer)
+                    )
+                );
+            }
+
+            if (!$renderer instanceof TemplateRendererInterface) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        "Render %s is not an instance of %s.",
+                        get_class($renderer),
+                        TemplateRendererInterface::class
+                    )
+                );
+            }
+        }
+
+
         $new = clone $this;
         // Sort by extension length (descending) to match more specific extensions first
         uksort($renderers, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
@@ -452,10 +475,6 @@ trait ViewTrait
             $fileName = basename($viewFile);
 
             foreach ($this->renderers as $extension => $candidateRenderer) {
-                if ($extension === '') {
-                    continue;
-                }
-
                 if (!str_ends_with($fileName, '.' . $extension)) {
                     continue;
                 }
