@@ -17,7 +17,6 @@ use Yiisoft\View\State\ThemeState;
 use function array_merge;
 use function array_pop;
 use function basename;
-use function call_user_func;
 use function crc32;
 use function dechex;
 use function dirname;
@@ -332,7 +331,7 @@ trait ViewTrait
      */
     public function getParameter(string $id, mixed ...$default): mixed
     {
-        return call_user_func([$this->state, 'getParameter'], $id, ...$default);
+        return $this->state->getParameter($id, ...$default);
     }
 
     /**
@@ -691,10 +690,8 @@ trait ViewTrait
             if (str_contains($view, ':')) {
                 return $view;
             }
-        } else {
-            if (str_starts_with($view, '/')) {
-                return $view;
-            }
+        } elseif (str_starts_with($view, '/')) {
+            return $view;
         }
 
         return ($this->context?->getViewPath() ?? $this->getBasePath()) . '/' . $view;
