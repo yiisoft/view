@@ -20,8 +20,6 @@ use function strtr;
  */
 final class CachedContent
 {
-    private readonly CacheKeyNormalizer $cacheKeyNormalizer;
-
     /**
      * @var array<string, DynamicContent>
      */
@@ -44,7 +42,6 @@ final class CachedContent
         array $dynamicContents = [],
         array $variations = []
     ) {
-        $this->cacheKeyNormalizer = new CacheKeyNormalizer();
         $this->setDynamicContents($dynamicContents);
         $this->setVariations($variations);
     }
@@ -99,7 +96,7 @@ final class CachedContent
      */
     private function cacheKey(): string
     {
-        return $this->cacheKeyNormalizer->normalize(array_merge([self::class, $this->id], $this->variations));
+        return CacheKeyNormalizer::normalize(array_merge([self::class, $this->id], $this->variations));
     }
 
     /**
