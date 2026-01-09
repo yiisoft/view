@@ -187,41 +187,41 @@ PHP
     public static function renderFilesWithExtensionProvider(): array
     {
         return [
-            'php' => [
-                'filename' => 'file',
-                'extension' => 'php',
-                'fallbackExtensions' => ['php'],
+            [
+                'file',
+                'php',
+                'php',
+                ['php'],
             ],
-            'tpl' => [
-                'filename' => 'file',
-                'extension' => 'tpl',
-                'fallbackExtensions' => ['tpl'],
+            [
+                'file',
+                'tpl',
+                'tpl',
+                ['tpl'],
             ],
-            'phpt' => [
-                'filename' => 'file',
-                'extension' => 'phpt',
-                'fallbackExtensions' => ['phpt'],
+            [
+                'file',
+                'phpt',
+                'phpt',
+                ['phpt'],
             ],
-            'twig' => [
-                'filename' => 'file.txt',
-                'extension' => 'twig',
-                'fallbackExtensions' => ['txt', 'twig'],
+            [
+                'file.txt',
+                'twig',
+                'twig',
+                ['txt', 'twig'],
             ],
-            'smarty' => [
-                'filename' => 'file',
-                'extension' => 'smarty',
-                'fallbackExtensions' => ['smarty', 'twig'],
-            ],
-            'blade, double extension' => [
-                'filename' => 'file',
-                'extension' => 'blade.php',
-                'fallbackExtensions' => ['blade.php'],
+            [
+                'file',
+                'smarty',
+                'smarty',
+                ['smarty', 'twig'],
             ],
         ];
     }
 
     #[DataProvider('renderFilesWithExtensionProvider')]
-    public function testRenderWithoutFileExtension(string $filename, string $extension, array $fallbackExtensions): void
+    public function testRenderWithoutFileExtension(string $filename, string $extension, string $defaultExtension, array $fallbackExtensions): void
     {
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
