@@ -23,10 +23,7 @@ use function dirname;
 use function end;
 use function is_file;
 use function pathinfo;
-use function str_ends_with;
-use function strlen;
 use function substr;
-use function uksort;
 
 /**
  * `ViewTrait` could be used as a base implementation of {@see ViewInterface}.
@@ -111,10 +108,7 @@ trait ViewTrait
             }
         }
 
-
         $new = clone $this;
-        // Sort by extension length (descending) to match more specific extensions first
-        uksort($renderers, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
         $new->renderers = $renderers;
         return $new;
     }
@@ -469,19 +463,22 @@ trait ViewTrait
         ];
 
         if ($this->beforeRender($viewFile, $parameters)) {
-            $renderer = null;
-            $fileName = basename($viewFile);
+            $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
+            $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
 
-            foreach ($this->renderers as $extension => $candidateRenderer) {
-                if (!str_ends_with($fileName, '.' . $extension)) {
-                    continue;
-                }
-
-                $renderer = $candidateRenderer;
-                break;
-            }
-
-            $renderer ??= new PhpTemplateRenderer();
+//            $renderer = null;
+//            $fileName = basename($viewFile);
+//
+//            foreach ($this->renderers as $extension => $candidateRenderer) {
+//                if (!str_ends_with($fileName, '.' . $extension)) {
+//                    continue;
+//                }
+//
+//                $renderer = $candidateRenderer;
+//                break;
+//            }
+//
+//            $renderer ??= new PhpTemplateRenderer();
 
             $output = $renderer->render($this, $viewFile, $parameters);
             $output = $this->afterRender($viewFile, $parameters, $output);
@@ -647,23 +644,23 @@ trait ViewTrait
             return $file;
         }
 
-        foreach (array_keys($this->renderers) as $rendererExtension) {
-            if ($rendererExtension === '') {
-                continue;
-            }
-
-            $fileWithRendererExtension = $file . '.' . $rendererExtension;
-            if (is_file($fileWithRendererExtension)) {
-                return $fileWithRendererExtension;
-            }
-        }
-
-        foreach ($this->fallbackExtensions as $fallbackExtension) {
-            $fileWithFallbackExtension = $file . '.' . $fallbackExtension;
-            if (is_file($fileWithFallbackExtension)) {
-                return $fileWithFallbackExtension;
-            }
-        }
+//        foreach (array_keys($this->renderers) as $rendererExtension) {
+//            if ($rendererExtension === '') {
+//                continue;
+//            }
+//
+//            $fileWithRendererExtension = $file . '.' . $rendererExtension;
+//            if (is_file($fileWithRendererExtension)) {
+//                return $fileWithRendererExtension;
+//            }
+//        }
+//
+//        foreach ($this->fallbackExtensions as $fallbackExtension) {
+//            $fileWithFallbackExtension = $file . '.' . $fallbackExtension;
+//            if (is_file($fileWithFallbackExtension)) {
+//                return $fileWithFallbackExtension;
+//            }
+//        }
 
         if ($hasExtension) {
             return $file;

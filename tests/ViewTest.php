@@ -268,7 +268,7 @@ PHP
      */
     public function testDoubleExtensionRenderer(): void
     {
-        $filename = 'test';
+        $filename = 'test.blade.php';
 
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
@@ -276,7 +276,7 @@ PHP
             ->withRenderers([
                 'blade.php' => new PhpTemplateRenderer(),
             ]);
-        file_put_contents("$this->tempDirectory/$filename.blade.php", 'Test blade.php');
+        file_put_contents("$this->tempDirectory/$filename", 'Test blade.php');
 
         $this->assertSame(
             'Test blade.php',
@@ -285,51 +285,27 @@ PHP
     }
 
     /**
-     * Test that longer extensions are matched before shorter ones when there are overlapping extensions.
-     * @link https://github.com/yiisoft/view/pull/291#discussion_r2663151134
+     * @link https://github.com/yiisoft/view/issues/289
+     * @todo remove?
      */
-    public function testOverlappingExtensionRendererPriority(): void
+    public function testDoubleExtensionRendererAsFallback(): void
     {
         $filename = 'test';
-        $baseRenderer = new PhpTemplateRenderer();
 
-        // Create a renderer that adds a marker to identify which renderer was used
-        $phpRenderer = new class ($baseRenderer) implements TemplateRendererInterface {
-            public function __construct(private readonly PhpTemplateRenderer $baseRenderer)
-            {
-            }
-
-            public function render(ViewInterface $view, string $template, array $parameters): string
-            {
-                return '[php]' . $this->baseRenderer->render($view, $template, $parameters);
-            }
-        };
-
-        $bladePhpRenderer = new class ($baseRenderer) implements TemplateRendererInterface {
-            public function __construct(private readonly PhpTemplateRenderer $baseRenderer)
-            {
-            }
-
-            public function render(ViewInterface $view, string $template, array $parameters): string
-            {
-                return '[blade.php]' . $this->baseRenderer->render($view, $template, $parameters);
-            }
-        };
-
-        // Register both "php" and "blade.php" renderers
         $view = $this
             ->createViewWithBasePath($this->tempDirectory)
             ->withContext($this->createContext($this->tempDirectory))
             ->withRenderers([
-                'php' => $phpRenderer,
-                'blade.php' => $bladePhpRenderer,
-            ]);
+                'blade.php' => new PhpTemplateRenderer(),
+            ])
+            ->withFallbackExtension('blade.php');
 
-        file_put_contents("$this->tempDirectory/$filename.blade.php", 'content');
+        file_put_contents("$this->tempDirectory/$filename.blade.php", 'Test blade.php');
 
-        // The blade.php renderer should be used because it's more specific (longer extension)
-        $result = $view->render($filename);
-        $this->assertStringStartsWith('[blade.php]', $result);
+        $this->assertSame(
+            'Test blade.php',
+            $view->render($filename)
+        );
     }
 
     public function testLocalize(): void
