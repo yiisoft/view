@@ -10,12 +10,14 @@ use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use stdClass;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\PhpTemplateRenderer;
+use Yiisoft\View\TemplateRendererInterface;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
@@ -229,6 +231,79 @@ PHP
         $this->assertSame(
             'Test ' . $extension,
             $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
+        );
+    }
+
+    public function testWithRenderersEmptyExtensionThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Empty extension is not supported. Please add extension for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            '' => new PhpTemplateRenderer(),
+        ]);
+    }
+
+    public function testWithRenderersInvalidRendererTypeThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Render stdClass is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => new stdClass(),
+        ]);
+    }
+
+    /**
+     * @link https://github.com/yiisoft/view/issues/289
+     */
+    public function testDoubleExtensionRenderer(): void
+    {
+        $filename = 'test.blade.php';
+
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+            ->withRenderers([
+                'blade.php' => new PhpTemplateRenderer(),
+            ]);
+        file_put_contents("$this->tempDirectory/$filename", 'Test blade.php');
+
+        $this->assertSame(
+            'Test blade.php',
+            $view->render($filename)
+        );
+    }
+
+    /**
+     * @link https://github.com/yiisoft/view/issues/289
+     * @todo remove?
+     */
+    public function testDoubleExtensionRendererAsFallback(): void
+    {
+        $filename = 'test';
+
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+            ->withRenderers([
+                'blade.php' => new PhpTemplateRenderer(),
+            ])
+            ->withFallbackExtension('blade.php');
+
+        file_put_contents("$this->tempDirectory/$filename.blade.php", 'Test blade.php');
+
+        $this->assertSame(
+            'Test blade.php',
+            $view->render($filename)
         );
     }
 

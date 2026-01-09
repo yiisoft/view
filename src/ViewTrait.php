@@ -87,6 +87,27 @@ trait ViewTrait
      */
     public function withRenderers(array $renderers): static
     {
+        foreach ($renderers as $extension => $renderer) {
+            if ($extension === '') {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Empty extension is not supported. Please add extension for %s.',
+                        $renderer::class
+                    )
+                );
+            }
+
+            if (!$renderer instanceof TemplateRendererInterface) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Render %s is not an instance of %s.',
+                        $renderer::class,
+                        TemplateRendererInterface::class
+                    )
+                );
+            }
+        }
+
         $new = clone $this;
         $new->renderers = $renderers;
         return $new;

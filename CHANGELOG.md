@@ -2,6 +2,7 @@
 
 ## 12.2.3 under development
 
+- Bug #289: Fix template file searching for double extensions such as `blade.php` (@samdark)
 - Bug #295: Remove unnecessary `CacheKeyNormalizer` instance creation in `CachedContent` (@samdark)
 - Enh #295: Minor refactor `ViewTrait::getParameter()` and `ViewTrait::resolveViewFilePath()` (@samdark)
 
