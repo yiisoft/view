@@ -111,24 +111,11 @@ trait ViewTrait
             }
         }
 
-        $new = clone $this;
 
+        $new = clone $this;
         // Sort by extension length (descending) to match more specific extensions first
         uksort($renderers, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
         $new->renderers = $renderers;
-
-        $rendererExtensions = array_keys($renderers);
-        $existingFallbacks = $new->fallbackExtensions;
-
-        $fallbackExtensions = $rendererExtensions;
-        foreach ($existingFallbacks as $existingFallback) {
-            if (!in_array($existingFallback, $rendererExtensions, true)) {
-                $fallbackExtensions[] = $existingFallback;
-            }
-        }
-
-        $new->fallbackExtensions = $fallbackExtensions;
-
         return $new;
     }
 
@@ -658,6 +645,17 @@ trait ViewTrait
 
         if ($hasExtension && is_file($file)) {
             return $file;
+        }
+
+        foreach (array_keys($this->renderers) as $rendererExtension) {
+            if ($rendererExtension === '') {
+                continue;
+            }
+
+            $fileWithRendererExtension = $file . '.' . $rendererExtension;
+            if (is_file($fileWithRendererExtension)) {
+                return $fileWithRendererExtension;
+            }
         }
 
         foreach ($this->fallbackExtensions as $fallbackExtension) {
