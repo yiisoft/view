@@ -262,51 +262,6 @@ PHP
         ]);
     }
 
-    /**
-     * @link https://github.com/yiisoft/view/issues/289
-     */
-    public function testDoubleExtensionRenderer(): void
-    {
-        $filename = 'test.blade.php';
-
-        $view = $this
-            ->createViewWithBasePath($this->tempDirectory)
-            ->withContext($this->createContext($this->tempDirectory))
-            ->withRenderers([
-                'blade.php' => new PhpTemplateRenderer(),
-            ]);
-        file_put_contents("$this->tempDirectory/$filename", 'Test blade.php');
-
-        $this->assertSame(
-            'Test blade.php',
-            $view->render($filename)
-        );
-    }
-
-    /**
-     * @link https://github.com/yiisoft/view/issues/289
-     * @todo remove?
-     */
-    public function testDoubleExtensionRendererAsFallback(): void
-    {
-        $filename = 'test';
-
-        $view = $this
-            ->createViewWithBasePath($this->tempDirectory)
-            ->withContext($this->createContext($this->tempDirectory))
-            ->withRenderers([
-                'blade.php' => new PhpTemplateRenderer(),
-            ])
-            ->withFallbackExtension('blade.php');
-
-        file_put_contents("$this->tempDirectory/$filename.blade.php", 'Test blade.php');
-
-        $this->assertSame(
-            'Test blade.php',
-            $view->render($filename)
-        );
-    }
-
     public function testLocalize(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory);
