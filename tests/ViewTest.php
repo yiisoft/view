@@ -268,7 +268,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Extension must be a non-empty string, integer provided for ' . PhpTemplateRenderer::class . '.'
+            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.'
         );
 
         $view->withRenderers([
@@ -282,7 +282,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Extension must be a non-empty string, integer provided for ' . PhpTemplateRenderer::class . '.'
+            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.'
         );
 
         $view->withRenderers([
