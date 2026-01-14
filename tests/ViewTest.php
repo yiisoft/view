@@ -262,6 +262,34 @@ PHP
         ]);
     }
 
+    public function testWithRenderersNumericKeyImplicitThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Extension must be a non-empty string, integer provided for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            new PhpTemplateRenderer(),
+        ]);
+    }
+
+    public function testWithRenderersNumericKeyExplicitThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Extension must be a non-empty string, integer provided for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            0 => new PhpTemplateRenderer(),
+        ]);
+    }
+
     public function testLocalize(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory);

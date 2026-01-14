@@ -88,6 +88,16 @@ trait ViewTrait
     public function withRenderers(array $renderers): static
     {
         foreach ($renderers as $extension => $renderer) {
+            if (!is_string($extension)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Extension must be a non-empty string, %s provided for %s.',
+                        get_debug_type($extension),
+                        $renderer::class
+                    )
+                );
+            }
+
             if ($extension === '') {
                 throw new InvalidArgumentException(
                     sprintf(
