@@ -656,7 +656,7 @@ PHP
         $view = TestHelper::createView();
 
         $this->assertNotSame($view, $view->withBasePath(''));
-        $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
+        $this->assertNotSame($view, $view->withRenderers(['php' => new PhpTemplateRenderer()]));
         $this->assertNotSame($view, $view->withSourceLocale('en'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));
