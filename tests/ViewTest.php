@@ -262,6 +262,62 @@ PHP
         ]);
     }
 
+    public function testWithRenderersNullRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer null is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => null,
+        ]);
+    }
+
+    public function testWithRenderersStringRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer string is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => 'invalid-renderer',
+        ]);
+    }
+
+    public function testWithRenderersArrayRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer array is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => [],
+        ]);
+    }
+
+    public function testWithRenderersIntegerRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer int is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => 123,
+        ]);
+    }
+
     public function testWithRenderersNumericKeyImplicitThrowsException(): void
     {
         $view = TestHelper::createView();
