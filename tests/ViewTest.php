@@ -254,7 +254,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Render stdClass is not an instance of ' . TemplateRendererInterface::class . '.'
+            'Renderer stdClass is not an instance of ' . TemplateRendererInterface::class . '.'
         );
 
         $view->withRenderers([

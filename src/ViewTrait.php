@@ -112,7 +112,7 @@ trait ViewTrait
             if (!is_object($renderer) || !$renderer instanceof TemplateRendererInterface) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        'Render %s is not an instance of %s.',
+                        'Renderer %s is not an instance of %s.',
                         $rendererType,
                         TemplateRendererInterface::class
                     )
