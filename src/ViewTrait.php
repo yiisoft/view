@@ -98,20 +98,22 @@ trait ViewTrait
                 );
             }
 
+            $rendererType = is_object($renderer) ? $renderer::class : get_debug_type($renderer);
+
             if ($extension === '') {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Empty extension is not supported. Please add extension for %s.',
-                        $renderer::class
+                        $rendererType
                     )
                 );
             }
 
-            if (!$renderer instanceof TemplateRendererInterface) {
+            if (!is_object($renderer) || !$renderer instanceof TemplateRendererInterface) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Render %s is not an instance of %s.',
-                        $renderer::class,
+                        $rendererType,
                         TemplateRendererInterface::class
                     )
                 );
