@@ -98,7 +98,7 @@ trait ViewTrait
                 );
             }
 
-            $rendererType = is_object($renderer) ? $renderer::class : get_debug_type($renderer);
+            $rendererType = get_debug_type($renderer);
 
             if ($extension === '') {
                 throw new InvalidArgumentException(
