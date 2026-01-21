@@ -88,6 +88,7 @@ trait ViewTrait
     public function withRenderers(array $renderers): static
     {
         foreach ($renderers as $extension => $renderer) {
+            /** @psalm-suppress DocblockTypeContradiction */
             if (!is_string($extension)) {
                 throw new InvalidArgumentException(
                     sprintf(
@@ -109,6 +110,7 @@ trait ViewTrait
                 );
             }
 
+            /** @psalm-suppress DocblockTypeContradiction */
             if (!is_object($renderer) || !$renderer instanceof TemplateRendererInterface) {
                 throw new InvalidArgumentException(
                     sprintf(
