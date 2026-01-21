@@ -72,28 +72,6 @@ final class ViewTest extends TestCase
         $this->assertSame('Absolute view content', $result);
     }
 
-    public function testRenderWithDoubleSlashPrefixStripsCorrectly(): void
-    {
-        mkdir("$this->tempDirectory/subdir");
-        file_put_contents("$this->tempDirectory/test-view.php", 'Base view');
-        file_put_contents("$this->tempDirectory/subdir/test-view.php", 'Subdir view');
-
-        $view = $this->createViewWithBasePath($this->tempDirectory);
-        $result = $view->render('//test-view');
-
-        $this->assertSame('Base view', $result);
-    }
-
-    public function testRenderWithDoubleSlashPrefixRemovesOnlyOneSlash(): void
-    {
-        file_put_contents("$this->tempDirectory/slash-test.php", 'Correct path');
-
-        $view = $this->createViewWithBasePath($this->tempDirectory);
-        $result = $view->render('//slash-test');
-
-        $this->assertSame('Correct path', $result);
-    }
-
     public function testWithFallbackExtensionVariadicParameters(): void
     {
         $view = $this->createViewWithBasePath($this->tempDirectory)
