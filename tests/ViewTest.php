@@ -781,7 +781,7 @@ PHP
     public function testViewFilesStackIsProperlyMaintained(): void
     {
         file_put_contents("$this->tempDirectory/outer.php", "<?php echo \$this->render('inner'); ?>");
-        file_put_contents("$this->tempDirectory/inner.php", "<?php echo \$this->getViewFile(); ?>");
+        file_put_contents("$this->tempDirectory/inner.php", '<?php echo $this->getViewFile(); ?>');
 
         $view = $this->createViewWithBasePath($this->tempDirectory);
         $result = $view->render('outer');
@@ -792,7 +792,7 @@ PHP
     public function testViewFilesStackIsPoppedAfterRender(): void
     {
         file_put_contents("$this->tempDirectory/outer.php", "<?php echo \$this->render('inner'); echo '|'; echo \$this->getViewFile(); ?>");
-        file_put_contents("$this->tempDirectory/inner.php", "inner");
+        file_put_contents("$this->tempDirectory/inner.php", 'inner');
 
         $view = $this->createViewWithBasePath($this->tempDirectory);
         $result = $view->render('outer');
