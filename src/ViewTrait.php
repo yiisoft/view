@@ -87,6 +87,41 @@ trait ViewTrait
      */
     public function withRenderers(array $renderers): static
     {
+        foreach ($renderers as $extension => $renderer) {
+            /** @psalm-suppress DocblockTypeContradiction */
+            if (!is_string($extension)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Extension must be a non-empty string, %s provided for %s.',
+                        get_debug_type($extension),
+                        $renderer::class
+                    )
+                );
+            }
+
+            $rendererType = get_debug_type($renderer);
+
+            if ($extension === '') {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Empty extension is not supported. Please add extension for %s.',
+                        $rendererType
+                    )
+                );
+            }
+
+            /** @psalm-suppress DocblockTypeContradiction */
+            if (!is_object($renderer) || !$renderer instanceof TemplateRendererInterface) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Renderer %s is not an instance of %s.',
+                        $rendererType,
+                        TemplateRendererInterface::class
+                    )
+                );
+            }
+        }
+
         $new = clone $this;
         $new->renderers = $renderers;
         return $new;

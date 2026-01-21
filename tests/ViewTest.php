@@ -10,12 +10,14 @@ use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use stdClass;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Event\View\PageBegin;
 use Yiisoft\View\Event\View\PageEnd;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\PhpTemplateRenderer;
+use Yiisoft\View\TemplateRendererInterface;
 use Yiisoft\View\Tests\TestSupport\TestHelper;
 use Yiisoft\View\Tests\TestSupport\TestTrait;
 use Yiisoft\View\Theme;
@@ -230,6 +232,118 @@ PHP
             'Test ' . $extension,
             $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
         );
+    }
+
+    public function testWithRenderersEmptyExtensionThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Empty extension is not supported. Please add extension for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            '' => new PhpTemplateRenderer(),
+        ]);
+    }
+
+    public function testWithRenderersInvalidRendererTypeThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer stdClass is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => new stdClass(),
+        ]);
+    }
+
+    public function testWithRenderersNullRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer null is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => null,
+        ]);
+    }
+
+    public function testWithRenderersStringRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer string is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => 'invalid-renderer',
+        ]);
+    }
+
+    public function testWithRenderersArrayRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer array is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => [],
+        ]);
+    }
+
+    public function testWithRenderersIntegerRendererThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Renderer int is not an instance of ' . TemplateRendererInterface::class . '.'
+        );
+
+        $view->withRenderers([
+            'php' => 123,
+        ]);
+    }
+
+    public function testWithRenderersNumericKeyImplicitThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            new PhpTemplateRenderer(),
+        ]);
+    }
+
+    public function testWithRenderersNumericKeyExplicitThrowsException(): void
+    {
+        $view = TestHelper::createView();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.'
+        );
+
+        $view->withRenderers([
+            0 => new PhpTemplateRenderer(),
+        ]);
     }
 
     public function testLocalize(): void
@@ -598,7 +712,7 @@ PHP
         $view = TestHelper::createView();
 
         $this->assertNotSame($view, $view->withBasePath(''));
-        $this->assertNotSame($view, $view->withRenderers([new PhpTemplateRenderer()]));
+        $this->assertNotSame($view, $view->withRenderers(['php' => new PhpTemplateRenderer()]));
         $this->assertNotSame($view, $view->withSourceLocale('en'));
         $this->assertNotSame($view, $view->withContext($this->createContext($this->tempDirectory)));
         $this->assertNotSame($view, $view->withContextPath(__DIR__));

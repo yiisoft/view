@@ -2,6 +2,7 @@
 
 ## 12.2.3 under development
 
+- Enh #289: Add validation of renderers configuration to `ViewTrait::withRenderers()`  (@samdark)
 - Bug #295: Remove unnecessary `CacheKeyNormalizer` instance creation in `CachedContent` (@samdark)
 - Enh #295: Minor refactor `ViewTrait::getParameter()` and `ViewTrait::resolveViewFilePath()` (@samdark)
 
