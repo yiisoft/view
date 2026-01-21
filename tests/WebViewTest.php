@@ -475,6 +475,26 @@ final class WebViewTest extends TestCase
         $this->assertSame($content, $html);
     }
 
+    public function testRenderAjaxHasJsInHead(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->registerJs('console.log("ajax");');
+
+        $html = $webView->renderAjax('//only-content.php', ['content' => 'test']);
+
+        $this->assertStringContainsString('console.log("ajax");', $html);
+    }
+
+    public function testRenderAjaxDispatchesBodyBeginEvent(): void
+    {
+        $eventDispatcher = new SimpleEventDispatcher();
+        $webView = TestHelper::createWebView($eventDispatcher);
+
+        $webView->renderAjax('//only-content.php', ['content' => 'test']);
+
+        $this->assertContains(BodyBegin::class, $eventDispatcher->getEventClasses());
+    }
+
     public function testRenderAjaxString(): void
     {
         $eventDispatcher = new SimpleEventDispatcher();
@@ -494,6 +514,46 @@ final class WebViewTest extends TestCase
             ],
             $eventDispatcher->getEventClasses()
         );
+    }
+
+    public function testRenderAjaxStringHasJsAtPositionEnd(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->registerJs('console.log("ajax-string");', WebView::POSITION_END);
+
+        $result = $webView->renderAjaxString('test content');
+
+        $this->assertStringContainsString('console.log("ajax-string");', $result);
+    }
+
+    public function testRenderAjaxStringHasJsAtPositionLoad(): void
+    {
+        $webView = TestHelper::createWebView();
+        $webView->registerJs('console.log("load");', WebView::POSITION_LOAD);
+
+        $result = $webView->renderAjaxString('test content');
+
+        $this->assertStringContainsString('console.log("load");', $result);
+    }
+
+    public function testEndPageClearsState(): void
+    {
+        $webView = TestHelper::createWebView();
+
+        $webView->registerJs('console.log("test");');
+        ob_start();
+        $webView->beginPage();
+        echo '<!DOCTYPE html><html><head>{{{head}}}</head><body>{{{beginBody}}}{{{endBody}}}</body></html>';
+        $webView->endPage();
+        ob_end_clean();
+
+        ob_start();
+        $webView->beginPage();
+        echo '<!DOCTYPE html><html><head>{{{head}}}</head><body>{{{beginBody}}}{{{endBody}}}</body></html>';
+        $webView->endPage();
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString('console.log("test");', $output);
     }
 
     public function testRenderEvents(): void
@@ -863,6 +923,7 @@ final class WebViewTest extends TestCase
             ['Do not set JS variable name.', [[]]],
             ['JS variable name should be string. Got int.', [[42]]],
             ['Do not set JS variable value.', [['var']]],
+            ['Do not set JS variable value.', [['var', null => 'test']]],
             ['Invalid position of JS variable.', [['title', 'hello', 99]]],
         ];
     }
