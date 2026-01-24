@@ -44,8 +44,12 @@ trait ViewTrait
     private array $fallbackExtensions = [self::PHP_EXTENSION];
 
     /**
-     * @var array A list of available renderers indexed by their corresponding
-     * supported file extensions.
+     * @var array A list of available renderers indexed by their corresponding supported file extensions.
+     *
+     * The renderers are stored in descending order by extension length (longest first).
+     * This ensures that more specific extensions (e.g., "blade.php") are matched before
+     * shorter ones (e.g., "php").
+     *
      * @psalm-var array<string, TemplateRendererInterface>
      */
     private array $renderers = [];
@@ -121,6 +125,11 @@ trait ViewTrait
                 );
             }
         }
+
+        uksort(
+            $renderers,
+            static fn(string $a, string $b): int => strlen($b) <=> strlen($a)
+        );
 
         $new = clone $this;
         $new->renderers = $renderers;
@@ -477,9 +486,7 @@ trait ViewTrait
         ];
 
         if ($this->beforeRender($viewFile, $parameters)) {
-            $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
-            $renderer = $this->renderers[$ext] ?? new PhpTemplateRenderer();
-            $output = $renderer->render($this, $viewFile, $parameters);
+            $output = $this->getRenderer($viewFile)->render($this, $viewFile, $parameters);
             $output = $this->afterRender($viewFile, $parameters, $output);
         }
 
@@ -567,6 +574,27 @@ trait ViewTrait
         array $parameters,
         string $result
     ): AfterRenderEventInterface;
+
+    /**
+     * Returns the appropriate template renderer for the given view file.
+     *
+     * Selects a renderer based on the view file extension. If no matching renderer is found
+     * for the file extension, returns a default {@see PhpTemplateRenderer}.
+     *
+     * @param string $viewFile The view file path.
+     *
+     * @return TemplateRendererInterface The template renderer instance.
+     */
+    private function getRenderer(string $viewFile): TemplateRendererInterface
+    {
+        $fileName = basename($viewFile);
+        foreach ($this->renderers as $extension => $renderer) {
+            if (str_ends_with($fileName, '.' . $extension)) {
+                return $renderer;
+            }
+        }
+        return new PhpTemplateRenderer();
+    }
 
     /**
      * This method is invoked right before {@see render()} renders a view file.
