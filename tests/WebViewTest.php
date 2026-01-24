@@ -923,7 +923,7 @@ final class WebViewTest extends TestCase
             ['Do not set JS variable name.', [[]]],
             ['JS variable name should be string. Got int.', [[42]]],
             ['Do not set JS variable value.', [['var']]],
-            ['Do not set JS variable value.', [['var', null => 'test']]],
+            ['Do not set JS variable value.', [['var', '' => 'test']]],
             ['Invalid position of JS variable.', [['title', 'hello', 99]]],
         ];
     }
