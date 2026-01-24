@@ -82,8 +82,9 @@
         }
     },
     "scripts": {
+        "bench": "phpbench run",
+        "infection": "infection --threads=max",
         "test": "phpunit --testdox --no-interaction",
-        "test-watch": "phpunit-watcher watch",
-        "bench": "phpbench run"
+        "test-watch": "phpunit-watcher watch"
     }
 }
