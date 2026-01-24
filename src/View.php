@@ -98,7 +98,7 @@ final class View implements ViewInterface
     protected function createAfterRenderEvent(
         string $viewFile,
         array $parameters,
-        string $result
+        string $result,
     ): AfterRenderEventInterface {
         return new AfterRender($this, $viewFile, $parameters, $result);
     }

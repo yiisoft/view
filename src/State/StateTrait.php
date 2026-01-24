@@ -7,6 +7,7 @@ namespace Yiisoft\View\State;
 use InvalidArgumentException;
 
 use function is_array;
+use function sprintf;
 
 /**
  * @internal
@@ -70,7 +71,7 @@ trait StateTrait
         $array = $this->parameters[$id] ?? [];
         if (!is_array($array)) {
             throw new InvalidArgumentException(
-                sprintf('The "%s" parameter already exists and is not an array.', $id)
+                sprintf('The "%s" parameter already exists and is not an array.', $id),
             );
         }
 

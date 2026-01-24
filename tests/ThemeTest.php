@@ -174,7 +174,7 @@ final class ThemeTest extends TestCase
     public function testInvalidPathMapValue(): void
     {
         $this->expectExceptionMessage(
-            'The path map should contain the mapping between view directories and corresponding theme directories.'
+            'The path map should contain the mapping between view directories and corresponding theme directories.',
         );
         $this->expectException(InvalidArgumentException::class);
 

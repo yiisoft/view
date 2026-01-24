@@ -21,9 +21,8 @@ final class BeforeRender implements StoppableEventInterface
     public function __construct(
         private readonly View $view,
         private readonly string $file,
-        private readonly array $parameters
-    ) {
-    }
+        private readonly array $parameters,
+    ) {}
 
     public function stopPropagation(): void
     {

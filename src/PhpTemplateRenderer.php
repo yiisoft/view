@@ -14,6 +14,8 @@ use function ob_get_level;
 use function ob_implicit_flush;
 use function ob_start;
 
+use const EXTR_OVERWRITE;
+
 /**
  * `PhpTemplateRenderer` renders the PHP views.
  */

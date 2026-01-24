@@ -201,7 +201,7 @@ final class Theme
             }
 
             /** @var mixed $destination */
-            foreach ((array)$destinations as $destination) {
+            foreach ((array) $destinations as $destination) {
                 if (!is_string($destination)) {
                     $this->throwInvalidPathMapException();
                 }
@@ -212,7 +212,7 @@ final class Theme
     private function throwInvalidPathMapException(): never
     {
         throw new InvalidArgumentException(
-            'The path map should contain the mapping between view directories and corresponding theme directories.'
+            'The path map should contain the mapping between view directories and corresponding theme directories.',
         );
     }
 }

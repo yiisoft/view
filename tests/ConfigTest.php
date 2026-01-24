@@ -83,11 +83,10 @@ final class ConfigTest extends TestCase
         return new Container(
             ContainerConfig::create()->withDefinitions(
                 $this->getDiConfig($postfix, $params)
-                +
-                [
+                + [
                     EventDispatcherInterface::class => new SimpleEventDispatcher(),
-                ]
-            )
+                ],
+            ),
         );
     }
 

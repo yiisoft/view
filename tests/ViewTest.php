@@ -34,6 +34,8 @@ use function ob_get_level;
 use function sprintf;
 use function symlink;
 
+use const DIRECTORY_SEPARATOR;
+
 final class ViewTest extends TestCase
 {
     use TestTrait;
@@ -98,14 +100,14 @@ final class ViewTest extends TestCase
             <<<'PHP'
 <h1>Exception</h1>
 <?php throw new Exception('Test Exception'); ?>
-PHP
+PHP,
         );
         $normalViewFile = $this->tempDirectory . DIRECTORY_SEPARATOR . 'no-exception.php';
         file_put_contents(
             $normalViewFile,
             <<<'PHP'
 <h1>No Exception</h1>
-PHP
+PHP,
         );
 
         $obInitialLevel = ob_get_level();
@@ -126,9 +128,9 @@ PHP
 
         $this->expectException(ViewNotFoundException::class);
         $this->expectExceptionMessage(
-            'The view file "' .
-            __DIR__ . '/public/tmp/View/not-exist.php' .
-            '" does not exist.'
+            'The view file "'
+            . __DIR__ . '/public/tmp/View/not-exist.php'
+            . '" does not exist.',
         );
 
         $view->render('not-exist.php');
@@ -144,7 +146,7 @@ PHP
             $baseView,
             <<<'PHP'
             <?= $this->render('./sub') ?>
-            PHP
+            PHP,
         );
 
         $subView = "{$this->tempDirectory}/sub.php";
@@ -173,7 +175,7 @@ PHP
             $baseView,
             <<<'PHP'
             <?= $this->render('./sub/sub') ?>
-            PHP
+            PHP,
         );
 
         $subViewPath = $baseViewPath . DIRECTORY_SEPARATOR . 'sub';
@@ -194,7 +196,7 @@ PHP
     public function testWithContextPath(): void
     {
         $view = TestHelper::createView()->withContextPath(
-            __DIR__ . '/public/view/custom-context'
+            __DIR__ . '/public/view/custom-context',
         );
 
         $this->assertSame('42', $view->render('view'));
@@ -253,7 +255,7 @@ PHP
 
         $this->assertSame(
             'Test ' . $extension,
-            $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
+            $view->withFallbackExtension(...$fallbackExtensions)->render($filename),
         );
     }
 
@@ -289,7 +291,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Empty extension is not supported. Please add extension for ' . PhpTemplateRenderer::class . '.'
+            'Empty extension is not supported. Please add extension for ' . PhpTemplateRenderer::class . '.',
         );
 
         $view->withRenderers([
@@ -303,7 +305,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Renderer stdClass is not an instance of ' . TemplateRendererInterface::class . '.'
+            'Renderer stdClass is not an instance of ' . TemplateRendererInterface::class . '.',
         );
 
         $view->withRenderers([
@@ -317,7 +319,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Renderer null is not an instance of ' . TemplateRendererInterface::class . '.'
+            'Renderer null is not an instance of ' . TemplateRendererInterface::class . '.',
         );
 
         $view->withRenderers([
@@ -331,7 +333,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Renderer string is not an instance of ' . TemplateRendererInterface::class . '.'
+            'Renderer string is not an instance of ' . TemplateRendererInterface::class . '.',
         );
 
         $view->withRenderers([
@@ -345,7 +347,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Renderer array is not an instance of ' . TemplateRendererInterface::class . '.'
+            'Renderer array is not an instance of ' . TemplateRendererInterface::class . '.',
         );
 
         $view->withRenderers([
@@ -359,7 +361,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Renderer int is not an instance of ' . TemplateRendererInterface::class . '.'
+            'Renderer int is not an instance of ' . TemplateRendererInterface::class . '.',
         );
 
         $view->withRenderers([
@@ -373,7 +375,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.'
+            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.',
         );
 
         $view->withRenderers([
@@ -387,7 +389,7 @@ PHP
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.'
+            'Extension must be a non-empty string, int provided for ' . PhpTemplateRenderer::class . '.',
         );
 
         $view->withRenderers([
@@ -519,7 +521,7 @@ PHP
         $currentLocale = 'de-DE';
         $this->assertSame(
             $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLocale . DIRECTORY_SEPARATOR . 'faq.php',
-            $view->localize($viewFile, $currentLocale, $sourceLocale)
+            $view->localize($viewFile, $currentLocale, $sourceLocale),
         );
     }
 
@@ -669,7 +671,7 @@ PHP
 
         $this->assertSame(
             dechex(crc32('apple')),
-            $view->getPlaceholderSignature()
+            $view->getPlaceholderSignature(),
         );
     }
 
@@ -875,9 +877,7 @@ PHP
     private function createContext(string $viewPath): ViewContextInterface
     {
         return new class ($viewPath) implements ViewContextInterface {
-            public function __construct(private readonly string $viewPath)
-            {
-            }
+            public function __construct(private readonly string $viewPath) {}
 
             public function getViewPath(): string
             {

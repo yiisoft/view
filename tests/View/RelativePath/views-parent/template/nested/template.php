@@ -1,9 +1,10 @@
 <?php
 
 declare(strict_types=1);
+use Yiisoft\View\View;
 
 /**
- * @var \Yiisoft\View\View $this
+ * @var View $this
  */
 
 echo 'THIS IS TEMPLATE. ';

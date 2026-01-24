@@ -12,9 +12,8 @@ use Yiisoft\View\Theme;
 final class ThemeState
 {
     public function __construct(
-        private ?Theme $theme = null
-    ) {
-    }
+        private ?Theme $theme = null,
+    ) {}
 
     /**
      * Set the specified view theme.

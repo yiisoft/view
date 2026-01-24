@@ -31,7 +31,7 @@ final class MultiRendererBench
                 /** @var \Yiisoft\View\View $this */
 
                 echo 'PHP view';
-                PHP_WRAP
+                PHP_WRAP,
             );
         }
 
@@ -47,13 +47,13 @@ final class MultiRendererBench
 
         $this->view = (new View($basePath, new SimpleEventDispatcher()))
             ->withRenderers([
-                'blade' => new class () implements TemplateRendererInterface {
+                'blade' => new class implements TemplateRendererInterface {
                     public function render(ViewInterface $view, string $template, array $parameters): string
                     {
                         return file_get_contents($template);
                     }
                 },
-                'tpl' => new class () implements TemplateRendererInterface {
+                'tpl' => new class implements TemplateRendererInterface {
                     public function render(ViewInterface $view, string $template, array $parameters): string
                     {
                         return file_get_contents($template);
