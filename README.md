@@ -9,7 +9,7 @@
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/view/v)](https://packagist.org/packages/yiisoft/view)
 [![Total Downloads](https://poser.pugx.org/yiisoft/view/downloads)](https://packagist.org/packages/yiisoft/view)
 [![Build status](https://github.com/yiisoft/view/actions/workflows/build.yml/badge.svg)](https://github.com/yiisoft/view/actions/workflows/build.yml)
-[![Code Coverage](https://codecov.io/gh/yiisoft/view/graph/badge.svg?token=V9PmRxWk9L)](https://codecov.io/gh/yiisoft/view)
+[![Code Coverage](https://codecov.io/gh/yiisoft/view/branch/master/graph/badge.svg)](https://codecov.io/gh/yiisoft/view)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Fview%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/view/master)
 [![Static analysis](https://github.com/yiisoft/view/actions/workflows/static.yml/badge.svg?branch=master)](https://github.com/yiisoft/view/actions/workflows/static.yml?query=branch%3Amaster)
 [![type-coverage](https://shepherd.dev/github/yiisoft/view/coverage.svg)](https://shepherd.dev/github/yiisoft/view)
