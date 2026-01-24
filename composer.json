@@ -84,7 +84,7 @@
     "scripts": {
         "bench": "phpbench run",
         "infection": "infection --threads=max",
-        "test": "phpunit --testdox --no-interaction",
+        "test": "phpunit --testdox",
         "test-watch": "phpunit-watcher watch"
     }
 }
