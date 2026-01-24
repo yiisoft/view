@@ -38,13 +38,13 @@
         "bamarni/composer-bin-plugin": "^1.8.3",
         "maglnet/composer-require-checker": "^4.7.1",
         "phpbench/phpbench": "^1.4.3",
-        "phpunit/phpunit": "^10.5.48",
-        "rector/rector": "^2.1.2",
-        "spatie/phpunit-watcher": "^1.24",
-        "yiisoft/aliases": "^3.0",
-        "yiisoft/di": "^1.4",
+        "phpunit/phpunit": "^10.5.60",
+        "rector/rector": "^2.3.4",
+        "spatie/phpunit-watcher": "^1.24.4",
+        "yiisoft/aliases": "^3.1.1",
+        "yiisoft/di": "^1.4.1",
         "yiisoft/psr-dummy-provider": "^1.0.2",
-        "yiisoft/test-support": "^3.0.2"
+        "yiisoft/test-support": "^3.1.0"
     },
     "extra": {
         "config-plugin-options": {
