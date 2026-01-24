@@ -62,6 +62,29 @@ final class ViewTest extends TestCase
         $this->assertSame('42', $result);
     }
 
+    public function testRenderWithDoubleSlashPrefix(): void
+    {
+        file_put_contents("$this->tempDirectory/absolute-view.php", 'Absolute view content');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        $result = $view->render('//absolute-view');
+
+        $this->assertSame('Absolute view content', $result);
+    }
+
+    public function testWithFallbackExtensionVariadicParameters(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+            ->withFallbackExtension('tpl', 'twig', 'blade');
+
+        file_put_contents("$this->tempDirectory/test.blade", 'Blade content');
+
+        $result = $view->render('test');
+
+        $this->assertSame('Blade content', $result);
+    }
+
     /**
      * @link https://github.com/yiisoft/yii2/issues/13058
      */
@@ -232,6 +255,32 @@ PHP
             'Test ' . $extension,
             $view->withFallbackExtension(...$fallbackExtensions)->render($filename)
         );
+    }
+
+    public function testRenderFileWithExtension(): void
+    {
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory));
+        file_put_contents("$this->tempDirectory/test.php", 'Content with extension');
+
+        $result = $view->render('test.php');
+
+        $this->assertSame('Content with extension', $result);
+    }
+
+    public function testRenderFileWithExtensionIgnoresFallback(): void
+    {
+        $view = $this
+            ->createViewWithBasePath($this->tempDirectory)
+            ->withContext($this->createContext($this->tempDirectory))
+            ->withFallbackExtension('tpl');
+        file_put_contents("$this->tempDirectory/test.php", 'PHP content');
+        file_put_contents("$this->tempDirectory/test.php.tpl", 'TPL content');
+
+        $result = $view->render('test.php');
+
+        $this->assertSame('PHP content', $result);
     }
 
     public function testWithRenderersEmptyExtensionThrowsException(): void
@@ -474,6 +523,24 @@ PHP
         );
     }
 
+    public function testLocalizeReturnsOriginalFileWhenLocaleMatchesSourceLocale(): void
+    {
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        $this->createFileStructure([
+            'views' => [
+                'test.php' => 'Test content',
+                'en' => [
+                    'test.php' => 'Should not be used',
+                ],
+            ],
+        ], $this->tempDirectory);
+
+        $viewFile = $this->tempDirectory . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'test.php';
+        $result = $view->localize($viewFile, 'en', 'en');
+
+        $this->assertSame($viewFile, $result);
+    }
+
     public function testParameter(): void
     {
         $view = TestHelper::createView();
@@ -689,6 +756,29 @@ PHP
         $this->assertSame($darkTheme, $view->getTheme());
     }
 
+    public function testViewFilesStackIsProperlyMaintained(): void
+    {
+        file_put_contents("$this->tempDirectory/outer.php", "<?php echo \$this->render('inner'); ?>");
+        file_put_contents("$this->tempDirectory/inner.php", '<?php echo $this->getViewFile(); ?>');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        $result = $view->render('outer');
+
+        $this->assertStringContainsString('inner.php', $result);
+    }
+
+    public function testViewFilesStackIsPoppedAfterRender(): void
+    {
+        file_put_contents("$this->tempDirectory/outer.php", "<?php echo \$this->render('inner'); echo '|'; echo \$this->getViewFile(); ?>");
+        file_put_contents("$this->tempDirectory/inner.php", 'inner');
+
+        $view = $this->createViewWithBasePath($this->tempDirectory);
+        $result = $view->render('outer');
+
+        $this->assertStringContainsString('outer.php', $result);
+        $this->assertStringNotContainsString('inner.php|', $result);
+    }
+
     public function testCommonStateForClonedViews(): void
     {
         $view = TestHelper::createView();
@@ -752,6 +842,16 @@ PHP
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The base path is not set.');
         $view->getBasePath();
+    }
+
+    public function testConstructorSetsPlaceholderSalt(): void
+    {
+        $view = new View();
+
+        $signature = $view->getPlaceholderSignature();
+
+        $this->assertNotEmpty($signature);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]+$/', $signature);
     }
 
     public function testResetBasePath(): void

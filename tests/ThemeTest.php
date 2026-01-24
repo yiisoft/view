@@ -102,6 +102,14 @@ final class ThemeTest extends TestCase
         $this->assertSame('test', $path);
     }
 
+    public function testApplyToWithEmptyPathMapReturnsOriginalPath(): void
+    {
+        $theme = new Theme([]);
+        $originalPath = '/app/views/test.php';
+        $result = $theme->applyTo($originalPath);
+        $this->assertSame($originalPath, $result);
+    }
+
     public function testApplyToBasicMapping(): void
     {
         $appPath = $this->getPath('/app/views');
