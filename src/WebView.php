@@ -194,7 +194,7 @@ final class WebView implements ViewInterface
      * Renders a view in response to an AJAX request.
      *
      * This method is similar to {@see render()} except that it will surround the view being rendered with the calls of
-     * {@see beginPage()}, {@see Head()}, {@see beginBody()}, {@see endBody()} and {@see endPage()}. By doing so, the
+     * {@see beginPage()}, {@see head()}, {@see beginBody()}, {@see endBody()} and {@see endPage()}. By doing so, the
      * method is able to inject into the rendering result with JS/CSS scripts and files that are registered with the
      * view.
      *
