@@ -13,6 +13,8 @@ use Yiisoft\View\Event\AfterRenderEventInterface;
 use Yiisoft\View\Exception\ViewNotFoundException;
 use Yiisoft\View\State\LocaleState;
 use Yiisoft\View\State\ThemeState;
+use Yiisoft\View\Event\View\AfterRender;
+use Yiisoft\View\Event\View\BeforeRender;
 
 use function array_merge;
 use function array_pop;
@@ -24,6 +26,13 @@ use function end;
 use function is_file;
 use function pathinfo;
 use function substr;
+use function is_object;
+use function is_string;
+use function sprintf;
+use function strlen;
+
+use const DIRECTORY_SEPARATOR;
+use const PATHINFO_EXTENSION;
 
 /**
  * `ViewTrait` could be used as a base implementation of {@see ViewInterface}.
@@ -67,7 +76,7 @@ trait ViewTrait
      *
      * @param string|null $basePath The base path to the view directory.
      */
-    public function withBasePath(string|null $basePath): static
+    public function withBasePath(?string $basePath): static
     {
         $new = clone $this;
         $new->basePath = $basePath;
@@ -98,8 +107,8 @@ trait ViewTrait
                     sprintf(
                         'Extension must be a non-empty string, %s provided for %s.',
                         get_debug_type($extension),
-                        $renderer::class
-                    )
+                        $renderer::class,
+                    ),
                 );
             }
 
@@ -109,8 +118,8 @@ trait ViewTrait
                 throw new InvalidArgumentException(
                     sprintf(
                         'Empty extension is not supported. Please add extension for %s.',
-                        $rendererType
-                    )
+                        $rendererType,
+                    ),
                 );
             }
 
@@ -120,15 +129,15 @@ trait ViewTrait
                     sprintf(
                         'Renderer %s is not an instance of %s.',
                         $rendererType,
-                        TemplateRendererInterface::class
-                    )
+                        TemplateRendererInterface::class,
+                    ),
                 );
             }
         }
 
         uksort(
             $renderers,
-            static fn(string $a, string $b): int => strlen($b) <=> strlen($a)
+            static fn(string $a, string $b): int => strlen($b) <=> strlen($a),
         );
 
         $new = clone $this;
@@ -166,7 +175,7 @@ trait ViewTrait
      *
      * @param ViewContextInterface|null $context The context under which the {@see render()} method is being invoked.
      */
-    public function withContext(ViewContextInterface|null $context): static
+    public function withContext(?ViewContextInterface $context): static
     {
         $new = clone $this;
         $new->context = $context;
@@ -572,7 +581,7 @@ trait ViewTrait
     abstract protected function createAfterRenderEvent(
         string $viewFile,
         array $parameters,
-        string $result
+        string $result,
     ): AfterRenderEventInterface;
 
     /**
@@ -599,8 +608,8 @@ trait ViewTrait
     /**
      * This method is invoked right before {@see render()} renders a view file.
      *
-     * The default implementations will trigger the {@see \Yiisoft\View\Event\View\BeforeRender}
-     * or {@see \Yiisoft\View\Event\WebView\BeforeRender} event. If you override this method,
+     * The default implementations will trigger the {@see BeforeRender}
+     * or {@see Event\WebView\BeforeRender} event. If you override this method,
      * make sure you call the parent implementation first.
      *
      * @param string $viewFile The view file to be rendered.
@@ -623,8 +632,8 @@ trait ViewTrait
     /**
      * This method is invoked right after {@see render()} renders a view file.
      *
-     * The default implementations will trigger the {@see \Yiisoft\View\Event\View\AfterRender}
-     * or {@see \Yiisoft\View\Event\WebView\AfterRender} event. If you override this method,
+     * The default implementations will trigger the {@see AfterRender}
+     * or {@see Event\WebView\AfterRender} event. If you override this method,
      * make sure you call the parent implementation first.
      *
      * @param string $viewFile The view file being rendered.

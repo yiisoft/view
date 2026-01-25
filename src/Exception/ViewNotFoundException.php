@@ -6,6 +6,4 @@ namespace Yiisoft\View\Exception;
 
 use Exception;
 
-final class ViewNotFoundException extends Exception
-{
-}
+final class ViewNotFoundException extends Exception {}

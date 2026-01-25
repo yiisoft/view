@@ -12,9 +12,8 @@ use Yiisoft\View\View;
 abstract class ViewEvent
 {
     final public function __construct(
-        private readonly View $view
-    ) {
-    }
+        private readonly View $view,
+    ) {}
 
     final public function getView(): View
     {

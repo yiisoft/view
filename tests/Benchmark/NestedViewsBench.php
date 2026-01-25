@@ -32,7 +32,7 @@ declare(strict_types=1);
 /** @var \Yiisoft\View\View $this */
 
 echo $this->render('./sub/sub');
-PHP
+PHP,
             );
         }
 

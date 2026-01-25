@@ -42,6 +42,7 @@
         "rector/rector": "^2.3.4",
         "spatie/phpunit-watcher": "^1.24.4",
         "yiisoft/aliases": "^3.1.1",
+        "yiisoft/code-style": "^1.0",
         "yiisoft/di": "^1.4.1",
         "yiisoft/psr-dummy-provider": "^1.0.2",
         "yiisoft/test-support": "^3.1.0"
@@ -83,6 +84,7 @@
     },
     "scripts": {
         "bench": "phpbench run",
+        "cs-fix": "php-cs-fixer fix",
         "infection": "infection --threads=max",
         "test": "phpunit --testdox",
         "test-watch": "phpunit-watcher watch"

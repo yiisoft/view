@@ -24,6 +24,8 @@ use Yiisoft\View\Event\WebView\PageEnd;
 use Yiisoft\View\State\LocaleState;
 use Yiisoft\View\State\ThemeState;
 use Yiisoft\View\State\WebViewState;
+use Yiisoft\Assets\AssetBundle;
+use Yiisoft\Assets\AssetManager;
 
 use function array_merge;
 use function implode;
@@ -41,10 +43,6 @@ use function strtr;
 final class WebView implements ViewInterface
 {
     use ViewTrait;
-
-    private WebViewState $state;
-    private LocaleState $localeState;
-    private ThemeState $themeState;
 
     /**
      * This means the location is in the head section.
@@ -86,6 +84,10 @@ final class WebView implements ViewInterface
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
     private const PLACEHOLDER_BODY_END = '<![CDATA[YII-BLOCK-BODY-END-%s]]>';
+
+    private WebViewState $state;
+    private LocaleState $localeState;
+    private ThemeState $themeState;
 
     /**
      * @param string|null $basePath The full path to the base directory of views.
@@ -192,7 +194,7 @@ final class WebView implements ViewInterface
      * Renders a view in response to an AJAX request.
      *
      * This method is similar to {@see render()} except that it will surround the view being rendered with the calls of
-     * {@see beginPage()}, {@see head()}, {@see beginBody()}, {@see endBody()} and {@see endPage()}. By doing so, the
+     * {@see beginPage()}, {@see self::head()}, {@see beginBody()}, {@see endBody()} and {@see endPage()}. By doing so, the
      * method is able to inject into the rendering result with JS/CSS scripts and files that are registered with the
      * view.
      *
@@ -365,7 +367,7 @@ final class WebView implements ViewInterface
         string $css,
         int $position = self::POSITION_HEAD,
         array $attributes = [],
-        ?string $key = null
+        ?string $key = null,
     ): self {
         $this->state->registerCss($css, $position, $attributes, $key);
         return $this;
@@ -382,7 +384,7 @@ final class WebView implements ViewInterface
         string $path,
         int $position = self::POSITION_HEAD,
         array $attributes = [],
-        ?string $key = null
+        ?string $key = null,
     ): self {
         $this->state->registerCssFromFile($path, $position, $attributes, $key);
         return $this;
@@ -403,11 +405,11 @@ final class WebView implements ViewInterface
      * Registers a CSS file.
      *
      * This method should be used for simple registration of CSS files. If you want to use features of
-     * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
-     * {@see \Yiisoft\Assets\AssetBundle}.
+     * {@see AssetManager} like appending timestamps to the URL and file publishing options, use
+     * {@see AssetBundle}.
      *
      * @param string $url The CSS file to be registered.
-     * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
+     * @param array $options the HTML attributes for the link tag. Please refer to {@see Html::cssFile()}
      * for the supported options.
      * @param string|null $key The key that identifies the CSS script file. If null, it will use $url as the key.
      * If two CSS files are registered with the same key, the latter will overwrite the former.
@@ -416,7 +418,7 @@ final class WebView implements ViewInterface
         string $url,
         int $position = self::POSITION_HEAD,
         array $options = [],
-        ?string $key = null
+        ?string $key = null,
     ): self {
         $this->state->registerCssFile($url, $position, $options, $key);
         return $this;
@@ -477,8 +479,8 @@ final class WebView implements ViewInterface
      * Registers a JS file.
      *
      * This method should be used for simple registration of JS files. If you want to use features of
-     * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
-     * {@see \Yiisoft\Assets\AssetBundle}.
+     * {@see AssetManager} like appending timestamps to the URL and file publishing options, use
+     * {@see AssetBundle}.
      *
      * @param string $url The JS file to be registered.
      * @param array $options The HTML attributes for the script tag. The following options are specially handled and
@@ -489,7 +491,7 @@ final class WebView implements ViewInterface
      *     * {@see POSITION_BEGIN}: at the beginning of the body section
      *     * {@see POSITION_END}: at the end of the body section. This is the default value.
      *
-     * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
+     * Please refer to {@see Html::javaScriptFile()} for other supported options.
      * @param string|null $key The key that identifies the JS script file. If null, it will use $url as the key.
      * If two JS files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
@@ -499,7 +501,7 @@ final class WebView implements ViewInterface
         string $url,
         int $position = self::POSITION_END,
         array $options = [],
-        ?string $key = null
+        ?string $key = null,
     ): self {
         $this->state->registerJsFile($url, $position, $options, $key);
         return $this;
@@ -568,7 +570,7 @@ final class WebView implements ViewInterface
     protected function createAfterRenderEvent(
         string $viewFile,
         array $parameters,
-        string $result
+        string $result,
     ): AfterRenderEventInterface {
         return new AfterRender($this, $viewFile, $parameters, $result);
     }
@@ -678,15 +680,15 @@ final class WebView implements ViewInterface
                 $lines[] = $this->generateJs($this->state->getJs()[self::POSITION_END]);
             }
             if (!empty($this->state->getJs()[self::POSITION_READY])) {
-                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" .
-                    $this->generateJsWithoutTag($this->state->getJs()[self::POSITION_READY]) .
-                    "\n});";
+                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n"
+                    . $this->generateJsWithoutTag($this->state->getJs()[self::POSITION_READY])
+                    . "\n});";
                 $lines[] = Html::script($js)->render();
             }
             if (!empty($this->state->getJs()[self::POSITION_LOAD])) {
-                $js = "window.addEventListener('load', function(event) {\n" .
-                    $this->generateJsWithoutTag($this->state->getJs()[self::POSITION_LOAD]) .
-                    "\n});";
+                $js = "window.addEventListener('load', function(event) {\n"
+                    . $this->generateJsWithoutTag($this->state->getJs()[self::POSITION_LOAD])
+                    . "\n});";
                 $lines[] = Html::script($js)->render();
             }
         }

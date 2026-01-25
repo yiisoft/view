@@ -22,7 +22,7 @@ final class DynamicContent
     public function __construct(
         private readonly string $id,
         callable $contentGenerator,
-        private readonly array $parameters = []
+        private readonly array $parameters = [],
     ) {
         $this->contentGenerator = $contentGenerator;
     }

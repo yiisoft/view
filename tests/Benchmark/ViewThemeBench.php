@@ -8,6 +8,8 @@ use Yiisoft\Test\Support\EventDispatcher\SimpleEventDispatcher;
 use Yiisoft\View\Theme;
 use Yiisoft\View\View;
 
+use function dirname;
+
 final class ViewThemeBench
 {
     private readonly View $view;

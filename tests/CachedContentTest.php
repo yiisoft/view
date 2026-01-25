@@ -43,7 +43,7 @@ final class CachedContentTest extends TestCase
         for ($counter = 0; $counter < 42; $counter++) {
             $dynamicContent = new DynamicContent(
                 'dynamic-test',
-                static fn ($params) => (string) $params['counter'],
+                static fn($params) => (string) $params['counter'],
                 ['counter' => $counter],
             );
 
@@ -64,7 +64,7 @@ final class CachedContentTest extends TestCase
         for ($counter = 0; $counter < 42; $counter++) {
             $dynamicContent = new DynamicContent(
                 'dynamic-test',
-                static fn ($params) => (string) $params['counter'],
+                static fn($params) => (string) $params['counter'],
                 ['counter' => $counter],
             );
 
@@ -82,7 +82,7 @@ final class CachedContentTest extends TestCase
         for ($counter = 0; $counter < 42; $counter++) {
             $dynamicContent = new DynamicContent(
                 'dynamic-test',
-                static fn ($params) => (string) $params['counter'],
+                static fn($params) => (string) $params['counter'],
                 ['counter' => $counter],
             );
 
@@ -112,7 +112,7 @@ final class CachedContentTest extends TestCase
 
     public function testCacheWithSimilarKey(): void
     {
-        $this->cache->getOrSet(CacheKeyNormalizer::normalize(['test']), static fn () => 'hello');
+        $this->cache->getOrSet(CacheKeyNormalizer::normalize(['test']), static fn() => 'hello');
 
         $cacheContent = new CachedContent('test', $this->cache);
         $cacheContent->cache('content');

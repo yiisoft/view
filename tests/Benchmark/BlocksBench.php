@@ -30,7 +30,7 @@ declare(strict_types=1);
 
 $this->setBlock('block-id-1', '...content of block1...');
 $this->setBlock('block-id-2', '...content of block2...');
-PHP
+PHP,
             );
         }
 
@@ -56,7 +56,7 @@ declare(strict_types=1);
 <?php else: ?>
     ... default content for block2 ...
 <?php endif; ?>
-PHP
+PHP,
             );
         }
 

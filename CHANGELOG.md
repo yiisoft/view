@@ -6,6 +6,7 @@
 - Bug #295: Remove unnecessary `CacheKeyNormalizer` instance creation in `CachedContent` (@samdark)
 - Enh #295: Minor refactor `ViewTrait::getParameter()` and `ViewTrait::resolveViewFilePath()` (@samdark)
 - Bug #300: Fix renderer selection for view files with double extensions (@vjik)
+- Enh #302: Explicitly import classes, functions, and constants in "use" section (@vjik)
 
 ## 12.2.2 December 07, 2025
 

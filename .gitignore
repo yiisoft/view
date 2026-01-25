@@ -34,11 +34,6 @@ composer.phar
 /phpunit.xml
 /.phpunit.cache
 
-# ignore dev installed apps and extensions
-/apps
-/extensions
-/packages
-
-# NPM packages
-/node_modules
-.env
+# PHP CS Fixer
+/.php-cs-fixer.cache
+/.php-cs-fixer.php

@@ -13,11 +13,14 @@ use Yiisoft\Html\Tag\Script;
 use Yiisoft\Html\Tag\Style;
 use Yiisoft\Json\Json;
 use Yiisoft\View\WebView;
+use Yiisoft\Assets\AssetBundle;
+use Yiisoft\Assets\AssetManager;
 
 use function array_key_exists;
 use function in_array;
 use function is_array;
 use function is_string;
+use function sprintf;
 
 /**
  * @internal
@@ -232,7 +235,7 @@ final class WebViewState
         string $css,
         int $position = WebView::POSITION_HEAD,
         array $attributes = [],
-        ?string $key = null
+        ?string $key = null,
     ): void {
         $this->css[$position][$key ?? md5($css)] = $attributes === [] ? $css : Html::style($css, $attributes);
     }
@@ -248,7 +251,7 @@ final class WebViewState
         string $path,
         int $position = WebView::POSITION_HEAD,
         array $attributes = [],
-        ?string $key = null
+        ?string $key = null,
     ): void {
         $css = file_get_contents($path);
         if ($css === false) {
@@ -272,11 +275,11 @@ final class WebViewState
      * Registers a CSS file.
      *
      * This method should be used for simple registration of CSS files. If you want to use features of
-     * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
-     * {@see \Yiisoft\Assets\AssetBundle}.
+     * {@see AssetManager} like appending timestamps to the URL and file publishing options, use
+     * {@see AssetBundle}.
      *
      * @param string $url The CSS file to be registered.
-     * @param array $options the HTML attributes for the link tag. Please refer to {@see \Yiisoft\Html\Html::cssFile()}
+     * @param array $options the HTML attributes for the link tag. Please refer to {@see Html::cssFile()}
      * for the supported options.
      * @param string|null $key The key that identifies the CSS script file. If `null`, it will use `$url` as the key.
      * If two CSS files are registered with the same key, the latter will overwrite the former.
@@ -285,7 +288,7 @@ final class WebViewState
         string $url,
         int $position = WebView::POSITION_HEAD,
         array $options = [],
-        ?string $key = null
+        ?string $key = null,
     ): void {
         if (!$this->isValidCssPosition($position)) {
             throw new InvalidArgumentException('Invalid position of CSS file.');
@@ -357,8 +360,8 @@ final class WebViewState
      * Registers a JS file.
      *
      * This method should be used for simple registration of JS files. If you want to use features of
-     * {@see \Yiisoft\Assets\AssetManager} like appending timestamps to the URL and file publishing options, use
-     * {@see \Yiisoft\Assets\AssetBundle}.
+     * {@see AssetManager} like appending timestamps to the URL and file publishing options, use
+     * {@see AssetBundle}.
      *
      * @param string $url The JS file to be registered.
      * @param array $options The HTML attributes for the script tag. The following options are specially handled and
@@ -369,7 +372,7 @@ final class WebViewState
      *     * {@see WebView::POSITION_BEGIN}: at the beginning of the body section
      *     * {@see WebView::POSITION_END}: at the end of the body section. This is the default value.
      *
-     * Please refer to {@see \Yiisoft\Html\Html::javaScriptFile()} for other supported options.
+     * Please refer to {@see Html::javaScriptFile()} for other supported options.
      * @param string|null $key The key that identifies the JS script file. If null, it will use $url as the key.
      * If two JS files are registered with the same key at the same position, the latter will overwrite the former.
      * Note that position option takes precedence, thus files registered with the same key, but different
@@ -379,7 +382,7 @@ final class WebViewState
         string $url,
         int $position = WebView::POSITION_END,
         array $options = [],
-        ?string $key = null
+        ?string $key = null,
     ): void {
         if (!$this->isValidJsPosition($position)) {
             throw new InvalidArgumentException('Invalid position of JS file.');
@@ -437,7 +440,7 @@ final class WebViewState
         foreach ($jsStrings as $key => $value) {
             $this->registerJsStringByConfig(
                 is_string($key) ? $key : null,
-                is_array($value) ? $value : [$value, WebView::POSITION_END]
+                is_array($value) ? $value : [$value, WebView::POSITION_END],
             );
         }
     }
@@ -492,7 +495,7 @@ final class WebViewState
                 sprintf(
                     'CSS file should be string. Got %s.',
                     get_debug_type($file),
-                )
+                ),
             );
         }
 
@@ -517,7 +520,7 @@ final class WebViewState
                 sprintf(
                     'CSS string should be string or instance of \\' . Style::class . '. Got %s.',
                     get_debug_type($css),
-                )
+                ),
             );
         }
 
@@ -567,7 +570,7 @@ final class WebViewState
                 sprintf(
                     'JS file should be string. Got %s.',
                     get_debug_type($file),
-                )
+                ),
             );
         }
 
@@ -592,7 +595,7 @@ final class WebViewState
                 sprintf(
                     'JS string should be string or instance of \\' . Script::class . '. Got %s.',
                     get_debug_type($js),
-                )
+                ),
             );
         }
 
@@ -626,7 +629,7 @@ final class WebViewState
                 sprintf(
                     'JS variable name should be string. Got %s.',
                     get_debug_type($key),
-                )
+                ),
             );
         }
 

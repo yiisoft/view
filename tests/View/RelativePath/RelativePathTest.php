@@ -31,7 +31,7 @@ final class RelativePathTest extends TestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            'Unable to resolve file for view "' . $template . '": no currently rendered view.'
+            'Unable to resolve file for view "' . $template . '": no currently rendered view.',
         );
         $view->render($template);
     }

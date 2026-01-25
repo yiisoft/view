@@ -20,9 +20,8 @@ final class AfterRender implements AfterRenderEventInterface
         private readonly View $view,
         private readonly string $file,
         private readonly array $parameters,
-        private readonly string $result
-    ) {
-    }
+        private readonly string $result,
+    ) {}
 
     public function getView(): View
     {

@@ -10,9 +10,8 @@ namespace Yiisoft\View\State;
 final class LocaleState
 {
     public function __construct(
-        private string $locale = 'en'
-    ) {
-    }
+        private string $locale = 'en',
+    ) {}
 
     /**
      * Set the specified locale code.

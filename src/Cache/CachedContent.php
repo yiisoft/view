@@ -40,7 +40,7 @@ final class CachedContent
         private readonly string $id,
         private readonly CacheInterface $cache,
         array $dynamicContents = [],
-        array $variations = []
+        array $variations = [],
     ) {
         $this->setDynamicContents($dynamicContents);
         $this->setVariations($variations);
@@ -61,8 +61,8 @@ final class CachedContent
     public function cache(
         string $content,
         DateInterval|int|null $ttl = 60,
-        Dependency|null $dependency = null,
-        float $beta = 1.0
+        ?Dependency $dependency = null,
+        float $beta = 1.0,
     ): string {
         /** @psalm-suppress MixedArgument */
         return $this->replaceDynamicPlaceholders(

@@ -139,7 +139,7 @@ final class WebViewTest extends TestCase
             <script src="main.js"></script>
             <script src="main.js"></script>[/ENDBODY]
             HTML,
-            $html
+            $html,
         );
     }
 
@@ -152,11 +152,11 @@ final class WebViewTest extends TestCase
         $webView->registerStyleTag($style);
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD]' . $style->render() . '[/HEAD]' . "\n" .
-            '[BEGINBODY][/BEGINBODY]' . "\n" .
-            '[ENDBODY][/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD]' . $style->render() . '[/HEAD]' . "\n"
+            . '[BEGINBODY][/BEGINBODY]' . "\n"
+            . '[ENDBODY][/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertSame($expected, $html);
     }
@@ -224,7 +224,7 @@ final class WebViewTest extends TestCase
             <link href="main.css" rel="stylesheet" data-x="1">
             <link href="main.css" rel="stylesheet" data-x="2">[/HEAD]
             HTML,
-            $html
+            $html,
         );
     }
 
@@ -414,7 +414,7 @@ final class WebViewTest extends TestCase
             .red{color:red;}
             .red{color:red;}
             CSS,
-            $html
+            $html,
         );
     }
 
@@ -443,7 +443,7 @@ final class WebViewTest extends TestCase
 
         $this->assertStringContainsString(
             '[HEAD]<style id="main">A { color: blue; }</style>[/HEAD]',
-            $html
+            $html,
         );
     }
 
@@ -453,7 +453,7 @@ final class WebViewTest extends TestCase
 
         $exception = null;
 
-        set_error_handler(static fn () => null);
+        set_error_handler(static fn() => null);
         try {
             $webView->registerCssFromFile('/non-exists-file.css');
         } catch (Throwable $e) {
@@ -512,7 +512,7 @@ final class WebViewTest extends TestCase
                 BodyEnd::class,
                 PageEnd::class,
             ],
-            $eventDispatcher->getEventClasses()
+            $eventDispatcher->getEventClasses(),
         );
     }
 
@@ -573,7 +573,7 @@ final class WebViewTest extends TestCase
                 PageEnd::class,
                 AfterRender::class,
             ],
-            $eventDispatcher->getEventClasses()
+            $eventDispatcher->getEventClasses(),
         );
     }
 
@@ -587,11 +587,11 @@ final class WebViewTest extends TestCase
         $webView->registerScriptTag($script);
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD][/HEAD]' . "\n" .
-            '[BEGINBODY][/BEGINBODY]' . "\n" .
-            '[ENDBODY]' . $script->render() . '[/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD][/HEAD]' . "\n"
+            . '[BEGINBODY][/BEGINBODY]' . "\n"
+            . '[ENDBODY]' . $script->render() . '[/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertSame($expected, $html);
     }
@@ -646,24 +646,24 @@ final class WebViewTest extends TestCase
         $html = $webView->render('layout.php', ['content' => '']);
 
         $this->assertStringContainsString(
-            "<script>$js1\n$js2</script>\n" .
-            $script3->render() . "\n" .
-            "<script>$js4</script>\n" .
-            $script5->render(),
-            $html
+            "<script>$js1\n$js2</script>\n"
+            . $script3->render() . "\n"
+            . "<script>$js4</script>\n"
+            . $script5->render(),
+            $html,
         );
         $this->assertStringContainsString(
-            "<script>document.addEventListener('DOMContentLoaded', function(event) {\n" .
-            $script6->getContent() . "\n" .
-            "$js7\n" .
-            '});</script>',
-            $html
+            "<script>document.addEventListener('DOMContentLoaded', function(event) {\n"
+            . $script6->getContent() . "\n"
+            . "$js7\n"
+            . '});</script>',
+            $html,
         );
         $this->assertStringContainsString(
-            "<script>window.addEventListener('load', function(event) {\n" .
-            "$js8\n" .
-            '});</script>',
-            $html
+            "<script>window.addEventListener('load', function(event) {\n"
+            . "$js8\n"
+            . '});</script>',
+            $html,
         );
     }
 
@@ -689,12 +689,12 @@ final class WebViewTest extends TestCase
         $webView->registerJs($js7, WebView::POSITION_READY);
         $html = $webView->renderAjax('//only-content.php', ['content' => '']);
 
-        $expected = "<script>$js1\n$js2</script>\n" .
-            $script3->render() . "\n" .
-            "<script>$js4</script>\n" .
-            $script5->render() . "\n" .
-            $script6->render() . "\n" .
-            "<script>$js7</script>";
+        $expected = "<script>$js1\n$js2</script>\n"
+            . $script3->render() . "\n"
+            . "<script>$js4</script>\n"
+            . $script5->render() . "\n"
+            . $script6->render() . "\n"
+            . "<script>$js7</script>";
 
         $this->assertSame($expected, $html);
     }
@@ -716,7 +716,7 @@ final class WebViewTest extends TestCase
             alert(1);
             alert(1);</script>
             JS,
-            $html
+            $html,
         );
     }
 
@@ -731,11 +731,11 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD]<link href="file-1.css" rel="stylesheet">[/HEAD]' . "\n" .
-            '[BEGINBODY]<link href="file-2.css" rel="stylesheet" crossorigin="anonymous">[/BEGINBODY]' . "\n" .
-            '[ENDBODY][/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD]<link href="file-1.css" rel="stylesheet">[/HEAD]' . "\n"
+            . '[BEGINBODY]<link href="file-2.css" rel="stylesheet" crossorigin="anonymous">[/BEGINBODY]' . "\n"
+            . '[ENDBODY][/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertSame($expected, $html);
     }
@@ -768,11 +768,11 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD][/HEAD]' . "\n" .
-            '[BEGINBODY]<script src="file-2.js" async></script>[/BEGINBODY]' . "\n" .
-            '[ENDBODY]<script src="file-1.js"></script>[/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD][/HEAD]' . "\n"
+            . '[BEGINBODY]<script src="file-2.js" async></script>[/BEGINBODY]' . "\n"
+            . '[ENDBODY]<script src="file-1.js"></script>[/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertSame($expected, $html);
     }
@@ -814,19 +814,19 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD]<style>.a1 { color: red; }' . "\n" .
-            '.a2 { color: red; }' . "\n" .
-            '.a5 { color: red; }' . "\n" .
-            '.a6 { color: red; }</style>' . "\n" .
-            '<style id="main">.a9 { color: red; }</style>' . "\n" .
-            '<style>.a10 { color: red; }</style>' . "\n" .
-            '<style id="second">.a11 { color: red; }</style>[/HEAD]' . "\n" .
-            '[BEGINBODY]<style>.a3 { color: red; }</style>[/BEGINBODY]' . "\n" .
-            '[ENDBODY]<style crossorigin="any">.a4 { color: red; }</style>' . "\n" .
-            '<style>.a7 { color: red; }</style>' . "\n" .
-            '<style crossorigin="any">.a8 { color: red; }</style>[/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD]<style>.a1 { color: red; }' . "\n"
+            . '.a2 { color: red; }' . "\n"
+            . '.a5 { color: red; }' . "\n"
+            . '.a6 { color: red; }</style>' . "\n"
+            . '<style id="main">.a9 { color: red; }</style>' . "\n"
+            . '<style>.a10 { color: red; }</style>' . "\n"
+            . '<style id="second">.a11 { color: red; }</style>[/HEAD]' . "\n"
+            . '[BEGINBODY]<style>.a3 { color: red; }</style>[/BEGINBODY]' . "\n"
+            . '[ENDBODY]<style crossorigin="any">.a4 { color: red; }</style>' . "\n"
+            . '<style>.a7 { color: red; }</style>' . "\n"
+            . '<style crossorigin="any">.a8 { color: red; }</style>[/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertEqualStringsIgnoringLineEndings($expected, $html);
     }
@@ -865,12 +865,12 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD]<script async>app4.start();</script>[/HEAD]' . "\n" .
-            '[BEGINBODY]<script>app3.start();</script>[/BEGINBODY]' . "\n" .
-            "[ENDBODY]<script>app1.start();\napp2.start();</script>\n" .
-            '<script type="application/ld+json">{"@type":"Article"}</script>[/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD]<script async>app4.start();</script>[/HEAD]' . "\n"
+            . '[BEGINBODY]<script>app3.start();</script>[/BEGINBODY]' . "\n"
+            . "[ENDBODY]<script>app1.start();\napp2.start();</script>\n"
+            . '<script type="application/ld+json">{"@type":"Article"}</script>[/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertSame($expected, $html);
     }
@@ -907,12 +907,12 @@ final class WebViewTest extends TestCase
 
         $html = $webView->render('positions.php');
 
-        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD]<script>var var1 = "value1";' . "\n" .
-            'var var2 = [1,2];</script>[/HEAD]' . "\n" .
-            '[BEGINBODY][/BEGINBODY]' . "\n" .
-            '[ENDBODY]<script>var var3 = "value3";</script>[/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]';
+        $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD]<script>var var1 = "value1";' . "\n"
+            . 'var var2 = [1,2];</script>[/HEAD]' . "\n"
+            . '[BEGINBODY][/BEGINBODY]' . "\n"
+            . '[ENDBODY]<script>var var3 = "value3";</script>[/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]';
 
         $this->assertSame($expected, $html);
     }
@@ -1012,12 +1012,12 @@ final class WebViewTest extends TestCase
         $this->assertSame('', $webView->getTitle());
 
         $this->assertSame(
-            '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD][/HEAD]' . "\n" .
-            '[BEGINBODY][/BEGINBODY]' . "\n" .
-            '[ENDBODY][/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]',
-            $webView->render('//positions.php')
+            '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD][/HEAD]' . "\n"
+            . '[BEGINBODY][/BEGINBODY]' . "\n"
+            . '[ENDBODY][/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]',
+            $webView->render('//positions.php'),
         );
     }
 
@@ -1044,12 +1044,12 @@ final class WebViewTest extends TestCase
         $this->assertNull($newWebView->getTheme());
 
         $this->assertSame(
-            '[BEGINPAGE][/BEGINPAGE]' . "\n" .
-            '[HEAD][/HEAD]' . "\n" .
-            '[BEGINBODY][/BEGINBODY]' . "\n" .
-            '[ENDBODY][/ENDBODY]' . "\n" .
-            '[ENDPAGE][/ENDPAGE]',
-            $newWebView->render('positions.php')
+            '[BEGINPAGE][/BEGINPAGE]' . "\n"
+            . '[HEAD][/HEAD]' . "\n"
+            . '[BEGINBODY][/BEGINBODY]' . "\n"
+            . '[ENDBODY][/ENDBODY]' . "\n"
+            . '[ENDPAGE][/ENDPAGE]',
+            $newWebView->render('positions.php'),
         );
     }
 
