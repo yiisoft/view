@@ -1,12 +1,12 @@
 # Yii View Change Log
 
-## 12.2.3 under development
+## 12.2.3 January 26, 2026
 
 - Enh #289: Add validation of renderers configuration to `ViewTrait::withRenderers()`  (@samdark)
-- Bug #295: Remove unnecessary `CacheKeyNormalizer` instance creation in `CachedContent` (@samdark)
 - Enh #295: Minor refactor `ViewTrait::getParameter()` and `ViewTrait::resolveViewFilePath()` (@samdark)
-- Bug #300: Fix renderer selection for view files with double extensions (@vjik)
 - Enh #302: Explicitly import classes, functions, and constants in "use" section (@vjik)
+- Bug #295: Remove unnecessary `CacheKeyNormalizer` instance creation in `CachedContent` (@samdark)
+- Bug #300: Fix renderer selection for view files with double extensions (@vjik)
 
 ## 12.2.2 December 07, 2025
 
