@@ -1,5 +1,9 @@
 # Yii View Change Log
 
+## 12.2.4 under development
+
+- no changes in this release.
+
 ## 12.2.3 January 26, 2026
 
 - Enh #289: Add validation of renderers configuration to `ViewTrait::withRenderers()`  (@samdark)
