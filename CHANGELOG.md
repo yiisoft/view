@@ -1,6 +1,6 @@
 # Yii View Change Log
 
-## 12.2.4 under development
+## 12.2.4 March 18, 2026
 
 - Enh #305: Add support for `yiisoft/html` version `^4.0` (@vjik)
 
