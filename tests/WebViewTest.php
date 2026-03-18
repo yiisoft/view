@@ -206,7 +206,7 @@ final class WebViewTest extends TestCase
         $webView->registerCssFile($url);
 
         $html = $webView->render('positions.php');
-        $this->assertStringContainsString('[HEAD]<link href="' . $url . '" rel="stylesheet">[/HEAD]', $html);
+        $this->assertStringContainsString('[HEAD]<link rel="stylesheet" href="' . $url . '">[/HEAD]', $html);
     }
 
     public function testRegisterCssFileEdgeCase(): void
@@ -220,9 +220,9 @@ final class WebViewTest extends TestCase
 
         $this->assertStringContainsString(
             <<<HTML
-            [HEAD]<link href="main.css" rel="stylesheet">
-            <link href="main.css" rel="stylesheet" data-x="1">
-            <link href="main.css" rel="stylesheet" data-x="2">[/HEAD]
+            [HEAD]<link rel="stylesheet" href="main.css">
+            <link rel="stylesheet" href="main.css" data-x="1">
+            <link rel="stylesheet" href="main.css" data-x="2">[/HEAD]
             HTML,
             $html,
         );
@@ -241,15 +241,15 @@ final class WebViewTest extends TestCase
     {
         return [
             [
-                '[HEAD]<link href="/somefile.css" rel="stylesheet">[/HEAD]',
+                '[HEAD]<link rel="stylesheet" href="/somefile.css">[/HEAD]',
                 WebView::POSITION_HEAD,
             ],
             [
-                '[BEGINBODY]<link href="/somefile.css" rel="stylesheet">[/BEGINBODY]',
+                '[BEGINBODY]<link rel="stylesheet" href="/somefile.css">[/BEGINBODY]',
                 WebView::POSITION_BEGIN,
             ],
             [
-                '[ENDBODY]<link href="/somefile.css" rel="stylesheet">[/ENDBODY]',
+                '[ENDBODY]<link rel="stylesheet" href="/somefile.css">[/ENDBODY]',
                 WebView::POSITION_END,
             ],
         ];
@@ -732,8 +732,8 @@ final class WebViewTest extends TestCase
         $html = $webView->render('positions.php');
 
         $expected = '[BEGINPAGE][/BEGINPAGE]' . "\n"
-            . '[HEAD]<link href="file-1.css" rel="stylesheet">[/HEAD]' . "\n"
-            . '[BEGINBODY]<link href="file-2.css" rel="stylesheet" crossorigin="anonymous">[/BEGINBODY]' . "\n"
+            . '[HEAD]<link rel="stylesheet" href="file-1.css">[/HEAD]' . "\n"
+            . '[BEGINBODY]<link rel="stylesheet" href="file-2.css" crossorigin="anonymous">[/BEGINBODY]' . "\n"
             . '[ENDBODY][/ENDBODY]' . "\n"
             . '[ENDPAGE][/ENDPAGE]';
 
