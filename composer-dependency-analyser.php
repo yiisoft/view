@@ -13,4 +13,7 @@ return (new Configuration())
     ->addPathToScan(__DIR__ . '/tests', isDev: true)
     // View/WebView optionally accept a PSR-14 event dispatcher without requiring the package at runtime;
     // previously whitelisted the same way in composer-require-checker.json. See "suggest" in composer.json.
-    ->ignoreErrorsOnPackages(['psr/event-dispatcher'], [ErrorType::SHADOW_DEPENDENCY]);
+    ->ignoreErrorsOnPackages(['psr/event-dispatcher'], [ErrorType::SHADOW_DEPENDENCY])
+    // `yiisoft/definitions` is used only in `config/di.php` and `config/di-web.php`, which are loaded by
+    // consumers using `yiisoft/di`, that already requires `yiisoft/definitions` itself.
+    ->ignoreErrorsOnPackages(['yiisoft/definitions'], [ErrorType::SHADOW_DEPENDENCY]);
