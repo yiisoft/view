@@ -2,7 +2,7 @@
 
 ## 12.2.5 under development
 
-- no changes in this release.
+- Enh #313: Remove unused `yiisoft/arrays` dependency (@vjik)
 
 ## 12.2.4 March 18, 2026
 
