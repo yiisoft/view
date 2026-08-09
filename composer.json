@@ -28,8 +28,6 @@
     ],
     "require": {
         "php": "8.1 - 8.5",
-        "psr/container": "^1.0 || ^2.0",
-        "yiisoft/aliases": "^3.1.1",
         "yiisoft/cache": "^1.0 || ^2.0 || ^3.0",
         "yiisoft/files": "^1.0 || ^2.0",
         "yiisoft/html": "^2.5 || ^3.0 || ^4.0",
@@ -43,6 +41,7 @@
         "rector/rector": "^2.3.4",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "spatie/phpunit-watcher": "^1.24.4",
+        "yiisoft/aliases": "^3.1.1",
         "yiisoft/code-style": "^1.0",
         "yiisoft/di": "^1.4.1",
         "yiisoft/psr-dummy-provider": "^1.0.2",
